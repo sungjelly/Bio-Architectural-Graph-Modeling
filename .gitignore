@@ -1,0 +1,70 @@
+# Python caches
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Local agent/session metadata
+.agents/
+.codex/
+
+# Local runtime/cache noise
+.cache/
+.ipynb_checkpoints/
+.DS_Store
+*.tmp
+*.temp
+
+# Logs
+*.log
+logs/**
+workflows/**/logs/**
+
+# Shared data inputs and generated outputs
+data/**
+results/**
+artifacts/**
+workflows/**/results/**
+workflows/**/outputs/**
+
+# Large data tables, reports, figures, and serialized artifacts
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.parquet
+*.gz
+*.zip
+*.tar
+*.tar.gz
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.pdf
+*.html
+*.ckpt
+*.pt
+*.pth
+*.onnx
+*.h5
+*.h5ad
+*.hdf5
+*.npy
+*.npz
+
+# Track directory placeholders inside otherwise ignored trees.
+!data/
+!data/**/
+!data/**/.gitkeep
+!results/
+!results/**/
+!results/**/.gitkeep
+!artifacts/
+!artifacts/**/
+!artifacts/**/.gitkeep
+!workflows/**/results/
+!workflows/**/results/**/
+!workflows/**/results/**/.gitkeep
+!workflows/**/outputs/
+!workflows/**/outputs/**/
+!workflows/**/outputs/**/.gitkeep
