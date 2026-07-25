@@ -1,0 +1,14 @@
+graph:
+  kind: spatial_knn_radius
+  neighbor_k: 16
+  k: 16
+  radius_um: 75.0
+  symmetry: mutual
+  min_distance_um: 0.0
+  rbf_bins: 8
+  edge_dropout: 0.10
+  self_loops: false
+  two_directed_edges_per_relation: true
+  cross_split_edges: false
+  split_graphs_constructed_independently: true
+  coordinates_are_node_covariates: false

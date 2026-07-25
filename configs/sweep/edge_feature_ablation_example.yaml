@@ -1,0 +1,15 @@
+version: 1
+name: edge_feature_ablation_example
+campaign_id: cmp_20260724_edge_feature_ablation
+enqueue_automatically: false
+experiment_configs:
+  - configs/experiment/edge_feature_ablation_g1.yaml
+  - configs/experiment/edge_feature_ablation_g2.yaml
+factors:
+  seed: [0, 1, 2, 3, 4]
+  fold: [0]
+controls:
+  - g2_zero_edge_attributes
+  - g2_permuted_edge_attributes_within_distance_bins
+  - g1_degree_distance_matched_rewired_graph
+test_policy: sealed_until_variant_lock

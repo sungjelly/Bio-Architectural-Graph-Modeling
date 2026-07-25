@@ -1,0 +1,191 @@
+schema_name: bagm_checkpoint_catalog
+schema_version: 1
+
+purpose:
+  canonical_storage_remains: artifacts/runs/YYYY/MM/<run_id>/
+  semantic_catalog_is: derived_registry_metadata_and_export_view
+  authoritative_sources:
+    - state/tracking/bagm.sqlite3
+    - immutable_run_manifests
+    - exact_legacy_run_index_records
+  prohibited_actions:
+    - move_checkpoint
+    - copy_checkpoint
+    - delete_checkpoint
+    - rewrite_checkpoint
+    - deserialize_checkpoint_for_cataloging
+    - replace_primary_run_id
+  allowed_registry_writes:
+    - additive_run_alias
+    - explicit_run_category
+    - derived_checkpoint_metadata
+
+historical_enrichment:
+  join_key: exact legacy_run_id
+  fallback_path_inference: forbidden
+  unknown_execution_dimensions:
+    preserve_as_null:
+      - fold
+      - attempt
+    keep_confidence:
+      - seed
+      - fold
+      - attempt
+      - run_boundary
+
+controlled_lifecycle_stages:
+  diagnostic:
+    evidence_tier: diagnostic_only
+    interpretation_tier: not_for_scientific_interpretation
+    retention_tier: retain_diagnostic_audit
+  exploratory_screen:
+    evidence_tier: validation_selection
+    interpretation_tier: selection_only
+    retention_tier: retain_exploratory_evidence
+  validation_confirmation:
+    evidence_tier: locked_validation_confirmation
+    interpretation_tier: validation_confirmation
+    retention_tier: retain_confirmation
+  locked_final:
+    evidence_tier: sealed_conclusion_bearing
+    interpretation_tier: conclusion_bearing_with_campaign_limits
+    retention_tier: retain_locked_final
+  posthoc_evaluation:
+    evidence_tier: versioned_posthoc
+    interpretation_tier: posthoc_only
+    retention_tier: retain_versioned_posthoc
+  unknown:
+    evidence_tier: unclassified
+    interpretation_tier: requires_review
+    retention_tier: retain_pending_review
+
+legacy_batch_rules:
+  diagnostic:
+    - runtime_smoke_cpu_b0_v1
+    - runtime_smoke_cpu_broad_field_v1
+    - runtime_smoke_cpu_g1_v1
+    - runtime_smoke_gpu_g1_amp_v1
+    - smoke_gpu_v1
+  exploratory_screen:
+    - screen_graph_v1
+    - screen_mask_v1
+    - screen_hidden_v1
+    - screen_depth_v1
+    - screen_edge_embedding_v1
+    - screen_graph_mask_interaction_v1
+  validation_confirmation:
+    - postlock_confirmation_v1
+  locked_final:
+    - final_locked_v1
+
+checkpoint_artifact_kinds:
+  historical:
+    - legacy_checkpoint
+  canonical:
+    - checkpoint_best
+    - checkpoint_last
+    - checkpoint
+    - checkpoints
+    - model_checkpoint
+
+required_record_fields:
+  identity:
+    - checkpoint_id
+    - run_id
+    - scientific_id
+    - repro_id
+    - semantic_alias
+    - preferred_alias
+    - historical
+  classification:
+    - lifecycle_stage
+    - study_axis
+    - study_axes
+    - source_batch
+    - evidence_tier
+    - interpretation_tier
+    - retention_tier
+    - retention_action
+    - condition
+    - condition_role
+    - category_key
+  scientific_configuration:
+    - model_name
+    - model_family
+    - masking_type
+    - dataset_id
+    - dataset_version
+    - split_id
+    - use_edge_features
+    - edge_feature_state
+    - embedding_dim
+    - edge_embedding_dim
+    - graph_layers
+    - graph_id
+    - neighbor_k
+    - radius_um
+    - symmetry
+    - min_distance_um
+    - rewired
+    - edge_control
+  execution:
+    - seed
+    - seed_known
+    - fold
+    - fold_known
+    - attempt
+    - attempt_known
+    - started_at
+    - completed_at
+    - status
+  checkpoint:
+    - checkpoint_role
+    - checkpoint_path
+    - checkpoint_sha256
+    - checkpoint_size_bytes
+    - best_epoch
+    - monitored_metric
+    - monitored_mode
+    - monitored_value
+    - verification_status
+    - verification_checked
+  duplicates:
+    - content_duplicate_group
+    - content_duplicate_count
+    - duplicate_representative_checkpoint_id
+    - duplicate_representative_run_id
+    - duplicate_of_checkpoint_id
+    - duplicate_group_redundant_bytes
+
+duplicate_policy:
+  identity: exact_sha256
+  representative_order:
+    - run_id
+    - checkpoint_role
+    - checkpoint_path
+    - checkpoint_id
+  physical_consolidation: forbidden
+  retention_action: annotate_only
+
+resolve_contract:
+  required_checks:
+    - source_is_regular_file_not_symlink
+    - source_is_under_configured_artifact_root
+    - registered_size_matches
+    - registered_sha256_is_valid
+    - calculated_sha256_matches
+  checkpoint_deserialization: forbidden
+
+export_contract:
+  files:
+    - catalog.jsonl
+    - catalog.csv
+    - summary.json
+    - README.md
+  overwrite: forbidden
+  optional_symlink_view:
+    root: by-stage/
+    link_type: relative
+    source_must_verify_first: true
+    copy_or_hardlink: forbidden
+  scientific_warning: per_run_metrics_do_not_replace_variant_aggregation

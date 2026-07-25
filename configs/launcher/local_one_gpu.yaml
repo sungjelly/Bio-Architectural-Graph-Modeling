@@ -1,0 +1,12 @@
+launcher:
+  kind: local_subprocess
+  concurrency: 1
+  requested_gpu: "0"
+  set_cuda_visible_devices: true
+  heartbeat_seconds: 30
+  stale_after_seconds: 900
+  disk_safety_min_free_gb: 25
+  capture_stdout: true
+  capture_stderr: true
+  active_output_root: scratch/active_runs
+  finalized_output_root: artifacts/runs

@@ -1,0 +1,21 @@
+version: 1
+defaults:
+  - model: g1
+  - masking: p_n_b
+  - dataset: normal_core_cosmx
+  - features: cosmx_morphology_topology
+  - graph: k16_r75_mutual
+  - trainer: spatial_benchmark_locked
+  - evaluation: masked_expression_regression_v1
+  - launcher: local_one_gpu
+
+campaign:
+  campaign_id: replace_with_registered_campaign_id
+  display_name: Replace with a concise scientific question
+experiment:
+  variant_label: replace_with_variant_label
+  estimand: within_core_whole_node_masked_expression
+  permitted_claim: within_core_predictive_dependency
+seed: 0
+fold: 0
+attempt: 1

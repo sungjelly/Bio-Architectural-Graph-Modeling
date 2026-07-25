@@ -57,47 +57,97 @@ A failed gate is an informative scientific result. Acceptance criteria must not 
 ## Repository Organization
 
 ```text
-data/
-  raw/                 local immutable source data
-  processed/           generated or curated intermediate data
-  clinical/            local clinical metadata, when available
-scripts/
-  core_assignment/     shared FOV-to-core assignment utility
-results/
-  core_assignment/     shared core-assignment outputs
-workflows/
-  <experiment>/        one bounded idea, hypothesis, or experiment
+configs/               composed scientific, trainer, evaluation, and sweep settings
+src/spatial_benchmark/ canonical model code and experiment infrastructure
+scripts/               thin train, evaluation, data, sweep, and analysis entry points
+tests/                 unit, integration, and smoke checks
+data/                  immutable raw/clinical inputs, derived data, splits, and registries
+experiments/           campaign and variant definitions
+scratch/active_runs/   mutable output while a run is executing
+artifacts/runs/         immutable finalized bundles; year/month is storage only
+artifacts/legacy_runs/ preserved historical campaigns
+state/                 local SQLite registry, locks, queue state, and operational logs
+exports/runs/checkpoints/ generated semantic checkpoint catalogs and link views
+reports/               cross-run analyses, figures, and tables
 ```
 
-Each workflow is an independent, reviewable experiment rather than an extension of one monolithic pipeline. A workflow may test an architecture, objective, graph construction, baseline, ablation, null model, interpretation method, or validation concept.
+The existing `spatial_benchmark` package remains canonical. A campaign is one
+bounded scientific question; a variant is one fixed scientific configuration;
+a run is one seed/fold/attempt execution. New runs are registered locally and
+published from scratch only after artifact verification succeeds.
 
-A typical workflow contains:
+Run discovery follows the scientific hierarchy
+campaign → lifecycle stage → study axis → variant → seed/fold/attempt. Primary
+IDs are immutable: the imported runs retain `lr_*` IDs and future workers issue
+`r_*` IDs. Preferred semantic aliases are deterministic, date-free display
+identifiers. The physical `artifacts/runs/YYYY/MM/` partition supports storage
+and lifecycle operations; it is not how runs should be selected or
+interpreted.
 
-```text
-workflows/<experiment>/
-  README.md
-  configs/
-  scripts/
-  src/                 optional reusable implementation
-  tests/               workflow-local tests
-  results/             ignored generated analyses
-  outputs/             optional ignored model artifacts
+Useful commands from the project root:
+
+```bash
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark doctor
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark --help
+make test
 ```
 
-Every workflow README must define its scientific question, hypothesis, estimand, permitted claim, inputs, leakage risks, baselines and controls, split strategy, commands, outputs, go/no-go criteria, compute plan, and current conclusion. Cross-workflow dependencies must use declared artifacts identified by an immutable run ID, configuration, checksum or manifest, and provenance record; they need not be tracked by Git.
+See `docs/experiment_protocol.md` for identifiers and lifecycle rules and
+`docs/operations.md` for the one-GPU queue.
+
+## Checkpoint Discovery
+
+SQLite schema v3 adds `run_aliases`, `run_categories`, and
+`checkpoint_catalog` to the authoritative registry. The 158 historical best
+checkpoints are indexed and checksum-verified without changing their native
+files: 9 diagnostic, 96 exploratory-screen, 3 validation-confirmation, and 50
+locked-final records. Their total size is 1,499,185,266 bytes. Nine
+exact-content groups contain 20 records and 84,324,336 redundant bytes; these
+are annotations only, not authorization to delete or hard-link immutable
+history.
+
+Browse by scientific category or resolve an exact checkpoint with either a
+primary ID or preferred alias:
+
+```bash
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
+  --database state/tracking/bagm.sqlite3 \
+  list-checkpoints --stage locked_final --model g2 --limit 20
+
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
+  --database state/tracking/bagm.sqlite3 \
+  resolve-checkpoint \
+  hist.diagnostic.runtime-smoke.b0.self.p-n-b.disabled.d128.s000.fna.ana.vaf897cf26410.x1cd0a0ff3c83
+```
+
+The reviewed generated catalog is
+`exports/runs/checkpoints/catalog_20260724T180010Z/`. It is a semantic view,
+not a second registry. Interpret diagnostic runs only as diagnostics,
+exploratory screens only as selection evidence, confirmations within their
+locked validation scope, and locked-final runs within the campaign's stated
+limits. Never choose a scientific conclusion from one favorable seed; use
+prespecified variant aggregates.
 
 ## Data and Outputs
 
 Local data and generated artifacts are intentionally untracked. Do not modify raw or clinical inputs in place. The root `data.tar.gz` archive, when present, is an input artifact and should be preserved unless its removal is explicitly requested.
 
-Run Python entry points from the repository root unless a workflow README states otherwise. Shared core assignments are generated with:
+Read [`docs/legacy_data_guide.md`](docs/legacy_data_guide.md) before accessing the current CosMx
+snapshot. It documents file roles, dimensions, canonical keys, panel controls,
+clinical-label ambiguity, split requirements, and known integrity exceptions.
 
-```bash
-python scripts/core_assignment/plot_fov_core_layout.py
-```
+Run Python entry points from the repository root unless a campaign README
+states otherwise. The legacy core-assignment utility currently requires
+clinical-schema reconciliation before its outputs can be treated as canonical;
+see the data guide and `scripts/core_assignment/README.md`.
 
 Computational workflows should provide a cheap smoke or pilot profile and, when a distinct scaled experiment is meaningful, a documented full profile. Pilot outputs are diagnostic; locked, fully validated outputs are canonical. If pilot artifacts are removed, retain the configuration, metrics, logs or summary, and the decision they informed.
 
 ## Current Status
 
-The previous clustering experiments have been removed, and `workflows/` is ready for new Bio-Architectural Graph Modeling work. Project-wide dependencies and model entry points will be defined with the first workflow.
+The completed normal-core masked-expression benchmark is preserved under
+`artifacts/legacy_runs/lr_spatial_benchmark_batch/` and indexed without altering
+its checksum-bound outputs. Its legacy fold and attempt were not recorded, so
+catalog records expose them as unknown rather than treating registry
+placeholders as evidence. The authoritative experiment registry is local
+SQLite under `state/tracking/`; no remote tracking service is initialized.

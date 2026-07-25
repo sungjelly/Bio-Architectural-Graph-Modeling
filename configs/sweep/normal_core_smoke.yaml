@@ -1,0 +1,11 @@
+name: smoke_ladder
+factors:
+  model: [b0, broad-field, b1, g1, g2]
+  seed: [0]
+fixed:
+  max_epochs: 4
+  patience: 4
+  hidden_dim: 128
+  amp: false
+open_test: false
+save_predictions: true

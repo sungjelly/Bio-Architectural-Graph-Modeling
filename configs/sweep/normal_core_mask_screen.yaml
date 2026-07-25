@@ -1,0 +1,12 @@
+name: masking_curriculum_screen
+factors:
+  model: [b0, g1]
+  seed: [0, 1, 2]
+  curriculum: [P-only, P+N, P+N+B]
+fixed:
+  max_epochs: 60
+  patience: 12
+  hidden_dim: 256
+  amp: true
+open_test: false
+save_predictions: false

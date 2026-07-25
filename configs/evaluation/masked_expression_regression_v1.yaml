@@ -1,0 +1,26 @@
+evaluation:
+  registry_version: 1
+  task_family: masked_expression_regression
+  primary_metric: val/masked_huber
+  primary_direction: minimize
+  splits:
+    - validation
+    - test
+  mask_modes:
+    - partial_gene
+    - whole_node
+    - spatial_block
+  metrics:
+    - val/masked_huber
+    - val/masked_mse
+    - val/masked_mae
+    - val/gene_pearson
+    - val/gene_spearman
+    - test/masked_huber
+    - test/masked_mse
+    - test/masked_mae
+  uncertainty_unit: spatial_macroblock
+  ensemble_policy: average_locked_seed_predictions_before_primary_scoring
+  test_is_sealed_until_variant_and_graph_lock: true
+  save_per_block_metrics: true
+  save_curve_numeric_data: true

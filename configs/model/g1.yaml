@@ -1,0 +1,14 @@
+model:
+  name: g1
+  family: topology_only_gatv2
+  embedding_dim: 512
+  hidden_dim: 512
+  graph_layers: 2
+  attention_heads: 4
+  ffn_dim: 512
+  decoder_dim: 512
+  dropout: 0.10
+  attention_dropout: 0.10
+  implicit_self_loops: false
+  trainable_node_identifiers: false
+  trainable_edge_identifiers: false

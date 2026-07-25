@@ -1,0 +1,249 @@
+schema_name: bagm_metric_registry
+schema_version: 1
+created_at_utc: "2026-07-24"
+
+naming:
+  separator: /
+  required_pattern: "^[a-z][a-z0-9_]*(/[a-z][a-z0-9_]*)+$"
+  prohibited_ambiguous_names:
+    - score
+    - accuracy
+    - result
+    - final_metric
+  parameter_fields_are_not_metrics:
+    - model_family
+    - masking_type
+    - dataset_id
+    - use_edge_features
+    - embedding_dim
+    - neighbor_k
+
+task_families:
+  masked_expression_regression:
+    active_in_current_project: true
+    primary_metric: val/masked_huber
+    primary_direction: minimize
+    independent_uncertainty_unit: spatial_macroblock
+    metrics:
+      val/masked_huber:
+        description: Mean Huber loss over finite masked expression entries.
+        direction: minimize
+        unit: standardized_log1p_expression
+        required: true
+      val/masked_mse:
+        description: Mean squared error over finite masked expression entries.
+        direction: minimize
+        unit: squared_standardized_log1p_expression
+      val/masked_mae:
+        description: Mean absolute error over finite masked expression entries.
+        direction: minimize
+        unit: standardized_log1p_expression
+      test/masked_huber:
+        description: Sealed-test masked Huber loss, evaluated only after lock.
+        direction: minimize
+        unit: standardized_log1p_expression
+      external/masked_huber:
+        description: Masked Huber loss in an independently declared external dataset.
+        direction: minimize
+        unit: standardized_log1p_expression
+        applicable_when: an_external_dataset_is_declared
+      val/gene_pearson:
+        description: Gene-wise Pearson correlation summarized without treating genes or cells as biological replicates.
+        direction: maximize
+        unit: correlation
+      val/gene_spearman:
+        description: Gene-wise Spearman correlation summarized without treating genes or cells as biological replicates.
+        direction: maximize
+        unit: correlation
+      val/cell_pearson:
+        description: Cell-wise Pearson correlation, reported as a descriptive distribution.
+        direction: maximize
+        unit: correlation
+      val/cell_spearman:
+        description: Cell-wise Spearman correlation, reported as a descriptive distribution.
+        direction: maximize
+        unit: correlation
+      val/negative_log_likelihood:
+        description: Predictive negative log likelihood.
+        direction: minimize
+        applicable_when: the_model_has_a_prespecified_valid_likelihood
+      val/deviance:
+        description: Predictive deviance under the declared observation model.
+        direction: minimize
+        applicable_when: the_model_has_a_prespecified_valid_likelihood
+      calibration/interval_coverage:
+        description: Empirical predictive-interval coverage at the declared nominal level.
+        direction: target
+        applicable_when: calibrated_predictive_intervals_are_available
+      calibration/interval_width:
+        description: Mean predictive-interval width at the declared nominal level.
+        direction: minimize_conditioned_on_coverage
+        applicable_when: calibrated_predictive_intervals_are_available
+
+  classification:
+    active_in_current_project: false
+    activation_rule: Use only for a declared classification outcome; never derive these from masked-expression regression.
+    metrics:
+      val/auroc:
+        direction: maximize
+        definition: Area under the receiver-operating-characteristic curve.
+      val/auprc:
+        direction: maximize
+        definition: Area under the precision-recall curve; report class prevalence.
+      val/sensitivity:
+        direction: maximize
+        definition: Recall for the prespecified positive class at a locked threshold.
+      val/specificity:
+        direction: maximize
+        definition: True-negative rate at a locked threshold.
+      val/balanced_accuracy:
+        direction: maximize
+        definition: Mean class recall at a locked threshold.
+      val/macro_f1:
+        direction: maximize
+        definition: Unweighted mean of class-specific F1 values.
+      val/per_class_precision:
+        direction: maximize
+        storage: metrics/per_class.json
+      val/per_class_recall:
+        direction: maximize
+        storage: metrics/per_class.json
+      val/per_class_f1:
+        direction: maximize
+        storage: metrics/per_class.json
+      calibration/brier:
+        direction: minimize
+        definition: Mean squared error of probabilistic predictions.
+      calibration/expected_calibration_error:
+        direction: minimize
+        definition: Prespecified binning-based calibration error with bin definition stored in metadata.
+      test/auroc:
+        direction: maximize
+        applicable_when: test_thresholds_and_model_are_locked
+      external/auroc:
+        direction: maximize
+        applicable_when: an_external_classification_dataset_is_declared
+
+  survival:
+    active_in_current_project: false
+    activation_rule: Use only when a survival endpoint, censoring policy, and time grid are declared.
+    metrics:
+      val/concordance_index:
+        direction: maximize
+      val/integrated_brier_score:
+        direction: minimize
+      val/time_dependent_auroc:
+        direction: maximize
+        storage: metrics/events.jsonl
+        metadata_required:
+          - evaluation_time
+          - censoring_estimator
+
+diagnostic_families:
+  stability:
+    fields:
+      - primary_mean
+      - primary_std
+      - primary_min
+      - primary_max
+      - n_completed_runs
+    rule: Summarize all prespecified seeds and folds; never select only the best seed.
+
+  generalization:
+    metrics:
+      generalization/train_to_validation_gap:
+        definition: validation_metric_minus_train_metric_after_matching_scale_and_direction
+      generalization/validation_to_external_gap:
+        definition: external_metric_minus_validation_metric_after_matching_scale_and_direction
+        applicable_when: an_external_dataset_is_declared
+
+  efficiency:
+    metrics:
+      resource/training_duration_seconds:
+        direction: minimize
+      resource/inference_duration_seconds:
+        direction: minimize
+      resource/samples_per_second:
+        direction: maximize
+      resource/peak_vram_gb:
+        direction: minimize
+      resource/parameter_count:
+        direction: minimize_conditioned_on_predictive_utility
+      resource/checkpoint_size_bytes:
+        direction: minimize
+
+  graph:
+    metrics:
+      graph/node_count_mean:
+        direction: descriptive
+      graph/node_count_distribution:
+        direction: descriptive
+        storage: diagnostics/graph_statistics.json
+      graph/edge_count_mean:
+        direction: descriptive
+      graph/edge_count_distribution:
+        direction: descriptive
+        storage: diagnostics/graph_statistics.json
+      graph/isolated_node_rate:
+        direction: minimize
+      graph/disconnected_component_rate:
+        direction: minimize
+      graph/degree_mean:
+        direction: descriptive
+      graph/degree_p95:
+        direction: descriptive
+      graph/effective_neighbor_count:
+        direction: descriptive
+      graph/construction_duration_seconds:
+        direction: minimize
+
+  features:
+    metrics:
+      feature/missing_node_feature_rate:
+        direction: minimize
+      feature/missing_edge_feature_rate:
+        direction: minimize
+        applicable_when: edge_features_are_enabled
+      feature/embedding_norm_mean:
+        direction: descriptive
+      feature/embedding_norm_std:
+        direction: descriptive
+
+  masking:
+    metrics:
+      mask/requested_rate:
+        direction: descriptive
+      mask/effective_rate:
+        direction: target_requested_rate
+      mask/masked_node_count:
+        direction: descriptive
+      mask/masked_edge_count:
+        direction: descriptive
+      mask/class_distribution_shift:
+        direction: minimize
+        applicable_when: a_classification_label_is_declared
+
+variant_aggregation:
+  schema_version: 1
+  required_fields:
+    - repro_id
+    - n_expected_runs
+    - n_completed_runs
+    - n_failed_runs
+    - primary_mean
+    - primary_std
+    - primary_min
+    - primary_max
+    - auprc_mean
+    - brier_mean
+    - median_duration
+    - maximum_peak_vram
+    - best_run_id
+    - worst_run_id
+  nullable_when_not_applicable:
+    - auprc_mean
+    - brier_mean
+  ranking_rule: Rank complete prespecified variant aggregates, never an individual favorable seed.
+  selection_score:
+    enabled: false
+    rule: If introduced, name it selection_score and store the complete formula and version.

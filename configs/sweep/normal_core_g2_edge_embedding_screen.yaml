@@ -1,0 +1,14 @@
+name: validation_g2_edge_embedding_screen
+factors:
+  model: [g2]
+  seed: [0]
+  edge_embedding_dim: [16, 32, 64]
+fixed:
+  hidden_dim: 256
+  graph_layers: 1
+  max_epochs: 60
+  patience: 12
+  curriculum: P+N+B
+  amp: true
+open_test: false
+save_predictions: false

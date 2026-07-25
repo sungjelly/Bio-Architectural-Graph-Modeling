@@ -1,0 +1,13 @@
+name: validation_graph_depth_screen
+factors:
+  model: [g1]
+  seed: [0]
+  graph_layers: [1, 2]
+fixed:
+  hidden_dim: 256
+  max_epochs: 60
+  patience: 12
+  curriculum: P+N+B
+  amp: true
+open_test: false
+save_predictions: false

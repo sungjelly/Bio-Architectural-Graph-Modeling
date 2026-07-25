@@ -1,0 +1,27 @@
+version: 1
+defaults:
+  - model: g2
+  - masking: p_n_b
+  - dataset: normal_core_cosmx
+  - features: cosmx_morphology_edge_geometry
+  - graph: k16_r75_mutual
+  - trainer: spatial_benchmark_locked
+  - evaluation: masked_expression_regression_v1
+  - launcher: local_one_gpu
+
+campaign:
+  campaign_id: cmp_20260724_edge_feature_ablation
+  display_name: Normal-core edge-feature ablation example
+experiment:
+  variant_label: g2_edge_geometry
+  estimand: within_core_whole_node_masked_expression
+  permitted_claim: within_core_predictive_dependency
+classification:
+  schema_version: 1
+  lifecycle_stage: exploratory_screen
+  study_axis: edge_feature_ablation
+  retention_class: retain_exploratory_evidence
+  classification_confidence: high
+seed: 0
+fold: 0
+attempt: 1

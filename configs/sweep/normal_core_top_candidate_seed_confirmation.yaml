@@ -1,0 +1,18 @@
+# Bootstrap template only. lock_standards.py emits the concrete locked version.
+name: validation_top_candidate_seed_confirmation
+factors:
+  model: [g1]
+  seed: [0, 1, 2]
+fixed:
+  k: 12
+  radius_um: 50
+  symmetry: union
+  min_distance_um: 0
+  curriculum: P+N+B
+  hidden_dim: 256
+  graph_layers: 1
+  max_epochs: 100
+  patience: 20
+  amp: true
+open_test: false
+save_predictions: false

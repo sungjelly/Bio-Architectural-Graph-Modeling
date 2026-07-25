@@ -1,0 +1,48 @@
+definition_version: 1
+definition_id: edge_feature_ablation_g1_vs_g2
+campaign_id: cmp_20260724_edge_feature_ablation
+status: example_not_enqueued
+
+question: Do measured geometric edge attributes add masked-expression predictive information beyond the same topology?
+primary_hypothesis: G2 lowers held-out whole-node masked Huber loss relative to G1 on the same graph and split.
+alternative_explanations:
+  - topology_alone_is_sufficient
+  - apparent_gain_is_distance_smoothing
+  - apparent_gain_is_segmentation_spillover
+
+estimand: paired_spatial_block_loss_g1_minus_g2
+permitted_claim: within_core_predictive_dependency
+experimental_unit: spatial_macroblock
+observational_unit: cell
+technical_repetitions:
+  seeds: [0, 1, 2, 3, 4]
+  folds: [0]
+
+variants:
+  - label: g1_topology_only
+    config: configs/experiment/edge_feature_ablation_g1.yaml
+  - label: g2_edge_geometry
+    config: configs/experiment/edge_feature_ablation_g2.yaml
+
+shared_locked_values:
+  dataset_id: cosmx_normal_core_legacy_v1
+  split_id: "127b17da70688537"
+  masking_curriculum: P+N+B
+  neighbor_k: 16
+  radius_um: 75.0
+  symmetry: mutual
+  embedding_dim: 512
+  graph_layers: 2
+  edge_embedding_dim_for_g2: 64
+
+controls:
+  - g2_zero_edge_attributes
+  - g2_permuted_edge_attributes_within_distance_bins
+  - g1_degree_distance_matched_rewired_graph
+
+primary_metric:
+  name: val/masked_huber
+  direction: minimize
+uncertainty_unit: spatial_macroblock
+test_policy: sealed_until_variants_controls_and_analysis_are_locked
+enqueue_automatically: false

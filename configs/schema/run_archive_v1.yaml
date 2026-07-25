@@ -1,0 +1,92 @@
+schema_name: bagm_run_archive
+schema_version: 1
+canonical_path: artifacts/runs/YYYY/MM/<run_id>
+active_path: scratch/active_runs/<run_id>
+
+required_for_all_finalized_attempts:
+  - manifest.yaml
+  - config.resolved.yaml
+  - summary.json
+  - provenance/git.json
+  - provenance/environment.txt
+  - provenance/hardware.json
+  - provenance/data_fingerprints.json
+  - provenance/split_fingerprint.json
+  - provenance/command.txt
+  - logs/stdout.log
+  - logs/stderr.log
+
+supported_paths:
+  metrics:
+    - metrics/events.jsonl
+    - metrics/history.parquet
+    - metrics/final.json
+    - metrics/per_class.json
+    - metrics/subgroup.parquet
+  predictions:
+    - predictions/validation.parquet
+    - predictions/test.parquet
+    - predictions/external.parquet
+  checkpoints:
+    - checkpoints/best.ckpt
+    - checkpoints/last.ckpt
+  diagnostics:
+    - diagnostics/graph_statistics.json
+    - diagnostics/mask_statistics.json
+    - diagnostics/error_cases.parquet
+    - diagnostics/curve_data.parquet
+  interpretation:
+    - interpretation/sample_index.parquet
+    - interpretation/embeddings.zarr
+    - interpretation/attention.zarr
+    - interpretation/saliency.zarr
+  provenance:
+    - provenance/uncommitted_changes.patch
+  logs:
+    - logs/exception.txt
+
+completion_markers:
+  exactly_one:
+    - _SUCCESS
+    - _FAILED
+    - _PRUNED
+  success_contract:
+    - best_checkpoint_exists
+    - nonempty_namespaced_final_metrics_validate
+    - nonempty_metric_events_and_history_validate
+    - canonical_validation_predictions_validate
+    - declared_artifact_checksums_verify
+    - registry_finalizing_transition_committed
+    - success_marker_is_checksum_bound
+    - terminal_registry_transition_is_recoverable
+
+immutability:
+  successful_run_is_immutable: true
+  post_hoc_evaluations: versioned_subdirectories_only
+  temporary_writes: scratch_only
+
+retention:
+  successful:
+    keep:
+      - manifest
+      - resolved_config
+      - summary
+      - metric_history
+      - validation_predictions
+      - best_checkpoint
+      - logs
+      - provenance
+  promoted:
+    additionally_keep:
+      - test_and_external_predictions
+      - selected_additional_checkpoints
+      - interpretation_artifacts
+      - large_embeddings_or_saliency
+  failed:
+    keep:
+      - configuration
+      - logs
+      - exception
+      - partial_metrics
+    avoid:
+      - unnecessary_checkpoints

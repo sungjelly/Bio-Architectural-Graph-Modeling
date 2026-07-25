@@ -17,10 +17,56 @@ Use `predictive dependency`, `model-implied sensitivity`, or `candidate mechanis
 
 ## Instruction Scope
 
-- Before editing or running code, read the root `README.md`, this file, and the relevant `workflows/<workflow>/README.md` or nearest script README.
+- Before editing or running code, read the root `README.md`, this file, and the relevant `experiments/campaigns/<campaign>/README.md` or nearest script README.
 - Root guidance applies throughout the repository. A nested `AGENTS.md` may add workflow-specific rules but must not silently weaken scientific, data, or validation requirements.
 - Run entry points from the repository root unless a workflow README explicitly says otherwise.
 - Inspect `git status --short` before and after work. Preserve unrelated user changes.
+
+## Repository and Experiment Operations
+
+- This repository contains only Bio-Architectural Graph Modeling. Its project
+  root is `/workspace/Bio-Architectural-Graph-Modeling`; `/workspace` may contain
+  other projects. Keep BAGM content within this root and do not add another
+  internal project wrapper or multi-project hierarchy.
+- Resolve all reusable paths through `spatial_benchmark.paths`. Respect the
+  `BAGM_ROOT`, `BAGM_DATA_ROOT`, `BAGM_ARTIFACT_ROOT`, `BAGM_SCRATCH_ROOT`, and
+  `BAGM_STATE_ROOT` overrides; do not hard-code a user home directory.
+- Treat `data/raw/` and `data/clinical/` as immutable protected inputs. Never
+  upload source data, results, or metadata to an external service, and never put
+  direct patient identifiers in tracked metadata or exported predictions.
+- Register every new experiment in the authoritative local registry. Every run
+  must save its resolved configuration, code/data/split/environment provenance,
+  append-only metrics, status, and completion marker.
+- Treat primary run IDs as immutable foreign keys. Historical runs retain their
+  `lr_*` IDs; workers create future `r_*` IDs. Use the preferred, date-free
+  semantic alias for browsing, but never rename a run directory, manifest, or
+  registry primary key to match an alias. The `YYYY/MM` run path is a physical
+  storage partition only, not the scientific hierarchy.
+- Classify runs as
+  campaign → lifecycle stage → study axis → scientific variant →
+  seed/fold/attempt. Resolved future configs must declare `classification`
+  metadata; missing classification remains visibly unknown. Do not treat the
+  legacy registry's placeholder fold `0` or attempt `1` as observed values when
+  `fold_known` or `attempt_known` is false.
+- Every checkpoint must be registered as an artifact and indexed in the
+  schema-v3 checkpoint catalog with its role, monitored metric, checksum,
+  retention class, verification status, and run semantics. Use
+  `index-checkpoints` after an approved legacy import; the worker performs this
+  hook automatically for new finalized runs.
+- Write active output only under `scratch/active_runs/<run_id>/`; publish verified
+  immutable bundles to `artifacts/runs/YYYY/MM/<run_id>/`. Do not alter a
+  successful bundle except through an explicitly versioned post-hoc evaluation.
+- Campaigns contain variants; variants exclude seed/fold/attempt/runtime fields;
+  runs identify one seed, fold, and attempt. Never report the best seed as the
+  complete scientific result—select and interpret checkpoints through
+  prespecified variant aggregates across expected seeds and folds, and expose
+  failures. A per-run checkpoint metric is metadata, not a selection policy.
+- Do not delete historical results without an explicit, documented retention
+  decision. Preserve backward compatibility and document any breaking layout
+  change.
+- After infrastructure changes, run the focused tests, full repository tests
+  when practical, and `PYTHONPATH=src /venv/main/bin/python -m
+  spatial_benchmark doctor`.
 
 ## Mandatory Scientific Stance
 
@@ -128,9 +174,9 @@ Each gate needs documented go/no-go criteria. Do not weaken a gate after viewing
 
 ## Workflow Contract
 
-Each `workflows/<name>/` represents one bounded hypothesis, model concept, ablation, benchmark, null, or validation experiment. Avoid monolithic workflows that accumulate unrelated ideas.
+Each `experiments/campaigns/<name>/` represents one bounded hypothesis, model concept, ablation, benchmark, null, or validation experiment. Avoid monolithic campaigns that accumulate unrelated ideas.
 
-Each workflow README must include:
+Each campaign README must include:
 
 - phase: planned, pilot, full, audited, or complete;
 - outcome: pending, supported, negative, inconclusive, or blocked;
@@ -148,7 +194,9 @@ Each workflow README must include:
 
 Cross-workflow dependencies must use declared artifacts identified by an immutable run ID, configuration, checksum or manifest, and provenance record; Git tracking is not required. Do not import undocumented intermediate files or manually choose a favorable upstream run.
 
-Keep generated files inside the owning workflow's `results/` or `outputs/` tree. Shared FOV-to-core outputs belong under `results/core_assignment/`.
+Keep active generated files under `scratch/active_runs/` and finalized run bundles
+under `artifacts/runs/`. Cross-run reports belong under `reports/`; historical
+workflow outputs remain immutable under `artifacts/legacy_runs/`.
 
 ## Experimental Design Requirements
 
@@ -232,6 +280,9 @@ HGD and true Normal currently have one documented core or sample each. Verify th
 
 ## Data and Leakage Policy
 
+- Read `docs/legacy_data_guide.md` before accessing local data. Treat its key, join,
+  clinical-label, streaming, and known-exception guidance as part of the input
+  contract.
 - Expected local layout is `data/raw/`, `data/processed/`, and `data/clinical/`.
 - Treat `data/raw/`, `data/clinical/`, and `data.tar.gz` as immutable shared inputs. Never rewrite or delete them unless the user explicitly requests the exact action.
 - Raw CosMx inputs may use the nested form `data/raw/<filename>/<filename>`; preserve support for it.
@@ -276,7 +327,8 @@ Every full run must report GPU model, device IDs, CUDA and framework versions, p
 
 Every full or conclusion-bearing run must preserve:
 
-- run ID, start and end time, and status;
+- immutable primary run ID, preferred semantic alias, category, start and end
+  time, and status;
 - exact command and working directory;
 - Git commit plus a record of relevant uncommitted changes;
 - immutable configuration and all hyperparameters;
@@ -285,6 +337,8 @@ Every full or conclusion-bearing run must preserve:
 - all random seeds and known nondeterministic operations;
 - dependency, operating-system, framework, CUDA, and hardware versions;
 - logs, runtime, resource use, metrics, and artifact paths;
+- indexed best-checkpoint identity, checksum, monitored metric, epoch,
+  verification result, and retention class;
 - failures, excluded runs, and reasons;
 - a concise conclusion tied to the prespecified criteria.
 
@@ -322,7 +376,7 @@ Every reported interaction should include source and receiver types/programs, sp
 
 Report stable, faithful, and biologically supported evidence as separate dimensions. Do not collapse them into one opaque score.
 
-Keep reports concise and figure-led. Do not dump full dataframes into the narrative. Store complete tables under the owning workflow's results tree. If HTML reports are produced, make them portable single files with embedded `data:` images, semantic structure, readable contrast, captions, alt text, and print-safe styling.
+Keep reports concise and figure-led. Do not dump full dataframes into the narrative. Store complete cross-run tables under `reports/tables/` or the owning campaign report directory, with run IDs and provenance. If HTML reports are produced, make them portable single files with embedded `data:` images, semantic structure, readable contrast, captions, alt text, and print-safe styling.
 
 ## Definition of Done
 

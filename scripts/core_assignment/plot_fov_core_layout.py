@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import warnings
 from pathlib import Path
+import sys
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -16,11 +17,15 @@ warnings.filterwarnings(
     category=MatplotlibDeprecationWarning,
 )
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DATA_RAW = PROJECT_ROOT / "data" / "raw"
-DATA_CLINICAL = PROJECT_ROOT / "data" / "clinical"
+_BOOTSTRAP_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(_BOOTSTRAP_ROOT / "src"))
+
+from spatial_benchmark.paths import DATA_ROOT, PROJECT_ROOT, SCRATCH_ROOT  # noqa: E402
+
+DATA_RAW = DATA_ROOT / "raw"
+DATA_CLINICAL = DATA_ROOT / "clinical"
 FOV_CORE_MAP_FILE = DATA_CLINICAL / "fov_core_map.csv"
-OUT_ROOT = PROJECT_ROOT / "results" / "core_assignment"
+OUT_ROOT = SCRATCH_ROOT / "preprocessing" / "legacy_core_assignment"
 FIGURES = OUT_ROOT / "figures"
 TABLES = OUT_ROOT / "tables"
 

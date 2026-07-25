@@ -1,0 +1,23 @@
+masking:
+  type: mixed_expression_masking
+  curriculum: P+N+B
+  rate:
+    partial_gene: 0.20
+    whole_node: 0.10
+    spatial_block: 0.10
+  rates:
+    partial_gene: 0.20
+    whole_node: 0.10
+    spatial_block: 0.10
+  post_warmup_probabilities:
+    partial_gene: 0.60
+    whole_node: 0.30
+    spatial_block: 0.10
+  warmup_epochs: 10
+  block_shape: disk
+  block_width_um: null
+  mask_seed: 314159
+  validation_replicates: 3
+  test_replicates: 5
+  mask_expression_only: true
+  explicit_gene_mask_channel: true

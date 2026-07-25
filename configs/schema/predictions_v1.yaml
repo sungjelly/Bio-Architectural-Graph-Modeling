@@ -1,0 +1,110 @@
+schema_name: bagm_prediction_table
+schema_version: 1
+preferred_format: parquet
+fallback_formats:
+  - jsonl
+  - csv
+
+privacy:
+  direct_patient_identifiers_allowed: false
+  raw_cell_identifiers_allowed: false
+  sample_key_rule: Use an opaque registry key or an HMAC generated with an untracked secret; never use an unsalted direct identifier hash.
+  subgroup_rule: Store only non-identifying, prespecified subgroup labels.
+
+columns:
+  run_id:
+    dtype: string
+    required: true
+  sample_key:
+    dtype: string
+    required: true
+  graph_id:
+    dtype: string
+    required: false
+  dataset_id:
+    dtype: string
+    required: true
+  split:
+    dtype: categorical_string
+    allowed: [train, validation, test, external]
+    required: true
+  fold:
+    dtype: int32
+    required: false
+  target_name:
+    dtype: string
+    required: false
+    applicable_when: one_row_represents_one_expression_target
+  y_true:
+    dtype: float32_or_int32
+    required: true
+  y_pred:
+    dtype: float32_or_int32
+    required: true
+  target_indices:
+    dtype: list_int32
+    required: false
+    applicable_when: y_true_and_y_pred_store_only_masked_vector_entries
+  sample_loss:
+    dtype: float32
+    required: false
+  confidence:
+    dtype: float32
+    required: false
+  prediction_entropy:
+    dtype: float32
+    required: false
+    applicable_when: probabilistic_classification
+  correct:
+    dtype: bool
+    required: false
+    applicable_when: a_locked_classification_threshold_or_argmax_rule_exists
+  subgroup:
+    dtype: string
+    required: false
+    privacy: non_identifying_only
+  node_count:
+    dtype: int32
+    required: false
+  edge_count:
+    dtype: int64
+    required: false
+  effective_neighbor_count:
+    dtype: float32
+    required: false
+  effective_mask_rate:
+    dtype: float32
+    required: false
+  masking_type:
+    dtype: categorical_string
+    required: false
+  mask_replicate:
+    dtype: int32
+    required: false
+
+dynamic_columns:
+  probability_columns:
+    naming: "probability/<canonical_class_name>"
+    dtype: float32
+    applicable_when: probabilistic_classification
+    validation: finite_in_closed_unit_interval_and_sum_to_one_within_tolerance
+  subgroup_columns:
+    naming: "subgroup/<prespecified_non_identifying_field>"
+    privacy: non_identifying_only
+
+validation:
+  - run_id_and_dataset_id_are_constant_within_one_table
+  - sample_key_is_stable_across_eligible_runs
+  - numeric_predictions_are_finite_or_have_an_explicit_missing_reason
+  - split_matches_the_registered_split
+  - no_direct_identifiers_are_present
+  - probability_columns_match_the_declared_class_order
+
+supported_reconstructions:
+  - false_positive_and_false_negative_analysis
+  - model_disagreement
+  - subgroup_performance
+  - calibration
+  - ensembles
+  - graph_structure_related_failures
+  - masking_related_failures

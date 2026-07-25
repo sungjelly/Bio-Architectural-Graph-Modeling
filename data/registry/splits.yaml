@@ -1,0 +1,41 @@
+schema_version: 1
+updated_at_utc: "2026-07-24"
+
+splits:
+  "127b17da70688537":
+    split_id: "127b17da70688537"
+    dataset_id: cosmx_normal_core_legacy_v1
+    method: deterministic_fov_aware_spatial_macroblocks
+    seed: 1729
+    fold_count: 1
+    designation: spatial_block_within_one_sample
+    experimental_unit: spatial_macroblock
+    patient_level: false
+    sample_level: false
+    stratification_fields: []
+    fractions:
+      train: 0.60
+      validation: 0.20
+      test: 0.20
+    observed_counts:
+      train: 12865
+      validation: 5049
+      test: 6331
+      total: 24245
+      spatial_macroblocks: 144
+    constraints:
+      fov_disjoint: true
+      macroblock_disjoint: true
+      cross_split_graph_edges: 0
+      graph_construction: independent_per_split
+      preprocessing_fit_scope: train_only
+      test_usage_during_preparation: fixed_mask_generation_only
+    fingerprint:
+      algorithm: legacy_canonical_split_id_v1
+      value: "127b17da70688537"
+    protected_path: artifacts/legacy_runs/lr_spatial_benchmark_batch/original/prepared_full_v1
+    verification_status: verified_from_prepared_full_v1_manifest
+    notes:
+      - No patient or cell lists are stored in this registry.
+      - Cells and model seeds are not independent biological replicates.
+      - The test split is sealed for new model-selection decisions.

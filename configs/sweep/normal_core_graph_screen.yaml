@@ -1,0 +1,15 @@
+name: graph_structure_screen
+factors:
+  model: [b1, g1]
+  seed: [0]
+  k: [8, 12, 16]
+  radius_um: [30, 50, 75]
+  symmetry: [union, mutual]
+fixed:
+  max_epochs: 60
+  patience: 12
+  hidden_dim: 256
+  curriculum: P+N+B
+  amp: true
+open_test: false
+save_predictions: false

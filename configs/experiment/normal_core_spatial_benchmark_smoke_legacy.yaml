@@ -1,0 +1,60 @@
+data:
+  qc_policy: all
+  chunksize: 4096
+  pixel_size_um: 0.120281
+  expected_biological_probes: 1000
+
+split:
+  seed: 1729
+  block_size_um: 300.0
+  val_fraction: 0.20
+  test_fraction: 0.20
+  fov_aware: true
+
+masking:
+  mask_seed: 314159
+  curriculum: P+N+B
+  warmup_epochs: 2
+  partial_gene_rate: 0.20
+  whole_node_rate: 0.10
+  block_node_rate: 0.10
+  validation_replicates: 1
+  test_replicates: 1
+
+graph:
+  k: 12
+  radius_um: 50.0
+  symmetry: union
+  min_distance_um: 0.0
+  rbf_bins: 8
+  edge_dropout: 0.10
+
+model:
+  name: g1
+  hidden_dim: 128
+  attention_heads: 4
+  graph_layers: 1
+  ffn_dim: 256
+  decoder_dim: 256
+  edge_hidden_dim: 32
+  edge_embedding_dim: 16
+  message_head_dim: 8
+  message_dim: 32
+  dropout: 0.10
+  attention_dropout: 0.10
+
+optimization:
+  learning_rate: 0.0003
+  joint_learning_rate: 0.0001
+  weight_decay: 0.0001
+  gradient_clip_norm: 1.0
+  max_epochs: 4
+  early_stopping_patience: 4
+  validation_every: 1
+  amp: false
+
+run:
+  model_seed: 0
+  deterministic: true
+  device: cuda
+  save_predictions: true

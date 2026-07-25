@@ -1,0 +1,20 @@
+trainer:
+  learning_rate: 0.0003
+  batch_size: 1
+  batch_unit: complete_split_graph
+  neighbor_sampling: false
+  weight_decay: 0.0001
+  gradient_clip_norm: 1.0
+  max_epochs: 200
+  early_stopping_patience: 25
+  min_delta: 0.0
+  validation_every: 1
+  precision: mixed
+  amp: true
+  amp_dtype: auto
+  deterministic: true
+  deterministic_warn_only: false
+  restore_best: true
+  monitored_metric: val/masked_huber
+  monitored_mode: min
+  checkpoint_policy: best_and_last

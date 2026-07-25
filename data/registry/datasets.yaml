@@ -1,0 +1,96 @@
+schema_version: 1
+updated_at_utc: "2026-07-24"
+
+datasets:
+  cosmx_gastric_snapshot_20260724:
+    dataset_id: cosmx_gastric_snapshot_20260724
+    display_name: Gastric CosMx local two-slide snapshot
+    source_version: 26040302SO_1+26040302SO_2
+    protected_source_path: data/raw/
+    raw_fingerprint:
+      algorithm: sha256_sorted_file_manifest_v1
+      value: 6dee0f3836f429c897498850bb2f9014fc7a5d6403c36034e6aebe6c635f9480
+      file_count: 10
+      total_bytes: 8171860448
+    preprocessing_version: null
+    processed_fingerprint: null
+    aggregate_patient_count: 14
+    aggregate_sample_count: 407999
+    aggregate_core_count: 28
+    graph_count: null
+    node_feature_schema:
+      expression:
+        storage_scale: nonnegative_integer_counts
+        total_targets: 1207
+        biological_targets: 1000
+        technical_controls: 207
+        technical_control_prefixes:
+          - Negative
+          - SystemControl
+      metadata:
+        total_fields: 100
+        includes:
+          - geometry
+          - morphology
+          - protein_imaging
+          - technical_qc
+          - vendor_derived_annotations
+        warning: Derived vendor labels are interpretation metadata unless a workflow explicitly justifies them.
+    edge_feature_schema: null
+    creation_date: null
+    profiled_at_utc: "2026-07-24"
+    status: local_immutable_source
+    notes:
+      - Raw CSVs use a nested data/raw/<filename>/<filename> layout.
+      - SO_2 FOV 246 is unmapped and requires explicit handling.
+      - Slide and disease-stage confounding must be audited.
+      - HGD and true Normal each have one documented core and are descriptive groups.
+    verification_status: verified_local_snapshot_fingerprint
+
+  cosmx_normal_core_legacy_v1:
+    dataset_id: cosmx_normal_core_legacy_v1
+    display_name: Protected legacy true-Normal-core CosMx benchmark subset
+    source_version: prepared_full_v1
+    parent_dataset_id: cosmx_gastric_snapshot_20260724
+    protected_source_path: data/raw/
+    protected_selection_reference: artifacts/legacy_runs/lr_spatial_benchmark_batch/original/prepared_full_v1/manifest.json
+    raw_fingerprint:
+      algorithm: sha256_sorted_role_size_hash_manifest_v1
+      value: 47f925ae8530d0e38df1569dece8fa7ed71f56a8ef2b22b3dc62ae1d63326986
+      input_file_count: 5
+    preprocessing_version: spatial_benchmark_preparation_v1
+    processed_fingerprint:
+      algorithm: sha256
+      value: 25a985a45f7a5ef173fdb02df73df88bb99178697a770d26a5b4fd8cf7fcfe5f
+      artifact_id: d353fc34efc8e65d
+    aggregate_patient_count: 1
+    aggregate_sample_count: 24245
+    aggregate_fov_count: 24
+    graph_count: 3
+    graph_count_definition: Independently constructed train, validation, and test split graphs.
+    node_feature_schema:
+      expression:
+        biological_targets: 1000
+        scale: train_fitted_gene_wise_standardized_log1p_counts
+        technical_controls_excluded: true
+      morphology_and_imaging:
+        field_count: 22
+        fit_scope: train_nodes_only
+        transform: median_imputation_log1p_standardization
+      direct_identifiers_present_as_model_inputs: false
+      coordinates_present_as_model_inputs: false
+    edge_feature_schema:
+      field_count: 17
+      family:
+        - distance
+        - normalized_displacement
+        - angular_basis
+        - distance_rbf
+      fit_scope: train_to_train_edges_only
+    creation_date: "2026-07-24T11:06:44.441642+00:00"
+    status: available_legacy_prepared_artifact
+    notes:
+      - Selection identifiers remain inside protected artifacts and are not emitted here.
+      - This single-core subset supports within-core spatial evaluation only.
+      - It does not support patient-level generalization or causal claims.
+    verification_status: verified_from_prepared_full_v1_manifest

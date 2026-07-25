@@ -1,0 +1,11 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260724_edge_feature_ablation
+display_name: Normal-core edge-feature ablation example
+status: planned_example
+outcome: pending
+definition: experiments/definitions/edge_feature_ablation.yaml
+variants:
+  - configs/experiment/edge_feature_ablation_g1.yaml
+  - configs/experiment/edge_feature_ablation_g2.yaml
+sweep: configs/sweep/edge_feature_ablation_example.yaml
+automatic_enqueue: false

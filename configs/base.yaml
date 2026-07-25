@@ -1,0 +1,28 @@
+version: 1
+
+# Defaults are resolved in order; mappings in this file are applied last.
+defaults:
+  - model: g1
+  - masking: p_n_b
+  - dataset: normal_core_cosmx
+  - features: cosmx_morphology_topology
+  - graph: k16_r75_mutual
+  - trainer: spatial_benchmark_locked
+  - evaluation: masked_expression_regression_v1
+  - launcher: local_one_gpu
+
+campaign:
+  campaign_id: cmp_20260724_edge_feature_ablation
+  display_name: Normal-core edge-feature ablation example
+
+classification:
+  schema_version: 1
+  lifecycle_stage: exploratory_screen
+  study_axis: edge_feature_ablation
+  retention_class: retain_exploratory_evidence
+  classification_confidence: high
+
+# Model seed and evaluation fold are execution dimensions, not variant fields.
+seed: 0
+fold: 0
+attempt: 1

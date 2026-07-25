@@ -1,0 +1,19 @@
+dataset:
+  dataset_id: cosmx_normal_core_legacy_v1
+  version: prepared_full_v1
+  split_id: "127b17da70688537"
+  dataset_fingerprint: "25a985a45f7a5ef173fdb02df73df88bb99178697a770d26a5b4fd8cf7fcfe5f"
+  split_fingerprint: "127b17da70688537"
+  preprocessing_version: spatial_benchmark_preparation_v1
+  registry_reference: data/registry/datasets.yaml#cosmx_normal_core_legacy_v1
+  protected_source_reference: data/registry/datasets.yaml
+  prepared_artifact_reference: artifacts/legacy_runs/lr_spatial_benchmark_batch/original/prepared_full_v1
+  task: masked_expression_regression
+  target_scale: train_fitted_gene_wise_standardized_log1p_counts
+  biological_target_count: 1000
+  technical_control_prefixes_excluded:
+    - Negative
+    - SystemControl
+  experimental_unit: spatial_macroblock
+  generalization_scope: within_one_legacy_normal_core
+  patient_generalization_supported: false

@@ -1,0 +1,66 @@
+schema_name: bagm_experiment_config
+schema_version: 1
+required_top_level:
+  - model
+  - masking
+  - dataset
+  - features
+  - graph
+  - trainer
+  - evaluation
+  - campaign
+  - seed
+  - fold
+
+ownership:
+  use_edge_features: features
+  edge_feature_definitions: features
+  embedding_dim: model
+  neighbor_k: graph
+  masking_type: masking
+  masking_rate: masking
+  seed: experiment_execution
+  fold: experiment_execution
+  dataset_version: dataset
+  split_id: dataset
+
+required_fields:
+  model:
+    - name
+    - family
+    - embedding_dim
+  masking:
+    - type
+    - rate
+  dataset:
+    - dataset_id
+    - version
+    - split_id
+  features:
+    - use_edge_features
+  graph:
+    - neighbor_k
+    - radius_um
+    - symmetry
+  trainer:
+    - learning_rate
+    - batch_size
+  evaluation:
+    - primary_metric
+    - primary_direction
+  campaign:
+    - campaign_id
+  classification:
+    - lifecycle_stage
+    - study_axis
+    - retention_class
+    - classification_confidence
+
+cross_field_checks:
+  - g1_requires_use_edge_features_false
+  - g2_requires_use_edge_features_true
+  - use_edge_features_true_requires_nonempty_edge_features
+  - masked_expression_regression_requires_expression_masking
+  - registered_dataset_and_split_must_resolve
+  - primary_metric_must_exist_in_metric_registry
+  - classification_is_organizational_and_excluded_from_scientific_id
