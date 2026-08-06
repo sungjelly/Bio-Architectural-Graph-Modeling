@@ -21,7 +21,9 @@ from typing import Any, Mapping, Optional
 import numpy as np
 import torch
 from torch import Tensor, nn
+from torch.nn import functional as F
 
+from .expression_tokens import evaluate_masked_token_predictions
 from .masking import (
     MaskBatch,
     MaskSpec,
@@ -34,6 +36,7 @@ from .metrics import evaluate_masked_predictions, masked_huber_loss
 from .models import (
     AdditiveEdgeMessageModel,
     BroadSpatialFieldControl,
+    EdgeParameterMatchedSelfControl,
     EdgeConditionedGATv2,
     MeanNeighborModel,
     ModelOutput,
@@ -333,6 +336,15 @@ class EvaluationResult:
 
 
 @dataclass(frozen=True)
+class TokenEvaluationResult:
+    """Categorical predictions and metrics for one immutable expression mask."""
+
+    predictions: Tensor
+    metrics: Mapping[str, Any]
+    mask: Tensor
+
+
+@dataclass(frozen=True)
 class _DeviceView:
     expression: Tensor
     node_covariates: Optional[Tensor]
@@ -389,6 +401,9 @@ def build_model(
         "b0matched": ParameterMatchedSelfControl,
         "matchedself": ParameterMatchedSelfControl,
         "parametermatchedself": ParameterMatchedSelfControl,
+        "b0g2matched": EdgeParameterMatchedSelfControl,
+        "g2matchedself": EdgeParameterMatchedSelfControl,
+        "edgeparametermatchedself": EdgeParameterMatchedSelfControl,
         "broadfield": BroadSpatialFieldControl,
         "broadspatialfield": BroadSpatialFieldControl,
         "spatialfield": BroadSpatialFieldControl,
@@ -408,7 +423,7 @@ def build_model(
     if key not in classes:
         raise ValueError(
             f"unknown model_id {model_id!r}; expected B0, B0-matched, "
-            "Broad-Field, B1, G1, G2, or G3"
+            "B0-G2-matched, Broad-Field, B1, G1, G2, or G3"
         )
     model_class = classes[key]
     set_deterministic_seed(seed, deterministic=deterministic)
@@ -417,7 +432,11 @@ def build_model(
         "node_covariate_dim": int(node_covariate_dim),
         **model_kwargs,
     }
-    if model_class in (EdgeConditionedGATv2, AdditiveEdgeMessageModel):
+    if model_class in (
+        EdgeParameterMatchedSelfControl,
+        EdgeConditionedGATv2,
+        AdditiveEdgeMessageModel,
+    ):
         if edge_attribute_dim is None or int(edge_attribute_dim) <= 0:
             raise ValueError(f"{model_id} requires edge_attribute_dim > 0")
         kwargs["edge_attribute_dim"] = int(edge_attribute_dim)
@@ -1372,6 +1391,100 @@ def evaluate_fixed_mask(
     )
 
 
+def evaluate_fixed_token_mask(
+    model: nn.Module,
+    view: GraphSplitView,
+    mask: Any,
+    *,
+    num_expression_tokens: int,
+    per_gene_modal_tokens: Any,
+    device: Optional[str] = None,
+    amp: bool = False,
+    amp_dtype: str = "auto",
+) -> TokenEvaluationResult:
+    """Evaluate masked categorical tokens without retaining dense logits."""
+
+    if (
+        isinstance(num_expression_tokens, bool)
+        or not isinstance(num_expression_tokens, int)
+        or num_expression_tokens < 2
+    ):
+        raise ValueError("num_expression_tokens must be an integer >= 2")
+    fixed_mask = _prepare_fixed_mask(view, mask)
+    resolved_device = _resolve_device(model, device)
+    model.to(resolved_device)
+    device_view = _to_device_view(
+        view,
+        device=resolved_device,
+        dtype=_model_dtype(model),
+    )
+    was_training = model.training
+    model.eval()
+    mask_device = fixed_mask.to(device=resolved_device)
+    with torch.no_grad(), _autocast_context(
+        enabled=amp,
+        device=resolved_device,
+        dtype_name=str(amp_dtype).lower(),
+    ):
+        output, target, target_mask = _forward_masked_targets(
+            model,
+            device_view,
+            mask_device,
+            edge_index=device_view.edge_index,
+            edge_attributes=device_view.edge_attributes,
+        )
+        expected_shape = (*target.shape, num_expression_tokens)
+        if tuple(output.prediction.shape) != expected_shape:
+            raise ValueError(
+                "token logits shape mismatch: expected "
+                f"{expected_shape}, got {tuple(output.prediction.shape)}"
+            )
+        rounded = target.round()
+        if not bool(torch.equal(target, rounded)):
+            raise ValueError("token targets must contain integral IDs")
+        token_target = rounded.to(dtype=torch.long)
+        if bool((token_target < 0).any()) or bool(
+            (token_target >= num_expression_tokens).any()
+        ):
+            raise ValueError("token target lies outside the output vocabulary")
+        selected_logits = output.prediction[target_mask]
+        selected_targets = token_target[target_mask]
+        cross_entropy = F.cross_entropy(
+            selected_logits.float(), selected_targets
+        )
+        target_predictions = output.prediction.argmax(dim=-1).to(
+            dtype=torch.int16
+        )
+    model.train(was_training)
+
+    target_nodes = mask_device.any(dim=1).nonzero(
+        as_tuple=False
+    ).flatten()
+    predictions = torch.zeros(
+        view.expression.shape, dtype=torch.int16, device="cpu"
+    )
+    predictions.index_copy_(
+        0,
+        target_nodes.detach().cpu(),
+        target_predictions.detach().cpu(),
+    )
+    metrics = evaluate_masked_token_predictions(
+        view.expression.detach().cpu().numpy().astype(
+            np.int64, copy=False
+        ),
+        predictions.numpy().astype(np.int64, copy=False),
+        fixed_mask.numpy(),
+        cross_entropy=float(cross_entropy.detach().cpu()),
+        per_gene_modal_tokens=per_gene_modal_tokens,
+        num_tokens=num_expression_tokens,
+    )
+    return TokenEvaluationResult(
+        predictions=predictions,
+        metrics=metrics,
+        mask=fixed_mask.clone(),
+    )
+
+
 train_model = fit_model
 evaluate_model = evaluate_fixed_mask
 
@@ -1380,12 +1493,14 @@ __all__ = [
     "EpochRecord",
     "EvaluationResult",
     "GraphSplitView",
+    "TokenEvaluationResult",
     "TrainingConfig",
     "TrainingResult",
     "TrainingStageRecord",
     "apply_edge_dropout",
     "build_model",
     "evaluate_fixed_mask",
+    "evaluate_fixed_token_mask",
     "evaluate_model",
     "fit_model",
     "fit_staged_g3",

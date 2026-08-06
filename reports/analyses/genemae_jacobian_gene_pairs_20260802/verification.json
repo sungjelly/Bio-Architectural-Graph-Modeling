@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "checks": {
+    "input_checksum_match": true,
+    "gene_count_39": true,
+    "matrix_shapes_39_by_39": true,
+    "all_matrix_values_finite": true,
+    "symmetric_transform_reproduced": true,
+    "top_ten_unique_pairs": true,
+    "all_top_pairs_have_evidence": true,
+    "upstream_negative_claim_retained": true,
+    "upstream_graph_null_retained": true
+  },
+  "output_sha256": {
+    "signed_directed_jacobian.csv": "7858029cd76acbd5624dfe804c13dc5e0759f40e0a85324c2eca7da219a8301c",
+    "symmetric_absolute_jacobian.csv": "f06897695e51a7f530a566060d7d67135cdae5b24dbff7ecdabcfbaa036e6d84",
+    "receiver_profile_spearman.csv": "0634be02c9ba7df28900a7898543f99f82b512a06de7e50f486ca8ab47cc0336",
+    "source_profile_spearman.csv": "ab01b25f9dfe73a7b5192b8fb14315d94203b6bf19e1a6c9ea1f727b1c1e83e4",
+    "top_mutual_sensitivity_pairs.csv": "6ebb373d9cab4a2ab6d78b8cbcfa800ed090f2bd4555e7fbb8b346298dd46562",
+    "top_receiver_profile_pairs.csv": "e7b0a49027e23229b260b51c2195f21ddad0a92bb7ead1d093360ebaf7e5951a",
+    "top_source_profile_pairs.csv": "69818e58fd5f1176d982f03b118134a4e79f11f9bacf4b532b64a03ed58f0696",
+    "biological_evidence.csv": "b4da7d88418bf124ad5122d625098bbce1362e5aa431ba44bc046a106333045f",
+    "sources.json": "c2de012b6cab21852abad622a098638916aef87ac8c7797d3c34a2ebd734f53a",
+    "report.md": "039ca62923d56868da536f3350ca2d2fc1acdd6d426a9872f56b5a919df2f09d",
+    "provenance.json": "fe6ed298741d748d4d871640c4a3722d99d4ce828485fad7f0a8b46d29d8ab56"
+  }
+}

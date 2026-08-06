@@ -1,0 +1,57 @@
+schema_version: 1
+campaign_id: cmp_20260802_adjacent_normal_grouped_adjacency_ablation
+recovery_kind: uniform_cpu_reexecution_after_host_cuda_failure
+status: frozen_before_recovery_outcomes
+scientific_contract_sha256: 08e4040ce8b0a3535c7bef1cbf896c68bc5e11693cb13bbdfb3b992467742eff
+materialization_checksum: 0cc606d73a4979808581a032138cc18ef629952ed1a4884903ecd229bdfc4303
+observed_failure:
+  first_failed_run_id: r_20260802T162033Z_002d9ede_s002_f01_a01_9e38bd17
+  first_failed_job_id: q_e51d0dc30ba40bfecd1f
+  failed_pci_function: "0000:0f:00.0"
+  failed_requested_gpu: 7
+  first_error: cuda_unspecified_launch_failure_during_fixed_evaluation
+  cascade_error: fresh_cuda_processes_could_not_initialize_any_device
+  completed_primary_attempt_1_runs: 7
+  failed_primary_attempt_1_runs: 43
+  gpu_processes_present_after_stop: 0
+  targeted_nvidia_smi_reset_succeeded: false
+  pci_sysfs_control_available: false
+  healthy_device_cuda_initialization_after_fault: false
+  host_restart_available_to_container: false
+recovery_design:
+  primary_scope: all_50_fold_seed_condition_slots
+  primary_attempt: 2
+  include_attempt_1_in_scientific_estimate: false
+  preserve_attempt_1_bundles_and_registry_rows: true
+  condition_pairing: same_worker_slot_within_fold_and_seed
+  requested_worker_slots: [0, 1, 2, 3, 4, 5, 6, 7]
+  execution_device: cpu
+  torch_intraop_threads_per_process: 4
+  torch_interop_threads_per_process: 1
+  concurrent_workers: 8
+  model_config_change: none
+  optimizer_config_change: none
+  masking_config_change: none
+  data_order_change: none
+  update_budget_change: none
+  checkpoint_rule_change: none
+  decision_rule_change: none
+  permitted_resolved_config_difference: attempt_1_to_attempt_2_only
+conditional_null:
+  execution_device: cpu
+  attempt: 1
+  run_count_if_triggered: 25
+  scientific_config_change: none
+  reason: keep_topology_comparison_on_the_same_execution_device_as_recovered_primary
+acceptance:
+  required_successful_primary_attempt_2_runs: 50
+  required_successful_runs_per_fold_seed_condition: 1
+  required_paired_initialization_masks_preprocessing_and_budget: true
+  unauthorized_retry_or_config_difference: fail
+  incomplete_attempt_2_grid: fail
+  mixed_attempt_primary_scientific_estimate: prohibited
+  attempt_1_failures_reported: required
+claim_effect:
+  changes_scientific_estimand: false
+  changes_prespecified_decision_thresholds: false
+  limitation: execution_changed_after_a_hardware_failure_but_before_primary_outcomes_were_examined

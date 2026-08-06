@@ -198,6 +198,40 @@ masked_mse = masked_mse_loss
 masked_mae = masked_mae_loss
 
 
+def masked_r2_score(
+    y_true: Any,
+    y_pred: Any,
+    mask: Any,
+) -> float:
+    """Return flat masked :math:`R^2` over finite target/prediction pairs.
+
+    The reference predictor is the arithmetic mean of the target values in the
+    same finite masked set.  The score is not clipped: values below zero
+    correctly indicate that the supplied predictions have greater squared
+    error than that constant reference.  The result is ``NaN`` when the
+    selected targets have zero variance, because variance explained is then
+    undefined.
+    """
+
+    target = _to_numpy(y_true, dtype=np.float64)
+    prediction = _to_numpy(y_pred, dtype=np.float64)
+    selected_mask = _to_numpy(mask, dtype=bool)
+    if target.shape != prediction.shape or selected_mask.shape != target.shape:
+        raise ValueError("y_true, y_pred, and mask must have the same shape")
+    valid = selected_mask & np.isfinite(target) & np.isfinite(prediction)
+    if not np.any(valid):
+        raise ValueError("mask selects no finite prediction/target pairs")
+    selected_target = target[valid]
+    selected_prediction = prediction[valid]
+    residual = selected_prediction - selected_target
+    centered_target = selected_target - selected_target.mean()
+    residual_sum_squares = float(np.dot(residual, residual))
+    total_sum_squares = float(np.dot(centered_target, centered_target))
+    if total_sum_squares == 0.0:
+        return float("nan")
+    return float(1.0 - residual_sum_squares / total_sum_squares)
+
+
 def ensemble_predictions(
     predictions: Any,
     *,
@@ -448,6 +482,8 @@ def _loss_summary(
             "huber": float("nan"),
             "mse": float("nan"),
             "mae": float("nan"),
+            "r2": float("nan"),
+            "percent_variance_explained": float("nan"),
         }
     difference = prediction[valid] - target[valid]
     absolute = np.abs(difference)
@@ -456,11 +492,24 @@ def _loss_summary(
         0.5 * difference**2,
         huber_delta * (absolute - 0.5 * huber_delta),
     )
+    centered_target = target[valid] - target[valid].mean()
+    total_sum_squares = float(np.dot(centered_target, centered_target))
+    r2 = (
+        float("nan")
+        if total_sum_squares == 0.0
+        else float(
+            1.0
+            - float(np.dot(difference, difference))
+            / total_sum_squares
+        )
+    )
     return {
         "n_masked": count,
         "huber": float(huber.mean()),
         "mse": float(np.mean(difference**2)),
         "mae": float(absolute.mean()),
+        "r2": r2,
+        "percent_variance_explained": 100.0 * r2,
     }
 
 

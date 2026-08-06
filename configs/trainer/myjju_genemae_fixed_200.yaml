@@ -1,0 +1,24 @@
+trainer:
+  optimizer: AdamW
+  learning_rate: 0.0015
+  batch_size: 1
+  batch_unit: one_spatial_tile
+  weight_decay: 0.0001
+  scheduler: cosine
+  gradient_clip_norm: 5.0
+  huber_delta: 1.0
+  max_epochs: 200
+  train_mask_rate: 0.5
+  fixed_epoch_budget: true
+  early_stopping: false
+  validation_every: null
+  precision: fp32
+  amp: false
+  deterministic_tile_order: true
+  every_tile_once_per_epoch: true
+  restore_best: false
+  monitored_metric: null
+  primary_checkpoint_role: last
+  checkpoint_policy: last_only
+  objective: masked_entry_huber_delta_1
+  diagnostic_resource_pilot: false

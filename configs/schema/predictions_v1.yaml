@@ -26,8 +26,14 @@ columns:
     required: true
   split:
     dtype: categorical_string
-    allowed: [train, validation, test, external]
+    allowed: [fit, train, validation, test, external]
     required: true
+    semantics:
+      fit: Held-in predictions for an explicitly transductive no-holdout protocol; never generalization evidence.
+      train: Predictions on the training role of a split that also defines held-out roles.
+      validation: Predictions on a registered validation role.
+      test: Predictions on a registered sealed-test role.
+      external: Predictions on an independently declared external dataset.
   fold:
     dtype: int32
     required: false
@@ -97,6 +103,8 @@ validation:
   - sample_key_is_stable_across_eligible_runs
   - numeric_predictions_are_finite_or_have_an_explicit_missing_reason
   - split_matches_the_registered_split
+  - fit_is_allowed_only_for_an_explicit_held_in_full_core_or_pooled_protocol
+  - fit_predictions_are_not_labeled_as_validation_test_or_external
   - no_direct_identifiers_are_present
   - probability_columns_match_the_declared_class_order
 

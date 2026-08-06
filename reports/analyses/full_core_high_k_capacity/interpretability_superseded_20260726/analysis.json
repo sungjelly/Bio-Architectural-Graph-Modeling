@@ -1,0 +1,473 @@
+{
+  "analysis_precision": "float32",
+  "artifact_kind": "full_core_g2_toy_interpretability",
+  "attention_routing": {
+    "attention_is_importance": false,
+    "expression_independent_hash_sample": {
+      "attention_entropy_nats": {
+        "mean": 6.547743147469859,
+        "median": 6.620027990556989,
+        "n": 128,
+        "p05": 6.04516361987239,
+        "p95": 6.74117832512926
+      },
+      "attention_weighted_distance_um": {
+        "mean": 147.81018460385832,
+        "median": 141.64439257403393,
+        "n": 128,
+        "p05": 123.27645108787843,
+        "p95": 198.44523736430202
+      },
+      "effective_neighbor_count": {
+        "mean": 713.2040870536018,
+        "median": 749.9661232003361,
+        "n": 128,
+        "p05": 422.6977259082345,
+        "p95": 846.5576703513135
+      },
+      "incoming_degree": {
+        "mean": 858.453125,
+        "median": 900.5,
+        "n": 128,
+        "p05": 508.7,
+        "p95": 996.0
+      },
+      "receiver_count": 128
+    },
+    "head_aggregation": "arithmetic mean across four heads",
+    "layer": "last",
+    "outcome_conditioned_high_score_sample": {
+      "attention_entropy_nats": {
+        "mean": 6.587186994907868,
+        "median": 6.633612352332092,
+        "n": 64,
+        "p05": 6.240237940555599,
+        "p95": 6.744366157837768
+      },
+      "attention_weighted_distance_um": {
+        "mean": 144.33602999533764,
+        "median": 139.6757816339425,
+        "n": 64,
+        "p05": 115.4234002589473,
+        "p95": 192.29130500436452
+      },
+      "effective_neighbor_count": {
+        "mean": 735.356099404655,
+        "median": 760.2234162218504,
+        "n": 64,
+        "p05": 513.0045272072183,
+        "p95": 849.2615335649645
+      },
+      "incoming_degree": {
+        "mean": 888.84375,
+        "median": 923.0,
+        "n": 64,
+        "p05": 629.7,
+        "p95": 1000.0
+      },
+      "receiver_count": 64
+    }
+  },
+  "campaign_id": "cmp_20260725_full_core_high_k_capacity",
+  "deletion_analysis": {
+    "adaptive_distance_bin_count": {
+      "mean": 10.0,
+      "median": 10.0,
+      "n": 512,
+      "p05": 10.0,
+      "p95": 10.0
+    },
+    "deleted_edges_per_receiver": {
+      "mean": 89.265625,
+      "median": 92.5,
+      "n": 64,
+      "p05": 63.3,
+      "p95": 100.0
+    },
+    "deleted_edges_total_each_condition": 5713,
+    "deletion_fraction": 0.1,
+    "incoming_degree_per_receiver": {
+      "mean": 888.84375,
+      "median": 923.0,
+      "n": 64,
+      "p05": 629.7,
+      "p95": 1000.0
+    },
+    "isolated_last_layer_faithfulness_test": false,
+    "matched_control": "equal count per receiver with exact adaptive rank-distance-bin counts and eight deterministic SHA-256 draws",
+    "matched_deleted_edge_distance_um": {
+      "mean": 153.69463358907245,
+      "median": 168.30961581583784,
+      "n": 45704,
+      "p05": 41.1342895105112,
+      "p95": 243.33773956032513
+    },
+    "matched_deleted_sender_organizer_score_pooled": {
+      "mean": -0.014549142511251676,
+      "median": -0.27026164531707764,
+      "n": 45704,
+      "p05": -0.27026164531707764,
+      "p95": 1.2023105521996815
+    },
+    "matched_null_replicates": 8,
+    "perturbation_scope": "global graph ablation: selected incoming edges are removed from the graph consumed by both GAT layers, followed by attention renormalization; this is not an isolated last-layer intervention",
+    "receiver_count": 64,
+    "receiver_program_effect": {
+      "baseline_program_huber": {
+        "mean": 1.450149511090724,
+        "median": 1.3554714077774672,
+        "n": 64,
+        "p05": 1.1783023415881937,
+        "p95": 1.9148040888556108
+      },
+      "matched_null_conditions": {
+        "program_huber_change_draw_means": {
+          "mean": 5.5903852361367194e-05,
+          "median": 4.7480225472851245e-05,
+          "n": 8,
+          "p05": 1.4381309022140112e-05,
+          "p95": 0.00011016651049468877
+        },
+        "program_huber_change_from_baseline_pooled": {
+          "mean": 5.5903852361367194e-05,
+          "median": 6.331747702148505e-05,
+          "n": 512,
+          "p05": -0.00046201468686972723,
+          "p95": 0.0005236934571072881
+        },
+        "program_prediction_mae_draw_means": {
+          "mean": 0.0007659580371637276,
+          "median": 0.0007594966473334352,
+          "n": 8,
+          "p05": 0.0007334956047998275,
+          "p95": 0.0008068816143349978
+        },
+        "program_prediction_mae_from_baseline_pooled": {
+          "mean": 0.0007659580371637276,
+          "median": 0.0006923249457031488,
+          "n": 512,
+          "p05": 0.00032462419476360084,
+          "p95": 0.001435332919936627
+        }
+      },
+      "matched_null_replicates": 8,
+      "paired_targeted_minus_null": {
+        "fraction_receiver_draw_huber_contrasts_positive": 0.259765625,
+        "fraction_receiver_draw_prediction_contrasts_positive": 1.0,
+        "minimum_prediction_mae_contrast_across_draws": 0.0033762658831619774,
+        "minimum_relative_huber_contrast_across_draws": -0.0005993700774763241,
+        "program_huber_change_draw_means": {
+          "mean": -0.0008025592674045499,
+          "median": -0.0007941356405160339,
+          "n": 8,
+          "p05": -0.0008568219255378715,
+          "p95": -0.0007610367240653228
+        },
+        "program_huber_change_pooled": {
+          "mean": -0.0008025592674045499,
+          "median": -0.0009777716799526104,
+          "n": 512,
+          "p05": -0.0028410593939610764,
+          "p95": 0.0016507807164447884
+        },
+        "program_prediction_mae_draw_means": {
+          "mean": 0.003421780395683527,
+          "median": 0.003428241785513819,
+          "n": 8,
+          "p05": 0.003380856818512257,
+          "p95": 0.003454242828047427
+        },
+        "program_prediction_mae_pooled": {
+          "mean": 0.003421780395683527,
+          "median": 0.003385708201676607,
+          "n": 512,
+          "p05": 0.0012955093756318093,
+          "p95": 0.005290509294718504
+        },
+        "relative_huber_contrast_draw_means": {
+          "mean": -0.0005534320849447504,
+          "median": -0.0005476232860422289,
+          "n": 8,
+          "p05": -0.0005908507495157629,
+          "p95": -0.0005247988005684408
+        }
+      },
+      "program_gene_count": 8,
+      "receiver_count": 64,
+      "targeted_condition": {
+        "program_huber_change_from_baseline": {
+          "mean": -0.0007466554150431827,
+          "median": -0.0009128226963216468,
+          "n": 64,
+          "p05": -0.0027598277827411977,
+          "p95": 0.0014368469902146682
+        },
+        "program_prediction_mae_from_baseline": {
+          "mean": 0.0041877384328472544,
+          "median": 0.0041257343254983425,
+          "n": 64,
+          "p05": 0.0019782135263085366,
+          "p95": 0.006126338895410299
+        }
+      }
+    },
+    "rounding": "ceil per receiver, minimum one",
+    "top_deleted_edge_distance_um": {
+      "mean": 153.32467632404064,
+      "median": 168.6423661511569,
+      "n": 5713,
+      "p05": 33.792611195960006,
+      "p95": 244.5461216420464
+    },
+    "top_deleted_sender_organizer_score": {
+      "mean": 0.16695558961168513,
+      "median": -0.27026164531707764,
+      "n": 5713,
+      "p05": -0.27026164531707764,
+      "p95": 1.5879176358381908
+    },
+    "top_edge_rule": "last-layer mean-head attention descending"
+  },
+  "gene_panels": {
+    "organizer": [
+      "CCL19",
+      "CCL21",
+      "CXCL13"
+    ],
+    "receiver_program": [
+      "CCR7",
+      "CXCR5",
+      "MS4A1",
+      "CD3D",
+      "CD3E",
+      "CD79A",
+      "CD74",
+      "HLA-DRA"
+    ]
+  },
+  "held_in_fit_metric": {
+    "is_test_accuracy": false,
+    "name": "fit/whole_node/masked_huber",
+    "value": 0.22887325559801985
+  },
+  "interpretation": {
+    "attention_caveat": "Attention is a normalized model-routing quantity, not biological importance. Repeated matched interventions provide model-sensitivity evidence only.",
+    "biological_caveat": "Intervention sensitivity is model-implied within one outcome-selected, transductively fitted core; it is not causal, independently replicated, or generalization evidence.",
+    "decision_rule": "every one of eight deterministic matched-null draws must show at least 2.0% relative receiver-program Huber contrast and at least 0.005 standardized-expression prediction-MAE contrast for both global edge deletion and organizer-channel sender ablation; the minimum organizer score enrichment must also be at least 0.10",
+    "descriptive_deletion_support": false,
+    "descriptive_organizer_enrichment_support": true,
+    "descriptive_sender_program_support": false,
+    "edge_ablation_caveat": "Deleting baseline top-attention edges alters the graph for both GAT layers and renormalizes attention; it is a global edge ablation, not isolated last-layer faithfulness.",
+    "evidence_label": "no joint deletion-, organizer-enrichment-, and sender-program-supported TLS-related dependency detected",
+    "joint_tls_dependency_support": false,
+    "maximum_allowed_label": "model-implied TLS-related predictive dependency in one transductively fitted core",
+    "organizer_score_caveat": "Organizer enrichment uses observed expression and the attention ranking can itself depend on those inputs; the enrichment is not independent. Mean-ablation is an in-model input intervention, not a biological perturbation."
+  },
+  "privacy": {
+    "aggregate_only": true,
+    "local_node_positions_emitted": false,
+    "protected_identifiers_emitted": false,
+    "raw_edge_positions_emitted": false
+  },
+  "protocol": "held_in_full_core_fixed_budget",
+  "run_id": "r_20260725T083929Z_8364b333_s000_f00_a01_f5c47601",
+  "schema_version": 1,
+  "scope": {
+    "causal_interpretation_supported": false,
+    "experimental_units": 1,
+    "fit_scope": "all nodes transductive",
+    "generalization_estimate": false,
+    "outcome_conditioned_exploration": true
+  },
+  "selection": {
+    "expression_independent_hash_sample_count": 128,
+    "hash_sample_rule": "SHA-256 rank over canonical whole-node-masked receiver positions; no expression values used",
+    "masked_receiver_population_count": 2425,
+    "outcome_conditioned_high_lymphoid_score_count": 64,
+    "outcome_score_definition": "mean full-core-standardized observed expression across the eight receiver-program genes",
+    "outcome_score_selected_summary": {
+      "mean": 1.44768970052246,
+      "median": 1.3550227312371135,
+      "n": 64,
+      "p05": 1.1609605642035603,
+      "p95": 1.9417002896778284
+    },
+    "selection_overlap_count": 4
+  },
+  "sender_program_perturbation": {
+    "absolute_distance_mismatch_um_pooled": {
+      "mean": 2.6327319609398634,
+      "median": 1.5611085670544185,
+      "n": 2048,
+      "p05": 0.1344789252934305,
+      "p95": 9.025961825750064
+    },
+    "adaptive_distance_bin_count": {
+      "mean": 10.0,
+      "median": 10.0,
+      "n": 8,
+      "p05": 10.0,
+      "p95": 10.0
+    },
+    "bound": "exactly 256 distinct unmasked sender nodes and three organizer channels per condition",
+    "intervention": "replace the three visible organizer-gene inputs with zero, their full-core fitted standardized mean; gene-mask channels remain unchanged",
+    "matched_null_replicates": 8,
+    "matched_sender_control": "equal-count disjoint senders drawn from each edge-deletion null, with exact adaptive representative-distance-bin counts",
+    "matched_sender_representative_distance_um_pooled": {
+      "mean": 174.58326144995124,
+      "median": 178.69638410961267,
+      "n": 2048,
+      "p05": 56.41127115550031,
+      "p95": 264.80404841352606
+    },
+    "organizer_gene_count": 3,
+    "organizer_score_enrichment": {
+      "distance_matched_null_sender_score_pooled": {
+        "mean": -0.019195793511850454,
+        "median": -0.27026164531707764,
+        "n": 2048,
+        "p05": -0.27026164531707764,
+        "p95": 1.2023105521996815
+      },
+      "minimum_top_minus_null_score_across_draws": 0.14045121043454856,
+      "score_definition": "mean full-core-standardized observed expression across CCL19, CCL21, and CXCL13",
+      "top_minus_null_score_draw_means": {
+        "mean": 0.1991559834423242,
+        "median": 0.1896202601492405,
+        "n": 8,
+        "p05": 0.15211493184712405,
+        "p95": 0.2550428287708201
+      },
+      "top_routed_sender_score": {
+        "mean": 0.17996018993047375,
+        "median": -0.27026164531707764,
+        "n": 256,
+        "p05": -0.27026164531707764,
+        "p95": 1.8248649189869564
+      }
+    },
+    "performed": true,
+    "receiver_count": 64,
+    "receiver_program_effect": {
+      "baseline_program_huber": {
+        "mean": 1.450149511090724,
+        "median": 1.3554714077774672,
+        "n": 64,
+        "p05": 1.1783023415881937,
+        "p95": 1.9148040888556108
+      },
+      "matched_null_conditions": {
+        "program_huber_change_draw_means": {
+          "mean": 1.1794623090699563e-09,
+          "median": 2.711139334785756e-07,
+          "n": 8,
+          "p05": -8.910438164940956e-07,
+          "p95": 4.7435348723007247e-07
+        },
+        "program_huber_change_from_baseline_pooled": {
+          "mean": 1.1794623090699563e-09,
+          "median": 1.8752773778274445e-09,
+          "n": 512,
+          "p05": -4.219125736926177e-06,
+          "p95": 4.748633130080558e-06
+        },
+        "program_prediction_mae_draw_means": {
+          "mean": 7.856250704207923e-06,
+          "median": 7.651845407963265e-06,
+          "n": 8,
+          "p05": 6.672341532976133e-06,
+          "p95": 9.875485829979878e-06
+        },
+        "program_prediction_mae_from_baseline_pooled": {
+          "mean": 7.856250704207923e-06,
+          "median": 5.701789632439613e-06,
+          "n": 512,
+          "p05": 1.5577301383018493e-06,
+          "p95": 2.1444354206323618e-05
+        }
+      },
+      "matched_null_replicates": 8,
+      "paired_targeted_minus_null": {
+        "fraction_receiver_draw_huber_contrasts_positive": 0.5390625,
+        "fraction_receiver_draw_prediction_contrasts_positive": 0.775390625,
+        "minimum_prediction_mae_contrast_across_draws": 6.982238119235262e-06,
+        "minimum_relative_huber_contrast_across_draws": -6.47766050919101e-07,
+        "program_huber_change_draw_means": {
+          "mean": -4.271450009113442e-07,
+          "median": -6.970794720808499e-07,
+          "n": 8,
+          "p05": -9.003190258323468e-07,
+          "p95": 4.650782778918209e-07
+        },
+        "program_huber_change_pooled": {
+          "mean": -4.271450009113442e-07,
+          "median": 3.4864573239534735e-07,
+          "n": 512,
+          "p05": -1.4291891170681303e-05,
+          "p95": 9.717579379975305e-06
+        },
+        "program_prediction_mae_draw_means": {
+          "mean": 1.0020473382610362e-05,
+          "median": 1.022487867885502e-05,
+          "n": 8,
+          "p05": 8.001238256838406e-06,
+          "p95": 1.1204382553842152e-05
+        },
+        "program_prediction_mae_pooled": {
+          "mean": 1.0020473382610362e-05,
+          "median": 7.885508239269257e-06,
+          "n": 512,
+          "p05": -1.1448562145233154e-05,
+          "p95": 4.545124247670174e-05
+        },
+        "relative_huber_contrast_draw_means": {
+          "mean": -2.945523876293754e-07,
+          "median": -4.806948985257005e-07,
+          "n": 8,
+          "p05": -6.208456569110418e-07,
+          "p95": 3.2071057110657106e-07
+        }
+      },
+      "program_gene_count": 8,
+      "receiver_count": 64,
+      "targeted_condition": {
+        "program_huber_change_from_baseline": {
+          "mean": -4.2596553860227426e-07,
+          "median": -2.924978188545424e-07,
+          "n": 64,
+          "p05": -1.1052916086762287e-05,
+          "p95": 7.346788007922544e-06
+        },
+        "program_prediction_mae_from_baseline": {
+          "mean": 1.7876724086818285e-05,
+          "median": 1.5154131688177586e-05,
+          "n": 64,
+          "p05": 3.573880530893803e-06,
+          "p95": 4.7872815048322065e-05
+        }
+      }
+    },
+    "source_count_each_condition": 256,
+    "top_sender_representative_distance_um": {
+      "mean": 173.9424992168323,
+      "median": 178.71661759654285,
+      "n": 256,
+      "p05": 51.66587491856368,
+      "p95": 265.39494191182007
+    },
+    "top_sender_selection": "highest maximum baseline last-layer mean-head attention among senders on top-routed edges; organizer expression is not separately thresholded or used to rank senders"
+  },
+  "status": "complete",
+  "upstream_verification": {
+    "checkpoint_state_sha256": "e14a439bb2333da88c96c7c2ee13dde8ca24e3f89980c08f5b57e0391b11704d",
+    "final_checkpoint_role": "last",
+    "final_epoch": 199,
+    "fixed_epoch_budget": 200,
+    "fixed_mask_bundle_sha256": "d2617dc3619645532ee9f8ca48a3f488209394b1a65129db670b0255c2834436",
+    "materialized_graph_sha256": "2469064e2fe14b48f642fca09a546d9e420d9fd851b9668996da62ee8246d060",
+    "materialized_preprocessing_sha256": "a112fbb2bdf929197759c82913fc379c4df797f75676457bcd10419fe7a969d5",
+    "run_bundle_checksums_verified": true,
+    "validation_or_test_used": false,
+    "whole_node_mask_replicate": 0
+  }
+}

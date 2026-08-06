@@ -1,0 +1,20 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260802_myjju_genemae_full_panel_k1000_jacobian
+display_name: MyJJu GeneMAE full-panel k=1000 Jacobian replay
+status: pilot
+outcome: pending
+exploratory: true
+contract_status: frozen_before_full_panel_k1000_values
+definition: experiments/campaigns/cmp_20260802_myjju_genemae_full_panel_k1000_jacobian/README.md
+frozen_contract: experiments/campaigns/cmp_20260802_myjju_genemae_full_panel_k1000_jacobian/frozen_task_contract.yaml
+frozen_contract_sha256: cb335f12532e2f37a021d28687411b94245d70f223169b82e89a9971abf67fde
+implementation_protocol: experiments/campaigns/cmp_20260802_myjju_genemae_full_panel_k1000_jacobian/implementation_protocol.yaml
+implementation_protocol_sha256: ef86d6c5bd850faf9677b11285f2c0d75dc2adddbbf5ba80cf81921165c5388c
+upstream_campaign: cmp_20260730_myjju_genemae_10core_comparison
+upstream_gradient_audit: cmp_20260731_myjju_genemae_gradient_audit_cpu_replay
+core_aliases: [ANC-01, ANC-02, ANC-03, ANC-04, ANC-05, ANC-06, ANC-07, ANC-08, ANC-09, ANC-10]
+checkpoint_seeds: [0, 1, 2, 3, 4, 5, 6]
+genes: 1000
+graph_k: 1000
+checkpoint_training_graph_k: 15
+automatic_enqueue: false

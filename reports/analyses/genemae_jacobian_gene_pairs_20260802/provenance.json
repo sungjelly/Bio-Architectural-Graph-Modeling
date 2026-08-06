@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "campaign_id": "cmp_20260802_genemae_jacobian_pair_annotation",
+  "generated_at": "2026-08-02T03:51:04.697983+00:00",
+  "upstream_run_id": "r_20260731T083020Z_8f363415_s000_f00_a01_5375b35a",
+  "input": {
+    "path": "artifacts/runs/2026/07/r_20260731T083020Z_8f363415_s000_f00_a01_5375b35a/interpretation/report.json",
+    "sha256": "6a5bdbcc17c397a84696062a249cd56f83b17be3a6cb3b80e8772606c1b9cf33",
+    "gene_count": 39,
+    "shape": [
+      39,
+      39
+    ],
+    "signed_matrix_role": "target_rows_source_columns",
+    "published_transform": "0.5 * (abs(J) + abs(J.T))"
+  },
+  "contract": {
+    "path": "experiments/campaigns/cmp_20260802_genemae_jacobian_pair_annotation/frozen_task_contract.yaml",
+    "sha256": "195892169f21b0b096f2ae903ecc1b68d7065d3b452c123eca249a342e5b609a",
+    "exploratory": true
+  },
+  "biological_evidence_input": {
+    "path": "experiments/campaigns/cmp_20260802_genemae_jacobian_pair_annotation/biological_evidence.yaml",
+    "sha256": "45293fe2487bf90162631dfb758caff924880fe240c5ed696fdbda898aac1021"
+  },
+  "code": {
+    "scripts/analysis/analyze_genemae_jacobian_pairs.py": "f194a1de77235e999f55f4b1fcad004deea5e3e880c20504ddbde5b5bdeaf225",
+    "src/spatial_benchmark/jacobian_pair_analysis.py": "ec7c72e45a88613e7061aa3c2231a483f7c1208463e849964fc4e0740521b760"
+  },
+  "ranking": {
+    "primary": "0.5*(abs(J[i,j])+abs(J[j,i]))",
+    "top_n": 10,
+    "diagonal_excluded": true,
+    "profile_correlations_exclude_pair_coordinates": true
+  },
+  "upstream_adverse_evidence": {
+    "claim_verdict": "biological_mechanism_not_validated",
+    "graph_gradient_null_passing_cores": 0,
+    "graph_gradient_null_total_cores": 10,
+    "eligible_targets": [
+      "KRT8"
+    ]
+  }
+}

@@ -1,0 +1,219 @@
+contract_schema_version: 1
+campaign_id: cmp_20260730_myjju_genemae_10core_comparison
+contract_status: frozen_before_implementation
+exploratory: true
+exploratory_reasons:
+  - external_metrics_and_source_report_already_inspected
+  - current_bagm_results_already_inspected
+  - ten_core_count_distribution_already_inspected
+
+objective:
+  primary: reproduce_retrain_and_compare_latest_task_compatible_myjju_genemae
+  deliverables:
+    - checksum_bound_external_source_audit
+    - minimally_repaired_source_fidelity_model
+    - deterministic_ten_core_k15_graphs
+    - registered_two_epoch_resource_pilot
+    - seven_registered_200_epoch_production_runs
+    - common_twenty_percent_partial_gene_ensemble_comparison
+    - native_fifty_percent_evaluation
+    - node_label_permuted_graph_null
+    - markdown_html_machine_readable_reports
+
+source:
+  repository_role: local_external_architecture_source
+  git_commit: f9ef61071c7e9b2751bbd59d154c13de534e7f2f
+  git_branch: main
+  checkpoint_available: false
+  selected_architecture: dual_path_genemae_sb50
+  selection_rule: latest_report_selected_task_compatible_masked_expression_architecture
+  excluded_model: supervised_lesion_classifier
+  exclusion_reason: adjacent_normal_only_cohort_has_one_class_and_auc_is_undefined
+  source_gene_mae_sha256: e39c3b2bbc33e4b49a9a01b1919c67e5f65919737e5f855d9970ab07b2146d5a
+  source_graphmae_sha256: 233e2ee1d251bb84753929be6c17b37d78b23420e943b54bb939ba5062cf8eb0
+  source_experiment_sha256: 4133249c1145daeed8d26f7fadeb73bbf434c15c7ad9650d338cc9f91f9f7088
+  required_repair: assign_self_hidden_constructor_attribute
+  repair_semantics: self.self_hidden_equals_integer_self_hidden_argument
+  historical_weights_claim: prohibited
+
+cohort:
+  aliases: [ANC-01, ANC-02, ANC-03, ANC-04, ANC-05, ANC-06, ANC-07, ANC-08, ANC-09, ANC-10]
+  tissue_context: pathology_confirmed_adjacent_normal
+  tissue_context_is_true_normal: false
+  total_fit_cells: 117386
+  genes: 1000
+  biological_unit: tissue_core
+  core_count: 10
+  fit_role: all_cells_transductive
+  generalization_estimate: false
+  evaluation_weighting: equal_core
+  model_seeds: [0, 1, 2, 3, 4, 5, 6]
+  seeds_are_biological_replicates: false
+
+primary_estimand:
+  name: held_in_partial_gene_reconstruction
+  mask_rate: 0.2
+  mask_replicates_per_core: 3
+  target_scale: full_cell_log1p_cp10k
+  aggregation: replicate_then_equal_core
+  maximum_claim: descriptive_held_in_partial_gene_architecture_comparison
+
+secondary_estimand:
+  name: genemae_native_partial_gene_reconstruction
+  mask_rate: 0.5
+  mask_replicates_per_core: 3
+  comparison_to_bagm: prohibited
+
+preprocessing:
+  expression_input: raw_biological_probe_counts
+  technical_control_prefixes_excluded: [Negative, SystemControl]
+  transform: full_cell_log1p_cp10k_before_masking
+  target_sum: 10000.0
+  hidden_entries_contribute_to_library_denominator: true
+  strict_target_hidden_claim: prohibited
+  ordered_gene_equality_required: true
+  prohibited_inputs:
+    - identifiers
+    - core_alias
+    - slide_or_batch_label
+    - disease_label
+    - vendor_annotations
+    - morphology_or_imaging
+    - rna_derived_qc
+    - absolute_coordinates_as_node_covariates
+
+model:
+  name: myjju-genemae
+  expected_trainable_parameters: 6888016
+  graph_layers: 4
+  graph_hidden_dim: 256
+  attention_heads: 6
+  attention_concat: false
+  embedding_dim: 192
+  self_hidden_dim: 512
+  self_hidden_layers: 2
+  dropout: 0.2
+  drop_edge: 0.2
+  decoder: mlp
+  huber_delta: 1.0
+  sce_weight: 0.0
+  mask_token: learned_per_gene
+
+graph:
+  kind: symmetric_spatial_knn
+  k: 15
+  symmetry: union
+  maximum_tile_nodes: 7000
+  tiling: recursive_median_longest_axis
+  edge_feature: gaussian_distance_kernel
+  edge_scale: within_tile_median_edge_length
+  cross_core_edges: prohibited
+  cross_tile_edges: prohibited
+  interpretation: local_spatial_context_not_direct_communication
+  "null": deterministic_node_label_permutation_preserving_topology_and_degree
+
+training:
+  optimizer: AdamW
+  learning_rate: 0.0015
+  weight_decay: 0.0001
+  scheduler: cosine
+  gradient_clip_norm: 5.0
+  global_epochs: 200
+  train_mask_rate: 0.5
+  precision: fp32
+  early_stopping: false
+  validation_selection: false
+  checkpoint_policy: last_only
+  primary_checkpoint_role: last
+  every_tile_once_per_epoch: true
+  deterministic_seed_specific_order: true
+
+comparison:
+  current_campaign: cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble
+  current_gat_members: 7
+  current_self_members: 7
+  select_best_bagm_seed: false
+  common_mask_rate: 0.2
+  common_mask_replicates: 3
+  common_scale: full_cell_log1p_cp10k
+  bagm_decoded_count_normalization_uses_true_library_size: true
+  common_scale_is_oracle_descriptive: true
+  primary_metric: masked_huber
+  primary_direction: minimize
+  secondary_metrics:
+    - masked_mse
+    - masked_mae
+    - pooled_pearson
+    - masked_r2
+    - gene_pearson_mean
+    - gene_pearson_median
+    - cell_pearson_mean
+    - runtime
+    - peak_vram
+    - peak_host_memory
+    - convergence
+    - parameter_count
+    - failures
+
+controls:
+  - all_zero
+  - per_core_all_fit_per_gene_mean
+  - current_bagm_matched_self_ensemble
+  - current_bagm_gat_ensemble
+  - genemae_node_label_permuted_graph
+  - source_report_historical_context_only
+
+gates:
+  primary_comparison:
+    mean_huber_relative_improvement_minimum: 0.02
+    minimum_genemae_favoring_cores: 8
+    minimum_genemae_favoring_seed_pairs: 5
+    masked_mae_nonworse: true
+    mean_gene_pearson_nonworse: true
+  baseline:
+    mean_huber_relative_improvement_minimum: 0.02
+    minimum_genemae_favoring_cores: 8
+  graph_use:
+    mean_huber_relative_improvement_minimum: 0.02
+    minimum_unpermuted_favoring_cores: 8
+
+pilot:
+  seed: 0
+  global_epochs: 2
+  expected_parameter_count: 6888016
+  every_tile_once_each_epoch: true
+  finite_losses_gradients_parameters_metrics: true
+  peak_allocated_vram_gib_maximum: 20.5
+  peak_host_memory_gib_maximum: 40.0
+  projected_200_epoch_runtime_hours_maximum: 6.0
+  projected_final_free_disk_gib_minimum: 27.5
+
+execution:
+  initial_safe_gpu_ids: [0, 1, 2, 3, 5, 6, 7]
+  excluded_gpu_ids: [4]
+  queue_managed_runs_required: true
+  reload_workers_after_command_mapping_change: true
+  maximum_attempts: 2
+
+stop_conditions:
+  - external_source_checksum_mismatch
+  - ordered_gene_schema_mismatch
+  - core_or_mask_checksum_mismatch
+  - cross_core_edge_detected
+  - parameter_count_mismatch
+  - missing_or_duplicate_seed
+  - nonfinite_loss_gradient_parameter_or_metric
+  - failed_resource_pilot
+  - unsafe_gpu_collision
+  - projected_disk_below_safety_gate
+  - artifact_or_registry_verification_failure
+
+prohibited_claims:
+  - evaluation_of_missing_historical_weights
+  - best_checkpoint_transfer
+  - patient_or_core_held_out_generalization
+  - true_normal_performance
+  - whole_node_performance_from_genemae
+  - direct_cellular_interaction
+  - biological_mechanism
+  - causality

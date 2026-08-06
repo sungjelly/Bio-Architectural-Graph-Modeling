@@ -1,0 +1,82 @@
+{
+  "accessed_utc": "2026-07-26",
+  "policy": "External sources were selected before any entrywise model ranking because no such ranking exists. They define validation standards and annotate the pre-existing TLS positive-control family; they are not claimed as validation of the current models.",
+  "sources": [
+    {
+      "id": "adebayo2018",
+      "type": "primary_methods_paper",
+      "title": "Sanity Checks for Saliency Maps",
+      "authors": "Adebayo J, Gilmer J, Muelly M, Goodfellow I, Hardt M, Kim B",
+      "year": 2018,
+      "venue": "Advances in Neural Information Processing Systems 31",
+      "url": "https://proceedings.neurips.cc/paper/2018/hash/294a8ed24b1ad22ec2e7efea049b8737-Abstract.html",
+      "supports": "Model- and data-randomization checks are necessary before treating a saliency or gradient readout as learned-model evidence."
+    },
+    {
+      "id": "turei2021",
+      "type": "primary_resource_paper",
+      "title": "Integrated intra- and intercellular signaling knowledge for multicellular omics analysis",
+      "authors": "Türei D et al.",
+      "year": 2021,
+      "venue": "Molecular Systems Biology 17:e9923",
+      "doi": "10.15252/msb.20209923",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7983032/",
+      "supports": "OmniPath integrates literature-curated intra- and intercellular signaling knowledge and preserves direction and sign where available; it is suitable as an annotation/reference source, not experimental proof in this core."
+    },
+    {
+      "id": "efremova2020",
+      "type": "primary_resource_and_methods_paper",
+      "title": "CellPhoneDB: inferring cell-cell communication from combined expression of multi-subunit ligand-receptor complexes",
+      "authors": "Efremova M, Vento-Tormo M, Teichmann SA, Vento-Tormo R et al.",
+      "year": 2020,
+      "venue": "Nature Protocols 15:1484-1506",
+      "doi": "10.1038/s41596-020-0292-x",
+      "url": "https://www.nature.com/articles/s41596-020-0292-x",
+      "supports": "Curated ligand-receptor complexes can annotate candidate communication families, including multimeric complexes; expression-based inference remains predicted communication rather than direct mechanistic verification."
+    },
+    {
+      "id": "luther2002",
+      "type": "primary_experimental_paper",
+      "title": "Differing activities of homeostatic chemokines CCL19, CCL21, and CXCL12 in lymphocyte and dendritic cell recruitment and lymphoid neogenesis",
+      "authors": "Luther SA et al.",
+      "year": 2002,
+      "venue": "Journal of Immunology 169:424-433",
+      "doi": "10.4049/jimmunol.169.1.424",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/12077273/",
+      "supports": "Ectopic chemokine-expression experiments established recruitment and lymphoid-neogenesis activity for the CCL19/CCL21 family, supporting its use as a biological positive-control family."
+    },
+    {
+      "id": "ohl2003",
+      "type": "primary_genetic_paper",
+      "title": "Cooperating mechanisms of CXCR5 and CCR7 in development and organization of secondary lymphoid organs",
+      "authors": "Ohl L et al.",
+      "year": 2003,
+      "venue": "Journal of Experimental Medicine 197:1199-1204",
+      "doi": "10.1084/jem.20030169",
+      "url": "https://rupress.org/jem/article/197/9/1199/39776/Cooperating-Mechanisms-of-CXCR5-and-CCR7-in",
+      "supports": "Double-deficiency experiments support cooperative roles for the CXCL13-CXCR5 and CCL19/CCL21-CCR7 axes in lymphoid organ development and organization."
+    },
+    {
+      "id": "wu2025",
+      "type": "primary_gastric_cancer_multimodal_paper",
+      "title": "Artificial Intelligence and Multimodality Data Integration Decipher Tertiary Lymphoid Structure Maturity in Gastric Cancer",
+      "authors": "Wu W et al.",
+      "year": 2025,
+      "venue": "Cancer Research 85:5128-5140",
+      "doi": "10.1158/0008-5472.CAN-25-1793",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41150905/",
+      "supports": "Single-cell data from 17 gastric-cancer patients combined with multiplex IHC, flow cytometry, and functional coculture assays supported a CXCL13-CXCR5 immune circuit in mature gastric TLSs."
+    },
+    {
+      "id": "he2022",
+      "type": "primary_platform_paper",
+      "title": "High-plex imaging of RNA and proteins at subcellular resolution in fixed tissue by spatial molecular imaging",
+      "authors": "He S et al.",
+      "year": 2022,
+      "venue": "Nature Biotechnology 40:1794-1806",
+      "doi": "10.1038/s41587-022-01483-z",
+      "url": "https://www.nature.com/articles/s41587-022-01483-z",
+      "supports": "Establishes the CosMx spatial molecular imaging measurement platform; it does not validate model-implied interactions in this dataset."
+    }
+  ]
+}

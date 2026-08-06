@@ -1,0 +1,41 @@
+[
+  {
+    "bootstrap_used": false,
+    "contrast": "genemae_vs_bagm_gat",
+    "effect": "relative_masked_huber_improvement",
+    "favor_definition": "candidate_masked_huber_strictly_lower",
+    "favoring_core_count": 10,
+    "inference": "descriptive_only_no_population_interval_because_all_cores_are_held_in_and_coupled_by_shared_fitted_weights",
+    "maximum": 0.762718194311674,
+    "median": 0.7329857667663653,
+    "minimum": 0.6835423795708142,
+    "n_cores": 10,
+    "population_confidence_interval": null
+  },
+  {
+    "bootstrap_used": false,
+    "contrast": "genemae_vs_target_derived_per_core_gene_mean",
+    "effect": "relative_masked_huber_improvement",
+    "favor_definition": "candidate_masked_huber_strictly_lower",
+    "favoring_core_count": 10,
+    "inference": "descriptive_only_no_population_interval_because_all_cores_are_held_in_and_coupled_by_shared_fitted_weights",
+    "maximum": 0.11863624438878871,
+    "median": 0.10811802784226562,
+    "minimum": 0.09263849436776309,
+    "n_cores": 10,
+    "population_confidence_interval": null
+  },
+  {
+    "bootstrap_used": false,
+    "contrast": "genemae_observed_vs_node_label_permuted",
+    "effect": "relative_masked_huber_improvement",
+    "favor_definition": "candidate_masked_huber_strictly_lower",
+    "favoring_core_count": 10,
+    "inference": "descriptive_only_no_population_interval_because_all_cores_are_held_in_and_coupled_by_shared_fitted_weights",
+    "maximum": 0.019268222394503126,
+    "median": 0.008932449641343574,
+    "minimum": 0.005793724214086878,
+    "n_cores": 10,
+    "population_confidence_interval": null
+  }
+]

@@ -1,0 +1,106 @@
+schema_version: 1
+campaign_id: cmp_20260729_signed_program_stage0_pilot
+status:
+  phase: pilot
+  outcome: pending
+  exploratory: true
+authorization:
+  registry_mutation: false
+  queue_mutation: false
+  production_launch: false
+  real_expression_training: false
+  synthetic_diagnostic_only: true
+source:
+  campaign_id: cmp_20260729_multiscale_hurdle_count_pilot
+  configuration: experiments/campaigns/cmp_20260729_multiscale_hurdle_count_pilot/stage0_synthetic_recovery_config.yaml
+  configuration_sha256: 61a2fcf80f9f7e0ae4bae58448682fe6c286c12689f1fda526bbd9268eba7e00
+  frozen_task_contract_sha256: 54496bc73c8d6f2b3c2ec9885fba86b2021944462a106dbd10a23cfd88e25fb7
+  active_contract_amendment_sha256: 6864fff7d35ce3af2312b8985a5fb7356b36bdd568bdcba4514ab0eaa3867cd2
+  required_contract_supplement_sha256: 6e89d83ccc909be16b7282d2dfb5cf826c0714ea6ce3923b33293cb96c4de09f
+fixture:
+  biological_unit_alias: ANC-05
+  selected_node_count: 160
+  expected_fixture_sha256: f53076d07e81842b4e73a4bb6ec66b795d2899d207a620c35a136377b2aa1cd7
+  expression_kind: generated_synthetic_counts
+  experimental_unit: one_deterministic_fixture
+  generalization_scope: none
+estimand:
+  name: recovery_of_positive_direct_one_hop_sender_program_dependency
+  maximum_claim: synthetic_architecture_recovery_only
+  prohibited_claims:
+    - real_expression_accuracy
+    - unseen_core_generalization
+    - biological_interaction
+    - biological_mechanism
+    - causal_influence
+fixed_training:
+  data_seed: 0
+  null_seed: 104729
+  model_seed: 2718
+  mask_seed: 314159
+  effect_size: 4.0
+  max_epochs: 96
+  learning_rate: 0.003
+  weight_decay: 0.0
+  gradient_clip_norm: 1.0
+  partial_gene_rate: 0.35
+  whole_node_rate: 0.35
+  top_edge_count: 16
+  precision: float32
+  early_stopping: false
+  validation_or_test_selection: false
+architecture:
+  exact_additive_decomposition: true
+  self_branch: existing_mask_aware_count_encoder_and_unrestricted_decoder
+  regional_branch: degree_normalized_mean_of_fixed_nonnegative_sender_programs
+  local_branch: unnormalized_signed_additive_sender_program_messages
+  synthetic_sender_program_matrix: fixed_identity
+  synthetic_receiver_program_matrix: fixed_identity
+  program_selection_uses_target: false
+  trainable_node_or_edge_identifiers: false
+  coefficient_initialization: zero
+  variants:
+    - id: count_sum
+      local_basis:
+        - unnormalized_count
+    - id: count_plus_concentration
+      local_basis:
+        - unnormalized_count
+        - receiver_degree_normalized_concentration
+    - id: radial_count
+      local_basis:
+        - unnormalized_count
+        - fixed_triangular_near
+        - fixed_triangular_middle
+        - fixed_triangular_far
+arms:
+  - self_regional
+  - true_local
+  - permuted_local
+  - null_true_local
+within_variant_parameter_match:
+  require_identical_names: true
+  require_identical_shapes: true
+  require_identical_initial_values: true
+  require_identical_parameter_count: true
+gate:
+  sender_permutation_qc_required: true
+  minimum_loss_advantage: 0.0
+  minimum_contribution: 0.0
+  minimum_deletion_advantage: 0.0
+  required_relations:
+    - true_local_loss_strictly_below_self_regional
+    - true_local_loss_strictly_below_permuted_local
+    - planted_mean_continuous_contribution_strictly_positive
+    - top_planted_edge_deletion_strictly_worse_than_zero_and_distance_matched_deletion
+    - no_analogous_discovery_under_null_injection
+selection_policy:
+  run_all_variants: true
+  report_all_variants: true
+  outcome_driven_retry_or_tuning: false
+  if_none_pass: stop_negative
+  if_any_pass: separate_contract_required_before_real_data
+resource:
+  execution: serial_cpu_or_one_safe_gpu
+  registry_or_queue_use: prohibited
+  output: compact_json_receipt_only

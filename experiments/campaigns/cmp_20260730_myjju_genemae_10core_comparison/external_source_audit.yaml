@@ -1,0 +1,82 @@
+audit_schema_version: 1
+audited_before_ten_core_execution: true
+repository:
+  checkout: /workspace/Gastric-Cancer-Analysis-by-MyJJu
+  branch: main
+  commit: f9ef61071c7e9b2751bbd59d154c13de534e7f2f
+  commit_date: "2026-06-15T14:55:54+09:00"
+  worktree_clean: true
+  shallow_clone: false
+  tags: []
+  newer_unmerged_result_branch: false
+checkpoint_inventory:
+  local_checkpoint_count: 0
+  committed_checkpoint_count: 0
+  git_lfs_checkpoint_count: 0
+  documented_but_missing_checkpoints:
+    - gene_mae_SO_1_sb50.pt
+    - gene_mae_SO_2_sb50.pt
+  conclusion: no_historical_weights_are_available_for_inference
+source_files:
+  gene_mae:
+    relative_path: src/gene_mae.py
+    sha256: e39c3b2bbc33e4b49a9a01b1919c67e5f65919737e5f855d9970ab07b2146d5a
+  graphmae:
+    relative_path: src/graphmae.py
+    sha256: 233e2ee1d251bb84753929be6c17b37d78b23420e943b54bb939ba5062cf8eb0
+  experiment:
+    relative_path: scripts/gene_mae_experiment.py
+    sha256: 4133249c1145daeed8d26f7fadeb73bbf434c15c7ad9650d338cc9f91f9f7088
+  metrics_summary:
+    relative_path: results/metrics/gene_mae_summary_all.csv
+    sha256: 71fead4dad8f36ca92e6d2abe1498f1663c53d646c438edb15d9be7e1738ba81
+constructor_defect:
+  observed: true
+  location: src/gene_mae.py
+  symptom: self.self_hidden_is_read_before_assignment
+  minimum_repair: self.self_hidden_equals_integer_self_hidden_argument
+  repair_changes_declared_architecture: false
+model_selection:
+  selected: dual_path_genemae_sb50
+  rationale:
+    - latest_report_selected_masked_expression_architecture
+    - fifty_percent_masking_is_the_reported_headline_configuration
+    - comparable_to_masked_expression_whereas_classifier_auc_is_not
+  not_selected:
+    supervised_all_cell_gat:
+      reason: one_class_adjacent_normal_target_and_incompatible_estimand
+    gene_mae_sb30:
+      reason: lower_masking_difficulty_and_not_report_selected_headline
+    smoke_run:
+      reason: only_256_genes_and_six_epochs
+reported_context:
+  so1_sb50:
+    pooled_pearson: 0.3579464630678052
+    spearman: 0.26885656293683063
+    r2: 0.09142593865686577
+    mse: 1.473328848684277
+    mean_per_gene_pearson: 0.19425549303899634
+    shuffled_feature_pearson: 0.3427483352512594
+  so2_sb50:
+    pooled_pearson: 0.3080911201692664
+    spearman: 0.22714354521359573
+    r2: 0.05520760054390206
+    mse: 1.5256483386310153
+    mean_per_gene_pearson: 0.15884219415337827
+    shuffled_feature_pearson: 0.29340109402242726
+known_provenance_limitations:
+  - source_report_metrics_are_not_bound_to_available_checkpoints
+  - dual_path_head_source_does_not_instantiate_without_the_declared_repair
+  - held_out_donor_was_used_for_early_stopping_and_scoring
+  - lodo_test_donor_was_used_for_checkpoint_selection_and_scoring
+  - full_cell_cp10k_normalization_precedes_masking
+  - one_seed_only
+  - requirements_are_unpinned
+  - report_split_description_disagrees_with_current_code
+  - source_summary_omits_an_existing_so2_result
+  - source_readme_status_is_stale
+maximum_use:
+  architecture_reproduction: permitted
+  historical_checkpoint_inference: prohibited
+  independent_validation: prohibited
+  reason: source_and_target_use_the_same_two_slide_cosmx_snapshot

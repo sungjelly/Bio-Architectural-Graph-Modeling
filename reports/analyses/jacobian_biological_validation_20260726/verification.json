@@ -1,0 +1,62 @@
+{
+  "artifact_checksums": {
+    "reports/analyses/jacobian_biological_validation_20260726/README.md": "291604b0b2749fa5c3101e475f01e9eec535afff5b1a3f2b4c089be55c33fca8",
+    "reports/analyses/jacobian_biological_validation_20260726/evidence.json": "ac80f42022c1bda67de2ea753cbaa3afabf9dceb7e577c04cd262b48ca6f9b4d",
+    "reports/analyses/jacobian_biological_validation_20260726/generate_report.py": "b5be86fbf8c55e6629a211bd8c29af8a856db3ce2b2845890a905867cb0465db",
+    "reports/analyses/jacobian_biological_validation_20260726/report.html": "163171b4b8144d433fc434f89e0d58699172da21a73f810cb1c6b892a4dd05df",
+    "reports/analyses/jacobian_biological_validation_20260726/sources.json": "1a097fb547064ffef725f9f3aadcb2beb3636dbefc0bd8f596d78189b966b118"
+  },
+  "artifact_kind": "jacobian_biological_validation_report_verification",
+  "checks": {
+    "aggregate_privacy": true,
+    "all_citations_resolve": true,
+    "all_input_checksums_match": true,
+    "all_source_anchors_present": true,
+    "critical_text_present": true,
+    "evidence_schema": true,
+    "finite_numeric_payload": true,
+    "html_semantics": true,
+    "matrix_arithmetic": true,
+    "no_entrywise_claim": true,
+    "portable_no_external_assets": true,
+    "reasonable_report_size": true,
+    "verdict_is_limited": true
+  },
+  "input_checksum_checks": {
+    "reports/analyses/full_core_g2_count_tokens_multiseed/comparison/comparison.json": true,
+    "reports/analyses/full_core_high_k_capacity/interpretability/analysis.json": true,
+    "reports/analyses/jacobian_biological_validation_20260726/sources.json": true,
+    "scratch/active_runs/posthoc_g2_token_relaxed_categorical_sensitivity_v1/analysis_manifest.json": true,
+    "scratch/active_runs/posthoc_g2_token_relaxed_categorical_sensitivity_v1/identical_control_review.json": true,
+    "scratch/active_runs/posthoc_g2_token_relaxed_categorical_sensitivity_v1/protocol.json": true,
+    "scratch/active_runs/posthoc_g2_token_relaxed_categorical_sensitivity_v1/resource_pilot.json": true,
+    "scripts/analysis/run_g2_token_categorical_sensitivity.py": true,
+    "src/spatial_benchmark/categorical_sensitivity.py": true
+  },
+  "report": {
+    "bytes": 39205,
+    "external_asset_urls": [],
+    "ids": [
+      "biology",
+      "computed",
+      "evidence-snapshot",
+      "fitness",
+      "limits",
+      "next",
+      "provenance",
+      "ref-adebayo2018",
+      "ref-efremova2020",
+      "ref-he2022",
+      "ref-luther2002",
+      "ref-ohl2003",
+      "ref-turei2021",
+      "ref-wu2025",
+      "verdict"
+    ],
+    "path": "reports/analyses/jacobian_biological_validation_20260726/report.html",
+    "sha256": "163171b4b8144d433fc434f89e0d58699172da21a73f810cb1c6b892a4dd05df"
+  },
+  "schema_version": 1,
+  "valid": true,
+  "verified_at_utc": "2026-07-26T16:34:15.920805+00:00"
+}

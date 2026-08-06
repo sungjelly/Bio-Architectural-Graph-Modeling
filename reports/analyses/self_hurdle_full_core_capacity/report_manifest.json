@@ -1,0 +1,19 @@
+{
+  "analysis_kind": "self_hurdle_two_core_capacity_audit_v1",
+  "campaign_id": "cmp_20260729_self_hurdle_full_core_capacity",
+  "files": {
+    "RESULTS.md": {
+      "sha256": "382e5e47081bda542d1ada6d7e3386e31f52f8368467b60af6b6795b020c5fe1",
+      "size_bytes": 4924
+    },
+    "comparison.json": {
+      "sha256": "e10d8145792006bc96a605f1b743dc00c63ee7260ce411ef916a3d2246b1979b",
+      "size_bytes": 46147
+    },
+    "metrics.csv": {
+      "sha256": "591a9a31baf2191fd379880b6e67a52d7f7474c961841f0bcc5b1be2390f1bb5",
+      "size_bytes": 16113
+    }
+  },
+  "schema_version": 1
+}

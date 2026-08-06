@@ -1,0 +1,68 @@
+protocol_schema_version: 1
+campaign_id: cmp_20260731_myjju_genemae_gradient_audit_cpu_replay
+status: locked_after_failed_cuda_replay_pilot_before_successor_pilot
+frozen_contract_sha256: bcdd6d7223f9b97f26833f77935c75645110aaba1669d11c0a7180c957514cc1
+
+inheritance:
+  predecessor_campaign_id: cmp_20260731_myjju_genemae_gradient_audit
+  predecessor_protocol_path: experiments/campaigns/cmp_20260731_myjju_genemae_gradient_audit/implementation_protocol.yaml
+  predecessor_protocol_sha256: 43c4de685f215e59e4e692de2a7a3cbc7ce2a88cdfed1ffa93720f7437d3eb43
+  all_gradient_estimands_sampling_aggregation_gates_and_reporting_rules_inherited: true
+
+corrective_delta:
+  strict_checkpoint_replay:
+    device: cpu
+    absolute_tolerance: 0.000001
+    state_dict_load: strict
+    rationale: match_upstream_replay_and_avoid_known_pyg_gatv2_cuda_scatter_last_bit_ordering
+  production_gradient_execution:
+    device_type: cuda
+    dtype: float32
+    changed_from_predecessor: false
+    known_last_bit_nondeterminism_reported: true
+  earlier_failed_pilot:
+    run_id: r_20260731T081950Z_b2203286_s000_f00_a01_35181af2
+    artifact_sha256: 6a61319559ec3be65f6603b8377a120337f834eae8c6bbf90f23162543aa7f3c
+    cuda_replay_max_abs_error: 0.00000286102294921875
+    failed_checks: [deterministic_replay, identical_checkpoint_reload]
+    other_checks_passed: true
+
+verified_preflight:
+  cohort_fingerprint_sha256: b3c06228ce7fda4d4c5da09c3281de46e67b8069dfadb14276ba6402af87767e
+  graph_bundle_sha256: f860f84f96e9daf4c9c4e4ddd5fc40aeacd3f6362c9e97d07248ac2575b462d5
+  total_nodes: 117386
+  total_tiles: 26
+  tile_counts:
+    ANC-01: 4
+    ANC-02: 2
+    ANC-03: 4
+    ANC-04: 2
+    ANC-05: 2
+    ANC-06: 2
+    ANC-07: 2
+    ANC-08: 4
+    ANC-09: 2
+    ANC-10: 2
+  all_39_marker_genes_present: true
+
+resource_projection:
+  pilot_core: ANC-01
+  workload_ratio: maximum_of_full_to_pilot_node_and_edge_ratios
+  include_measured_random_reference_runtime: true
+  include_context_load_runtime: true
+  safety_factor: 1.25
+  projected_runtime_hours_per_seed_maximum: 2.0
+  peak_allocated_vram_gib_maximum: 20.5
+  seed_zero_full_shard_largest_tile_sentinel_before_parallel_launch: true
+
+unchanged_locked_inventory:
+  model_seeds: [0, 1, 2, 3, 4, 5, 6]
+  mask_replicates: [0, 1, 2]
+  core_aliases: [ANC-01, ANC-02, ANC-03, ANC-04, ANC-05, ANC-06, ANC-07, ANC-08, ANC-09, ANC-10]
+  marker_gene_count: 39
+  target_gene_count: 5
+  locked_pair_count: 19
+  receiver_samples_per_target_per_tile: 8
+  faithfulness_scales_within_core_sd: [0.10, 0.25]
+  matched_null_draws: 10000
+  mechanism_validation_available: false

@@ -1,0 +1,11 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260726_full_core_g2_count_tokens_multiseed
+display_name: Full-core G2 raw-count token prediction across seeds
+status: completed
+outcome: larger_width_accuracy_failed_posthoc_relaxed_categorical_sensitivity_mismatch
+definition: experiments/campaigns/cmp_20260726_full_core_g2_count_tokens_multiseed/README.md
+variants:
+  - configs/experiment/full_core_g2_tokenized_multiseed_width1024_resource_pilot.yaml
+  - configs/experiment/full_core_g2_tokenized_multiseed_baseline.yaml
+  - configs/experiment/full_core_g2_tokenized_multiseed_width1024.yaml
+automatic_enqueue: false

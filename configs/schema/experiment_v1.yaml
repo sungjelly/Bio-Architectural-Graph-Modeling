@@ -16,13 +16,27 @@ ownership:
   use_edge_features: features
   edge_feature_definitions: features
   embedding_dim: model
+  num_expression_tokens: model
+  tokenizer_schema: model
+  receiver_chunk_size: model
+  activation_checkpointing: model
   neighbor_k: graph
+  k: graph
+  radius_guard_um: graph
   masking_type: masking
   masking_rate: masking
   seed: experiment_execution
   fold: experiment_execution
   dataset_version: dataset
   split_id: dataset
+  dataset_fingerprint: dataset
+  dataset_fingerprint_role: dataset
+  dataset_fingerprint_basis: dataset
+  split_fingerprint_status: dataset
+  preprocessing_fit_scope: dataset
+  tokenization: dataset
+  canonical_prediction_split: evaluation
+  primary_checkpoint_role: trainer
 
 required_fields:
   model:
@@ -36,6 +50,9 @@ required_fields:
     - dataset_id
     - version
     - split_id
+    - dataset_fingerprint
+    - split_fingerprint
+    - preprocessing_version
   features:
     - use_edge_features
   graph:
@@ -53,14 +70,52 @@ required_fields:
   classification:
     - lifecycle_stage
     - study_axis
+    - scientific_variant
     - retention_class
     - classification_confidence
 
 cross_field_checks:
   - g1_requires_use_edge_features_false
   - g2_requires_use_edge_features_true
+  - g2_tokenized_requires_use_edge_features_true
+  - g2_tokenized_requires_family_tokenized_edge_conditioned_gatv2
+  - g2_tokenized_requires_four_expression_tokens
+  - hybrid_count_gat_requires_use_edge_features_true
+  - hybrid_count_gat_requires_family_hybrid_count_edge_conditioned_gatv2
+  - hybrid_count_matched_self_requires_use_edge_features_false
+  - hybrid_count_matched_self_requires_family_hybrid_count_parameter_matched_self_control
+  - multiscale_hurdle_count_requires_use_edge_features_true
+  - multiscale_hurdle_count_requires_family_additive_multiscale_hurdle_count
+  - myjju_genemae_requires_use_edge_features_true
+  - myjju_genemae_requires_family_myjju_dual_path_genemae
+  - self_hurdle_count_requires_use_edge_features_false
+  - self_hurdle_count_requires_family_self_only_hurdle_count
+  - qkv_gat_requires_use_edge_features_true
+  - qkv_gat_requires_family_edge_aware_qkv_graph_transformer
+  - qkv_gat_matched_self_requires_use_edge_features_false
+  - qkv_gat_matched_self_requires_family_qkv_parameter_matched_self_control
+  - b0_g2_matched_requires_use_edge_features_false
   - use_edge_features_true_requires_nonempty_edge_features
+  - neighbor_k_and_k_must_match_when_both_are_declared
+  - radius_um_and_radius_guard_um_must_match_for_radius_guard_graphs
+  - exact_high_k_graph_requires_neighbor_sampling_false
   - masked_expression_regression_requires_expression_masking
+  - masked_expression_token_classification_requires_expression_masking
+  - masked_expression_hybrid_count_requires_expression_masking
+  - tokenized_task_model_family_schema_target_scale_and_metric_must_match
+  - raw_count_tokenizer_requires_fixed_0_1_2_3plus_vocabulary_and_mask_token_4
+  - recipe_fingerprint_must_be_labeled_and_bind_a_verified_source_basis
+  - held_in_full_core_requires_fit_as_the_only_evaluation_role
+  - held_in_full_core_forbids_validation_test_and_external_metrics
+  - held_in_full_core_requires_restore_best_false_and_last_only_checkpointing
+  - held_in_full_core_is_transductive_and_cannot_claim_generalization
   - registered_dataset_and_split_must_resolve
   - primary_metric_must_exist_in_metric_registry
   - classification_is_organizational_and_excluded_from_scientific_id
+
+conditional_required_fields:
+  recipe_dataset_fingerprint:
+    when: dataset_fingerprint_role_is_recipe
+    requires:
+      - dataset.dataset_fingerprint_role
+      - dataset.dataset_fingerprint_basis

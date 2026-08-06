@@ -1,0 +1,17 @@
+model:
+  name: self-hurdle-count
+  family: self_only_hurdle_count
+  count_representation_schema: hurdle_detection_plus_positive_standardized_log1p_v1
+  embedding_dim: 768
+  hidden_dim: 768
+  decoder_dim: 768
+  ffn_dim: 1536
+  residual_blocks: 3
+  output_channels_per_gene: 2
+  dropout: 0.1
+  trainable_node_identifiers: false
+  trainable_edge_identifiers: false
+  uses_graph_inputs: false
+  uses_edge_inputs: false
+  expected_trainable_parameter_count: 16917200
+

@@ -16,6 +16,7 @@ from spatial_benchmark.checkpoint_catalog import (
     export_checkpoint_catalog,
     filter_checkpoint_records,
     resolve_checkpoint,
+    run_semantics_from_configuration,
     show_checkpoint,
 )
 from spatial_benchmark.identifiers import scientific_id, semantic_run_alias
@@ -85,6 +86,103 @@ def _sha(path: Path) -> str:
 
 def _relative(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
+
+
+def test_qkv_gat_has_candidate_checkpoint_semantics() -> None:
+    configuration = _config()
+    configuration["model"] = {
+        "name": "qkv-gat",
+        "family": "edge_aware_qkv_graph_transformer",
+        "embedding_dim": 1024,
+        "graph_layers": 4,
+    }
+    configuration["features"] = {
+        "use_edge_features": True,
+        "edge_features": ["distance_um"],
+    }
+
+    semantics = run_semantics_from_configuration(
+        primary_run_id="run_qkv_gat",
+        configuration=configuration,
+    )
+
+    assert semantics["model_key"] == "qkv-gat"
+    assert semantics["feature_key"] == "edge-enabled"
+    assert semantics["rules"]["condition"] == "qkv-gat_true"
+    assert semantics["rules"]["condition_role"] == "candidate_model"
+
+
+def test_qkv_gat_matched_self_has_control_checkpoint_semantics() -> None:
+    configuration = _config()
+    configuration["model"] = {
+        "name": "qkv-gat-matched-self",
+        "family": "qkv_parameter_matched_self_control",
+        "embedding_dim": 1024,
+        "graph_layers": 4,
+    }
+
+    semantics = run_semantics_from_configuration(
+        primary_run_id="run_qkv_gat_matched_self",
+        configuration=configuration,
+    )
+
+    assert semantics["model_key"] == "qkv-gat-matched-self"
+    assert semantics["feature_key"] == "edge-disabled"
+    assert semantics["rules"]["condition"] == "qkv_parameter_matched_self"
+    assert (
+        semantics["rules"]["condition_role"]
+        == "parameter_matched_self_control"
+    )
+
+
+def test_hybrid_count_gat_has_candidate_checkpoint_semantics() -> None:
+    configuration = _config()
+    configuration["model"] = {
+        "name": "hybrid-count-gat",
+        "family": "hybrid_count_edge_conditioned_gatv2",
+        "embedding_dim": 512,
+        "graph_layers": 2,
+    }
+    configuration["features"] = {
+        "use_edge_features": True,
+        "edge_features": ["distance_um"],
+    }
+
+    semantics = run_semantics_from_configuration(
+        primary_run_id="run_hybrid_count_gat",
+        configuration=configuration,
+    )
+
+    assert semantics["model_key"] == "hybrid-count-gat"
+    assert semantics["feature_key"] == "edge-enabled"
+    assert semantics["rules"]["condition"] == "hybrid-count-gat_true"
+    assert semantics["rules"]["condition_role"] == "candidate_model"
+
+
+def test_hybrid_count_matched_self_has_control_checkpoint_semantics() -> None:
+    configuration = _config()
+    configuration["model"] = {
+        "name": "hybrid-count-matched-self",
+        "family": "hybrid_count_parameter_matched_self_control",
+        "embedding_dim": 512,
+        "graph_layers": 2,
+    }
+
+    semantics = run_semantics_from_configuration(
+        primary_run_id="run_hybrid_count_matched_self",
+        configuration=configuration,
+    )
+
+    assert semantics["model_key"] == "hybrid-count-matched-self"
+    assert semantics["feature_key"] == "edge-disabled"
+    assert (
+        semantics["rules"]["condition"]
+        == "hybrid_count_parameter_matched_self"
+    )
+    assert (
+        semantics["rules"]["condition_role"]
+        == "parameter_matched_self_control"
+    )
 
 
 @pytest.fixture
@@ -462,10 +560,14 @@ class _ReadOnlyRegistry:
 )
 def test_local_historical_catalog_regression() -> None:
     paths = ProjectPaths.from_environment({"BAGM_ROOT": str(PROJECT_ROOT)})
-    records = build_checkpoint_catalog(  # type: ignore[arg-type]
-        _ReadOnlyRegistry(HISTORICAL_DATABASE),
-        paths,
-    )
+    records = [
+        record
+        for record in build_checkpoint_catalog(  # type: ignore[arg-type]
+            _ReadOnlyRegistry(HISTORICAL_DATABASE),
+            paths,
+        )
+        if record["historical"]
+    ]
 
     assert len(records) == 158
     assert Counter(item["lifecycle_stage"] for item in records) == {

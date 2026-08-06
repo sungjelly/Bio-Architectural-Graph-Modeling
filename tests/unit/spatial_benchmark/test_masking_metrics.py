@@ -6,6 +6,7 @@ from pathlib import Path
 
 import numpy as np
 import pytest
+import yaml
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[3]
@@ -30,6 +31,7 @@ from spatial_benchmark.metrics import (  # noqa: E402
     masked_huber_loss,
     masked_mae_loss,
     masked_mse_loss,
+    masked_r2_score,
     paired_sign_flip_test,
     paired_spatial_gain,
 )
@@ -256,6 +258,80 @@ def test_masked_torch_loss_has_gradients_only_on_masked_entries() -> None:
     assert applied.metadata.data_ptr() != metadata.data_ptr()
 
 
+def test_masked_r2_is_unclipped_and_zero_variance_is_undefined() -> None:
+    target = np.array([[0.0, 2.0, 99.0], [np.nan, 7.0, 7.0]])
+    mask = np.array([[True, True, False], [True, False, False]])
+
+    perfect = target.copy()
+    assert masked_r2_score(target, perfect, mask) == pytest.approx(1.0)
+
+    mean_prediction = np.array([[1.0, 1.0, -999.0], [0.0, 0.0, 0.0]])
+    assert masked_r2_score(target, mean_prediction, mask) == pytest.approx(0.0)
+
+    worse_than_mean = np.array([[0.0, 4.0, -999.0], [0.0, 0.0, 0.0]])
+    assert masked_r2_score(target, worse_than_mean, mask) == pytest.approx(-1.0)
+    evaluated = evaluate_masked_predictions(
+        target,
+        worse_than_mean,
+        mask,
+    )
+    assert evaluated["r2"] == pytest.approx(-1.0)
+    assert evaluated["percent_variance_explained"] == pytest.approx(-100.0)
+
+    constant_target = np.array([[3.0, 3.0], [3.0, 3.0]])
+    constant_mask = np.ones_like(constant_target, dtype=bool)
+    assert np.isnan(
+        masked_r2_score(
+            constant_target,
+            np.zeros_like(constant_target),
+            constant_mask,
+        )
+    )
+    constant_metrics = evaluate_masked_predictions(
+        constant_target,
+        np.zeros_like(constant_target),
+        constant_mask,
+    )
+    assert np.isnan(constant_metrics["r2"])
+    assert np.isnan(constant_metrics["percent_variance_explained"])
+
+    with pytest.raises(ValueError, match="selects no finite"):
+        masked_r2_score(target, perfect, np.zeros_like(mask))
+
+
+def test_metric_registry_declares_r2_percentage_as_an_exact_transform() -> None:
+    registry = yaml.safe_load(
+        (PROJECT_ROOT / "configs/schema/metrics_v1.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
+    family = registry["task_families"]["masked_expression_regression"]
+    contract = family["masked_r2_contract"]
+    assert contract["negative_values"] == "retained_without_clipping"
+    assert contract["zero_target_variance"] == "undefined"
+    assert contract["percentage_reconciliation"] == (
+        "100 * aggregate_masked_r2"
+    )
+    metrics = family["metrics"]
+    for split_and_mode in (
+        "fit/partial_gene",
+        "fit/whole_node",
+        "fit/spatial_block",
+        "val",
+        "test",
+        "external",
+    ):
+        r2_name = f"{split_and_mode}/masked_r2"
+        percentage_name = (
+            f"{split_and_mode}/masked_percent_variance_explained"
+        )
+        assert metrics[r2_name]["direction"] == "maximize"
+        assert metrics[percentage_name]["direction"] == "maximize"
+        assert metrics[percentage_name]["reconciliation"] == (
+            f"100 * {r2_name}"
+        )
+
+
 def test_evaluation_ensembles_seeds_and_guards_invalid_correlations() -> None:
     target = np.array(
         [
@@ -280,6 +356,8 @@ def test_evaluation_ensembles_seeds_and_guards_invalid_correlations() -> None:
     assert metrics["mse"] == pytest.approx(0.0)
     assert metrics["mae"] == pytest.approx(0.0)
     assert metrics["huber"] == pytest.approx(0.0)
+    assert metrics["r2"] == pytest.approx(1.0)
+    assert metrics["percent_variance_explained"] == pytest.approx(100.0)
     assert len(metrics["per_seed"]) == 2
     assert all(item["technical_only"] for item in metrics["per_seed"])
     assert len(metrics["blocks"]) == 2

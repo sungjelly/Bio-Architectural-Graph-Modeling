@@ -228,6 +228,106 @@ def command_for_config(
             raise ConfigurationError("launcher.command cannot contain empty values.")
         return result
 
+    evaluation = _section(configuration, "evaluation")
+    protocol = str(evaluation.get("protocol", "")).strip().lower()
+    if protocol == "grouped_core_adjacency_ablation_v1":
+        model = _section(configuration, "model")
+        model_name = str(model.get("name", "")).strip().lower()
+        if model_name != "mean-adjacency-sage":
+            raise ConfigurationError(
+                "grouped_core_adjacency_ablation_v1 requires "
+                "model.name=mean-adjacency-sage."
+            )
+        script = (
+            selected_paths.project_root
+            / "scripts/train/run_adjacency_ablation.py"
+        )
+        return [
+            sys.executable,
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
+    if protocol == "held_in_pooled_10core_fixed_budget":
+        model = _section(configuration, "model")
+        model_name = str(model.get("name", "")).strip().lower()
+        if model_name not in {
+            "hybrid-count-gat",
+            "hybrid-count-matched-self",
+            "myjju-genemae",
+        }:
+            raise ConfigurationError(
+                "held_in_pooled_10core_fixed_budget requires a supported "
+                "pooled ten-core model."
+            )
+        runner = (
+            "run_myjju_genemae_pooled.py"
+            if model_name == "myjju-genemae"
+            else "run_pooled_hybrid_count_capacity.py"
+        )
+        script = selected_paths.project_root / "scripts/train" / runner
+        return [
+            sys.executable,
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
+    if protocol == "held_in_full_core_fixed_budget":
+        model_name = ""
+        if "model" in configuration:
+            model = _section(configuration, "model")
+            model_name = str(model.get("name", "")).strip().lower()
+        campaign = configuration.get("campaign", {})
+        metadata = configuration.get("metadata", {})
+        synthetic_recovery = (
+            isinstance(campaign, Mapping)
+            and campaign.get("campaign_id")
+            == "cmp_20260729_multiscale_hurdle_count_pilot"
+            and model_name == "multiscale-hurdle-count"
+            and isinstance(metadata, Mapping)
+            and metadata.get("execution_role")
+            == "stage0_synthetic_recovery"
+        )
+        if synthetic_recovery:
+            script = (
+                selected_paths.project_root
+                / "scripts"
+                / "diagnostics"
+                / "run_multiscale_synthetic_recovery.py"
+            )
+        else:
+            runner_name = (
+                "run_hybrid_count_capacity.py"
+                if model_name
+                in {"hybrid-count-gat", "hybrid-count-matched-self"}
+                else (
+                    "run_multiscale_hurdle_capacity.py"
+                    if model_name == "multiscale-hurdle-count"
+                    else (
+                        "run_self_hurdle_capacity.py"
+                        if model_name == "self-hurdle-count"
+                        else "run_full_core_capacity.py"
+                    )
+                )
+            )
+            script = (
+                selected_paths.project_root
+                / "scripts/train"
+                / runner_name
+            )
+        return [
+            sys.executable,
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
+
     dataset = _section(configuration, "dataset")
     model = _section(configuration, "model")
     masking = _section(configuration, "masking")
@@ -522,6 +622,18 @@ class QueueWorker:
                     "schema_version": 1,
                     "primary_metric_name": metric_name,
                     "primary_metric_value": metric_value,
+                    "artifact_roles": {
+                        "primary_checkpoint": str(
+                            _section(configuration, "trainer").get(
+                                "primary_checkpoint_role", "best"
+                            )
+                        ),
+                        "canonical_predictions": str(
+                            _section(configuration, "evaluation").get(
+                                "canonical_prediction_split", "validation"
+                            )
+                        ),
+                    },
                     "checkpoint_catalog": {
                         "schema_version": 1,
                         "semantic_alias": run_semantics["semantic_alias"],
@@ -552,9 +664,7 @@ class QueueWorker:
                 duration_seconds=duration,
                 primary_metric_name=metric_name,
                 primary_metric_value=metric_value,
-                peak_vram_gb=_optional_nonnegative_float(
-                    scratch_summary.get("peak_vram_gb")
-                ),
+                peak_vram_gb=_peak_vram_from_summary(scratch_summary),
                 parameter_count=_optional_nonnegative_integer(
                     scratch_summary.get("parameter_count")
                 ),
@@ -877,13 +987,8 @@ class QueueWorker:
             path.rename(destination)
 
     def _mark_stale_jobs(self) -> list[str]:
-        cutoff = datetime.now(timezone.utc) - timedelta(
-            seconds=self.settings.stale_after_seconds
-        )
         identifiers = self.registry.mark_stale(
-            heartbeat_before=cutoff.isoformat(timespec="microseconds").replace(
-                "+00:00", "Z"
-            )
+            heartbeat_before=self._stale_heartbeat_before()
         )
         for job_id in identifiers:
             job = self.registry.get_job(job_id)
@@ -902,7 +1007,10 @@ class QueueWorker:
         """Finish marker/registry transitions left by a hard worker crash."""
 
         reconciled: list[str] = []
-        for record in self.registry.list_finalizing_runs():
+        for record in self.registry.list_finalizing_runs(
+            recoverer_worker_id=self.settings.worker_id,
+            heartbeat_before=self._stale_heartbeat_before(),
+        ):
             run_id = str(record["run_id"])
             artifact_path = Path(str(record["artifact_path"]))
             archive = RunArchive.from_published(run_id, paths=self.paths)
@@ -938,6 +1046,12 @@ class QueueWorker:
             )
             reconciled.append(run_id)
         return reconciled
+
+    def _stale_heartbeat_before(self) -> str:
+        cutoff = datetime.now(timezone.utc) - timedelta(
+            seconds=self.settings.stale_after_seconds
+        )
+        return cutoff.isoformat(timespec="microseconds").replace("+00:00", "Z")
 
     def _wait_with_heartbeat(self, job_id: str) -> int:
         assert self._child is not None
@@ -1793,6 +1907,17 @@ def _primary_metric(
         if isinstance(evaluation, Mapping) and evaluation.get("primary_metric")
         else None
     )
+    declared_name = summary.get("primary_metric_name")
+    if declared_name is not None:
+        if not isinstance(declared_name, str) or "/" not in declared_name:
+            raise ArtifactFinalizationError(
+                "Summary primary_metric_name must be explicitly namespaced."
+            )
+        if name is not None and declared_name != name:
+            raise ArtifactFinalizationError(
+                "Summary primary_metric_name does not match the resolved "
+                "evaluation.primary_metric."
+            )
     value = summary.get("primary_metric_value")
     if value is None and name:
         metrics = summary.get("metrics", {})
@@ -1822,6 +1947,28 @@ def _optional_nonnegative_float(value: Any) -> float | None:
     except (TypeError, ValueError):
         return None
     return result if math.isfinite(result) and result >= 0 else None
+
+
+def _peak_vram_from_summary(summary: Mapping[str, Any]) -> float | None:
+    """Read the registry's historical GB field from either supported spelling.
+
+    Resource artifacts report binary GiB.  The schema-v3 registry predates that
+    explicit unit spelling and calls its column ``peak_vram_gb``.  Accepting
+    ``peak_vram_gib`` keeps newer runners unit-explicit while preserving the
+    existing registry schema.  When both are present they must agree.
+    """
+
+    legacy = _optional_nonnegative_float(summary.get("peak_vram_gb"))
+    explicit = _optional_nonnegative_float(summary.get("peak_vram_gib"))
+    if (
+        legacy is not None
+        and explicit is not None
+        and not math.isclose(legacy, explicit, rel_tol=1e-12, abs_tol=1e-12)
+    ):
+        raise ArtifactFinalizationError(
+            "Summary peak_vram_gb and peak_vram_gib disagree."
+        )
+    return legacy if legacy is not None else explicit
 
 
 def _optional_nonnegative_integer(value: Any) -> int | None:

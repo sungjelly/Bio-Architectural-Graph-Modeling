@@ -1,0 +1,189 @@
+{
+  "campaign_id": "cmp_20260730_myjju_genemae_10core_comparison",
+  "checksum": "e73d7cf49acde548a4e39d2822c8a7d0cb6bb3594e2aee413bd57d4dfe81155a",
+  "checksum_algorithm": "canonical-json-sha256",
+  "comparison": {
+    "comparison_sha256": "96f3756cc234ebb9255900fb08ac89e9e4fed594792cafcf816eb412d4be5383",
+    "directory": "/workspace/Bio-Architectural-Graph-Modeling/reports/analyses/myjju_genemae_10core_comparison/comparison",
+    "failed_gates": [
+      "graph_use"
+    ],
+    "manifest_path": "/workspace/Bio-Architectural-Graph-Modeling/reports/analyses/myjju_genemae_10core_comparison/comparison/manifest.json",
+    "manifest_sha256": "2ac14b3f3e2d8e29cb1bb4c35b687e692212dbff90a63162e526c3b030d627b8",
+    "manifest_size_bytes": 6141,
+    "outcome": "supported",
+    "provenance_sha256": "9c9aaff8c89e2e4ffb2c7c42cc260dc58034eef082669b1f2b21a0cf61f006e0",
+    "status": "complete",
+    "verified_file_count": 38,
+    "verified_files_checksum": "3d9bc6ac73a9c1031cd2baeb0ab87af570a7a8c0a9036f6785fa7ab143bd98d0"
+  },
+  "database": {
+    "backup": {
+      "integrity_check": "ok",
+      "path": "/workspace/Bio-Architectural-Graph-Modeling/state/tracking/backups/bagm.before_myjju_genemae_campaign_finalization.20260730T180152480321Z.2ac14b3f3e2d.sqlite3",
+      "sha256": "388e06fdda5eb5deacf0a3b347b08ffee4e2291197abc8adb69fee69276568a4",
+      "size_bytes": 10235904
+    },
+    "integrity_check_before": "ok",
+    "path": "/workspace/Bio-Architectural-Graph-Modeling/state/tracking/bagm.sqlite3"
+  },
+  "finalized_at": "2026-07-30T18:01:52.480321Z",
+  "receipt_kind": "myjju_genemae_campaign_registry_finalization_v1",
+  "registry_evidence": {
+    "active_queue_or_run_states": false,
+    "artifact_row_count": 318,
+    "artifact_rows_checksum": "5f7c653500c7ca811a37e199d92b7621d115643c2106694e681119585a065315",
+    "checkpoint_row_count": 9,
+    "checkpoint_rows_checksum": "53fc022bc3cdf27a5b4711572dd00e7c94241b5624fe52f9c65af63d5414d934",
+    "failed_production_run_ids": [],
+    "failure_row_count": 3,
+    "failure_rows_checksum": "f2fcbc82dce5e8e63eed081b99f5560115428415ee949b1a1bd5c5b0c91f2997",
+    "production_slots": {
+      "0": {
+        "attempt": 1,
+        "checkpoint": {
+          "artifact_id": 4013,
+          "final_epoch": 199,
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T162653Z_bbf1b999_s000_f00_a01_48b2356a/checkpoints/last.ckpt",
+          "role": "last",
+          "run_id": "r_20260730T162653Z_bbf1b999_s000_f00_a01_48b2356a",
+          "sha256": "bac558476db18e1b128ea38b5bfab6addaa9193a6d8b4df66e20e303ff8fe74f",
+          "size_bytes": 82737623,
+          "verification_status": "verified"
+        },
+        "run_id": "r_20260730T162653Z_bbf1b999_s000_f00_a01_48b2356a",
+        "seed": 0
+      },
+      "1": {
+        "attempt": 1,
+        "checkpoint": {
+          "artifact_id": 4077,
+          "final_epoch": 199,
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T162705Z_bbf1b999_s001_f00_a01_d1250f8e/checkpoints/last.ckpt",
+          "role": "last",
+          "run_id": "r_20260730T162705Z_bbf1b999_s001_f00_a01_d1250f8e",
+          "sha256": "c52db9edeb40ad7810197064e34aea06f0f86ff0dcfd7b342ec364a9f7bfb0e4",
+          "size_bytes": 82737623,
+          "verification_status": "verified"
+        },
+        "run_id": "r_20260730T162705Z_bbf1b999_s001_f00_a01_d1250f8e",
+        "seed": 1
+      },
+      "2": {
+        "attempt": 1,
+        "checkpoint": {
+          "artifact_id": 4045,
+          "final_epoch": 199,
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T162704Z_bbf1b999_s002_f00_a01_76a04093/checkpoints/last.ckpt",
+          "role": "last",
+          "run_id": "r_20260730T162704Z_bbf1b999_s002_f00_a01_76a04093",
+          "sha256": "c25b02d9f40ce6c216c4db392ea75be330b04266011ad4e14d2ecabe8125588c",
+          "size_bytes": 82737623,
+          "verification_status": "verified"
+        },
+        "run_id": "r_20260730T162704Z_bbf1b999_s002_f00_a01_76a04093",
+        "seed": 2
+      },
+      "3": {
+        "attempt": 1,
+        "checkpoint": {
+          "artifact_id": 4205,
+          "final_epoch": 199,
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T162705Z_bbf1b999_s003_f00_a01_a4365c93/checkpoints/last.ckpt",
+          "role": "last",
+          "run_id": "r_20260730T162705Z_bbf1b999_s003_f00_a01_a4365c93",
+          "sha256": "d939ccf5778c51a564973c0c5ba58bb8afecde285b31dbebaef5798a4c25f142",
+          "size_bytes": 82737623,
+          "verification_status": "verified"
+        },
+        "run_id": "r_20260730T162705Z_bbf1b999_s003_f00_a01_a4365c93",
+        "seed": 3
+      },
+      "4": {
+        "attempt": 1,
+        "checkpoint": {
+          "artifact_id": 4109,
+          "final_epoch": 199,
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T162705Z_bbf1b999_s004_f00_a01_cf97a923/checkpoints/last.ckpt",
+          "role": "last",
+          "run_id": "r_20260730T162705Z_bbf1b999_s004_f00_a01_cf97a923",
+          "sha256": "5200b30566674e9dcf8c7129a9f58d48814562739d8342996ac300b2cc5221dd",
+          "size_bytes": 82737623,
+          "verification_status": "verified"
+        },
+        "run_id": "r_20260730T162705Z_bbf1b999_s004_f00_a01_cf97a923",
+        "seed": 4
+      },
+      "5": {
+        "attempt": 1,
+        "checkpoint": {
+          "artifact_id": 4173,
+          "final_epoch": 199,
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T162705Z_bbf1b999_s005_f00_a01_00bfa079/checkpoints/last.ckpt",
+          "role": "last",
+          "run_id": "r_20260730T162705Z_bbf1b999_s005_f00_a01_00bfa079",
+          "sha256": "24f97ed1233a9786e7b64ba856a3d0b181bec7080d2adbbaadd2a38e8a988264",
+          "size_bytes": 82737623,
+          "verification_status": "verified"
+        },
+        "run_id": "r_20260730T162705Z_bbf1b999_s005_f00_a01_00bfa079",
+        "seed": 5
+      },
+      "6": {
+        "attempt": 1,
+        "checkpoint": {
+          "artifact_id": 4141,
+          "final_epoch": 199,
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T162705Z_bbf1b999_s006_f00_a01_afbbd08f/checkpoints/last.ckpt",
+          "role": "last",
+          "run_id": "r_20260730T162705Z_bbf1b999_s006_f00_a01_afbbd08f",
+          "sha256": "7d7fd2b2c1ef77b8e20e24e752f3fd3eb4df6af4bd4355429e183a5c95a12849",
+          "size_bytes": 82737623,
+          "verification_status": "verified"
+        },
+        "run_id": "r_20260730T162705Z_bbf1b999_s006_f00_a01_afbbd08f",
+        "seed": 6
+      }
+    },
+    "queue_row_count": 11,
+    "queue_rows_checksum": "f6b2ad57c533552c59a30b23b31f009eedf19e52b8bcfb5c01a09c92295e2222",
+    "queue_status_counts": {
+      "completed": 8,
+      "failed": 3
+    },
+    "resource_pilot": {
+      "completed_run_ids": [
+        "r_20260730T162022Z_5bdedc78_s000_f00_a01_78c5fb9b"
+      ],
+      "failed_run_ids": [
+        "r_20260730T160114Z_5bdedc78_s000_f00_a01_25eea03e",
+        "r_20260730T160518Z_5bdedc78_s000_f00_a01_ce31dcef",
+        "r_20260730T160920Z_5bdedc78_s000_f00_a01_365ddd7f"
+      ],
+      "failure_count": 3,
+      "row_count": 4
+    },
+    "run_row_count": 11,
+    "run_rows_checksum": "c7460e6e15daeefc5e9528264ee17e2ee4fbfe27ce3684283df21a1196a1c8e1",
+    "run_status_counts": {
+      "completed": 8,
+      "failed": 3
+    }
+  },
+  "schema_version": 1,
+  "transaction": {
+    "active_queue_or_run_states": false,
+    "changed_count": 1,
+    "compare_and_swap": "planned->complete",
+    "config_json_sha256_after": "e04971cad4eca120b2130ad163a29d543c49f69c1e07515a1bb7ee3db3694ae6",
+    "config_json_sha256_before": "e04971cad4eca120b2130ad163a29d543c49f69c1e07515a1bb7ee3db3694ae6",
+    "config_json_unchanged": true,
+    "failed_pilot_rows_preserved": true,
+    "failed_production_rows_preserved": true,
+    "idempotent_already_complete": false,
+    "mode": "BEGIN IMMEDIATE",
+    "post_status": "complete",
+    "pre_status": "planned",
+    "run_or_queue_rows_modified": false
+  }
+}

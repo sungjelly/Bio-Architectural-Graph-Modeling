@@ -1,0 +1,118 @@
+{
+  "active_or_incomplete_runs_touched": false,
+  "application_kind": "pooled_peak_vram_registry_reconciliation_application_v1",
+  "applied_at": "2026-07-30T08:03:14.047643Z",
+  "campaign_id": "cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble",
+  "checksum": "cad5d223e1d6b66136eec7e06ae265a323e3d6c36c8b0facc12b77abaeebd809",
+  "database_backup": {
+    "path": "/workspace/Bio-Architectural-Graph-Modeling/state/tracking/backups/bagm.before_pooled_peak_vram_reconciliation.20260730T080314047643Z.cb358c95f892.sqlite3",
+    "sha256": "a7bf024bc125c3c19baecf0acee2bdcafb9c70405b085f4c3a9172efcbd29e10",
+    "size_bytes": 8794112
+  },
+  "post_reconciliation_plan_checksum": "2eef182dccf45fbbea72442a0b022732524cafd9bb3e4f9c52d22e7a700971e0",
+  "post_verification": {
+    "all_passed": true,
+    "checksum": "4fab1f0067901639b6c3f473a7ce2e09c33b673e09696c726ee84c1e5176684a",
+    "commands": [
+      {
+        "command": [
+          "/venv/main/bin/python",
+          "-m",
+          "spatial_benchmark",
+          "--database",
+          "/workspace/Bio-Architectural-Graph-Modeling/state/tracking/bagm.sqlite3",
+          "verify-artifacts"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"bundle_issues\": [],\n  \"registry_issues\": [],\n  \"valid\": true\n}\n",
+        "working_directory": "/workspace/Bio-Architectural-Graph-Modeling"
+      },
+      {
+        "command": [
+          "/venv/main/bin/python",
+          "-m",
+          "spatial_benchmark",
+          "--database",
+          "/workspace/Bio-Architectural-Graph-Modeling/state/tracking/bagm.sqlite3",
+          "doctor"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "{\n  \"busy_timeout_ms\": 30000,\n  \"checkpoint_catalog\": {\n    \"categorized_runs\": 268,\n    \"checkpoint_artifacts\": 254,\n    \"indexed_checkpoints\": 254,\n    \"semantic_aliases\": 268\n  },\n  \"config_checks\": [\n    {\n      \"path\": \"configs/base.yaml\",\n      \"valid\": true\n    },\n    {\n      \"path\": \"configs/experiment/edge_feature_ablation_g1.yaml\",\n      \"valid\": true\n    },\n    {\n      \"path\": \"configs/experiment/edge_feature_ablation_g2.yaml\",\n      \"valid\": true\n    }\n  ],\n  \"database\": \"/workspace/Bio-Architectural-Graph-Modeling/state/tracking/bagm.sqlite3\",\n  \"free_disk_gb\": 39.754,\n  \"integrity_check\": [\n    \"ok\"\n  ],\n  \"issues\": [],\n  \"journal_mode\": \"wal\",\n  \"minimum_free_disk_gb\": 25.0,\n  \"ok\": true,\n  \"project_root\": \"/workspace/Bio-Architectural-Graph-Modeling\",\n  \"queue_counts\": {\n    \"cancelled\": 1,\n    \"claimed\": 0,\n    \"completed\": 96,\n    \"failed\": 13,\n    \"pruned\": 0,\n    \"queued\": 0,\n    \"running\": 0,\n    \"stale\": 1\n  },\n  \"schema_version\": 3,\n  \"warnings\": [],\n  \"worker_lock_available\": true\n}\n",
+        "working_directory": "/workspace/Bio-Architectural-Graph-Modeling"
+      }
+    ]
+  },
+  "post_verification_checksum": "5d77baceddde12c405a0b75306bf045897a4ee78f5fa092168d85a1ce77dcb52",
+  "reviewed_plan": {
+    "checksum": "cb358c95f892826c2435bd623df6e973d5f4a6fa6dae4fb276333096f6164a7b",
+    "file_sha256": "27e6784054ffb7f4eaace7457532c5f7e48c78b1d6e4ab28b298bbc03557890e",
+    "path": "/workspace/Bio-Architectural-Graph-Modeling/reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/registry_reconciliation/peak_vram_plan_20260730T075315004454Z.json"
+  },
+  "run_bundles_modified": false,
+  "schema_version": 1,
+  "transaction": {
+    "changed_count": 9,
+    "changed_run_ids": [
+      "r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3",
+      "r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e",
+      "r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647",
+      "r_20260730T051345Z_e070b529_s001_f00_a01_2a726378",
+      "r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42",
+      "r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1",
+      "r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879",
+      "r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6",
+      "r_20260730T051350Z_e070b529_s006_f00_a01_c218392c"
+    ],
+    "changes": [
+      {
+        "new_value_binary_gib": 7.339542388916016,
+        "old_value_binary_gib": null,
+        "run_id": "r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3"
+      },
+      {
+        "new_value_binary_gib": 2.223557472229004,
+        "old_value_binary_gib": null,
+        "run_id": "r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e"
+      },
+      {
+        "new_value_binary_gib": 7.341432094573975,
+        "old_value_binary_gib": null,
+        "run_id": "r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647"
+      },
+      {
+        "new_value_binary_gib": 7.341432094573975,
+        "old_value_binary_gib": null,
+        "run_id": "r_20260730T051345Z_e070b529_s001_f00_a01_2a726378"
+      },
+      {
+        "new_value_binary_gib": 7.341432094573975,
+        "old_value_binary_gib": null,
+        "run_id": "r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42"
+      },
+      {
+        "new_value_binary_gib": 7.341432094573975,
+        "old_value_binary_gib": null,
+        "run_id": "r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1"
+      },
+      {
+        "new_value_binary_gib": 7.341432094573975,
+        "old_value_binary_gib": null,
+        "run_id": "r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879"
+      },
+      {
+        "new_value_binary_gib": 7.341432094573975,
+        "old_value_binary_gib": null,
+        "run_id": "r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6"
+      },
+      {
+        "new_value_binary_gib": 7.341432094573975,
+        "old_value_binary_gib": null,
+        "run_id": "r_20260730T051350Z_e070b529_s006_f00_a01_c218392c"
+      }
+    ],
+    "conditional_null_only_updates": true,
+    "mode": "BEGIN IMMEDIATE"
+  }
+}

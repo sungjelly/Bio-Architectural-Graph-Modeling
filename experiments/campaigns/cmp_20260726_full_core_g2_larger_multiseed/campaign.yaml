@@ -1,0 +1,11 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260726_full_core_g2_larger_multiseed
+display_name: Full-core G2 width scaling across seeds
+status: completed
+outcome: larger_width_improvement_gate_failed_jacobian_skipped
+definition: experiments/campaigns/cmp_20260726_full_core_g2_larger_multiseed/README.md
+variants:
+  - configs/experiment/full_core_g2_multiseed_width1024_resource_pilot.yaml
+  - configs/experiment/full_core_g2_multiseed_baseline.yaml
+  - configs/experiment/full_core_g2_multiseed_width1024.yaml
+automatic_enqueue: false

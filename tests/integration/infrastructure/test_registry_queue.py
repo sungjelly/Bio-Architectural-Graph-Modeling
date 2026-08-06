@@ -4,6 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path
 import sys
+from threading import Event
 
 import pytest
 
@@ -89,12 +90,28 @@ def _registry(root: Path) -> tuple[Registry, ProjectPaths]:
     return registry, paths
 
 
-def _success_command() -> list[str]:
+def _success_command(
+    *, summary_peak_vram_gib: float | None = None
+) -> list[str]:
+    summary_write = ""
+    if summary_peak_vram_gib is not None:
+        summary_write = (
+            "import json;"
+            "(p/'summary.json').write_text(json.dumps({"
+            "'run_id':os.environ['BAGM_RUN_ID'],"
+            "'training_exit_status':'success',"
+            "'primary_metric_name':'val/masked_huber',"
+            "'primary_metric_value':0.0,"
+            f"'peak_vram_gib':{summary_peak_vram_gib!r},"
+            "'parameter_count':7"
+            "})+'\\n');"
+        )
     code = (
         "import os,pathlib;"
         "p=pathlib.Path(os.environ['BAGM_RUN_SCRATCH']);"
         "(p/'checkpoints').mkdir(parents=True,exist_ok=True);"
         "(p/'checkpoints'/'best.ckpt').write_bytes(b'dummy-checkpoint');"
+        f"{summary_write}"
         "print('cpu dummy complete')"
     )
     return [sys.executable, "-c", code]
@@ -268,6 +285,180 @@ def test_cpu_dummy_worker_finalizes_canonical_bundle(tmp_path: Path) -> None:
     assert "cpu dummy complete" in (artifact / "logs" / "stdout.log").read_text()
     assert registry.verify_artifacts(run_id=run["run_id"]) == []
     assert not (paths.scratch_root / "active_runs" / run["run_id"]).exists()
+
+
+def test_worker_records_unit_explicit_peak_vram_summary(
+    tmp_path: Path,
+) -> None:
+    registry, paths = _registry(tmp_path)
+    job = registry.enqueue(
+        campaign_id="cmp_test",
+        configuration=_config(),
+        command=_success_command(summary_peak_vram_gib=2.5),
+        maximum_attempts=1,
+        requested_gpu=None,
+    )
+    worker = QueueWorker(
+        registry,
+        settings=WorkerSettings(
+            worker_id="test-worker",
+            gpu=None,
+            once=True,
+            min_free_gb=0,
+            heartbeat_seconds=0.05,
+            allow_test_jobs=True,
+        ),
+        paths=paths,
+    )
+
+    assert worker.run() == 1
+    completed = registry.get_job(job["job_id"])
+    assert completed is not None and completed["status"] == "completed"
+    run = registry.get_run(str(completed["run_id"]))
+    assert run is not None
+    assert run["peak_vram_gb"] == 2.5
+    assert run["parameter_count"] == 7
+
+
+def test_worker_does_not_reconcile_fresh_foreign_finalization(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    registry, paths = _registry(tmp_path)
+    job = registry.enqueue(
+        campaign_id="cmp_test",
+        configuration=_config(),
+        command=_success_command(),
+        maximum_attempts=1,
+        requested_gpu=None,
+    )
+    entered_finalization = Event()
+    release_finalization = Event()
+    original_begin = registry.begin_run_and_job_finalization
+
+    def pause_after_begin(**arguments: object) -> None:
+        original_begin(**arguments)
+        entered_finalization.set()
+        if not release_finalization.wait(timeout=10):
+            raise TimeoutError("test did not release finalization")
+
+    monkeypatch.setattr(
+        registry, "begin_run_and_job_finalization", pause_after_begin
+    )
+    owner = QueueWorker(
+        registry,
+        settings=WorkerSettings(
+            worker_id="owner-worker",
+            gpu=None,
+            once=True,
+            min_free_gb=0,
+            heartbeat_seconds=0.05,
+            stale_after_seconds=3600,
+            allow_test_jobs=True,
+        ),
+        paths=paths,
+    )
+    foreign = QueueWorker(
+        registry,
+        settings=WorkerSettings(
+            worker_id="foreign-worker",
+            gpu=None,
+            once=True,
+            min_free_gb=0,
+            stale_after_seconds=3600,
+            allow_test_jobs=True,
+        ),
+        paths=paths,
+    )
+
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        owner_result = pool.submit(owner.run)
+        assert entered_finalization.wait(timeout=10)
+        try:
+            running = registry.get_job(job["job_id"])
+            assert running is not None and running["status"] == "running"
+            run = registry.get_run(str(running["run_id"]))
+            assert run is not None and run["status"] == "finalizing"
+            artifact = Path(str(run["artifact_path"]))
+            assert not (artifact / "_SUCCESS").exists()
+
+            assert foreign._reconcile_finalizing_runs() == []
+            assert not (artifact / "_SUCCESS").exists()
+            assert registry.get_run(str(running["run_id"]))["status"] == "finalizing"
+        finally:
+            release_finalization.set()
+        assert owner_result.result(timeout=20) == 1
+
+    completed = registry.get_job(job["job_id"])
+    assert completed is not None and completed["status"] == "completed"
+    assert registry.get_run(str(completed["run_id"]))["status"] == "completed"
+
+
+def test_worker_reconciles_stale_foreign_finalization(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    registry, paths = _registry(tmp_path)
+    job = registry.enqueue(
+        campaign_id="cmp_test",
+        configuration=_config(),
+        command=_success_command(),
+        maximum_attempts=1,
+        requested_gpu=None,
+    )
+    original_complete = registry.complete_run_and_job
+
+    def simulate_owner_crash(**_arguments: object) -> None:
+        raise RegistryError("synthetic owner crash after success marker")
+
+    monkeypatch.setattr(
+        registry, "complete_run_and_job", simulate_owner_crash
+    )
+    owner = QueueWorker(
+        registry,
+        settings=WorkerSettings(
+            worker_id="abandoned-worker",
+            gpu=None,
+            once=True,
+            min_free_gb=0,
+            heartbeat_seconds=0.05,
+            stale_after_seconds=3600,
+            allow_test_jobs=True,
+        ),
+        paths=paths,
+    )
+    with pytest.raises(
+        RegistryError, match="synthetic owner crash after success marker"
+    ):
+        owner.run()
+
+    abandoned = registry.get_job(job["job_id"])
+    assert abandoned is not None and abandoned["status"] == "running"
+    run_id = str(abandoned["run_id"])
+    run = registry.get_run(run_id)
+    assert run is not None and run["status"] == "finalizing"
+    assert (Path(str(run["artifact_path"])) / "_SUCCESS").is_file()
+    with registry.transaction(immediate=True) as connection:
+        connection.execute(
+            "UPDATE queue_jobs SET heartbeat_at = ? WHERE job_id = ?",
+            ("2000-01-01T00:00:00.000000Z", job["job_id"]),
+        )
+
+    monkeypatch.setattr(registry, "complete_run_and_job", original_complete)
+    recovery = QueueWorker(
+        registry,
+        settings=WorkerSettings(
+            worker_id="recovery-worker",
+            gpu=None,
+            once=True,
+            min_free_gb=0,
+            stale_after_seconds=1,
+            allow_test_jobs=True,
+        ),
+        paths=paths,
+    )
+    assert recovery._reconcile_finalizing_runs() == [run_id]
+    recovered = registry.get_job(job["job_id"])
+    assert recovered is not None and recovered["status"] == "completed"
+    assert registry.get_run(run_id)["status"] == "completed"
 
 
 def test_worker_reconciles_crash_window_after_success_marker(

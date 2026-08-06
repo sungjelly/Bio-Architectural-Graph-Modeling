@@ -1,0 +1,24 @@
+trainer:
+  learning_rate: 0.0001
+  batch_size: 1
+  batch_unit: complete_full_core_graph
+  neighbor_sampling: false
+  weight_decay: 0.00001
+  gradient_clip_norm: 1.0
+  max_epochs: 2
+  fixed_epoch_budget: true
+  early_stopping: false
+  early_stopping_patience: null
+  validation_every: null
+  precision: mixed
+  amp: true
+  amp_dtype: auto
+  amp_requires_fp32_equivalence_smoke: true
+  deterministic: true
+  deterministic_warn_only: false
+  restore_best: false
+  monitored_metric: null
+  primary_checkpoint_role: last
+  checkpoint_policy: last_only
+  graph_execution: full_core_exact_no_neighbor_sampling
+  diagnostic_resource_pilot: true

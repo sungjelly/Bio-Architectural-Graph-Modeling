@@ -28,6 +28,8 @@ state/**/*.log
 state/logs/**
 state/**/*.pid
 state/**/*.lock
+state/**/pids/
+state/**/logs/process_records/
 state/tracking/*.sqlite*
 state/tracking/backups/
 state/queue/

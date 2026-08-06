@@ -1,0 +1,13 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260728_adjacent_normal_10core_qkv_large_k_pilot
+display_name: Adjacent-normal QKV-GAT k5000 resource pilot
+status: diagnostic
+definition: experiments/campaigns/cmp_20260728_adjacent_normal_10core_qkv_large_k_pilot/README.md
+parent_campaign_id: cmp_20260728_adjacent_normal_10core_qkv_large_k
+biological_unit_alias: ANC-01
+selection_reason: largest_materialized_k5000_directed_edge_count
+neighbor_k: 5000
+fixed_epochs: 2
+diagnostic_run_count: 1
+conclusion_eligible: false
+automatic_enqueue: false

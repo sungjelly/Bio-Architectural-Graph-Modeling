@@ -1,0 +1,1267 @@
+{
+  "actions": {
+    "already_consistent": 7,
+    "backfill": 9,
+    "conflict": 0
+  },
+  "active_or_incomplete_runs_touched": false,
+  "campaign_id": "cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble",
+  "checksum": "cb358c95f892826c2435bd623df6e973d5f4a6fa6dae4fb276333096f6164a7b",
+  "created_at": "2026-07-30T07:57:26.628744Z",
+  "database_path": "/workspace/Bio-Architectural-Graph-Modeling/state/tracking/bagm.sqlite3",
+  "expected_completed_runs": {
+    "pilot": 2,
+    "production": 14,
+    "total": 16
+  },
+  "frozen_contract": {
+    "path": "/workspace/Bio-Architectural-Graph-Modeling/experiments/campaigns/cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble/frozen_task_contract.yaml",
+    "sha256": "c6af3dc756155ee502506f08304a7436ae99da36ad2b4ed8fae48672a312f6e2"
+  },
+  "items": [
+    {
+      "action": "backfill",
+      "arm": "pooled-hybrid-gat-k1000",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3/provenance/artifact_checksums.json",
+        "sha256": "cac84105c6a90e080c0855582cc902fbed7340ac850a73d3036424cf4d02c232",
+        "size_bytes": 6340
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3",
+      "bundle_content_sha256": "1f842f8da76002962b929c104c33a3f919cf7373871b32350c44a54d4d79e6c5",
+      "completed_job_id": "q_68d645fff082e9ae2035",
+      "failed_attempts": [
+        {
+          "attempt": 1,
+          "job_id": "q_5d7dbbe20729a16147a9",
+          "run_id": "r_20260730T045810Z_8337b1ce_s000_f00_a01_a16200b5",
+          "status": "failed"
+        }
+      ],
+      "proposed_value_binary_gib": 7.339542388916016,
+      "registered_summary_artifact": {
+        "artifact_id": 3399,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3/summary.json",
+        "sha256": "0821675f0af9a9ffed17de823a34ba473cf11c2966502a8085e0bd3fd67560f0",
+        "size_bytes": 130587,
+        "status": "present"
+      },
+      "registry_value_binary_gib": null,
+      "root_job_id": "q_5d7dbbe20729a16147a9",
+      "run_id": "r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3",
+      "seed": 0,
+      "selected_attempt": 2,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3/metrics/final.json",
+          "sha256": "9677187b09d0dec152fe1d97950fb9fc063d0513035cf6dacd19280eeafa679e",
+          "size_bytes": 124555
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3/diagnostics/resource_usage.json",
+          "sha256": "0026384fb4801b799189601188e82e3677f8ff33491017371bb7a8ad0559f9a2",
+          "size_bytes": 2465
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3/summary.json",
+          "sha256": "0821675f0af9a9ffed17de823a34ba473cf11c2966502a8085e0bd3fd67560f0",
+          "size_bytes": 130587
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 7.339542388916016,
+        "resource_diagnostic": 7.339542388916016,
+        "summary": 7.339542388916016
+      },
+      "stage": "pilot"
+    },
+    {
+      "action": "backfill",
+      "arm": "pooled-hybrid-matched-self",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e/provenance/artifact_checksums.json",
+        "sha256": "269457dea5866e6fc2920f5a9324a032ccd3b5cf31366d0c562a4be7b8bf7129",
+        "size_bytes": 6340
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e",
+      "bundle_content_sha256": "ff0085b2c2dd0283ce4b5f3eb7bfb86b67605170f136a679dc90c73b995086f2",
+      "completed_job_id": "q_4e07bb5b05624467e2ea",
+      "failed_attempts": [
+        {
+          "attempt": 1,
+          "job_id": "q_bdef091a4114daacf9a3",
+          "run_id": "r_20260730T045810Z_435c46b1_s000_f00_a01_7ecfe24f",
+          "status": "failed"
+        }
+      ],
+      "proposed_value_binary_gib": 2.223557472229004,
+      "registered_summary_artifact": {
+        "artifact_id": 3361,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e/summary.json",
+        "sha256": "c61dd0677be25267eb1041acf54fe77e26107634ea22b7299c3ab74832388eeb",
+        "size_bytes": 130574,
+        "status": "present"
+      },
+      "registry_value_binary_gib": null,
+      "root_job_id": "q_bdef091a4114daacf9a3",
+      "run_id": "r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e",
+      "seed": 0,
+      "selected_attempt": 2,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e/metrics/final.json",
+          "sha256": "45ae679a093f473ef891f6a8c14850dd1b24df7d22a8de7b0e80f5ee691326a2",
+          "size_bytes": 124529
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e/diagnostics/resource_usage.json",
+          "sha256": "6fca425e6faf04775e25fb456cfe1706e1683aca69bb1cacf5d81eccd748dca7",
+          "size_bytes": 2466
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e/summary.json",
+          "sha256": "c61dd0677be25267eb1041acf54fe77e26107634ea22b7299c3ab74832388eeb",
+          "size_bytes": 130574
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 2.223557472229004,
+        "resource_diagnostic": 2.223557472229004,
+        "summary": 2.223557472229004
+      },
+      "stage": "pilot"
+    },
+    {
+      "action": "backfill",
+      "arm": "pooled-hybrid-gat-k1000",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647/provenance/artifact_checksums.json",
+        "sha256": "c2470df9dd226dc7aef49e39be6bc3717aa51755d4d5798dceba2264c4205065",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647",
+      "bundle_content_sha256": "b57bb635155ef3799c0484d3e2a5b1df89ff7fad087b53babfd540987f59745d",
+      "completed_job_id": "q_6c3dce1bc36d85149bf7",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 7.341432094573975,
+      "registered_summary_artifact": {
+        "artifact_id": 3658,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647/summary.json",
+        "sha256": "df02a56df2b66c151ff9f10797ff6f3d6983ead99ebb3eb7fcd8761fd963f940",
+        "size_bytes": 130693,
+        "status": "present"
+      },
+      "registry_value_binary_gib": null,
+      "root_job_id": "q_6c3dce1bc36d85149bf7",
+      "run_id": "r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647",
+      "seed": 0,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647/metrics/final.json",
+          "sha256": "da1e867673357ee703b33f8cf60c9d1aa4dea01ade666bdf1126218b93c3fbf1",
+          "size_bytes": 124588
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647/diagnostics/resource_usage.json",
+          "sha256": "f56a04118ae0be18d0b573b4463671333ec957bc50e4ea8b141c530d88ef8080",
+          "size_bytes": 7044
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647/summary.json",
+          "sha256": "df02a56df2b66c151ff9f10797ff6f3d6983ead99ebb3eb7fcd8761fd963f940",
+          "size_bytes": 130693
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 7.341432094573975,
+        "resource_diagnostic": 7.341432094573975,
+        "summary": 7.341432094573975
+      },
+      "stage": "production"
+    },
+    {
+      "action": "backfill",
+      "arm": "pooled-hybrid-gat-k1000",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s001_f00_a01_2a726378/provenance/artifact_checksums.json",
+        "sha256": "32269b036163788dea6f8157bd77146d2fa6b598504bc8ae58604175e660b911",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s001_f00_a01_2a726378",
+      "bundle_content_sha256": "ab7478291e3ad306444d5de488fac9b028206e010fd6cda5b1df95981b3dd550",
+      "completed_job_id": "q_215512cfe2c78c698575",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 7.341432094573975,
+      "registered_summary_artifact": {
+        "artifact_id": 3584,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s001_f00_a01_2a726378/summary.json",
+        "sha256": "e9edca53623b8558fbfa8bcf29c04ff5b05dfcd8ef8cfc507206101f54999581",
+        "size_bytes": 130686,
+        "status": "present"
+      },
+      "registry_value_binary_gib": null,
+      "root_job_id": "q_215512cfe2c78c698575",
+      "run_id": "r_20260730T051345Z_e070b529_s001_f00_a01_2a726378",
+      "seed": 1,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s001_f00_a01_2a726378/metrics/final.json",
+          "sha256": "9d828cf9249cbc514ff1dccb1ebad4850a8c6ba7192450caf4f508f816464077",
+          "size_bytes": 124581
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s001_f00_a01_2a726378/diagnostics/resource_usage.json",
+          "sha256": "11bbe3a05dbbff02502eeeb4631d8b88ed2c3768f7467d8fa9140b64b4d7b2ec",
+          "size_bytes": 7064
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s001_f00_a01_2a726378/summary.json",
+          "sha256": "e9edca53623b8558fbfa8bcf29c04ff5b05dfcd8ef8cfc507206101f54999581",
+          "size_bytes": 130686
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 7.341432094573975,
+        "resource_diagnostic": 7.341432094573975,
+        "summary": 7.341432094573975
+      },
+      "stage": "production"
+    },
+    {
+      "action": "backfill",
+      "arm": "pooled-hybrid-gat-k1000",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42/provenance/artifact_checksums.json",
+        "sha256": "bf4c3e401f9bb0f5bd568b17bb4d4af0a2bc4e84193deef4e805ab73a24551c4",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42",
+      "bundle_content_sha256": "81436d74ba426646cb72c9f2d550ea4e0884ba2cdc89a8599531fb9200003577",
+      "completed_job_id": "q_6651d966d8cb2f05aa80",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 7.341432094573975,
+      "registered_summary_artifact": {
+        "artifact_id": 3510,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42/summary.json",
+        "sha256": "80a4be6ee8ce0ab9e6b58bb3d0c610cd4dfd9799c281f64b99fd56daf512098b",
+        "size_bytes": 130716,
+        "status": "present"
+      },
+      "registry_value_binary_gib": null,
+      "root_job_id": "q_6651d966d8cb2f05aa80",
+      "run_id": "r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42",
+      "seed": 2,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42/metrics/final.json",
+          "sha256": "865391c2b00af282ca425248418f2cad6979d48be8586ef08e20889776ecd22e",
+          "size_bytes": 124611
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42/diagnostics/resource_usage.json",
+          "sha256": "7687b3dc64a4e4e84b09015188158fdad7d1a27bc0f61c0b370ccfecf81cc05a",
+          "size_bytes": 7051
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42/summary.json",
+          "sha256": "80a4be6ee8ce0ab9e6b58bb3d0c610cd4dfd9799c281f64b99fd56daf512098b",
+          "size_bytes": 130716
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 7.341432094573975,
+        "resource_diagnostic": 7.341432094573975,
+        "summary": 7.341432094573975
+      },
+      "stage": "production"
+    },
+    {
+      "action": "backfill",
+      "arm": "pooled-hybrid-gat-k1000",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1/provenance/artifact_checksums.json",
+        "sha256": "e9ec2f41e6a7a60d02c9cb0cec5cfa577cf32aa8a17c449186f501fffd4756fa",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1",
+      "bundle_content_sha256": "f71e6e2312ab22cabc94561a56de30f8ca2e9ff4e62314a091391cf0a515bd7b",
+      "completed_job_id": "q_40ca8f34725a5cf9092a",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 7.341432094573975,
+      "registered_summary_artifact": {
+        "artifact_id": 3621,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1/summary.json",
+        "sha256": "10c7c568e40dc7fae9cd6eaa1957e787c9751c1eea3700f85d9f573a1bf71048",
+        "size_bytes": 130615,
+        "status": "present"
+      },
+      "registry_value_binary_gib": null,
+      "root_job_id": "q_40ca8f34725a5cf9092a",
+      "run_id": "r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1",
+      "seed": 3,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1/metrics/final.json",
+          "sha256": "694c4f1fc9d7b04a98107848e1a9e145d20a51312bae4ac1ac4a9c01ce53a8a9",
+          "size_bytes": 124510
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1/diagnostics/resource_usage.json",
+          "sha256": "d427f31ae1a308b37517aad0bf8635837538c0384123812e32c05a7d6b7d5838",
+          "size_bytes": 7053
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1/summary.json",
+          "sha256": "10c7c568e40dc7fae9cd6eaa1957e787c9751c1eea3700f85d9f573a1bf71048",
+          "size_bytes": 130615
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 7.341432094573975,
+        "resource_diagnostic": 7.341432094573975,
+        "summary": 7.341432094573975
+      },
+      "stage": "production"
+    },
+    {
+      "action": "backfill",
+      "arm": "pooled-hybrid-gat-k1000",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879/provenance/artifact_checksums.json",
+        "sha256": "551e75dc4c5ce1ed5c9b9a23c24a0d6705f8ecc1cb4d323aa31b48be1e5aaeb2",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879",
+      "bundle_content_sha256": "e5968f42265c52ed448525575e6c7b53303032d05789a084ca0e26f6d8d8d381",
+      "completed_job_id": "q_78a02159e3f56f39c266",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 7.341432094573975,
+      "registered_summary_artifact": {
+        "artifact_id": 3547,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879/summary.json",
+        "sha256": "0abf41de7f9d9967ce2b5e432b860775f163d8d24bfc08a4e9a47a743dbca30f",
+        "size_bytes": 130661,
+        "status": "present"
+      },
+      "registry_value_binary_gib": null,
+      "root_job_id": "q_78a02159e3f56f39c266",
+      "run_id": "r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879",
+      "seed": 4,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879/metrics/final.json",
+          "sha256": "e973476fa9e15d2b108ab54003275fe26d0a52a9a46866a9ab4e5ac8673c1a22",
+          "size_bytes": 124555
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879/diagnostics/resource_usage.json",
+          "sha256": "25542f9ab7068e888e1a8c7a83c048eed8444859fed4736f015945666f84f4cb",
+          "size_bytes": 7059
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879/summary.json",
+          "sha256": "0abf41de7f9d9967ce2b5e432b860775f163d8d24bfc08a4e9a47a743dbca30f",
+          "size_bytes": 130661
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 7.341432094573975,
+        "resource_diagnostic": 7.341432094573975,
+        "summary": 7.341432094573975
+      },
+      "stage": "production"
+    },
+    {
+      "action": "backfill",
+      "arm": "pooled-hybrid-gat-k1000",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6/provenance/artifact_checksums.json",
+        "sha256": "130702743cbe0146488f4e19c9d9dd6f685e11b77079b136aa06675d11255ab8",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6",
+      "bundle_content_sha256": "6a02495e3dd103dfd94415de2933ecdc85f47ec5816afcc9a70ae010332ed5d9",
+      "completed_job_id": "q_1937e16bdfbe1e8d5f63",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 7.341432094573975,
+      "registered_summary_artifact": {
+        "artifact_id": 3436,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6/summary.json",
+        "sha256": "c403379f91eb0855be15361f6f39daba7a7e1d19f2754322e846b3da42b544ac",
+        "size_bytes": 130643,
+        "status": "present"
+      },
+      "registry_value_binary_gib": null,
+      "root_job_id": "q_1937e16bdfbe1e8d5f63",
+      "run_id": "r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6",
+      "seed": 5,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6/metrics/final.json",
+          "sha256": "f8db6b7023a78597e6db786c398a96c1d4b64d70df6f52416cb11a7a303bf02a",
+          "size_bytes": 124537
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6/diagnostics/resource_usage.json",
+          "sha256": "795d7b7f4213dcbe6b25cae8622d6fe1259f21f56ccac6b736e3cb07fceb2d8f",
+          "size_bytes": 7043
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6/summary.json",
+          "sha256": "c403379f91eb0855be15361f6f39daba7a7e1d19f2754322e846b3da42b544ac",
+          "size_bytes": 130643
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 7.341432094573975,
+        "resource_diagnostic": 7.341432094573975,
+        "summary": 7.341432094573975
+      },
+      "stage": "production"
+    },
+    {
+      "action": "backfill",
+      "arm": "pooled-hybrid-gat-k1000",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s006_f00_a01_c218392c/provenance/artifact_checksums.json",
+        "sha256": "87f4e4b605e243a3d911b53f56fd8a9a93b2b69b74cd4381c730addebea3e841",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s006_f00_a01_c218392c",
+      "bundle_content_sha256": "04a7ab10f8488aef5c0992bfad9b36a8d1ed207b7d0d8bc7700b1d71e7b832c7",
+      "completed_job_id": "q_a806dd0e26b697938a56",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 7.341432094573975,
+      "registered_summary_artifact": {
+        "artifact_id": 3473,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s006_f00_a01_c218392c/summary.json",
+        "sha256": "a56b4be227c21862666fb399760f77762b1be572a64c1645740fde9358e5f38a",
+        "size_bytes": 130631,
+        "status": "present"
+      },
+      "registry_value_binary_gib": null,
+      "root_job_id": "q_a806dd0e26b697938a56",
+      "run_id": "r_20260730T051350Z_e070b529_s006_f00_a01_c218392c",
+      "seed": 6,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s006_f00_a01_c218392c/metrics/final.json",
+          "sha256": "1484d68f9b77c2af2507dcf6890b27b18e4039cf9e5cace0987748d598183cff",
+          "size_bytes": 124525
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s006_f00_a01_c218392c/diagnostics/resource_usage.json",
+          "sha256": "817c4c45ca8e765d25f797bcb992ee76b5a23c35933d249293aa16e3a781063c",
+          "size_bytes": 7058
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s006_f00_a01_c218392c/summary.json",
+          "sha256": "a56b4be227c21862666fb399760f77762b1be572a64c1645740fde9358e5f38a",
+          "size_bytes": 130631
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 7.341432094573975,
+        "resource_diagnostic": 7.341432094573975,
+        "summary": 7.341432094573975
+      },
+      "stage": "production"
+    },
+    {
+      "action": "already_consistent",
+      "arm": "pooled-hybrid-matched-self",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073313Z_13fd2c49_s000_f00_a01_1cd91f1f/provenance/artifact_checksums.json",
+        "sha256": "9068daf8d1f3a036405eca0643ad69ea4b4b10fb6b68465fb908d1bdf886f188",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073313Z_13fd2c49_s000_f00_a01_1cd91f1f",
+      "bundle_content_sha256": "a6886211b9aff4d3c1ca1bbbafeee186dfe23010a447c2ad78f743ec567a7a00",
+      "completed_job_id": "q_24b7989c1dd3ba73ec48",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 2.2235846519470215,
+      "registered_summary_artifact": {
+        "artifact_id": 3917,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073313Z_13fd2c49_s000_f00_a01_1cd91f1f/summary.json",
+        "sha256": "0d4aaf942c880e07c07c02763e96b5df903f7400a3fcb27a326118648e8d294d",
+        "size_bytes": 130748,
+        "status": "present"
+      },
+      "registry_value_binary_gib": 2.2235846519470215,
+      "root_job_id": "q_24b7989c1dd3ba73ec48",
+      "run_id": "r_20260730T073313Z_13fd2c49_s000_f00_a01_1cd91f1f",
+      "seed": 0,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073313Z_13fd2c49_s000_f00_a01_1cd91f1f/metrics/final.json",
+          "sha256": "fec29fbd0bde144b80d3c54e658a6138ebbde544e65cf4a7e61ef2c5858e80df",
+          "size_bytes": 124591
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073313Z_13fd2c49_s000_f00_a01_1cd91f1f/diagnostics/resource_usage.json",
+          "sha256": "4d7793c3685c352ce2cba75d1432139fbab45965e3f80d374baff6307b2b54a7",
+          "size_bytes": 7137
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073313Z_13fd2c49_s000_f00_a01_1cd91f1f/summary.json",
+          "sha256": "0d4aaf942c880e07c07c02763e96b5df903f7400a3fcb27a326118648e8d294d",
+          "size_bytes": 130748
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 2.2235846519470215,
+        "resource_diagnostic": 2.2235846519470215,
+        "summary": 2.2235846519470215
+      },
+      "stage": "production"
+    },
+    {
+      "action": "already_consistent",
+      "arm": "pooled-hybrid-matched-self",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073221Z_13fd2c49_s001_f00_a01_ede87d69/provenance/artifact_checksums.json",
+        "sha256": "4e267d333aa2b637bffcc931f6327913885da70fbf4bb56077184b35dcf56950",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073221Z_13fd2c49_s001_f00_a01_ede87d69",
+      "bundle_content_sha256": "f5bf4d460eaff2b0b250a82770238f998ead6c146c46581e89cad504597a117a",
+      "completed_job_id": "q_cb13ccb87ed5badd0246",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 2.2235846519470215,
+      "registered_summary_artifact": {
+        "artifact_id": 3769,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073221Z_13fd2c49_s001_f00_a01_ede87d69/summary.json",
+        "sha256": "ff4b414e115055bfc113202c5b2bb03a8bc623ba2d72e5346a135082f98ec365",
+        "size_bytes": 130732,
+        "status": "present"
+      },
+      "registry_value_binary_gib": 2.2235846519470215,
+      "root_job_id": "q_cb13ccb87ed5badd0246",
+      "run_id": "r_20260730T073221Z_13fd2c49_s001_f00_a01_ede87d69",
+      "seed": 1,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073221Z_13fd2c49_s001_f00_a01_ede87d69/metrics/final.json",
+          "sha256": "270f6599a87926b32d348907d986d34971616297e756088f356024f8fc1a234c",
+          "size_bytes": 124576
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073221Z_13fd2c49_s001_f00_a01_ede87d69/diagnostics/resource_usage.json",
+          "sha256": "0979279482b18442c563bdaaa986bb841d25d2df1c87a8a29e5abdbc34fa0696",
+          "size_bytes": 7131
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073221Z_13fd2c49_s001_f00_a01_ede87d69/summary.json",
+          "sha256": "ff4b414e115055bfc113202c5b2bb03a8bc623ba2d72e5346a135082f98ec365",
+          "size_bytes": 130732
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 2.2235846519470215,
+        "resource_diagnostic": 2.2235846519470215,
+        "summary": 2.2235846519470215
+      },
+      "stage": "production"
+    },
+    {
+      "action": "already_consistent",
+      "arm": "pooled-hybrid-matched-self",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073218Z_13fd2c49_s002_f00_a01_d9f04213/provenance/artifact_checksums.json",
+        "sha256": "e5aba76fe0902e9f135c03a08e08777ff4b7cefe79394c1941202ec6f92f0f5c",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073218Z_13fd2c49_s002_f00_a01_d9f04213",
+      "bundle_content_sha256": "18943ca1d5a5c314b69febcb9243b0aaefc9a9c6aac4c33c383113fe0dd35783",
+      "completed_job_id": "q_f2d3135e78e2842a68de",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 2.2235846519470215,
+      "registered_summary_artifact": {
+        "artifact_id": 3843,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073218Z_13fd2c49_s002_f00_a01_d9f04213/summary.json",
+        "sha256": "b18fc5d7a8489173cbb024a7c98c256603fd7108240308e283b90cef8ccaf200",
+        "size_bytes": 130722,
+        "status": "present"
+      },
+      "registry_value_binary_gib": 2.2235846519470215,
+      "root_job_id": "q_f2d3135e78e2842a68de",
+      "run_id": "r_20260730T073218Z_13fd2c49_s002_f00_a01_d9f04213",
+      "seed": 2,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073218Z_13fd2c49_s002_f00_a01_d9f04213/metrics/final.json",
+          "sha256": "2441ad7dc6237fdbb13a1c889ce672e3a875bf753060af5ff76eec2e233cbb96",
+          "size_bytes": 124566
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073218Z_13fd2c49_s002_f00_a01_d9f04213/diagnostics/resource_usage.json",
+          "sha256": "b16fd7e89a7e8fbfa642b0e34bd6b57e58f4ad2717a0c313364903a431c9a786",
+          "size_bytes": 7127
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073218Z_13fd2c49_s002_f00_a01_d9f04213/summary.json",
+          "sha256": "b18fc5d7a8489173cbb024a7c98c256603fd7108240308e283b90cef8ccaf200",
+          "size_bytes": 130722
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 2.2235846519470215,
+        "resource_diagnostic": 2.2235846519470215,
+        "summary": 2.2235846519470215
+      },
+      "stage": "production"
+    },
+    {
+      "action": "already_consistent",
+      "arm": "pooled-hybrid-matched-self",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073237Z_13fd2c49_s003_f00_a01_ba8ebf02/provenance/artifact_checksums.json",
+        "sha256": "5c898960f1cce3fe5e59d0ea3e5aadeb7a2563e5c0ddc31ba7dd0c2d9967bc03",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073237Z_13fd2c49_s003_f00_a01_ba8ebf02",
+      "bundle_content_sha256": "0d2d464451a7bdd4a06c039d5b7bda5ebdbdb0906ee2fc7df4edb4ea2babfaab",
+      "completed_job_id": "q_8f4cc09f6e7625ff5009",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 2.2235846519470215,
+      "registered_summary_artifact": {
+        "artifact_id": 3880,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073237Z_13fd2c49_s003_f00_a01_ba8ebf02/summary.json",
+        "sha256": "501dc6aa61872408c60493a2115f4225461384e235ca924c51467d7ae9c0f61f",
+        "size_bytes": 130723,
+        "status": "present"
+      },
+      "registry_value_binary_gib": 2.2235846519470215,
+      "root_job_id": "q_8f4cc09f6e7625ff5009",
+      "run_id": "r_20260730T073237Z_13fd2c49_s003_f00_a01_ba8ebf02",
+      "seed": 3,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073237Z_13fd2c49_s003_f00_a01_ba8ebf02/metrics/final.json",
+          "sha256": "e49bb8b66a028fda80f0ceb8915f246513d75eed7f76b7c5565d39e9af6254b1",
+          "size_bytes": 124567
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073237Z_13fd2c49_s003_f00_a01_ba8ebf02/diagnostics/resource_usage.json",
+          "sha256": "328d263213b2a97496ffc3d24e4c11b574a3cb7dbb838871144c5c12e88d8e6c",
+          "size_bytes": 7141
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073237Z_13fd2c49_s003_f00_a01_ba8ebf02/summary.json",
+          "sha256": "501dc6aa61872408c60493a2115f4225461384e235ca924c51467d7ae9c0f61f",
+          "size_bytes": 130723
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 2.2235846519470215,
+        "resource_diagnostic": 2.2235846519470215,
+        "summary": 2.2235846519470215
+      },
+      "stage": "production"
+    },
+    {
+      "action": "already_consistent",
+      "arm": "pooled-hybrid-matched-self",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073217Z_13fd2c49_s004_f00_a01_a9a86bf5/provenance/artifact_checksums.json",
+        "sha256": "91579aa50724ef34cb4e3188f4497e6d2eb7fff68bc7b4015adc3c07bd6013a1",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073217Z_13fd2c49_s004_f00_a01_a9a86bf5",
+      "bundle_content_sha256": "aa9ecb2a7809e001a066a16b39c0d5b8b2abd45b8217638e60ecdb5752935c8f",
+      "completed_job_id": "q_cff85961c7fe5410af5d",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 2.2235846519470215,
+      "registered_summary_artifact": {
+        "artifact_id": 3806,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073217Z_13fd2c49_s004_f00_a01_a9a86bf5/summary.json",
+        "sha256": "194542ca104fe5b6ef74ff0c05c6d3cfbb42368d9e1eb3cdbe082cbc9d1dcb0a",
+        "size_bytes": 130659,
+        "status": "present"
+      },
+      "registry_value_binary_gib": 2.2235846519470215,
+      "root_job_id": "q_cff85961c7fe5410af5d",
+      "run_id": "r_20260730T073217Z_13fd2c49_s004_f00_a01_a9a86bf5",
+      "seed": 4,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073217Z_13fd2c49_s004_f00_a01_a9a86bf5/metrics/final.json",
+          "sha256": "5fbf7239ba761476f3b2b7e1be772933288ea6dcdb2652ce0e9872680a7a6150",
+          "size_bytes": 124503
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073217Z_13fd2c49_s004_f00_a01_a9a86bf5/diagnostics/resource_usage.json",
+          "sha256": "d35b5a141ec846ce3b2612fbd18774f8a34155f698dccc036b7d1952f6df0d93",
+          "size_bytes": 7138
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073217Z_13fd2c49_s004_f00_a01_a9a86bf5/summary.json",
+          "sha256": "194542ca104fe5b6ef74ff0c05c6d3cfbb42368d9e1eb3cdbe082cbc9d1dcb0a",
+          "size_bytes": 130659
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 2.2235846519470215,
+        "resource_diagnostic": 2.2235846519470215,
+        "summary": 2.2235846519470215
+      },
+      "stage": "production"
+    },
+    {
+      "action": "already_consistent",
+      "arm": "pooled-hybrid-matched-self",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073103Z_13fd2c49_s005_f00_a01_7c0e9d45/provenance/artifact_checksums.json",
+        "sha256": "93fb890ee6690b12bc0aa751250b1adbc5a77363f7d725fe2b9310d380d34826",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073103Z_13fd2c49_s005_f00_a01_7c0e9d45",
+      "bundle_content_sha256": "5ec18bc0c3774d0886855808c2d036f2747fcb8c848296902fecd80f02040f36",
+      "completed_job_id": "q_5575733305f420c0b370",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 2.2235846519470215,
+      "registered_summary_artifact": {
+        "artifact_id": 3695,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073103Z_13fd2c49_s005_f00_a01_7c0e9d45/summary.json",
+        "sha256": "86e74b1c995b5fbaa9604e246af04c26cf8d3c8beee430a9b359c9a3aeb4d413",
+        "size_bytes": 130691,
+        "status": "present"
+      },
+      "registry_value_binary_gib": 2.2235846519470215,
+      "root_job_id": "q_5575733305f420c0b370",
+      "run_id": "r_20260730T073103Z_13fd2c49_s005_f00_a01_7c0e9d45",
+      "seed": 5,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073103Z_13fd2c49_s005_f00_a01_7c0e9d45/metrics/final.json",
+          "sha256": "48b0a2de5a36e1c625ea9fb8ecd21280bbf0f957941adb8b48e9e1bce93b7ad8",
+          "size_bytes": 124535
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073103Z_13fd2c49_s005_f00_a01_7c0e9d45/diagnostics/resource_usage.json",
+          "sha256": "b9712768d465785e65e0aa0c5303ecb167481ff4a5c2bfc30b313347ed9bd6a0",
+          "size_bytes": 7125
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073103Z_13fd2c49_s005_f00_a01_7c0e9d45/summary.json",
+          "sha256": "86e74b1c995b5fbaa9604e246af04c26cf8d3c8beee430a9b359c9a3aeb4d413",
+          "size_bytes": 130691
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 2.2235846519470215,
+        "resource_diagnostic": 2.2235846519470215,
+        "summary": 2.2235846519470215
+      },
+      "stage": "production"
+    },
+    {
+      "action": "already_consistent",
+      "arm": "pooled-hybrid-matched-self",
+      "artifact_checksum_manifest": {
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073140Z_13fd2c49_s006_f00_a01_8e3587d4/provenance/artifact_checksums.json",
+        "sha256": "be4b64e52cff8c35efa101128aa0c5a8f59667e51e09401705dea597a5d0a26c",
+        "size_bytes": 6167
+      },
+      "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073140Z_13fd2c49_s006_f00_a01_8e3587d4",
+      "bundle_content_sha256": "2d3cfe146463acf7fa1bd4559911748a7e9b87f1faa51c678b9fb55abd2f03f2",
+      "completed_job_id": "q_219e6ea45b47843e6527",
+      "failed_attempts": [],
+      "proposed_value_binary_gib": 2.2235846519470215,
+      "registered_summary_artifact": {
+        "artifact_id": 3732,
+        "kind": "metadata",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073140Z_13fd2c49_s006_f00_a01_8e3587d4/summary.json",
+        "sha256": "d19084aa0243b2076c57669fefb84012f36d01e6a9b85f2d6b40c23d8038e286",
+        "size_bytes": 130729,
+        "status": "present"
+      },
+      "registry_value_binary_gib": 2.2235846519470215,
+      "root_job_id": "q_219e6ea45b47843e6527",
+      "run_id": "r_20260730T073140Z_13fd2c49_s006_f00_a01_8e3587d4",
+      "seed": 6,
+      "selected_attempt": 1,
+      "source_files": {
+        "metrics_final": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073140Z_13fd2c49_s006_f00_a01_8e3587d4/metrics/final.json",
+          "sha256": "281d1555c873df17afca900c7909c810394bcc46063a71b23b86c00519232c94",
+          "size_bytes": 124573
+        },
+        "resource_diagnostic": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073140Z_13fd2c49_s006_f00_a01_8e3587d4/diagnostics/resource_usage.json",
+          "sha256": "1025f1b47ee80d3e0dec9e3644587687ab69a9626e19999afbee915f3b20170e",
+          "size_bytes": 7124
+        },
+        "summary": {
+          "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073140Z_13fd2c49_s006_f00_a01_8e3587d4/summary.json",
+          "sha256": "d19084aa0243b2076c57669fefb84012f36d01e6a9b85f2d6b40c23d8038e286",
+          "size_bytes": 130729
+        }
+      },
+      "source_values_binary_gib": {
+        "metrics_final": 2.2235846519470215,
+        "resource_diagnostic": 2.2235846519470215,
+        "summary": 2.2235846519470215
+      },
+      "stage": "production"
+    }
+  ],
+  "lineage": {
+    "queue_attempts": [
+      {
+        "arm": "pooled-hybrid-gat-k1000",
+        "attempt": 1,
+        "config_sha256": "1841b4b0a6f45c0f07e0c2d141c78efcd7bcafe0fcc2cc61db1f376716b56f9c",
+        "job_id": "q_5d7dbbe20729a16147a9",
+        "maximum_attempts": 2,
+        "requested_gpu": "0",
+        "retry_of": null,
+        "run_id": "r_20260730T045810Z_8337b1ce_s000_f00_a01_a16200b5",
+        "seed": 0,
+        "stage": "pilot",
+        "status": "failed"
+      },
+      {
+        "arm": "pooled-hybrid-gat-k1000",
+        "attempt": 2,
+        "config_sha256": "1841b4b0a6f45c0f07e0c2d141c78efcd7bcafe0fcc2cc61db1f376716b56f9c",
+        "job_id": "q_68d645fff082e9ae2035",
+        "maximum_attempts": 2,
+        "requested_gpu": "0",
+        "retry_of": "q_5d7dbbe20729a16147a9",
+        "run_id": "r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3",
+        "seed": 0,
+        "stage": "pilot",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-matched-self",
+        "attempt": 1,
+        "config_sha256": "ef4f6cec41b6f513fcd871bcb57420ad8cf4348d697a9807e213b360d03cfe58",
+        "job_id": "q_bdef091a4114daacf9a3",
+        "maximum_attempts": 2,
+        "requested_gpu": "1",
+        "retry_of": null,
+        "run_id": "r_20260730T045810Z_435c46b1_s000_f00_a01_7ecfe24f",
+        "seed": 0,
+        "stage": "pilot",
+        "status": "failed"
+      },
+      {
+        "arm": "pooled-hybrid-matched-self",
+        "attempt": 2,
+        "config_sha256": "ef4f6cec41b6f513fcd871bcb57420ad8cf4348d697a9807e213b360d03cfe58",
+        "job_id": "q_4e07bb5b05624467e2ea",
+        "maximum_attempts": 2,
+        "requested_gpu": "1",
+        "retry_of": "q_bdef091a4114daacf9a3",
+        "run_id": "r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e",
+        "seed": 0,
+        "stage": "pilot",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-gat-k1000",
+        "attempt": 1,
+        "config_sha256": "bcfc8fc477f1df3edd7fdc9c362facad99647c24d1601bbffbf290c7816f6b79",
+        "job_id": "q_6c3dce1bc36d85149bf7",
+        "maximum_attempts": 2,
+        "requested_gpu": "0",
+        "retry_of": null,
+        "run_id": "r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647",
+        "seed": 0,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-gat-k1000",
+        "attempt": 1,
+        "config_sha256": "9f1d43fd9b9cceed9d8517123551a64b620e16849a054355258a7b47c18572fa",
+        "job_id": "q_215512cfe2c78c698575",
+        "maximum_attempts": 2,
+        "requested_gpu": "1",
+        "retry_of": null,
+        "run_id": "r_20260730T051345Z_e070b529_s001_f00_a01_2a726378",
+        "seed": 1,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-gat-k1000",
+        "attempt": 1,
+        "config_sha256": "34b1d8fae167aba233c76d2d21222b0e287492f944a501e22995d6db45c729bf",
+        "job_id": "q_6651d966d8cb2f05aa80",
+        "maximum_attempts": 2,
+        "requested_gpu": "2",
+        "retry_of": null,
+        "run_id": "r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42",
+        "seed": 2,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-gat-k1000",
+        "attempt": 1,
+        "config_sha256": "1dc7c267d4aaa627eecbf424e6652e689c587e4a7a771f1e458c67c5f22dc420",
+        "job_id": "q_40ca8f34725a5cf9092a",
+        "maximum_attempts": 2,
+        "requested_gpu": "3",
+        "retry_of": null,
+        "run_id": "r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1",
+        "seed": 3,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-gat-k1000",
+        "attempt": 1,
+        "config_sha256": "56593f0b4cc55cd8d006468e2a5a83a49df0ffea5323c01623c38301808dc276",
+        "job_id": "q_78a02159e3f56f39c266",
+        "maximum_attempts": 2,
+        "requested_gpu": "5",
+        "retry_of": null,
+        "run_id": "r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879",
+        "seed": 4,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-gat-k1000",
+        "attempt": 1,
+        "config_sha256": "eb97d2b6fd52e9f32daba4e2f3b08f1b0eaa3543e205fcd89a62018a81e3e8ec",
+        "job_id": "q_1937e16bdfbe1e8d5f63",
+        "maximum_attempts": 2,
+        "requested_gpu": "6",
+        "retry_of": null,
+        "run_id": "r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6",
+        "seed": 5,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-gat-k1000",
+        "attempt": 1,
+        "config_sha256": "d9516ca9fa3af3e2fb5485f4cae57b460b8fc6c44cb1f772f1e21483f016438d",
+        "job_id": "q_a806dd0e26b697938a56",
+        "maximum_attempts": 2,
+        "requested_gpu": "7",
+        "retry_of": null,
+        "run_id": "r_20260730T051350Z_e070b529_s006_f00_a01_c218392c",
+        "seed": 6,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-matched-self",
+        "attempt": 1,
+        "config_sha256": "ac14d7205e2dadf967fb586c727728ae478180e884ff78d32dfa7eeb928553d5",
+        "job_id": "q_24b7989c1dd3ba73ec48",
+        "maximum_attempts": 2,
+        "requested_gpu": "0",
+        "retry_of": null,
+        "run_id": "r_20260730T073313Z_13fd2c49_s000_f00_a01_1cd91f1f",
+        "seed": 0,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-matched-self",
+        "attempt": 1,
+        "config_sha256": "3215a9b47cc3fcad0992f87f10a7bd341e3b255fc9a36d6dae086c3aedac816d",
+        "job_id": "q_cb13ccb87ed5badd0246",
+        "maximum_attempts": 2,
+        "requested_gpu": "1",
+        "retry_of": null,
+        "run_id": "r_20260730T073221Z_13fd2c49_s001_f00_a01_ede87d69",
+        "seed": 1,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-matched-self",
+        "attempt": 1,
+        "config_sha256": "52b27ac1f0176007110f38b42b7cedbe5050e8cad854589e9de472cf7d5691f5",
+        "job_id": "q_f2d3135e78e2842a68de",
+        "maximum_attempts": 2,
+        "requested_gpu": "2",
+        "retry_of": null,
+        "run_id": "r_20260730T073218Z_13fd2c49_s002_f00_a01_d9f04213",
+        "seed": 2,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-matched-self",
+        "attempt": 1,
+        "config_sha256": "1ffde2b222988d8916a80fa516a218e3d44077df3df3ad588446c92e7ead3800",
+        "job_id": "q_8f4cc09f6e7625ff5009",
+        "maximum_attempts": 2,
+        "requested_gpu": "3",
+        "retry_of": null,
+        "run_id": "r_20260730T073237Z_13fd2c49_s003_f00_a01_ba8ebf02",
+        "seed": 3,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-matched-self",
+        "attempt": 1,
+        "config_sha256": "1f29f96ce4c5756cb5665780509de845c0da57f3788a1edd567ac0e3178cd158",
+        "job_id": "q_cff85961c7fe5410af5d",
+        "maximum_attempts": 2,
+        "requested_gpu": "5",
+        "retry_of": null,
+        "run_id": "r_20260730T073217Z_13fd2c49_s004_f00_a01_a9a86bf5",
+        "seed": 4,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-matched-self",
+        "attempt": 1,
+        "config_sha256": "6daa48c971d0b8bba54523ed8773dfb2c61cb09588164f71febe1e66879cc91c",
+        "job_id": "q_5575733305f420c0b370",
+        "maximum_attempts": 2,
+        "requested_gpu": "6",
+        "retry_of": null,
+        "run_id": "r_20260730T073103Z_13fd2c49_s005_f00_a01_7c0e9d45",
+        "seed": 5,
+        "stage": "production",
+        "status": "completed"
+      },
+      {
+        "arm": "pooled-hybrid-matched-self",
+        "attempt": 1,
+        "config_sha256": "8dfacf81edf604b7724ef6d0b76a3f669b8975f83957e180d0464f19bb66c689",
+        "job_id": "q_219e6ea45b47843e6527",
+        "maximum_attempts": 2,
+        "requested_gpu": "7",
+        "retry_of": null,
+        "run_id": "r_20260730T073140Z_13fd2c49_s006_f00_a01_8e3587d4",
+        "seed": 6,
+        "stage": "production",
+        "status": "completed"
+      }
+    ],
+    "run_attempts": [
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T045810Z_435c46b1_s000_f00_a01_7ecfe24f",
+        "attempt": 1,
+        "normalized_config_sha256": "ef4f6cec41b6f513fcd871bcb57420ad8cf4348d697a9807e213b360d03cfe58",
+        "registry_peak_vram_gb": null,
+        "retry_of": null,
+        "run_id": "r_20260730T045810Z_435c46b1_s000_f00_a01_7ecfe24f",
+        "status": "failed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T045810Z_8337b1ce_s000_f00_a01_a16200b5",
+        "attempt": 1,
+        "normalized_config_sha256": "1841b4b0a6f45c0f07e0c2d141c78efcd7bcafe0fcc2cc61db1f376716b56f9c",
+        "registry_peak_vram_gb": null,
+        "retry_of": null,
+        "run_id": "r_20260730T045810Z_8337b1ce_s000_f00_a01_a16200b5",
+        "status": "failed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e",
+        "attempt": 2,
+        "normalized_config_sha256": "ef4f6cec41b6f513fcd871bcb57420ad8cf4348d697a9807e213b360d03cfe58",
+        "registry_peak_vram_gb": null,
+        "retry_of": "r_20260730T045810Z_435c46b1_s000_f00_a01_7ecfe24f",
+        "run_id": "r_20260730T050028Z_435c46b1_s000_f00_a02_150d438e",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3",
+        "attempt": 2,
+        "normalized_config_sha256": "1841b4b0a6f45c0f07e0c2d141c78efcd7bcafe0fcc2cc61db1f376716b56f9c",
+        "registry_peak_vram_gb": null,
+        "retry_of": "r_20260730T045810Z_8337b1ce_s000_f00_a01_a16200b5",
+        "run_id": "r_20260730T050028Z_8337b1ce_s000_f00_a02_5c2657d3",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647",
+        "attempt": 1,
+        "normalized_config_sha256": "bcfc8fc477f1df3edd7fdc9c362facad99647c24d1601bbffbf290c7816f6b79",
+        "registry_peak_vram_gb": null,
+        "retry_of": null,
+        "run_id": "r_20260730T051345Z_e070b529_s000_f00_a01_4fbb7647",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051345Z_e070b529_s001_f00_a01_2a726378",
+        "attempt": 1,
+        "normalized_config_sha256": "9f1d43fd9b9cceed9d8517123551a64b620e16849a054355258a7b47c18572fa",
+        "registry_peak_vram_gb": null,
+        "retry_of": null,
+        "run_id": "r_20260730T051345Z_e070b529_s001_f00_a01_2a726378",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42",
+        "attempt": 1,
+        "normalized_config_sha256": "34b1d8fae167aba233c76d2d21222b0e287492f944a501e22995d6db45c729bf",
+        "registry_peak_vram_gb": null,
+        "retry_of": null,
+        "run_id": "r_20260730T051349Z_e070b529_s002_f00_a01_7283bd42",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879",
+        "attempt": 1,
+        "normalized_config_sha256": "56593f0b4cc55cd8d006468e2a5a83a49df0ffea5323c01623c38301808dc276",
+        "registry_peak_vram_gb": null,
+        "retry_of": null,
+        "run_id": "r_20260730T051349Z_e070b529_s004_f00_a01_a73b1879",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1",
+        "attempt": 1,
+        "normalized_config_sha256": "1dc7c267d4aaa627eecbf424e6652e689c587e4a7a771f1e458c67c5f22dc420",
+        "registry_peak_vram_gb": null,
+        "retry_of": null,
+        "run_id": "r_20260730T051350Z_e070b529_s003_f00_a01_a6f905f1",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6",
+        "attempt": 1,
+        "normalized_config_sha256": "eb97d2b6fd52e9f32daba4e2f3b08f1b0eaa3543e205fcd89a62018a81e3e8ec",
+        "registry_peak_vram_gb": null,
+        "retry_of": null,
+        "run_id": "r_20260730T051350Z_e070b529_s005_f00_a01_fc6725c6",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T051350Z_e070b529_s006_f00_a01_c218392c",
+        "attempt": 1,
+        "normalized_config_sha256": "d9516ca9fa3af3e2fb5485f4cae57b460b8fc6c44cb1f772f1e21483f016438d",
+        "registry_peak_vram_gb": null,
+        "retry_of": null,
+        "run_id": "r_20260730T051350Z_e070b529_s006_f00_a01_c218392c",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073103Z_13fd2c49_s005_f00_a01_7c0e9d45",
+        "attempt": 1,
+        "normalized_config_sha256": "6daa48c971d0b8bba54523ed8773dfb2c61cb09588164f71febe1e66879cc91c",
+        "registry_peak_vram_gb": 2.2235846519470215,
+        "retry_of": null,
+        "run_id": "r_20260730T073103Z_13fd2c49_s005_f00_a01_7c0e9d45",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073140Z_13fd2c49_s006_f00_a01_8e3587d4",
+        "attempt": 1,
+        "normalized_config_sha256": "8dfacf81edf604b7724ef6d0b76a3f669b8975f83957e180d0464f19bb66c689",
+        "registry_peak_vram_gb": 2.2235846519470215,
+        "retry_of": null,
+        "run_id": "r_20260730T073140Z_13fd2c49_s006_f00_a01_8e3587d4",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073217Z_13fd2c49_s004_f00_a01_a9a86bf5",
+        "attempt": 1,
+        "normalized_config_sha256": "1f29f96ce4c5756cb5665780509de845c0da57f3788a1edd567ac0e3178cd158",
+        "registry_peak_vram_gb": 2.2235846519470215,
+        "retry_of": null,
+        "run_id": "r_20260730T073217Z_13fd2c49_s004_f00_a01_a9a86bf5",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073218Z_13fd2c49_s002_f00_a01_d9f04213",
+        "attempt": 1,
+        "normalized_config_sha256": "52b27ac1f0176007110f38b42b7cedbe5050e8cad854589e9de472cf7d5691f5",
+        "registry_peak_vram_gb": 2.2235846519470215,
+        "retry_of": null,
+        "run_id": "r_20260730T073218Z_13fd2c49_s002_f00_a01_d9f04213",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073221Z_13fd2c49_s001_f00_a01_ede87d69",
+        "attempt": 1,
+        "normalized_config_sha256": "3215a9b47cc3fcad0992f87f10a7bd341e3b255fc9a36d6dae086c3aedac816d",
+        "registry_peak_vram_gb": 2.2235846519470215,
+        "retry_of": null,
+        "run_id": "r_20260730T073221Z_13fd2c49_s001_f00_a01_ede87d69",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073237Z_13fd2c49_s003_f00_a01_ba8ebf02",
+        "attempt": 1,
+        "normalized_config_sha256": "1ffde2b222988d8916a80fa516a218e3d44077df3df3ad588446c92e7ead3800",
+        "registry_peak_vram_gb": 2.2235846519470215,
+        "retry_of": null,
+        "run_id": "r_20260730T073237Z_13fd2c49_s003_f00_a01_ba8ebf02",
+        "status": "completed"
+      },
+      {
+        "artifact_path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260730T073313Z_13fd2c49_s000_f00_a01_1cd91f1f",
+        "attempt": 1,
+        "normalized_config_sha256": "ac14d7205e2dadf967fb586c727728ae478180e884ff78d32dfa7eeb928553d5",
+        "registry_peak_vram_gb": 2.2235846519470215,
+        "retry_of": null,
+        "run_id": "r_20260730T073313Z_13fd2c49_s000_f00_a01_1cd91f1f",
+        "status": "completed"
+      }
+    ]
+  },
+  "mode": "read_only_plan",
+  "plan_kind": "pooled_peak_vram_registry_reconciliation_plan_v1",
+  "receipts": {
+    "materialization": {
+      "file_sha256": "723ada09229530cf7f3b8f05e031173b4cc316c50324b041b56a03213c76aba1",
+      "path": "/workspace/Bio-Architectural-Graph-Modeling/scratch/locked_campaigns/cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble/locked_config_materialization.json",
+      "payload_checksum": "d1a49b0428b1f90ec17f84581264fe4dc4ac3eca56526a0e29bcc761af02fdaa"
+    },
+    "pilot_enqueue": {
+      "file_sha256": "46a5b68d3fb05faf443c95c77b98d394b5ac3bc182020d9a41867b8efc4377d1",
+      "path": "/workspace/Bio-Architectural-Graph-Modeling/scratch/locked_campaigns/cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble/pilot_enqueue_receipt.json",
+      "payload_checksum": "84794b3c72e284720d899fe31dfb5e9b195d27c3c8f7c5d32b2ec883e4f21811"
+    },
+    "pilot_gate": {
+      "file_sha256": "f33d7634e90876c3269c08e1bae2cb9d63bab2089703109beb29dca543e03649",
+      "path": "/workspace/Bio-Architectural-Graph-Modeling/scratch/locked_campaigns/cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble/pilot_gate_receipt.json",
+      "payload_checksum": "549a7de5684279492c43de774d546226161cd8f8e14393d0ac92d4696a7cd068"
+    },
+    "production_enqueue": {
+      "file_sha256": "f80ad7a31e51e0edba45ea3d7f833905c64a7e0a32412b6ed4670562feb9abfe",
+      "path": "/workspace/Bio-Architectural-Graph-Modeling/scratch/locked_campaigns/cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble/production_enqueue_receipt.json",
+      "payload_checksum": "76ab088c9e26e970cea99827114471e1dda83b450a3423bb7c2e2e77d80aac58"
+    }
+  },
+  "registry_campaign_record_sha256": "8a2c28b23c1d2f6bb030a0a19f14f20b53936b461a60148debf624c107364294",
+  "registry_mutation_performed": false,
+  "run_bundles_modified": false,
+  "schema_version": 1
+}

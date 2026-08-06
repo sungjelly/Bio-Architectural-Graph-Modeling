@@ -1,0 +1,122 @@
+[
+  {
+    "continuous_relative_improvement": 0.23610623646651424,
+    "core_alias": "ANC-01",
+    "equal_core_reference_detection_balanced_accuracy": 0.509607788109533,
+    "model_detection_balanced_accuracy": 0.6787698672395396,
+    "model_positive_continuous_huber": 0.34747956196467084,
+    "model_positive_ordinal_mae": 0.8646341494158426,
+    "ordinal_relative_improvement": -0.5513000914061452,
+    "per_core_reference_detection_balanced_accuracy": 0.5170376586356333,
+    "per_core_reference_positive_continuous_huber": 0.45487943291664124,
+    "per_core_reference_positive_ordinal_mae": 0.5573609865723093
+  },
+  {
+    "continuous_relative_improvement": 0.2849307751436991,
+    "core_alias": "ANC-02",
+    "equal_core_reference_detection_balanced_accuracy": 0.5091869994850022,
+    "model_detection_balanced_accuracy": 0.6730557419917073,
+    "model_positive_continuous_huber": 0.36678532759348553,
+    "model_positive_ordinal_mae": 0.9800692184900467,
+    "ordinal_relative_improvement": -0.6630217484970629,
+    "per_core_reference_detection_balanced_accuracy": 0.5068106980954229,
+    "per_core_reference_positive_continuous_huber": 0.5129368106524149,
+    "per_core_reference_positive_ordinal_mae": 0.5893303676730465
+  },
+  {
+    "continuous_relative_improvement": 0.2718093880092057,
+    "core_alias": "ANC-03",
+    "equal_core_reference_detection_balanced_accuracy": 0.508560874329696,
+    "model_detection_balanced_accuracy": 0.6593760983491942,
+    "model_positive_continuous_huber": 0.37050752838452655,
+    "model_positive_ordinal_mae": 0.944160795421152,
+    "ordinal_relative_improvement": -0.6562960796281819,
+    "per_core_reference_detection_balanced_accuracy": 0.5109237581516748,
+    "per_core_reference_positive_continuous_huber": 0.5088056921958923,
+    "per_core_reference_positive_ordinal_mae": 0.5700434886213729
+  },
+  {
+    "continuous_relative_improvement": 0.29332550271991253,
+    "core_alias": "ANC-04",
+    "equal_core_reference_detection_balanced_accuracy": 0.5088875257474117,
+    "model_detection_balanced_accuracy": 0.6653471112018093,
+    "model_positive_continuous_huber": 0.37482256690661114,
+    "model_positive_ordinal_mae": 0.9888595842499597,
+    "ordinal_relative_improvement": -0.6343611714475359,
+    "per_core_reference_detection_balanced_accuracy": 0.5067238711057874,
+    "per_core_reference_positive_continuous_huber": 0.5304034153620402,
+    "per_core_reference_positive_ordinal_mae": 0.6050434882603932
+  },
+  {
+    "continuous_relative_improvement": 0.29444385640133003,
+    "core_alias": "ANC-05",
+    "equal_core_reference_detection_balanced_accuracy": 0.5080944191531999,
+    "model_detection_balanced_accuracy": 0.6604262197605227,
+    "model_positive_continuous_huber": 0.371617724498113,
+    "model_positive_ordinal_mae": 1.0007748150583113,
+    "ordinal_relative_improvement": -0.726250743183629,
+    "per_core_reference_detection_balanced_accuracy": 0.5034925114642129,
+    "per_core_reference_positive_continuous_huber": 0.5267018477121989,
+    "per_core_reference_positive_ordinal_mae": 0.5797389626101696
+  },
+  {
+    "continuous_relative_improvement": 0.27392698101409046,
+    "core_alias": "ANC-06",
+    "equal_core_reference_detection_balanced_accuracy": 0.5093980722538096,
+    "model_detection_balanced_accuracy": 0.6864883823732368,
+    "model_positive_continuous_huber": 0.3705521722634633,
+    "model_positive_ordinal_mae": 0.9394038563040578,
+    "ordinal_relative_improvement": -0.5989680595245939,
+    "per_core_reference_detection_balanced_accuracy": 0.5104333921269241,
+    "per_core_reference_positive_continuous_huber": 0.5103511114915212,
+    "per_core_reference_positive_ordinal_mae": 0.5875063299159096
+  },
+  {
+    "continuous_relative_improvement": 0.2336360294873486,
+    "core_alias": "ANC-07",
+    "equal_core_reference_detection_balanced_accuracy": 0.5097245822462734,
+    "model_detection_balanced_accuracy": 0.6777382357255086,
+    "model_positive_continuous_huber": 0.35401686032613117,
+    "model_positive_ordinal_mae": 0.8614517053917972,
+    "ordinal_relative_improvement": -0.5046775661201722,
+    "per_core_reference_detection_balanced_accuracy": 0.5213508484504765,
+    "per_core_reference_positive_continuous_huber": 0.46194350719451904,
+    "per_core_reference_positive_ordinal_mae": 0.5725158165367348
+  },
+  {
+    "continuous_relative_improvement": 0.2173930563101503,
+    "core_alias": "ANC-08",
+    "equal_core_reference_detection_balanced_accuracy": 0.5091318680780094,
+    "model_detection_balanced_accuracy": 0.6732245388607567,
+    "model_positive_continuous_huber": 0.3449748754501343,
+    "model_positive_ordinal_mae": 0.823293979263153,
+    "ordinal_relative_improvement": -0.5779233291129707,
+    "per_core_reference_detection_balanced_accuracy": 0.5131370828678357,
+    "per_core_reference_positive_continuous_huber": 0.4408022165298462,
+    "per_core_reference_positive_ordinal_mae": 0.5217579105861674
+  },
+  {
+    "continuous_relative_improvement": 0.24113979421199822,
+    "core_alias": "ANC-09",
+    "equal_core_reference_detection_balanced_accuracy": 0.5087675384326091,
+    "model_detection_balanced_accuracy": 0.671102255490052,
+    "model_positive_continuous_huber": 0.35859520236651105,
+    "model_positive_ordinal_mae": 0.8834538831098708,
+    "ordinal_relative_improvement": -0.6216107489054118,
+    "per_core_reference_detection_balanced_accuracy": 0.5111595021989528,
+    "per_core_reference_positive_continuous_huber": 0.47254448135693866,
+    "per_core_reference_positive_ordinal_mae": 0.54480021405026
+  },
+  {
+    "continuous_relative_improvement": 0.2689315171424831,
+    "core_alias": "ANC-10",
+    "equal_core_reference_detection_balanced_accuracy": 0.5086811530012012,
+    "model_detection_balanced_accuracy": 0.6779582092377869,
+    "model_positive_continuous_huber": 0.4262007276217143,
+    "model_positive_ordinal_mae": 1.0448825227061185,
+    "ordinal_relative_improvement": -0.5812993263192395,
+    "per_core_reference_detection_balanced_accuracy": 0.5091452588577082,
+    "per_core_reference_positive_continuous_huber": 0.5829833149909973,
+    "per_core_reference_positive_ordinal_mae": 0.6607746587347708
+  }
+]

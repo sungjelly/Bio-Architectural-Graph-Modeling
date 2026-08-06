@@ -1,0 +1,39 @@
+version: 1
+defaults:
+  - model: g2
+  - masking: p_n_b
+  - dataset: normal_core_cosmx_full_core
+  - features: cosmx_full_core_morphology_edge_geometry
+  - graph: k1000_r650_mutual
+  - trainer: full_core_resource_pilot_2
+  - evaluation: held_in_full_core_pilot_v1
+  - launcher: local_single_gpu_3090
+
+model:
+  receiver_chunk_size: 512
+  activation_checkpointing: true
+  exact_receiver_partitioning: true
+
+masking:
+  validation_replicates: 0
+  test_replicates: 0
+  fit_replicates: 1
+
+campaign:
+  campaign_id: cmp_20260725_full_core_high_k_capacity
+  display_name: Full-core high-k representation-capacity pilot
+experiment:
+  variant_label: g2_exact_k1000_resource_pilot
+  estimand: implementation_resource_feasibility_on_held_in_full_core
+  permitted_claim: diagnostic_runtime_and_memory_feasibility_only
+  conclusion_eligible: false
+  excluded_from_capacity_comparison: true
+classification:
+  schema_version: 1
+  lifecycle_stage: diagnostic
+  study_axis: resource_feasibility
+  retention_class: retain_diagnostic_evidence
+  classification_confidence: high
+seed: 0
+fold: 0
+attempt: 1

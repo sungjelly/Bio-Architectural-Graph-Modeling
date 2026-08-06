@@ -38,7 +38,13 @@ from . import identifiers as identifier_api
 from .configuration import PRIMARY_METRIC_DIRECTIONS
 from .identifiers import canonical_json, canonical_sha256
 from .paths import ProjectPaths, current_paths
-from .registry import Registry, RegistryConflictError, RegistryError
+from .registry import (
+    ARTIFACT_STATUS_DELETED_BY_RETENTION,
+    ARTIFACT_STATUS_RETENTION_PENDING,
+    Registry,
+    RegistryConflictError,
+    RegistryError,
+)
 
 
 CATALOG_SCHEMA_VERSION = 1
@@ -541,6 +547,52 @@ def _checkpoint_role(
     return "checkpoint"
 
 
+def _checkpoint_epoch(
+    *,
+    role: str,
+    registered: Mapping[str, Any],
+    run_summary: Mapping[str, Any],
+    training: Mapping[str, Any],
+) -> int | None:
+    """Return the epoch represented by the checkpoint catalog row.
+
+    Schema v1 retained the historical ``best_epoch`` column name.  For a
+    canonical ``last`` checkpoint, that column instead records the final
+    checkpoint epoch and must not fall back to a selected best epoch.
+    """
+
+    registered_metadata = _mapping(registered.get("metadata_json"))
+    summary_checkpoint = _mapping(run_summary.get("checkpoint"))
+    if role == "last":
+        return _integer(
+            _first(
+                registered_metadata.get("final_epoch"),
+                registered_metadata.get("checkpoint_epoch"),
+                registered_metadata.get("epoch"),
+                summary_checkpoint.get("final_epoch"),
+                summary_checkpoint.get("checkpoint_epoch"),
+                summary_checkpoint.get("epoch"),
+                run_summary.get("final_epoch"),
+                run_summary.get("checkpoint_epoch"),
+                training.get("final_epoch"),
+                registered.get("best_epoch"),
+            )
+        )
+    return _integer(
+        _first(
+            registered.get("best_epoch"),
+            registered_metadata.get("best_epoch"),
+            registered_metadata.get("checkpoint_epoch"),
+            registered_metadata.get("epoch"),
+            summary_checkpoint.get("best_epoch"),
+            summary_checkpoint.get("checkpoint_epoch"),
+            summary_checkpoint.get("epoch"),
+            run_summary.get("best_epoch"),
+            training.get("best_epoch"),
+        )
+    )
+
+
 def _normalize_stage(value: Any) -> str:
     token = _safe_component(value).replace("-", "_")
     normalized = _STAGE_SYNONYMS.get(token, token)
@@ -703,24 +755,49 @@ def _condition(
         condition = explicit.strip().lower().replace("-", "_")
     elif model_name == "b0-matched":
         condition = "b0_parameter_matched"
+    elif model_name == "qkv-gat-matched-self":
+        condition = "qkv_parameter_matched_self"
+    elif model_name == "hybrid-count-matched-self":
+        condition = "hybrid_count_parameter_matched_self"
     elif model_name == "broad-field":
         condition = "broad_field"
     elif bool(graph.get("rewired")):
         condition = f"{model_name}_rewired"
     elif str(graph.get("edge_control", "none")) != "none":
         condition = f"{model_name}_{graph['edge_control']}"
-    elif model_name in {"g1", "g2", "g3"}:
+    elif model_name in {
+        "g1",
+        "g2",
+        "g3",
+        "hybrid-count-gat",
+        "qkv-gat",
+    }:
         condition = f"{model_name}_true"
     else:
         condition = model_name
 
     if condition in {"b0", "b0_parameter_matched", "b1", "broad_field"}:
         role = "baseline"
+    elif condition in {
+        "hybrid_count_parameter_matched_self",
+        "qkv_parameter_matched_self",
+    }:
+        role = "parameter_matched_self_control"
     elif condition.endswith("_rewired"):
         role = "mechanism_breaking_control"
     elif condition.endswith(("_zero", "_distance_only", "_permuted")):
         role = "edge_feature_control"
-    elif condition.startswith(("g1_", "g2_", "g3_")):
+    elif condition.startswith(
+        (
+            "g1_",
+            "g2_",
+            "g3_",
+            "hybrid-count-gat_",
+            "hybrid_count_gat_",
+            "qkv-gat_",
+            "qkv_gat_",
+        )
+    ):
         role = "candidate_model"
     else:
         role = "unspecified"
@@ -929,7 +1006,12 @@ def _build_record(
         )
     )
     if use_edge_features is None:
-        use_edge_features = model_name in {"g2", "g3"}
+        use_edge_features = model_name in {
+            "g2",
+            "g3",
+            "hybrid-count-gat",
+            "qkv-gat",
+        }
 
     if historical:
         seed = _integer(legacy.get("seed"))
@@ -980,12 +1062,11 @@ def _build_record(
     checkpoint_path = checkpoint_path.absolute()
     checkpoint_sha = str(row.get("checkpoint_sha256") or "").lower() or None
     size_bytes = _integer(row.get("checkpoint_size_bytes"))
-    best_epoch = _integer(
-        _first(
-            registered_checkpoint.get("best_epoch"),
-            run_summary.get("best_epoch"),
-            training.get("best_epoch"),
-        )
+    best_epoch = _checkpoint_epoch(
+        role=checkpoint_role,
+        registered=registered_checkpoint,
+        run_summary=run_summary,
+        training=training,
     )
     monitored_metric = _first(
         registered_checkpoint.get("monitored_metric"),
@@ -1259,6 +1340,13 @@ def build_checkpoint_catalog(
     )
     records: list[dict[str, Any]] = []
     for row in rows:
+        if row.get("checkpoint_artifact_status") in {
+            ARTIFACT_STATUS_DELETED_BY_RETENTION,
+            ARTIFACT_STATUS_RETENTION_PENDING,
+        }:
+            # Existing catalog rows retain the tombstoned checkpoint metadata.
+            # Global re-indexing must not attempt to re-verify deleted bytes.
+            continue
         if not _is_checkpoint_artifact(
             row.get("checkpoint_artifact_kind"), row.get("checkpoint_path")
         ):
@@ -1880,6 +1968,17 @@ def verify_checkpoint_record(
     """Verify one source checkpoint against path, size, and SHA-256 metadata."""
 
     selected_paths = paths or current_paths()
+    artifact_status = str(record.get("checkpoint_artifact_status") or "")
+    if artifact_status == ARTIFACT_STATUS_DELETED_BY_RETENTION:
+        raise CheckpointVerificationError(
+            "Checkpoint bytes were intentionally deleted by an explicit "
+            f"retention decision: {record.get('checkpoint_path')}"
+        )
+    if artifact_status == ARTIFACT_STATUS_RETENTION_PENDING:
+        raise CheckpointVerificationError(
+            "Checkpoint retention deletion is incomplete and requires "
+            f"reconciliation: {record.get('checkpoint_path')}"
+        )
     raw_path = Path(str(record.get("checkpoint_path") or ""))
     if not raw_path.is_absolute():
         raw_path = selected_paths.project_root / raw_path

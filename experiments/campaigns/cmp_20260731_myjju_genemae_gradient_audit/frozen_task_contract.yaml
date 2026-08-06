@@ -1,0 +1,203 @@
+contract_schema_version: 1
+campaign_id: cmp_20260731_myjju_genemae_gradient_audit
+contract_status: frozen_before_new_gradient_inspection
+exploratory: true
+exploratory_reasons:
+  - source_gradient_report_and_selected_pairs_already_inspected
+  - upstream_reconstruction_results_already_inspected
+  - upstream_global_graph_use_gate_already_failed
+
+objective:
+  primary: audit_whether_myjju_genemae_gradients_are_stable_faithful_and_null_calibrated
+  prohibited_reframing: gradients_validate_biological_mechanisms
+  deliverables:
+    - source_statistic_equation_and_provenance_audit
+    - signed_directed_source_statistic_reproduction
+    - masked_target_gradient_with_same_and_cross_cell_decomposition
+    - target_specific_predictive_and_graph_eligibility
+    - seven_seed_three_mask_ten_core_stability
+    - bounded_finite_difference_faithfulness
+    - graph_parameter_and_matched_pair_nulls
+    - checksum_bound_registered_aggregate_run
+    - markdown_html_csv_json_report
+
+upstream:
+  campaign_id: cmp_20260730_myjju_genemae_10core_comparison
+  checkpoint_policy: all_seven_final_epoch_199_checkpoints
+  seeds: [0, 1, 2, 3, 4, 5, 6]
+  select_best_seed: false
+  known_global_graph_use_relative_huber_improvement: 0.010893
+  known_global_graph_use_gate_passed: false
+
+cohort:
+  aliases: [ANC-01, ANC-02, ANC-03, ANC-04, ANC-05, ANC-06, ANC-07, ANC-08, ANC-09, ANC-10]
+  tissue_context: pathology_confirmed_adjacent_normal
+  total_fit_cells: 117386
+  genes: 1000
+  biological_unit: tissue_core
+  core_count: 10
+  all_cells_used_for_model_fit: true
+  generalization_estimate: false
+  seeds_and_masks_are_technical_repeats: true
+  evaluation_weighting: equal_core
+
+preprocessing:
+  scale: full_cell_log1p_cp10k
+  hidden_entries_contribute_to_library_denominator: true
+  derivative_is_with_respect_to_normalized_compositional_input: true
+  derivative_is_not_with_respect_to_raw_molecule_count: true
+  technical_control_prefixes_excluded: [Negative, SystemControl]
+  ordered_gene_equality_required: true
+
+graph:
+  kind: symmetric_spatial_knn
+  k: 15
+  maximum_tile_nodes: 7000
+  graph_layers: 4
+  maximum_hops: 4
+  cross_core_edges: prohibited
+  cross_tile_edges: prohibited
+  direct_interaction_claim: prohibited
+  primary_null: deterministic_node_label_permutation_preserving_topology_and_degree
+
+marker_modules:
+  epithelial: [EPCAM, KRT8, KRT18, KRT19, CDH1, KRT7, KRT17, KRT5]
+  proliferation: [MKI67, PCNA, TOP2A, BIRC5]
+  immune_T: [PTPRC, CD3D, CD3E, CD8A, CD4, FOXP3, NKG7]
+  immune_myeloid_B: [CD68, CD163, MS4A1, CD79A]
+  stroma: [COL1A1, COL1A2, COL3A1, ACTA2, DCN, LUM, PDGFRB]
+  endothelial: [PECAM1, VWF]
+  cancer_candidate: [PSCA, OLFM4, CEACAM6, CLDN4, LGR5, SOX9, MYC]
+
+locked_source_selected_pairs:
+  KRT8: [KRT19, KRT18, KRT7]
+  COL1A1: [COL3A1, COL1A2, DCN]
+  EPCAM: [PSCA, OLFM4, KRT19, CLDN4, CDH1]
+  OLFM4: [PSCA, EPCAM, KRT19, CDH1]
+  CEACAM6: [KRT19, KRT8, CLDN4, KRT18]
+pair_role: circular_reproduction_positive_control_not_independent_biological_validation
+
+estimands:
+  source:
+    entry_mask: all_false
+    output: sum_target_reconstruction_over_all_output_cells
+    input: source_gene_over_all_input_cells
+    aggregation: mean_per_input_cell
+    retained_primary_form: signed_directed
+    published_source_transform: half_abs_matrix_plus_abs_transpose
+  masked:
+    mask_rate: 0.2
+    mask_replicates: [0, 1, 2]
+    output: sum_target_reconstruction_over_masked_target_receivers
+    input: visible_source_gene_entries
+    aggregation: mean_per_masked_target_receiver
+    decomposition:
+      - same_receiver_cell_signed_sum
+      - other_cell_up_to_four_hop_signed_sum
+      - same_receiver_cell_l1_mass
+      - other_cell_up_to_four_hop_l1_mass
+
+bounded_faithfulness:
+  perturbation_scales_within_core_sd: [0.10, 0.25]
+  clip_quantiles: [0.01, 0.99]
+  direction: exact_clipped_visible_source_gene_shift
+  comparison: gradient_dot_direction_versus_centered_frozen_model_change
+  biological_counterfactual_claim: prohibited
+
+eligibility_gates:
+  target_predictive:
+    per_core_gene_mean_relative_huber_improvement_minimum: 0.02
+    minimum_favoring_cores: 8
+  target_graph_use:
+    observed_over_node_label_permuted_relative_huber_improvement_minimum: 0.02
+    minimum_favoring_cores: 8
+
+gradient_gates:
+  seed_rank_stability:
+    statistic: median_pairwise_spearman_off_diagonal_absolute_masked_gradient
+    minimum: 0.70
+    minimum_passing_cores: 8
+  mask_rank_stability:
+    statistic: median_pairwise_spearman_for_each_locked_target_row
+    minimum: 0.70
+    minimum_passing_cores: 8
+  signed_pair_stability:
+    minimum_same_sign_seeds: 6
+    minimum_same_sign_cores: 8
+  faithfulness:
+    minimum_spearman: 0.70
+    minimum_sign_agreement: 0.80
+    maximum_median_absolute_error_over_median_absolute_change: 0.50
+    must_pass_both_scales: true
+  matched_pair_null:
+    draws: 10000
+    preserve_target: true
+    matching_variables:
+      - source_expression_prevalence
+      - source_mean_expression
+      - absolute_raw_target_source_coexpression
+    minimum_empirical_percentile: 0.95
+  graph_gradient_null:
+    minimum_relative_improvement: 0.25
+    minimum_favoring_cores: 8
+  parameter_randomization:
+    controls: 7
+    reference_core: ANC-01
+    trained_structure_must_exceed_all_controls: true
+
+controls:
+  positive:
+    - analytical_tiny_graph_signed_same_and_cross_cell_recovery
+    - autograd_centered_finite_difference
+    - identical_checkpoint_reload
+  negative:
+    - masked_input_zero_gradient
+    - outside_receptive_field_zero_gradient
+    - cross_tile_zero_gradient
+    - node_label_permuted_graph
+    - parameter_randomized_models
+    - expression_and_coexpression_matched_random_pairs
+    - raw_coexpression_concordance
+    - source_unmasked_versus_task_relevant_masked_concordance
+
+resource_gate:
+  pilot_seed: 0
+  pilot_core: ANC-01
+  finite_outputs_and_gradients: true
+  exact_gradient_decomposition: true
+  deterministic_replay: true
+  peak_allocated_vram_gib_maximum: 20.5
+  projected_runtime_hours_per_seed_maximum: 2.0
+  production_gpu_map:
+    0: 0
+    1: 1
+    2: 2
+    3: 3
+    4: 5
+    5: 6
+    6: 7
+
+stop_conditions:
+  - checkpoint_or_registry_verification_failure
+  - cohort_graph_gene_or_mask_checksum_mismatch
+  - nonfinite_output_or_gradient
+  - failed_analytical_or_numerical_control
+  - unsafe_gpu_collision
+  - resource_gate_failure
+  - incomplete_seed_core_or_mask_coverage
+  - artifact_or_registry_verification_failure
+
+claim_ladder:
+  faithfulness_only: faithful_local_model_sensitivity
+  plus_stability: stable_model_implied_sensitivity
+  plus_eligibility_and_nulls: stable_faithful_graph_dependent_null_calibrated_predictive_sensitivity
+  literature_or_source_agreement: biologically_annotated_candidate_only
+  biological_mechanism_validation: unavailable_in_this_design
+
+prohibited_claims:
+  - causal_gradient
+  - validated_biological_mechanism
+  - direct_cell_cell_interaction
+  - held_out_core_or_patient_generalization
+  - independent_biological_replication
+  - raw_molecule_effect

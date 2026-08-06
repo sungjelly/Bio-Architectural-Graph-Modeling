@@ -1,0 +1,112 @@
+contract_schema_version: 1
+campaign_id: cmp_20260729_adjacent_normal_10core_hybrid_count_gat
+frozen_before_implementation: true
+exploratory_reason: ten_core_count_distribution_previously_inspected
+cohort:
+  tissue_context: pathology_confirmed_adjacent_normal
+  aliases: [ANC-01, ANC-02, ANC-03, ANC-04, ANC-05, ANC-06, ANC-07, ANC-08, ANC-09, ANC-10]
+  biological_unit: tissue_core
+  core_weighting: equal
+  generalization_estimate: false
+estimands:
+  primary: held_in_whole_node_masked_expression
+  secondary: [partial_gene_masked_expression, spatial_block_masked_expression]
+  permitted_claim: held_in_representation_capacity_and_possible_broad_context_graph_gain
+tokenization:
+  output_tokens:
+    0: count_0
+    1: count_1
+    2: count_2
+    3: count_3
+    4: count_4_to_7
+    5: count_8_to_15
+    6: count_16_to_31
+    7: count_32_or_greater
+  input_only_mask_token: 8
+  fixed_boundaries: true
+  count_validation: finite_nonnegative_integer
+encoder:
+  gene_specific_gene_by_token_projection: true
+  continuous_channel: per_gene_all_fit_standardized_log1p_raw_count
+  masked_continuous_value: 0.0
+  explicit_mask_authoritative_inside_model: true
+  morphology_imaging_contract: configs/features/cosmx_full_core_morphology_edge_geometry.yaml
+models:
+  hybrid-gat-k1000:
+    kind: exact_receiver_partitioned_edge_conditioned_gatv2
+    hidden_width: 512
+    attention_heads: 4
+    graph_layers: 2
+    ffn_width: 512
+    decoder_width: 512
+    graph: existing_exact_mutual_k1000
+    edge_feature_count: 17
+    graph_interpretation: broad_regional_context
+  hybrid-matched-self:
+    kind: strictly_cell_autonomous_parameter_matched_control
+    same_encoder_decoder_and_depth: true
+    prohibited: [topology, neighboring_cell_values, coordinates, measured_edge_attributes]
+  exact_trainable_parameter_match: required
+outputs_per_gene:
+  detection_logits: 1
+  positive_cumulative_ordinal_logits: 6
+  standardized_log1p_predictions: 1
+loss:
+  detection: equal_mean_zero_and_positive_bce
+  ordinal: equal_mean_below_or_equal_and_above_bce_per_threshold_then_mean_six_thresholds
+  continuous: positive_only_huber_delta_1
+  total: equal_mean_three_components
+  absent_expected_stratum: fail
+training:
+  optimizer: AdamW
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  gradient_clip_norm: 1.0
+  max_epochs: 200
+  seed: 0
+  deterministic: true
+  amp: conditional_on_equivalence_pilot
+  fixed_epoch_budget: true
+  early_stopping: false
+  validation_selection: false
+  primary_checkpoint: final_epoch
+  neighbor_sampling: false
+  edge_dropout: 0.0
+  mask_modes: [partial_gene, whole_node, spatial_block]
+  evaluation_mask_replicates_per_mode: 3
+references:
+  - all_zero
+  - per_gene_jeffreys_smoothed_detection_prevalence
+  - per_gene_jeffreys_smoothed_positive_cumulative_probabilities
+  - per_gene_median_positive_log1p_count
+graph_gate:
+  required_production_runs: 20
+  mean_paired_relative_total_loss_gain_minimum: 0.02
+  minimum_gat_favoring_cores: 8
+  exact_test: exhaustive_one_sided_paired_sign_flip_on_core_mean_improvement
+  exact_test_family: [detection_bce, ordinal_bce, positive_continuous_huber]
+  multiplicity: Holm
+  familywise_alpha: 0.05
+  require_all_adjusted_rejections: true
+  noninferiority_checks: [positive_ordinal_mae, positive_continuous_huber]
+representation_gate:
+  arm: hybrid-gat-k1000
+  mean_positive_ordinal_mae_relative_gain_minimum: 0.02
+  mean_positive_continuous_huber_relative_gain_minimum: 0.02
+  minimum_reference_favoring_cores_each_positive_metric: 8
+  detection_balanced_accuracy_must_exceed_reference: true
+pilot_gate:
+  alias: ANC-01
+  epochs: 2
+  both_arms_required: true
+  finite_losses_and_gradients: true
+  exact_parameter_match: true
+  peak_allocated_vram_gib_maximum: 20.5
+  fp32_amp_absolute_total_loss_discrepancy_maximum: 0.001
+  projected_gat_runtime_hours_per_core_maximum: 6.0
+prohibited_claims:
+  - patient_held_out_generalization
+  - true_normal_performance
+  - direct_cellular_interaction
+  - biological_mechanism
+  - causality

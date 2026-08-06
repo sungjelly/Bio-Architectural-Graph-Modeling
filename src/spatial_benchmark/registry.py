@@ -25,6 +25,8 @@ from .paths import current_paths
 
 SCHEMA_VERSION = 3
 DEFAULT_BUSY_TIMEOUT_MS = 30_000
+ARTIFACT_STATUS_DELETED_BY_RETENTION = "deleted_by_retention"
+ARTIFACT_STATUS_RETENTION_PENDING = "retention_deletion_pending"
 _ANY_GPU = object()
 RUN_STATUSES = frozenset(
     {
@@ -2437,17 +2439,49 @@ class Registry:
                 (finished, finished, job_id, run_id),
             )
 
-    def list_finalizing_runs(self) -> list[dict[str, Any]]:
-        """Return recoverable finalization records in deterministic order."""
+    def list_finalizing_runs(
+        self,
+        *,
+        recoverer_worker_id: str | None = None,
+        heartbeat_before: str | None = None,
+    ) -> list[dict[str, Any]]:
+        """Return finalization records eligible for deterministic recovery.
+
+        Supplying a recoverer and heartbeat cutoff restricts recovery to runs
+        already owned by that worker or to jobs whose last owner heartbeat is
+        stale.  This prevents one live worker from entering another live
+        worker's short marker/registry finalization window.
+        """
+
+        if (recoverer_worker_id is None) != (heartbeat_before is None):
+            raise ValueError(
+                "recoverer_worker_id and heartbeat_before must be supplied "
+                "together."
+            )
+        eligibility = ""
+        parameters: list[Any] = []
+        if recoverer_worker_id is not None:
+            eligibility = """
+                  AND (
+                      q.worker_id = ?
+                      OR (
+                          q.heartbeat_at IS NOT NULL
+                          AND q.heartbeat_at < ?
+                      )
+                  )
+            """
+            parameters.extend((recoverer_worker_id, heartbeat_before))
 
         with self.connect() as connection:
             rows = connection.execute(
-                """
+                f"""
                 SELECT r.run_id, r.artifact_path, q.job_id, q.worker_id
                 FROM runs r JOIN queue_jobs q ON q.run_id = r.run_id
                 WHERE r.status = 'finalizing' AND q.status = 'running'
+                  {eligibility}
                 ORDER BY r.updated_at, r.run_id
-                """
+                """,
+                parameters,
             ).fetchall()
         return [dict(row) for row in rows]
 
@@ -2837,6 +2871,26 @@ class Registry:
         issues: list[dict[str, Any]] = []
         for row in rows:
             path = Path(str(row["path"]))
+            artifact_status = str(row["status"])
+            if artifact_status == ARTIFACT_STATUS_DELETED_BY_RETENTION:
+                if path.exists() or path.is_symlink():
+                    issues.append(
+                        {
+                            "run_id": row["run_id"],
+                            "path": str(path),
+                            "issue": "retention_tombstone_path_exists",
+                        }
+                    )
+                continue
+            if artifact_status == ARTIFACT_STATUS_RETENTION_PENDING:
+                issues.append(
+                    {
+                        "run_id": row["run_id"],
+                        "path": str(path),
+                        "issue": "retention_deletion_pending",
+                    }
+                )
+                continue
             if not path.exists():
                 issues.append(
                     {"run_id": row["run_id"], "path": str(path), "issue": "missing"}

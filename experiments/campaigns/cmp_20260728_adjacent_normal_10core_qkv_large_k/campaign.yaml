@@ -1,0 +1,21 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260728_adjacent_normal_10core_qkv_large_k
+display_name: Ten-core adjacent-normal QKV-GAT large-k replication
+status: preparation
+definition: experiments/campaigns/cmp_20260728_adjacent_normal_10core_qkv_large_k/README.md
+cohort:
+  tissue_context: pathology_confirmed_adjacent_normal
+  independent_core_count: 10
+  independent_donor_count: 10
+  slide_balance:
+    SO_1: 5
+    SO_2: 5
+  protected_selection_policy: adjacent_normal_reviewed_balanced_v1
+  protected_selection_manifest_sha256: a460de90ba9998e6817cdf3fbbcd2416eec048ec3fe6c825db8677b70b8b297f
+variants_per_core:
+  - qkv_gat_exact_k1000
+  - qkv_gat_exact_k5000
+  - qkv_parameter_matched_self
+production_run_count: 30
+production_maximum_attempts: 2
+automatic_enqueue: false

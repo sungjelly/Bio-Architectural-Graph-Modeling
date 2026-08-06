@@ -1,0 +1,28 @@
+[
+  {
+    "arm": "pooled-hybrid-gat-k1000",
+    "attempt": 1,
+    "failure_category": "invalid_configuration",
+    "job_id": "q_5d7dbbe20729a16147a9",
+    "last_error_present": true,
+    "run_id": "r_20260730T045810Z_8337b1ce_s000_f00_a01_a16200b5",
+    "run_status": "failed",
+    "seed": 0,
+    "selected_completed_attempt": false,
+    "stage": "pilot",
+    "status": "failed"
+  },
+  {
+    "arm": "pooled-hybrid-matched-self",
+    "attempt": 1,
+    "failure_category": "invalid_configuration",
+    "job_id": "q_bdef091a4114daacf9a3",
+    "last_error_present": true,
+    "run_id": "r_20260730T045810Z_435c46b1_s000_f00_a01_7ecfe24f",
+    "run_status": "failed",
+    "seed": 0,
+    "selected_completed_attempt": false,
+    "stage": "pilot",
+    "status": "failed"
+  }
+]

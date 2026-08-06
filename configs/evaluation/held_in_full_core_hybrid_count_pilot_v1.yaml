@@ -1,0 +1,19 @@
+evaluation:
+  registry_version: 1
+  task_family: masked_expression_hybrid_count
+  protocol: held_in_full_core_fixed_budget
+  canonical_prediction_split: fit
+  primary_metric: fit/whole_node/hybrid_loss
+  primary_direction: minimize
+  splits: [fit]
+  mask_modes: [partial_gene, whole_node, spatial_block]
+  mask_replicates_per_mode: 1
+  fixed_mask_bundle: true
+  mask_seed_namespace: held_in_evaluation_disjoint_from_epoch_masks
+  uncertainty_unit: technical_mask_replicate
+  independent_biological_replicates: 1
+  generalization_estimate: false
+  validation_or_test_selection: false
+  conclusion_bearing: false
+  diagnostic_only: true
+  save_per_mask_numeric_data: true

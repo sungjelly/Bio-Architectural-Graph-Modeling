@@ -1,0 +1,81 @@
+[
+  {
+    "gate_path": "pooled_data_gate",
+    "passed": false
+  },
+  {
+    "favoring_core_count": 10,
+    "gate_path": "pooled_data_gate/metrics/detection_bce",
+    "mean_relative_improvement": 0.023185887614856963,
+    "passed": true
+  },
+  {
+    "favoring_core_count": 7,
+    "gate_path": "pooled_data_gate/metrics/positive_ordinal_mae",
+    "mean_relative_improvement": 0.037570573300312805,
+    "passed": false
+  },
+  {
+    "favoring_core_count": 4,
+    "gate_path": "pooled_data_gate/metrics/reconstructed_count_log1p_mae",
+    "mean_relative_improvement": -0.085667071693371,
+    "passed": false
+  },
+  {
+    "favoring_core_count": 10,
+    "favoring_seed_pair_count": 7,
+    "gate_path": "graph_gate",
+    "mean_relative_hybrid_loss_improvement": 0.030060481801889465,
+    "passed": true
+  },
+  {
+    "gate_path": "graph_gate/positive_metric_noninferiority",
+    "positive_continuous_huber": true,
+    "positive_ordinal_mae": true
+  },
+  {
+    "gate_path": "representation_gate",
+    "passed": false
+  },
+  {
+    "favoring_core_count": 0,
+    "gate_path": "representation_gate/positive_metrics/positive_ordinal_mae",
+    "mean_relative_improvement": -0.6115708864144944,
+    "passed": false
+  },
+  {
+    "favoring_core_count": 10,
+    "gate_path": "representation_gate/positive_metrics/positive_continuous_huber",
+    "mean_relative_improvement": 0.26156431369067323,
+    "passed": true
+  },
+  {
+    "gate_path": "representation_gate/detection_balanced_accuracy",
+    "model": 0.6723486660230114,
+    "passed": true,
+    "per_core_reference": 0.5110214581954629,
+    "pooled_reference": 0.5090040820836745
+  },
+  {
+    "gate_path": "ensemble_gate",
+    "passed": true
+  },
+  {
+    "ensemble_equal_core_mean": 0.4318688233693441,
+    "gate_path": "ensemble_gate/metrics/hybrid_loss",
+    "mean_individual_equal_core_metric": 0.4354104587009974,
+    "passed": true
+  },
+  {
+    "ensemble_equal_core_mean": 0.9330984509410308,
+    "gate_path": "ensemble_gate/metrics/positive_ordinal_mae",
+    "mean_individual_equal_core_metric": 0.9420458104318525,
+    "passed": true
+  },
+  {
+    "ensemble_equal_core_mean": 0.3685552547375361,
+    "gate_path": "ensemble_gate/metrics/positive_continuous_huber",
+    "mean_individual_equal_core_metric": 0.37301031095641,
+    "passed": true
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "gate": "primary_comparison",
+    "observed": {
+      "genemae_favoring_cores": 10,
+      "genemae_favoring_seed_pairs": 7,
+      "masked_mae_nonworse": true,
+      "mean_gene_pearson_nonworse": true,
+      "mean_huber_relative_improvement": 0.7293201490394673
+    },
+    "passed": true,
+    "threshold": {
+      "masked_mae_nonworse": true,
+      "mean_gene_pearson_nonworse": true,
+      "mean_huber_relative_improvement_minimum": 0.02,
+      "minimum_genemae_favoring_cores": 8,
+      "minimum_genemae_favoring_seed_pairs": 5
+    }
+  },
+  {
+    "gate": "baseline",
+    "observed": {
+      "genemae_favoring_cores": 10,
+      "mean_huber_relative_improvement": 0.10734005155640305
+    },
+    "passed": true,
+    "threshold": {
+      "mean_huber_relative_improvement_minimum": 0.02,
+      "minimum_genemae_favoring_cores": 8
+    }
+  },
+  {
+    "gate": "graph_use",
+    "observed": {
+      "mean_huber_relative_improvement": 0.010892877841427583,
+      "unpermuted_favoring_cores": 10
+    },
+    "passed": false,
+    "threshold": {
+      "mean_huber_relative_improvement_minimum": 0.02,
+      "minimum_unpermuted_favoring_cores": 8
+    }
+  }
+]

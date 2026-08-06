@@ -1,0 +1,33 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260731_myjju_genemae_gradient_audit_cpu_replay
+display_name: MyJJu GeneMAE gradient audit with strict CPU replay control
+status: complete
+outcome: negative
+exploratory: true
+contract_status: frozen_after_failed_cuda_replay_pilot
+definition: experiments/campaigns/cmp_20260731_myjju_genemae_gradient_audit_cpu_replay/README.md
+frozen_contract: experiments/campaigns/cmp_20260731_myjju_genemae_gradient_audit_cpu_replay/frozen_task_contract.yaml
+frozen_contract_sha256: bcdd6d7223f9b97f26833f77935c75645110aaba1669d11c0a7180c957514cc1
+implementation_protocol: experiments/campaigns/cmp_20260731_myjju_genemae_gradient_audit_cpu_replay/implementation_protocol.yaml
+implementation_protocol_sha256: b4328095bcde383633fb2862b3c35b6bc8203c98906aee7f2058443b2d16ddb8
+upstream_model_campaign: cmp_20260730_myjju_genemae_10core_comparison
+predecessor_audit_campaign: cmp_20260731_myjju_genemae_gradient_audit
+predecessor_failed_run: r_20260731T081950Z_b2203286_s000_f00_a01_35181af2
+core_aliases:
+  - ANC-01
+  - ANC-02
+  - ANC-03
+  - ANC-04
+  - ANC-05
+  - ANC-06
+  - ANC-07
+  - ANC-08
+  - ANC-09
+  - ANC-10
+checkpoint_seeds: [0, 1, 2, 3, 4, 5, 6]
+automatic_enqueue: false
+gradient_status: complete
+report_status: finalized_verified
+result_run_id: r_20260731T083020Z_8f363415_s000_f00_a01_5375b35a
+claim_verdict: biological_mechanism_not_validated
+computational_candidate_supported: false

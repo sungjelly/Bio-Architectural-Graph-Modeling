@@ -1,0 +1,156 @@
+schema_version: 1
+campaign_id: cmp_20260729_multiscale_hurdle_count_pilot
+frozen_before_new_training: true
+exploratory: true
+scientific_question: >-
+  Does a detection-plus-positive-continuous objective encode nonzero count
+  level, and does an explicitly separated sparse local branch add
+  topology-specific predictive information beyond cell-autonomous and
+  regional context branches?
+estimand: held_in_whole_node_masked_raw_count_reconstruction
+maximum_claim: >-
+  Exploratory adjacent-normal held-in representation capacity and a possible
+  topology-specific predictive dependency.
+prohibited_claims:
+  - unseen_patient_generalization
+  - direct_cell_cell_communication
+  - biological_mechanism
+  - causal_influence
+experimental_unit: pathology_confirmed_adjacent_normal_spatial_core
+technical_units:
+  - cell
+  - masked_entry
+  - fixed_mask_replicate
+stage0_synthetic_gate:
+  required: true
+  criteria:
+    - true_local_loss_below_self_regional
+    - true_local_loss_below_rewired_local
+    - planted_contribution_sign_recovered
+    - top_contribution_deletion_exceeds_distance_matched_null
+    - no_analogous_discovery_under_null_injection
+stage1:
+  core_aliases:
+    - ANC-03
+    - ANC-05
+  resource_pilot_epochs: 2
+  science_epochs: 200
+  arm: self
+  representation_gate_requires_both_cores: true
+stage2:
+  core_aliases:
+    - ANC-02
+    - ANC-03
+    - ANC-05
+    - ANC-06
+    - ANC-09
+  epochs: 200
+  seed: 0
+  mask_replicates_per_mode: 3
+  arms:
+    - self
+    - self_regional
+    - self_regional_local
+    - self_regional_local_rewired
+objective:
+  prediction_channels:
+    - detection_logit
+    - positive_standardized_log1p
+  detection_loss: equal_mean_zero_and_positive_bce
+  positive_loss: huber_delta_1
+  total_loss: equal_mean_detection_and_positive
+  count_rounding: nonnegative_half_up_floor_x_plus_0_5
+  fixed_count_states:
+    - "0"
+    - "1"
+    - "2"
+    - "3"
+    - "4-7"
+    - "8-15"
+    - "16-31"
+    - "32+"
+primary_metrics:
+  - fit/whole_node/hurdle_loss
+  - fit/whole_node/detection_balanced_accuracy
+  - fit/whole_node/positive_count_state_mae
+representation_gate:
+  minimum_relative_improvement: 0.02
+  required_core_count_stage2: 4
+  required_core_total_stage2: 5
+  criteria:
+    - detection_balanced_accuracy_above_prevalence_reference
+    - positive_continuous_huber_relative_improvement
+    - positive_count_state_mae_relative_improvement
+graph_gate:
+  minimum_relative_hurdle_loss_improvement: 0.02
+  required_core_count_stage2: 4
+  required_core_total_stage2: 5
+  comparisons:
+    - self_regional_local_below_self_regional
+    - self_regional_local_below_self_regional_local_rewired
+  secondary_direction_check: spatial_block_agrees_with_whole_node
+architecture:
+  prediction_decomposition: self_plus_regional_plus_local
+  branch_parameter_match_across_arms: exact
+  self_branch: unrestricted
+  regional_and_local_output_initialization: zero
+  surrogate_routing: within_cell_same_branch_parameters
+graphs:
+  local:
+    kind: exact_mutual_knn_with_radius
+    neighbor_k_cap: 64
+    minimum_distance_um: 0.0
+    maximum_distance_um: 75.0
+  regional:
+    kind: exact_mutual_knn_annulus
+    neighbor_k_cap: 256
+    minimum_distance_um_exclusive: 75.0
+    maximum_distance_um: 300.0
+  rewired_local:
+    seed: 271828
+    degree_preservation: exact
+    distance_strata: 8
+    maximum_mean_distance_change_fraction: 0.10
+resource_gate:
+  preferred_aggregate_gpu_hours_maximum: 12.0
+  absolute_aggregate_gpu_hours_maximum: 24.0
+  safe_gpu_ids:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 5
+    - 6
+    - 7
+  excluded_gpu_ids:
+    - 4
+  maximum_concurrency: 6
+  stage1_peak_allocated_vram_gib_maximum: 12.0
+  per_device_peak_allocated_vram_gib_maximum: 20.5
+  aggregate_observed_process_vram_gib_target: 50.0
+  stage1_projected_gpu_hours_per_200_epoch_core_maximum: 0.5
+  fp32_amp_absolute_loss_discrepancy_maximum: 0.001
+  filesystem_used_decimal_gb_hard_stop: 55.0
+  finalized_output_gib_target: 3.5
+  checkpoint_policy: last_only
+inputs:
+  source_campaign: cmp_20260729_adjacent_normal_10core_hybrid_count_gat
+  biological_target_count: 1000
+  prepared_artifacts: checksum_bound_alias_safe
+  tissue_context: pathology_confirmed_adjacent_normal
+split_and_leakage:
+  split: all_nodes_fit_no_validation_or_test
+  preprocessing: per_core_transductive
+  hidden_target_expression_prohibited_in_inputs: true
+  coordinates_allowed_only_for_graphs_and_spatial_masks: true
+  target_derived_metadata_prohibited: true
+  direct_identifiers_prohibited: true
+stop_conditions:
+  - failed_synthetic_recovery
+  - failed_graph_identity_or_rewiring
+  - failed_parameter_match
+  - nonfinite_loss_or_gradient
+  - failed_precision_equivalence
+  - resource_limit_exceeded
+  - artifact_or_provenance_verification_failure
+  - representation_gate_failed_before_stage2

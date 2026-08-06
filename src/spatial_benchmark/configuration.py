@@ -69,9 +69,33 @@ REQUIRED_EXPERIMENT_GROUPS = (
 )
 
 SUPPORTED_MODEL_NAMES = frozenset(
-    {"b0", "b0-matched", "broad-field", "b1", "g1", "g2", "g3"}
+    {
+        "b0",
+        "b0-matched",
+        "b0-g2-matched",
+        "broad-field",
+        "b1",
+        "g1",
+        "g2",
+        "g2-tokenized",
+        "g3",
+        "hybrid-count-gat",
+        "hybrid-count-matched-self",
+        "mean-adjacency-sage",
+        "multiscale-hurdle-count",
+        "myjju-genemae",
+        "qkv-gat",
+        "qkv-gat-matched-self",
+        "self-hurdle-count",
+    }
 )
 PRIMARY_METRIC_DIRECTIONS = {
+    "fit/partial_gene/log1p_cp10k_masked_huber": "minimize",
+    "fit/partial_gene/masked_huber": "minimize",
+    "fit/whole_node/hybrid_loss": "minimize",
+    "fit/whole_node/hurdle_loss": "minimize",
+    "fit/whole_node/masked_huber": "minimize",
+    "fit/whole_node/masked_token_accuracy_percent": "maximize",
     "val/masked_huber": "minimize",
     "val/auroc": "maximize",
     "val/auprc": "maximize",
@@ -416,6 +440,7 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             "schema_version",
             "lifecycle_stage",
             "study_axis",
+            "scientific_variant",
             "retention_class",
             "classification_confidence",
             "source_batch",
@@ -446,6 +471,14 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                 raise ConfigurationError(
                     f"classification.{field} must be a non-empty string."
                 )
+        scientific_variant = classification.get("scientific_variant")
+        if scientific_variant is not None and (
+            not isinstance(scientific_variant, str)
+            or not scientific_variant.strip()
+        ):
+            raise ConfigurationError(
+                "classification.scientific_variant must be a non-empty string."
+            )
         confidence = _required(
             classification,
             "classification_confidence",
@@ -473,6 +506,78 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
     family = _required(model, "family", "model")
     if not isinstance(family, str) or not family.strip():
         raise ConfigurationError("model.family must be a non-empty string.")
+    if (
+        model_name == "qkv-gat"
+        and family.strip() != "edge_aware_qkv_graph_transformer"
+    ):
+        raise ConfigurationError(
+            "qkv-gat requires "
+            "model.family=edge_aware_qkv_graph_transformer."
+        )
+    if (
+        model_name == "qkv-gat-matched-self"
+        and family.strip() != "qkv_parameter_matched_self_control"
+    ):
+        raise ConfigurationError(
+            "qkv-gat-matched-self requires "
+            "model.family=qkv_parameter_matched_self_control."
+        )
+    if (
+        model_name == "g2-tokenized"
+        and family.strip() != "tokenized_edge_conditioned_gatv2"
+    ):
+        raise ConfigurationError(
+            "g2-tokenized requires "
+            "model.family=tokenized_edge_conditioned_gatv2."
+        )
+    if (
+        model_name == "hybrid-count-gat"
+        and family.strip() != "hybrid_count_edge_conditioned_gatv2"
+    ):
+        raise ConfigurationError(
+            "hybrid-count-gat requires "
+            "model.family=hybrid_count_edge_conditioned_gatv2."
+        )
+    if (
+        model_name == "hybrid-count-matched-self"
+        and family.strip() != "hybrid_count_parameter_matched_self_control"
+    ):
+        raise ConfigurationError(
+            "hybrid-count-matched-self requires "
+            "model.family=hybrid_count_parameter_matched_self_control."
+        )
+    if (
+        model_name == "mean-adjacency-sage"
+        and family.strip() != "explicit_self_mean_adjacency_graphsage"
+    ):
+        raise ConfigurationError(
+            "mean-adjacency-sage requires "
+            "model.family=explicit_self_mean_adjacency_graphsage."
+        )
+    if (
+        model_name == "multiscale-hurdle-count"
+        and family.strip() != "additive_multiscale_hurdle_count"
+    ):
+        raise ConfigurationError(
+            "multiscale-hurdle-count requires "
+            "model.family=additive_multiscale_hurdle_count."
+        )
+    if (
+        model_name == "myjju-genemae"
+        and family.strip() != "myjju_dual_path_genemae"
+    ):
+        raise ConfigurationError(
+            "myjju-genemae requires "
+            "model.family=myjju_dual_path_genemae."
+        )
+    if (
+        model_name == "self-hurdle-count"
+        and family.strip() != "self_only_hurdle_count"
+    ):
+        raise ConfigurationError(
+            "self-hurdle-count requires "
+            "model.family=self_only_hurdle_count."
+        )
     _positive_integer(_required(model, "embedding_dim", "model"), "model.embedding_dim")
 
     masking = _mapping(config, "masking")
@@ -550,15 +655,175 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             f"{expected_direction!r}."
         )
 
+    protocol = str(evaluation.get("protocol", "")).strip().lower()
+    canonical_prediction_split = str(
+        evaluation.get("canonical_prediction_split", "validation")
+    ).strip().lower()
+    held_in_fit_protocols = {
+        "held_in_full_core_fixed_budget",
+        "held_in_pooled_10core_fixed_budget",
+    }
+    if protocol in held_in_fit_protocols:
+        if canonical_prediction_split != "fit":
+            raise ConfigurationError(
+                f"{protocol} requires "
+                "evaluation.canonical_prediction_split=fit."
+            )
+        if list(evaluation.get("splits", [])) != ["fit"]:
+            raise ConfigurationError(
+                f"{protocol} requires evaluation.splits=[fit]."
+            )
+        if not str(primary).startswith("fit/"):
+            raise ConfigurationError(
+                f"{protocol} requires a fit/* primary metric."
+            )
+        if trainer.get("restore_best") is not False:
+            raise ConfigurationError(
+                f"{protocol} requires trainer.restore_best=false."
+            )
+        if trainer.get("primary_checkpoint_role") != "last":
+            raise ConfigurationError(
+                f"{protocol} requires "
+                "trainer.primary_checkpoint_role=last."
+            )
+        if trainer.get("checkpoint_policy") != "last_only":
+            raise ConfigurationError(
+                f"{protocol} requires "
+                "trainer.checkpoint_policy=last_only."
+            )
+    elif canonical_prediction_split == "fit" or str(primary).startswith("fit/"):
+        raise ConfigurationError(
+            "fit prediction/metric semantics require "
+            "an explicit held-in fixed-budget evaluation protocol."
+        )
+
+    token_task = "masked_expression_token_classification"
+    token_family = "tokenized_edge_conditioned_gatv2"
+    token_schema = "raw_count_tokens_0_1_2_3plus_v1"
+    token_scale = "raw_count_token_0_1_2_3plus"
+    token_metric = "fit/whole_node/masked_token_accuracy_percent"
+    token_task_family = "masked_expression_token_classification"
+    tokenization = dataset.get("tokenization")
+    token_markers_present = any(
+        (
+            model_name == "g2-tokenized",
+            family.strip() == token_family,
+            dataset.get("task") == token_task,
+            dataset.get("target_scale") == token_scale,
+            "num_expression_tokens" in model,
+            "tokenizer_schema" in model,
+            evaluation.get("task_family") == token_task_family,
+            primary == token_metric,
+            tokenization is not None,
+        )
+    )
+    if token_markers_present:
+        expected = {
+            "model.name": (model_name, "g2-tokenized"),
+            "model.family": (family.strip(), token_family),
+            "model.num_expression_tokens": (
+                model.get("num_expression_tokens"),
+                4,
+            ),
+            "model.tokenizer_schema": (
+                model.get("tokenizer_schema"),
+                token_schema,
+            ),
+            "dataset.task": (dataset.get("task"), token_task),
+            "dataset.target_scale": (
+                dataset.get("target_scale"),
+                token_scale,
+            ),
+            "evaluation.task_family": (
+                evaluation.get("task_family"),
+                token_task_family,
+            ),
+            "evaluation.primary_metric": (primary, token_metric),
+        }
+        mismatches = [
+            f"{field}={actual!r} (expected {required_value!r})"
+            for field, (actual, required_value) in expected.items()
+            if actual != required_value
+        ]
+        if not isinstance(tokenization, Mapping):
+            mismatches.append(
+                "dataset.tokenization must be a fixed-vocabulary mapping"
+            )
+        else:
+            tokenization_expected = {
+                "schema": token_schema,
+                "num_output_tokens": 4,
+                "mask_token_id": 4,
+                "mask_token_is_output": False,
+                "fixed_vocabulary": True,
+                "fit_required": False,
+                "source_scale": "raw_biological_probe_counts",
+                "count_mapping": {
+                    "0": 0,
+                    "1": 1,
+                    "2": 2,
+                    "3+": 3,
+                },
+            }
+            mismatches.extend(
+                "dataset.tokenization."
+                f"{field}={tokenization.get(field)!r} "
+                f"(expected {required_value!r})"
+                for field, required_value in tokenization_expected.items()
+                if tokenization.get(field) != required_value
+            )
+        if mismatches:
+            raise ConfigurationError(
+                "Tokenized G2 requires one matching task/model/tokenizer/metric "
+                "contract: " + "; ".join(mismatches)
+            )
+
     if model_name == "g1" and use_edges:
         raise ConfigurationError("G1 is topology-only and requires edge features off.")
-    if model_name in {"g2", "g3"} and not use_edges:
+    if model_name in {
+        "g2",
+        "g2-tokenized",
+        "g3",
+        "hybrid-count-gat",
+        "multiscale-hurdle-count",
+        "myjju-genemae",
+        "qkv-gat",
+    } and not use_edges:
         raise ConfigurationError(f"{model_name.upper()} requires edge features on.")
+    if model_name in {
+        "hybrid-count-matched-self",
+        "qkv-gat-matched-self",
+        "self-hurdle-count",
+    } and use_edges:
+        raise ConfigurationError(
+            f"{model_name.upper()} requires edge features off."
+        )
     if dataset.get("task") == "masked_expression_regression" and "expression" not in str(
         masking.get("type", "")
     ):
         raise ConfigurationError(
             "Masked-expression regression requires an expression-masking configuration."
+        )
+    if dataset.get("task") == token_task and "expression" not in str(
+        masking.get("type", "")
+    ):
+        raise ConfigurationError(
+            "Masked-expression token classification requires an "
+            "expression-masking configuration."
+        )
+    if dataset.get("task") == "masked_expression_hybrid_count" and "expression" not in str(
+        masking.get("type", "")
+    ):
+        raise ConfigurationError(
+            "Hybrid-count masked expression requires an expression-masking "
+            "configuration."
+        )
+    if dataset.get("task") == "masked_expression_hurdle_count" and "expression" not in str(
+        masking.get("type", "")
+    ):
+        raise ConfigurationError(
+            "Hurdle-count masked expression requires an expression-masking "
+            "configuration."
         )
 
     for section_name in REQUIRED_EXPERIMENT_GROUPS:

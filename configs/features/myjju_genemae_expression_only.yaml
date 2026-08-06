@@ -1,0 +1,28 @@
+features:
+  use_edge_features: true
+  fit_scope: all_nodes_transductive
+  node_expression:
+    biological_targets: 1000
+    source_scale: raw_biological_probe_counts
+    transformed_with: full_cell_log1p_cp10k_before_entry_masking
+    target_sum: 10000.0
+    hidden_entries_contribute_to_library_denominator: true
+    explicit_entry_mask: true
+    learned_per_gene_mask_value: true
+  node_metadata:
+    fields: []
+    supplied_to_model: false
+  edge_features:
+    fields:
+      - gaussian_distance_kernel
+    fit_scope: within_tile_all_edges_transductive
+    scale: within_tile_median_edge_length
+  prohibited_node_inputs:
+    - direct_identifiers
+    - core_alias
+    - absolute_or_local_coordinates
+    - slide_or_batch_label
+    - disease_label
+    - vendor_annotations
+    - morphology_or_imaging
+    - rna_derived_qc

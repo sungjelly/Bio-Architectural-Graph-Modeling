@@ -24,6 +24,7 @@ supported_paths:
     - metrics/per_class.json
     - metrics/subgroup.parquet
   predictions:
+    - predictions/fit.parquet
     - predictions/validation.parquet
     - predictions/test.parquet
     - predictions/external.parquet
@@ -51,10 +52,10 @@ completion_markers:
     - _FAILED
     - _PRUNED
   success_contract:
-    - best_checkpoint_exists
+    - declared_primary_checkpoint_exists
     - nonempty_namespaced_final_metrics_validate
     - nonempty_metric_events_and_history_validate
-    - canonical_validation_predictions_validate
+    - canonical_declared_role_predictions_validate
     - declared_artifact_checksums_verify
     - registry_finalizing_transition_committed
     - success_marker_is_checksum_bound
@@ -72,8 +73,8 @@ retention:
       - resolved_config
       - summary
       - metric_history
-      - validation_predictions
-      - best_checkpoint
+      - canonical_declared_role_predictions
+      - primary_checkpoint
       - logs
       - provenance
   promoted:

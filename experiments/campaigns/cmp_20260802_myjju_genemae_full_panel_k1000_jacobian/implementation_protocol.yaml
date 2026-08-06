@@ -1,0 +1,106 @@
+protocol_schema_version: 1
+campaign_id: cmp_20260802_myjju_genemae_full_panel_k1000_jacobian
+status: frozen_before_k1000_model_output
+
+software:
+  jacobian_module: src/spatial_benchmark/full_panel_jacobian.py
+  entry_point: scripts/analysis/recompute_myjju_full_panel_jacobian.py
+  production_dtype: float32
+  accumulation_dtype: float64
+  default_target_batch_size: 1
+
+graph_cache:
+  construction: one_tile_at_a_time
+  k: 1000
+  maximum_tile_nodes: 7000
+  cache_arrays: [node_indices, edge_index, edge_attr]
+  cache_location: owned_active_run_only
+  immutable_after_checksum_manifest: true
+  persist_in_final_bundle: manifest_only
+  required_checks:
+    - exact_partition
+    - no_self_edges
+    - edge_attribute_alignment
+    - symmetric_edge_pairs
+    - finite_edge_attributes
+    - minimum_realized_degree_1000
+    - deterministic_array_checksums
+
+numerical_controls:
+  analytical_uniform_shift_vs_explicit:
+    dtype: float64
+    maximum_absolute_error: 1.0e-12
+    maximum_relative_error: 1.0e-12
+  live_tile_uniform_shift_vs_explicit:
+    graph_k: 15
+    seed: 0
+    core: ANC-01
+    tile_index: 0
+    genes: frozen_39_marker_order
+    maximum_absolute_error: 2.0e-6
+    maximum_relative_error: 1.0e-5
+  stored_aggregate_reproduction:
+    graph_k: 15
+    seeds: [0, 1, 2, 3, 4, 5, 6]
+    cores: [ANC-01, ANC-02, ANC-03, ANC-04, ANC-05, ANC-06, ANC-07, ANC-08, ANC-09, ANC-10]
+    reference_run_id: r_20260731T083020Z_8f363415_s000_f00_a01_5375b35a
+    reference_json: interpretation/report.json
+    matrix_key: source_style_reproduction.equal_core_seven_seed_signed_directed_matrix
+    maximum_absolute_error: 5.0e-6
+    maximum_relative_error: 1.0e-4
+  deterministic_replay:
+    same_process_same_model_tile_and_targets: true
+    maximum_absolute_error: 1.0e-6
+    maximum_relative_error: 1.0e-5
+
+resource_pilot:
+  seed: 0
+  core: ANC-06
+  tile_selection: largest_node_count_then_alias_then_tile_index
+  expected_largest_tile_nodes: 6561
+  target_rows_for_timing: 8
+  target_selection: evenly_spaced_in_ordered_panel_including_first_and_last
+  full_forward_required: true
+  full_source_columns_required: true
+  runtime_projection: measured_forward_plus_per_row_backward_times_1000
+  projection_safety_factor: 1.25
+  maximum_peak_allocated_vram_gib: 20.5
+  maximum_projected_total_gpu_hours: 48
+  no_production_on_failed_gate: true
+
+aggregation:
+  tile: multiply_tile_mean_jacobian_by_tile_node_count
+  within_core: divide_summed_tile_numerators_by_core_node_count
+  across_cores: arithmetic_mean_equal_core
+  across_seeds: arithmetic_mean_equal_seed
+  seed_and_core_matrices_persisted: true
+  best_seed_or_core_selection: prohibited
+
+outputs:
+  canonical_matrix: signed_directed_equal_core_equal_seed_float64
+  display_matrix: half_abs_j_plus_abs_j_transpose
+  diagonal:
+    canonical: retained
+    main_hotspot_display: masked
+    separate_summary: required
+  static_overview:
+    format: png
+    labels: sparse_ticks_plus_gene_lookup
+  all_label_image:
+    format: svg
+    labels: every_row_and_column_gene_name
+    zoomable: true
+  portable_interactive:
+    format: html
+    hover_gene_pair_and_value: true
+  value_scaling:
+    color: linear
+    upper_limit: off_diagonal_99_9_percentile
+    clipped_values_reported: true
+    raw_values_unchanged: true
+
+privacy:
+  persist_cell_level_values: false
+  persist_coordinates: false
+  persist_cell_identifiers: false
+  external_services: prohibited

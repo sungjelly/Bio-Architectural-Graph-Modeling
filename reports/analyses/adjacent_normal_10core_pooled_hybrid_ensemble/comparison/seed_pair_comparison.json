@@ -1,0 +1,51 @@
+[
+  {
+    "gat_equal_core_hybrid_loss": 0.4350296676158905,
+    "gat_favored": true,
+    "gat_relative_improvement": 0.024897671083340827,
+    "seed": 0,
+    "self_equal_core_hybrid_loss": 0.44613745113213854
+  },
+  {
+    "gat_equal_core_hybrid_loss": 0.4378047664960225,
+    "gat_favored": true,
+    "gat_relative_improvement": 0.015614559678507113,
+    "seed": 1,
+    "self_equal_core_hybrid_loss": 0.4447493314743042
+  },
+  {
+    "gat_equal_core_hybrid_loss": 0.4342248181502025,
+    "gat_favored": true,
+    "gat_relative_improvement": 0.031292277977906055,
+    "seed": 2,
+    "self_equal_core_hybrid_loss": 0.4482516328493754
+  },
+  {
+    "gat_equal_core_hybrid_loss": 0.4361553430557251,
+    "gat_favored": true,
+    "gat_relative_improvement": 0.023126026084491248,
+    "seed": 3,
+    "self_equal_core_hybrid_loss": 0.4464806665976842
+  },
+  {
+    "gat_equal_core_hybrid_loss": 0.43537486493587496,
+    "gat_favored": true,
+    "gat_relative_improvement": 0.02194160762100672,
+    "seed": 4,
+    "self_equal_core_hybrid_loss": 0.4451419959465663
+  },
+  {
+    "gat_equal_core_hybrid_loss": 0.43484950462977096,
+    "gat_favored": true,
+    "gat_relative_improvement": 0.03150651580998442,
+    "seed": 5,
+    "self_equal_core_hybrid_loss": 0.44899579783280685
+  },
+  {
+    "gat_equal_core_hybrid_loss": 0.43443424602349595,
+    "gat_favored": true,
+    "gat_relative_improvement": 0.023457852591125105,
+    "seed": 6,
+    "self_equal_core_hybrid_loss": 0.44486993948618564
+  }
+]

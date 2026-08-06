@@ -13,6 +13,7 @@ from spatial_benchmark.run_archive import (
     RunArchiveError,
     RunImmutableError,
     RunValidationError,
+    _canonical_prediction_split,
     deidentify_prediction_rows,
     validate_prediction_rows,
     verify_run_bundle,
@@ -69,6 +70,27 @@ def _write_success_support(archive: RunArchive) -> None:
     archive.write_text("provenance/command.txt", '{"argv":["test"],"cwd":"/tmp"}\n')
 
 
+@pytest.mark.parametrize(
+    "protocol",
+    (
+        "held_in_full_core_fixed_budget",
+        "held_in_pooled_10core_fixed_budget",
+    ),
+)
+def test_canonical_fit_prediction_accepts_explicit_held_in_protocols(
+    tmp_path: Path,
+    protocol: str,
+) -> None:
+    (tmp_path / "config.resolved.yaml").write_text(
+        "evaluation:\n"
+        f"  protocol: {protocol}\n"
+        "  canonical_prediction_split: fit\n",
+        encoding="utf-8",
+    )
+
+    assert _canonical_prediction_split(tmp_path) == "fit"
+
+
 def test_prediction_deidentification_is_copying_and_salted() -> None:
     source = [
         {
@@ -96,6 +118,37 @@ def test_prediction_deidentification_is_copying_and_salted() -> None:
     unsafe = [{**deidentified[0], "patient_id": "still-protected"}]
     with pytest.raises(RunValidationError, match="identifier"):
         validate_prediction_rows(unsafe)
+
+
+def test_active_archive_attachment_requires_canonical_owned_scratch(
+    tmp_path: Path,
+) -> None:
+    run_id = _run_id("attach01")
+    paths = _paths(tmp_path)
+    created = RunArchive.create(run_id, paths=paths)
+
+    attached = RunArchive.attach_active(
+        run_id,
+        paths=paths,
+        scratch_path=created.scratch_path,
+    )
+
+    assert attached.scratch_path == created.scratch_path
+    attached.write_text("diagnostics/attached.txt", "owned\n")
+    with pytest.raises(RunArchiveError, match="canonical run path"):
+        RunArchive.attach_active(
+            run_id,
+            paths=paths,
+            scratch_path=tmp_path / "somewhere-else",
+        )
+
+    owner = created.scratch_path / ".bagm-run-owner.json"
+    owner.write_text(
+        json.dumps({"run_id": _run_id("foreign1"), "format_version": 1}),
+        encoding="utf-8",
+    )
+    with pytest.raises(RunArchiveError, match="ownership marker"):
+        RunArchive.attach_active(run_id, paths=paths)
 
 
 def test_successful_run_is_published_after_required_contract(
@@ -132,6 +185,231 @@ def test_successful_run_is_published_after_required_contract(
     assert verify_run_bundle(final_path)["status"] == "success"
     with pytest.raises(RunImmutableError):
         archive.write_text("logs/late.log", "not allowed")
+
+
+def test_retention_tombstones_must_match_immutable_bundle_manifest(
+    tmp_path: Path,
+) -> None:
+    run_id = _run_id("retained1")
+    archive = RunArchive.create(
+        run_id,
+        paths=_paths(tmp_path),
+        manifest={"lifecycle_status_source": "registry_and_completion_marker"},
+        resolved_config={"model": {"name": "g1"}, "seed": 3},
+    )
+    archive.write_summary(
+        {"status": "completed", "primary_metric": "val/loss", "primary_value": 0.2}
+    )
+    checkpoint = archive.write_bytes("checkpoints/best.ckpt", b"checkpoint")
+    _write_success_support(archive)
+    prediction = archive.write_predictions("validation", [_prediction(run_id)])
+    checkpoint_relative = checkpoint.relative_to(archive.scratch_path).as_posix()
+    prediction_relative = prediction.relative_to(archive.scratch_path).as_posix()
+    final_path = archive.finalize_success()
+    manifest = json.loads(
+        (final_path / "provenance/artifact_checksums.json").read_text(
+            encoding="utf-8"
+        )
+    )["files"]
+    tombstones = {
+        checkpoint_relative: manifest[checkpoint_relative],
+        prediction_relative: manifest[prediction_relative],
+    }
+    (final_path / checkpoint_relative).unlink()
+    (final_path / prediction_relative).unlink()
+
+    with pytest.raises(RunValidationError, match="missing="):
+        verify_run_bundle(final_path)
+
+    verified = verify_run_bundle(
+        final_path,
+        tombstoned_artifacts=tombstones,
+    )
+    assert verified["valid"] is True
+    assert verified["tombstoned_file_count"] == 2
+    assert verified["present_file_count"] == verified["file_count"] - 2
+
+    wrong_tombstones = {
+        **tombstones,
+        checkpoint_relative: {
+            **tombstones[checkpoint_relative],
+            "sha256": "0" * 64,
+        },
+    }
+    with pytest.raises(RunValidationError, match="does not match"):
+        verify_run_bundle(
+            final_path,
+            tombstoned_artifacts=wrong_tombstones,
+        )
+
+
+def test_held_in_protocol_requires_and_accepts_fit_predictions(
+    tmp_path: Path,
+) -> None:
+    run_id = _run_id("fitrole1")
+    archive = RunArchive.create(
+        run_id,
+        paths=_paths(tmp_path),
+        manifest={"lifecycle_status_source": "registry_and_completion_marker"},
+        resolved_config={
+            "model": {"name": "g2"},
+            "evaluation": {
+                "protocol": "held_in_full_core_fixed_budget",
+                "canonical_prediction_split": "fit",
+                "primary_metric": "fit/whole_node/masked_huber",
+            },
+        },
+    )
+    archive.write_summary(
+        {
+            "status": "completed",
+            "primary_metric_name": "fit/whole_node/masked_huber",
+            "primary_metric_value": 0.2,
+        }
+    )
+    # Fixed-budget held-in training retains the last epoch; calling it "best"
+    # would imply validation selection that did not occur.
+    config_path = archive.scratch_path / "config.resolved.yaml"
+    config_path.unlink()
+    archive.write_resolved_config(
+        {
+            "model": {"name": "g2"},
+            "trainer": {
+                "primary_checkpoint_role": "last",
+                "restore_best": False,
+            },
+            "evaluation": {
+                "protocol": "held_in_full_core_fixed_budget",
+                "canonical_prediction_split": "fit",
+                "primary_metric": "fit/whole_node/masked_huber",
+            },
+        }
+    )
+    archive.write_bytes("checkpoints/last.ckpt", b"final-fixed-budget")
+    archive.append_metric_event(
+        {"name": "fit/whole_node/masked_huber", "value": 0.2, "step": 1}
+    )
+    archive.write_json(
+        "metrics/final.json",
+        {
+            "fit/whole_node/masked_huber": 0.2,
+            "fit/whole_node/detection_precision": None,
+            "resource/projected_200_epoch_runtime_hours": None,
+        },
+    )
+    archive.write_table(
+        "metrics/history",
+        [{"epoch": 1, "train/loss": 0.3}],
+    )
+    archive.prepare_log_files()
+    archive.write_json("provenance/git.json", {"commit": "test", "dirty": False})
+    archive.write_text("provenance/uncommitted_changes.patch", "")
+    archive.write_text("provenance/environment.txt", "python=test\n")
+    archive.write_json("provenance/hardware.json", {"device": "cpu"})
+    archive.write_json("provenance/data_fingerprints.json", {"dataset": "test"})
+    archive.write_json(
+        "provenance/split_fingerprint.json",
+        {"split": "full_core_fit_no_holdout"},
+    )
+    archive.write_text(
+        "provenance/command.txt", '{"argv":["test"],"cwd":"/tmp"}\n'
+    )
+    fit_prediction = {**_prediction(run_id), "split": "fit"}
+    archive.write_predictions("fit", [fit_prediction])
+
+    final_path = archive.finalize_success()
+
+    assert (final_path / "_SUCCESS").is_file()
+    assert verify_run_bundle(final_path)["status"] == "success"
+    assert not any((final_path / "predictions").glob("validation.*"))
+    final_metrics = json.loads(
+        (final_path / "metrics/final.json").read_text(encoding="utf-8")
+    )
+    assert final_metrics["fit/whole_node/detection_precision"] is None
+    assert final_metrics["resource/projected_200_epoch_runtime_hours"] is None
+
+
+def test_success_rejects_null_configured_primary_metric(tmp_path: Path) -> None:
+    run_id = _run_id("nullprimary")
+    archive = RunArchive.create(
+        run_id,
+        paths=_paths(tmp_path),
+        manifest={"lifecycle_status_source": "registry_and_completion_marker"},
+        resolved_config={
+            "model": {"name": "g1"},
+            "evaluation": {"primary_metric": "val/masked_huber"},
+        },
+    )
+    archive.write_summary({"status": "completed"})
+    archive.write_bytes("checkpoints/best.ckpt", b"checkpoint")
+    archive.append_metric_event(
+        {"name": "val/masked_huber", "value": 0.2, "step": 1}
+    )
+    archive.write_json(
+        "metrics/final.json",
+        {"val/masked_huber": None, "val/auxiliary": 0.2},
+    )
+    archive.write_table("metrics/history", [{"epoch": 1, "train/loss": 0.3}])
+    archive.prepare_log_files()
+    archive.write_json("provenance/git.json", {"commit": "test", "dirty": False})
+    archive.write_text("provenance/uncommitted_changes.patch", "")
+    archive.write_text("provenance/environment.txt", "python=test\n")
+    archive.write_json("provenance/hardware.json", {"device": "cpu"})
+    archive.write_json("provenance/data_fingerprints.json", {"dataset": "test"})
+    archive.write_json("provenance/split_fingerprint.json", {"split": "test"})
+    archive.write_text(
+        "provenance/command.txt", '{"argv":["test"],"cwd":"/tmp"}\n'
+    )
+    archive.write_predictions("validation", [_prediction(run_id)])
+
+    with pytest.raises(RunValidationError, match="primary.*finite numeric"):
+        archive.finalize_success()
+
+
+def test_held_in_protocol_rejects_held_out_artifacts(tmp_path: Path) -> None:
+    run_id = _run_id("fitmixed")
+    archive = RunArchive.create(
+        run_id,
+        paths=_paths(tmp_path),
+        manifest={"lifecycle_status_source": "registry_and_completion_marker"},
+        resolved_config={
+            "trainer": {
+                "primary_checkpoint_role": "last",
+                "restore_best": False,
+            },
+            "evaluation": {
+                "protocol": "held_in_full_core_fixed_budget",
+                "canonical_prediction_split": "fit",
+            },
+        },
+    )
+    archive.write_summary({"status": "completed"})
+    archive.write_bytes("checkpoints/last.ckpt", b"last")
+    archive.append_metric_event(
+        {"name": "fit/whole_node/masked_huber", "value": 0.2, "step": 1}
+    )
+    archive.write_json(
+        "metrics/final.json",
+        {
+            "fit/whole_node/masked_huber": 0.2,
+            "val/masked_huber": 0.1,
+        },
+    )
+    archive.write_table("metrics/history", [{"epoch": 1, "train/loss": 0.3}])
+    archive.prepare_log_files()
+    archive.write_json("provenance/git.json", {"commit": "test", "dirty": False})
+    archive.write_text("provenance/uncommitted_changes.patch", "")
+    archive.write_text("provenance/environment.txt", "python=test\n")
+    archive.write_json("provenance/hardware.json", {"device": "cpu"})
+    archive.write_json("provenance/data_fingerprints.json", {"dataset": "test"})
+    archive.write_json("provenance/split_fingerprint.json", {"split": "fit"})
+    archive.write_text(
+        "provenance/command.txt", '{"argv":["test"],"cwd":"/tmp"}\n'
+    )
+    archive.write_predictions("fit", [{**_prediction(run_id), "split": "fit"}])
+
+    with pytest.raises(RunValidationError, match="held-out final metrics"):
+        archive.finalize_success()
 
 
 def test_success_refuses_missing_or_empty_checkpoint(tmp_path: Path) -> None:

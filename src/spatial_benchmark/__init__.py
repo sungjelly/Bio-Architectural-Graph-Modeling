@@ -50,6 +50,7 @@ from .metrics import (
     block_bootstrap_ci,
     evaluate_masked_predictions,
     masked_huber_loss,
+    masked_r2_score,
     paired_spatial_gain,
 )
 
@@ -88,6 +89,7 @@ __all__ = [
     "load_true_normal_core",
     "make_spatial_split",
     "masked_huber_loss",
+    "masked_r2_score",
     "normalize_slide",
     "resolve_nested_raw_path",
     "rewire_spatial_graph",

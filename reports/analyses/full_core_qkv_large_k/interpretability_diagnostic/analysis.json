@@ -1,0 +1,245 @@
+{
+  "analysis_status": "negative_capacity_gate_diagnostic_only",
+  "artifact_kind": "full_core_qkv_bounded_interpretability",
+  "faithfulness": {
+    "caution": "This tests whether a final-layer ranking is locally faithful to final-layer predictions. It does not test routes in earlier layers or establish a biological dependency.",
+    "deleted_edge_count_per_receiver": {
+      "max": 244.0,
+      "mean": 210.5,
+      "median": 235.0,
+      "min": 107.0,
+      "n": 8,
+      "p05": 121.7,
+      "p95": 243.65
+    },
+    "deletion_fraction_per_receiver": 0.05,
+    "distance_matched_null_deletions": {
+      "huber_change": {
+        "max": 4.5373848106544656e-07,
+        "mean": -1.6985620458764839e-07,
+        "median": -5.180452986031092e-08,
+        "min": -1.0295542396954183e-06,
+        "n": 4,
+        "p05": -9.153970923769794e-07,
+        "p95": 4.104123385834101e-07
+      },
+      "mean_absolute_prediction_change": {
+        "max": 0.00015950024127960204,
+        "mean": 0.0001482483744621277,
+        "median": 0.00014558225870132447,
+        "min": 0.00014232873916625977,
+        "n": 4,
+        "p05": 0.00014254807233810425,
+        "p95": 0.00015768123865127562
+      },
+      "replicate_count": 4
+    },
+    "distance_matching": {
+      "bin_count_per_receiver": {
+        "max": 10.0,
+        "mean": 10.0,
+        "median": 10.0,
+        "min": 10.0,
+        "n": 8,
+        "p05": 10.0,
+        "p95": 10.0
+      },
+      "method": "exact per-receiver rank-distance-bin count matching",
+      "null_mean_distance_absolute_difference_um": {
+        "max": 4.075838597490076,
+        "mean": 3.10135825289413,
+        "median": 3.039572797509237,
+        "min": 2.2504488190679695,
+        "n": 4,
+        "p05": 2.3549085857285177,
+        "p95": 3.9343075575985917
+      },
+      "top_mean_distance_um": 314.71107484876904
+    },
+    "edge_ranking": "descending mean across heads of the literal attention*value_gate coefficient",
+    "full_network_edge_deletion_test": false,
+    "intervention": "delete incoming edges only in the final QKV block, recompute receiver-wise softmax on retained logits, and decode predictions",
+    "isolated_final_layer_test": true,
+    "top_effective_routing_deletion": {
+      "baseline_huber": 0.2516378170207467,
+      "baseline_mae": 0.38955207549361515,
+      "huber_change": -2.1005552662545224e-05,
+      "mae_change": -0.0005230454951524743,
+      "mean_absolute_prediction_change": 0.0011314542293548583,
+      "perturbed_huber": 0.2516168114680842,
+      "perturbed_mae": 0.38902902999846267,
+      "root_mean_squared_prediction_change": 0.0016770344732961878
+    },
+    "top_vs_matched_null": {
+      "descriptive_only": true,
+      "null_replicates_at_least_as_large_as_top": 0,
+      "prediction_change_difference_from_null_mean": 0.0009832058548927306,
+      "prediction_change_ratio_status": "finite",
+      "prediction_change_ratio_to_null_mean": 7.632152686057988,
+      "top_change_exceeds_null_mean": true,
+      "top_exceeds_every_null": true
+    }
+  },
+  "limitations": [
+    "one fitted core with no validation or test partition",
+    "hash-selected cells are technical observations, not replicates",
+    "only the final graph layer is intervened on",
+    "distance matching does not control cell state or segmentation",
+    "no patient replication, graph randomization, or external evidence"
+  ],
+  "provenance": {
+    "bundle_checksums_verified": true,
+    "campaign_id": "cmp_20260726_full_core_qkv_large_k",
+    "checkpoint_reconstructed_from_recorded_implementation_args": true,
+    "device": "cuda:0",
+    "fixed_mask_bundle_sha256": "d2617dc3619645532ee9f8ca48a3f488209394b1a65129db670b0255c2834436",
+    "materialized_graph_sha256": "50f293972c443011a80abfbd81bf7cc7f44a35ccb39794e900b67dc4d2ca8d85",
+    "materialized_preprocessing_sha256": "a112fbb2bdf929197759c82913fc379c4df797f75676457bcd10419fe7a969d5",
+    "model_name": "qkv-gat",
+    "model_state_dict_sha256": "a32686134c02050eedb318d1941c2c495b2b2393971df144deaeebdd19203df3",
+    "run_id": "r_20260726T151303Z_712ec9be_s000_f00_a01_0b694448"
+  },
+  "representation_gate": {
+    "analysis_permitted": true,
+    "diagnostic_only": true,
+    "eligible_graph_run_count": 0,
+    "evaluated_graph_run_count": 2,
+    "negative_gate_override_used": true,
+    "passes": false,
+    "report_sha256": "0056fa0b9d0d139af00418bc0fac201159b6393a237059fb4521232b40f38b85"
+  },
+  "routing": {
+    "bounded_value_gate": {
+      "neutral_value": 1.0,
+      "theoretical_range": "(0, 2)",
+      "values": {
+        "max": 1.7958984375,
+        "mean": 0.7505875975754414,
+        "median": 0.722900390625,
+        "min": 0.14794921875,
+        "n": 302751,
+        "p05": 0.31201171875,
+        "p95": 1.301025390625
+      }
+    },
+    "caution": "Attention and attention\u00d7gate are computational routing coefficients, not signed value contributions, biological importance, interaction strength, mechanism, or causality.",
+    "coefficient_definition": "effective_routing_coefficient = normalized_attention * bounded_value_gate",
+    "effective_routing": {
+      "effective_neighbor_count_per_receiver_head": {
+        "max": 4505.0125119034155,
+        "mean": 3497.5881212371364,
+        "median": 3850.1398588094735,
+        "min": 1259.6501765233595,
+        "n": 72,
+        "p05": 1891.0704632663067,
+        "p95": 4414.734923029317
+      },
+      "entropy_nats_per_receiver_head": {
+        "max": 8.412945947375633,
+        "mean": 8.12241193832622,
+        "median": 8.25585650056929,
+        "min": 7.1385893237171745,
+        "n": 72,
+        "p05": 7.544721532047738,
+        "p95": 8.39265219029306
+      },
+      "head_count": 9,
+      "incoming_degree": {
+        "max": 4869.0,
+        "mean": 4204.875,
+        "median": 4696.0,
+        "min": 2133.0,
+        "n": 8,
+        "p05": 2427.7,
+        "p95": 4865.5
+      },
+      "maximum_normalization_error": 4.9960036108132044e-15,
+      "nonzero_mass_receiver_heads": 72,
+      "pre_normalization_mass_per_receiver_head": {
+        "max": 0.9349577428874909,
+        "mean": 0.7191314010320219,
+        "median": 0.7006229244270799,
+        "min": 0.4883264293330285,
+        "n": 72,
+        "p05": 0.5297390458052404,
+        "p95": 0.9058420063837275
+      },
+      "receiver_count": 8,
+      "summary_distribution": "attention*gate normalized over incoming edges separately for each receiver and head",
+      "weighted_distance_um_per_receiver_head": {
+        "max": 483.51651937789643,
+        "mean": 331.5641295384514,
+        "median": 322.74281271984626,
+        "min": 265.75109325242886,
+        "n": 72,
+        "p05": 283.1649023002193,
+        "p95": 444.5965798525112
+      },
+      "zero_mass_receiver_heads": 0
+    },
+    "normalized_attention": {
+      "effective_neighbor_count_per_receiver_head": {
+        "max": 4656.177639982926,
+        "mean": 3559.867192648555,
+        "median": 3897.3741269769644,
+        "min": 1392.280637308514,
+        "n": 72,
+        "p05": 1907.2106998002826,
+        "p95": 4544.96766276261
+      },
+      "entropy_nats_per_receiver_head": {
+        "max": 8.445950141600765,
+        "mean": 8.141346356985025,
+        "median": 8.268057382411044,
+        "min": 7.238698427836216,
+        "n": 72,
+        "p05": 7.553394258758321,
+        "p95": 8.421768276764958
+      },
+      "head_count": 9,
+      "incoming_degree": {
+        "max": 4869.0,
+        "mean": 4204.875,
+        "median": 4696.0,
+        "min": 2133.0,
+        "n": 8,
+        "p05": 2427.7,
+        "p95": 4865.5
+      },
+      "maximum_normalization_error": 2.947701432276517e-06,
+      "nonzero_mass_receiver_heads": 72,
+      "receiver_count": 8,
+      "weighted_distance_um_per_receiver_head": {
+        "max": 459.1127277581299,
+        "mean": 326.08521996200534,
+        "median": 312.48323371188155,
+        "min": 248.91505963479864,
+        "n": 72,
+        "p05": 278.9990508004097,
+        "p95": 431.96260532700944
+      },
+      "zero_mass_receiver_heads": 0
+    }
+  },
+  "schema_version": 1,
+  "scope": {
+    "attention_is_biological_importance": false,
+    "estimand": "final-layer routing and isolated final-layer prediction faithfulness under the canonical held-in whole-node mask",
+    "generalization_estimate": false,
+    "maximum_claim": "negative-capacity-gate computational diagnostic only",
+    "single_transductively_fitted_core": true
+  },
+  "selection": {
+    "eligible_whole_node_receiver_count": 2425,
+    "mask_mode": "whole_node",
+    "mask_replicate": 0,
+    "receiver_count": 8,
+    "selection_method": "deterministic SHA-256 rank over node positions; independent of expression, routing, error, phenotype, and TLS scores"
+  },
+  "tls_annotation": {
+    "caution": "Biological annotation is suppressed because the predictive representation gate failed. The override permits only a computational routing diagnostic.",
+    "exploratory_annotation_only": true,
+    "selection_used_tls_expression": false,
+    "status": "suppressed_negative_capacity_gate"
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "active_contract_amendment_sha256": "6864fff7d35ce3af2312b8985a5fb7356b36bdd568bdcba4514ab0eaa3867cd2",
+  "campaign_id": "cmp_20260729_multiscale_hurdle_count_pilot",
+  "decision": {
+    "failed_stage0_blocks": [
+      "real_data_graph_arms",
+      "real_data_graph_interpretation"
+    ],
+    "failed_stage0_does_not_block": [
+      "self_only_representation_and_resource_question"
+    ],
+    "no_post_outcome_tuning": true,
+    "prohibited_rescue_changes": [
+      "seed",
+      "effect_size",
+      "epoch_budget",
+      "gate_thresholds"
+    ],
+    "registered_stage0_action": "run_once_unchanged_on_locked_anc05_geometry_and_archive_the_outcome",
+    "registered_stage0_result_inferred_from_this_diagnostic": false
+  },
+  "direct_identifiers_emitted": false,
+  "execution_scope": {
+    "geometry_is_registered_anc05_fixture": false,
+    "geometry_kind": "deterministic_synthetic_unit_test_geometry",
+    "geometry_recipe": {
+      "centering": "subtract_coordinate_wise_median",
+      "coordinate_distribution": "numpy_default_rng_uniform_0_200_um",
+      "coordinate_seed": 401,
+      "macroblock_count": 1,
+      "node_count": 160
+    },
+    "registered_run": false,
+    "role": "pre_enqueue_locked_codepath_diagnostic",
+    "training_performed": true
+  },
+  "frozen_task_contract_sha256": "54496bc73c8d6f2b3c2ec9885fba86b2021944462a106dbd10a23cfd88e25fb7",
+  "gate_observations": {
+    "analogous_discovery_under_null_injection": true,
+    "correct_positive_contribution_sign": true,
+    "overall_outcome": "negative",
+    "planted_top_deletion_worse_than_matched_null": false,
+    "true_local_loss_below_permuted_local": false,
+    "true_local_loss_below_self_regional": true
+  },
+  "locked_settings": {
+    "activation_checkpointing": true,
+    "active_sender_count": 24,
+    "amp": false,
+    "amp_dtype": "auto",
+    "attention_dropout": 0.0,
+    "attention_head_dim": 8,
+    "attention_heads": 2,
+    "baseline_positive_probability": 0.12,
+    "decoder_dim": 32,
+    "device": "cpu",
+    "dropout": 0.0,
+    "edge_embedding_dim": 8,
+    "edge_hidden_dim": 16,
+    "effect_size": 4.0,
+    "evaluation_node_rate": 0.2,
+    "ffn_dim": 48,
+    "gradient_clip_norm": 1.0,
+    "graph_receiver_chunk_size": 128,
+    "graph_workers": 1,
+    "hidden_dim": 32,
+    "learning_rate": 0.003,
+    "mask_seed": 314159,
+    "max_epochs": 96,
+    "maximum_null_absolute_correlation": 0.05,
+    "maximum_permuted_signal_correlation": 0.8,
+    "message_dim": 16,
+    "minimum_contribution": 0.0,
+    "minimum_deletion_advantage": 0.0,
+    "minimum_loss_advantage": 0.0,
+    "model_seed": 2718,
+    "mutual_search_chunk_size": 100000,
+    "node_rate": 0.35,
+    "null_seed": 104729,
+    "num_genes": 4,
+    "partial_gene_rate": 0.35,
+    "query_chunk_size": 128,
+    "receiver_chunk_size": 64,
+    "regional_decoy_max_count": 8,
+    "seed": 0,
+    "selected_node_count": 160,
+    "target_node_batch_size": 512,
+    "top_edge_count": 16,
+    "value_head_dim": 4,
+    "weight_decay": 0.0
+  },
+  "maximum_claim": "This locked codepath diagnostic failed to recover the planted sender-state dependency on its deterministic synthetic unit-test geometry; it is not a result on the registered ANC-05 geometry.",
+  "required_contract_supplement_sha256": "6e89d83ccc909be16b7282d2dfb5cf826c0714ea6ce3923b33293cb96c4de09f",
+  "results": {
+    "arm_whole_node_hurdle_loss": {
+      "null_true_local": 0.2797543406486511,
+      "permuted_local": 0.20164360105991364,
+      "self_regional": 0.2102087438106537,
+      "true_local": 0.2094905972480774
+    },
+    "fixture_checksum": "61ff53eb8f83bc37f188c95971fad91b2afe8f5748a24a940469d6b0fc6bb761",
+    "null_deletion_diagnostic": {
+      "baseline_target_loss": 0.4641723036766052,
+      "matched_null_deleted_target_loss": 0.46382415294647217,
+      "matched_null_deletion_loss_delta": -0.00034815073013305664,
+      "selected_contribution_mean": 0.0061449152417480946,
+      "selected_contribution_median": 0.0011509574251249433,
+      "selected_contribution_positive_fraction": 1.0,
+      "selected_edge_count": 129,
+      "top_deleted_target_loss": 0.46629658341407776,
+      "top_deletion_loss_delta": 0.002124279737472534,
+      "top_edge_count": 16
+    },
+    "planted_deletion_diagnostic": {
+      "baseline_target_loss": 0.21501879394054413,
+      "matched_null_deleted_target_loss": 0.2153027057647705,
+      "matched_null_deletion_loss_delta": 0.0002839118242263794,
+      "selected_contribution_mean": 0.0017293416894972324,
+      "selected_contribution_median": 0.00034701506956480443,
+      "selected_contribution_positive_fraction": 0.9767441749572754,
+      "selected_edge_count": 129,
+      "top_deleted_target_loss": 0.21481627225875854,
+      "top_deletion_loss_delta": -0.0002025216817855835,
+      "top_edge_count": 16
+    },
+    "sender_state_permutation_qc": {
+      "effective_source_edge_slot_identity_changed_fraction": 1.0,
+      "gate_passed": true,
+      "node_displacement_above_threshold_fraction": 1.0,
+      "node_mapping_changed_fraction": 1.0,
+      "receipt_checksum": "2da5a6ddf8a349a3eef6977e911c43d498325ab7268a07456e82087b090dac17"
+    }
+  },
+  "schema_version": 1,
+  "receipt_kind": "multiscale_stage0_prerun_negative_diagnostic_v1",
+  "source_code": {
+    "runner": "scripts/diagnostics/run_multiscale_synthetic_recovery.py",
+    "synthetic_module": "src/spatial_benchmark/multiscale_synthetic.py"
+  },
+  "checksum": "4b06b1d3d08afe560ed727cb1e0da53254b9f358626fda067b2de6cc224dade3"
+}

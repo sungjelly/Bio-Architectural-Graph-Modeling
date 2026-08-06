@@ -1,0 +1,119 @@
+contract_schema_version: 1
+campaign_id: cmp_20260802_myjju_genemae_full_panel_k1000_jacobian
+contract_status: frozen_before_full_panel_k1000_values
+exploratory: true
+exploratory_reasons:
+  - prior_39_gene_jacobian_inspected
+  - upstream_model_results_inspected
+  - frozen_models_were_trained_at_k15
+
+objective:
+  primary: recompute_exact_full_panel_source_style_jacobian_on_k1000_graphs
+  deliverables:
+    - signed_directed_1000_by_1000_matrix
+    - symmetric_absolute_1000_by_1000_display_matrix
+    - ordered_gene_names_on_rows_and_columns
+    - all_label_zoomable_image_and_overview_png
+    - per_seed_per_core_coverage_and_graph_metrics
+    - checksum_bound_registered_run_bundle
+
+upstream:
+  model_campaign_id: cmp_20260730_myjju_genemae_10core_comparison
+  gradient_audit_campaign_id: cmp_20260731_myjju_genemae_gradient_audit_cpu_replay
+  checkpoint_policy: all_seven_final_epoch_199_checkpoints
+  seeds: [0, 1, 2, 3, 4, 5, 6]
+  select_best_seed: false
+  checkpoint_training_graph_k: 15
+
+cohort:
+  aliases: [ANC-01, ANC-02, ANC-03, ANC-04, ANC-05, ANC-06, ANC-07, ANC-08, ANC-09, ANC-10]
+  tissue_context: pathology_confirmed_adjacent_normal
+  total_cells: 117386
+  genes: 1000
+  biological_unit: tissue_core
+  seeds_are_technical_repeats: true
+  all_cells_used_for_model_fit: true
+  generalization_estimate: false
+  aggregation: cell_weighted_within_core_then_equal_core_then_equal_seed
+
+preprocessing:
+  scale: full_cell_log1p_cp10k
+  derivative_is_with_respect_to_normalized_compositional_input: true
+  derivative_is_not_with_respect_to_raw_molecule_count: true
+  ordered_gene_equality_required: true
+  technical_control_prefixes_excluded: [Negative, SystemControl]
+
+graph:
+  kind: deterministic_symmetric_union_spatial_knn
+  requested_k: 1000
+  maximum_tile_nodes: 7000
+  minimum_tile_nodes: 1001
+  constructed_self_loops: false
+  convolution_add_self_loops: true
+  cross_core_edges: prohibited
+  cross_tile_edges: prohibited
+  realized_degree_expectation: at_least_min_k_or_tile_nodes_minus_one_and_may_exceed_k_after_union
+  out_of_training_topology: true
+  retraining: false
+
+estimand:
+  output: mean_reconstruction_over_output_cells_for_each_target_gene
+  input: uniform_additive_shift_to_one_source_gene_over_all_input_cells
+  derivative: d_output_mean_vector_d_uniform_source_shift_vector
+  equivalent_reference: summed_output_input_gradients_divided_by_input_cell_count
+  retained_primary_form: signed_directed
+  display_transform: half_abs_matrix_plus_abs_transpose
+  tile_aggregation: cell_weighted
+  core_aggregation: equal
+  seed_aggregation: equal
+
+controls:
+  - exact_uniform_shift_versus_explicit_all_cell_derivative_sum_on_deterministic_model
+  - stored_k15_39_gene_block_reproduction
+  - deterministic_replay
+  - finite_output_and_gradient
+  - graph_symmetry_alignment_checksum_and_degree_audit
+  - signed_diagonal_off_diagonal_and_absolute_symmetry_reported_separately
+
+pilot_gate:
+  graph_k: 1000
+  scope: largest_tile_one_core_seed_zero
+  peak_allocated_vram_gib_maximum: 20.5
+  projected_total_gpu_hours_maximum: 48
+  every_tile_minimum_nodes: 1001
+  every_node_realized_degree_minimum: 1000
+  complete_and_finite: true
+  deterministic: true
+
+acceptance:
+  seed_coverage: 7
+  core_coverage_per_seed: 10
+  matrix_shape: [1000, 1000]
+  finite_values: true
+  exact_gene_order: true
+  graph_and_model_provenance_verified: true
+  aggregate_checksum_deterministic: true
+  run_bundle_and_registry_verified: true
+
+stop_conditions:
+  - checkpoint_registry_or_checksum_failure
+  - cohort_or_gene_order_mismatch
+  - tile_smaller_than_1001_cells
+  - graph_identity_symmetry_alignment_or_degree_failure
+  - nonfinite_output_or_gradient
+  - numerical_equivalence_control_failure
+  - unsafe_gpu_collision
+  - pilot_vram_or_runtime_gate_failure
+  - insufficient_disk
+  - incomplete_seed_or_core_coverage
+  - artifact_or_registry_verification_failure
+
+maximum_claim: frozen_model_held_in_out_of_training_topology_model_implied_sensitivity
+prohibited_claims:
+  - causal_influence
+  - validated_biological_mechanism
+  - direct_cell_cell_interaction
+  - patient_or_core_generalization
+  - raw_molecule_effect
+  - model_trained_at_k1000
+

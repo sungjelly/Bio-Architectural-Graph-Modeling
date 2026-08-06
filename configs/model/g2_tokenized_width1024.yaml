@@ -1,0 +1,18 @@
+model:
+  name: g2-tokenized
+  family: tokenized_edge_conditioned_gatv2
+  tokenizer_schema: raw_count_tokens_0_1_2_3plus_v1
+  num_expression_tokens: 4
+  embedding_dim: 1024
+  hidden_dim: 1024
+  graph_layers: 2
+  attention_heads: 8
+  ffn_dim: 1024
+  decoder_dim: 1024
+  edge_hidden_dim: 64
+  edge_embedding_dim: 64
+  dropout: 0.10
+  attention_dropout: 0.10
+  implicit_self_loops: false
+  trainable_node_identifiers: false
+  trainable_edge_identifiers: false

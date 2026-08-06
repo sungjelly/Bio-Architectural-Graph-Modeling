@@ -1,0 +1,86 @@
+schema_version: 1
+campaign_id: cmp_20260802_adjacent_normal_grouped_adjacency_ablation
+exploratory: true
+cohort:
+  tissue: AdjacentNormal
+  aliases: [ANC-01, ANC-02, ANC-03, ANC-04, ANC-05, ANC-06, ANC-07, ANC-08, ANC-09, ANC-10]
+  selected_cores: 10
+  distinct_donors: 10
+  cells: 117386
+  raw_fovs: 139
+  biological_probes: 1000
+  qc_policy: retain_all_vendor_qc_flag_not_input
+split:
+  id: adjacent_normal_10donor_slide_balanced_5fold_v1
+  folds: 5
+  train_groups: 7
+  validation_groups: 1
+  test_groups: 2
+  test_rule: paired_position_within_two_five_core_slide_blocks
+  validation_rule: next_first_slide_if_even_else_next_second_slide
+  independent_unit: donor_core_one_to_one
+graph:
+  k: 12
+  radius_um: 50.0
+  symmetry: union
+  grouping: raw_fov_within_core
+  self_loops: one_per_cell_in_all_arms
+  edge_features: false
+  null: fixed_within_fov_random_cell_to_graph_position_assignment
+  null_seed: 2026080202
+masking:
+  distribution: exact_uniform_integer_0_through_G_per_cell
+  positions: without_replacement
+  explicit_indicator: true
+  dynamic_training: true
+  training_base_seed: 2026080201
+  fixed_evaluation_replicates: 3
+  fixed_evaluation_base_seed: 20260802
+preprocessing:
+  expression: gene_wise_standardized_log1p_raw_count
+  fit_scope: seven_training_cores_only_equal_core_moments
+  scale_floor: 1.0e-6
+  feature_selection: none
+  library_size_normalization: none
+  model_covariates: masked_expression_and_binary_mask_only
+model:
+  name: mean-adjacency-sage
+  family: explicit_self_mean_adjacency_graphsage
+  hidden_dim: 128
+  ffn_dim: 256
+  decoder_dim: 256
+  graph_layers: 1
+  dropout: 0.1
+trainer:
+  optimizer: AdamW
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  gradient_clip_norm: 1.0
+  precision: fp32
+  epochs: 80
+  updates_per_epoch: 7
+  total_updates: 560
+  validation_interval_epochs: 5
+  validation_mask_replicates: 3
+  early_stopping: false
+  checkpoint_policy: minimum_fixed_validation_huber
+seeds: [0, 1, 2, 3, 4]
+profiles:
+  smoke_epochs: 1
+  pilot_epochs: 5
+  full_epochs: 80
+metrics:
+  scientific_primary: test/log1p_masked_huber
+  coprimary: test/log1p_masked_mae
+  secondary: [test/log1p_masked_rmse, gene_pearson, gene_spearman, cell_pearson, cell_spearman]
+  registry_primary: val/masked_huber
+  bootstrap_resamples: 10000
+  bootstrap_seed: 20260802
+decision:
+  meaningful_relative_improvement: 0.02
+  minimum_favoring_cores: 8
+  minimum_favoring_seeds: 4
+  moderate_mask_bins_must_favor_graph: [25_to_50, 50_to_75]
+  null_trigger: aggregate_graph_huber_lower_than_isolated
+claim_ceiling: spatial_neighbor_information_predictive_value_in_selected_adjacent_normal_cohort
+

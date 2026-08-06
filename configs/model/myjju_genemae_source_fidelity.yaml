@@ -1,0 +1,24 @@
+model:
+  name: myjju-genemae
+  family: myjju_dual_path_genemae
+  source_architecture: dual_path_genemae_sb50
+  source_fidelity_repair: assign_self_hidden_constructor_attribute
+  input_genes: 1000
+  output_genes: 1000
+  graph_layers: 4
+  graph_hidden_dim: 256
+  attention_heads: 6
+  attention_concat: false
+  embedding_dim: 192
+  self_hidden_dim: 512
+  self_hidden_layers: 2
+  fusion_hidden_dim: 256
+  dropout: 0.2
+  drop_edge: 0.2
+  decoder: mlp
+  learned_per_gene_mask_token: true
+  expected_trainable_parameters: 6888016
+  trainable_node_identifiers: false
+  trainable_edge_identifiers: false
+  uses_graph_inputs: true
+  uses_edge_inputs: true

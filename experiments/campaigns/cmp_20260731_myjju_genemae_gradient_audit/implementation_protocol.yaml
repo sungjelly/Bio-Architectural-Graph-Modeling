@@ -1,0 +1,180 @@
+protocol_schema_version: 1
+campaign_id: cmp_20260731_myjju_genemae_gradient_audit
+status: locked_before_resource_pilot_and_new_gradient_inspection
+frozen_contract_sha256: 5e5b1321f5e9b9c0acfa98d22f1a3348eb856b76fc74ad18d4cc8df835f3a4b5
+
+verified_preflight:
+  cohort_fingerprint_sha256: b3c06228ce7fda4d4c5da09c3281de46e67b8069dfadb14276ba6402af87767e
+  graph_bundle_sha256: f860f84f96e9daf4c9c4e4ddd5fc40aeacd3f6362c9e97d07248ac2575b462d5
+  total_nodes: 117386
+  total_tiles: 26
+  tile_counts:
+    ANC-01: 4
+    ANC-02: 2
+    ANC-03: 4
+    ANC-04: 2
+    ANC-05: 2
+    ANC-06: 2
+    ANC-07: 2
+    ANC-08: 4
+    ANC-09: 2
+    ANC-10: 2
+  all_39_marker_genes_present: true
+
+gradient_extraction:
+  dtype: float32
+  model_mode: eval
+  model_parameter_gradients_enabled: false
+  global_vjp:
+    decomposition_claim: prohibited
+    reason: summed_receiver_vjp_mixes_each_input_cells_effects_on_all_receivers
+  exact_same_other_decomposition:
+    scope: five_locked_targets_mask_replicate_0_observed_graph
+    receiver_samples_per_target_per_tile: 8
+    sampling: sha256_seeded_uniform_without_replacement_from_masked_target_receivers
+    namespace: myjju-gradient-audit-receiver-v1
+    stored_receiver_identity: count_and_sha256_only
+    exactness_scope: exact_derivative_decomposition_for_each_sampled_receiver
+    core_summary_role: population_weighted_stratified_sample_estimate
+    same_cell: scalar_receiver_output_gradient_at_same_receiver_input
+    other_cell: scalar_receiver_output_gradient_over_all_other_input_rows
+    l1_order: absolute_value_before_aggregation
+
+matrix_inventory:
+  source_style_unmasked:
+    targets: all_39_markers
+    sources: all_39_markers
+    graph_conditions: [observed]
+    masks: [all_false]
+  task_relevant_primary:
+    targets: all_39_markers
+    sources: all_39_markers
+    graph_conditions: [observed, node_label_permuted]
+    mask_replicates: [0]
+  task_relevant_mask_stability:
+    targets: [KRT8, COL1A1, EPCAM, OLFM4, CEACAM6]
+    sources: all_39_markers
+    graph_conditions: [observed]
+    mask_replicates: [1, 2]
+  ensemble_rule: average_signed_directed_gradients_across_seeds_then_transform_or_rank
+
+target_eligibility:
+  targets: [KRT8, COL1A1, EPCAM, OLFM4, CEACAM6]
+  mask_replicates: [0, 1, 2]
+  graph_conditions: [observed, node_label_permuted]
+  ensemble_rule: average_predictions_across_seeds_then_recompute_huber
+  gene_mean_reference: per_core_all_fit_mean_on_log1p_cp10k_scale
+  aggregation: mean_masked_huber_across_replicates_then_equal_core
+  gene_mean_relative_improvement: gene_mean_minus_model_divided_by_gene_mean
+  graph_relative_improvement: permuted_minus_observed_divided_by_permuted
+  favoring_core_rule: mean_replicate_loss_for_model_is_strictly_lower
+
+core_and_tile_aggregation:
+  source_style_and_global_masked_vjp:
+    tile_numerator: sum_receiver_outputs_then_differentiate
+    core_denominator: total_relevant_receiver_count_across_all_core_tiles
+    prohibited: unweighted_mean_of_tile_normalized_gradients
+  exact_receiver_decomposition:
+    tile_estimator: sampled_receiver_mean_times_total_masked_target_receivers_in_tile
+    sample_weight: inverse_within_tile_inclusion_probability
+    core_denominator: total_masked_target_receiver_count_across_all_core_tiles
+    prohibited: unweighted_mean_over_tiles_or_sampled_receivers
+  cross_core_summary:
+    weighting: equal_core
+    cell_count_weighting: false
+
+bounded_faithfulness:
+  targets: [KRT8, COL1A1, EPCAM, OLFM4, CEACAM6]
+  sources: all_39_markers
+  graph_condition: observed
+  mask_replicate: 0
+  scales_within_core_population_sd: [0.10, 0.25]
+  clip_quantiles: [0.01, 0.99]
+  quantile_interpolation: linear
+  values_already_outside_quantile_bounds: unchanged
+  positive_direction: min_shift_to_upper_bound_without_reversing_direction
+  negative_direction: min_shift_to_lower_bound_without_reversing_direction
+  perturb_only_visible_entries: true
+  actual_centered_effect: half_f_plus_minus_f_minus
+  predicted_centered_effect: gradient_dot_half_exact_clipped_plus_minus_direction
+  fixed_nonnegligible_absolute_effect: 0.000001
+  minimum_testable_case_fraction: 0.90
+  error_ratio: median_absolute_prediction_error_over_median_absolute_actual_effect
+  primary_gate_pooling:
+    average_signed_predicted_and_actual_effects_across_seeds_first: true
+    retain_each_core_and_offdiagonal_directed_target_source_pair_as_one_case: true
+    exclude_target_self_gradient: true
+    cell_count_weighting: false
+  secondary_summaries:
+    - all_target_source_cases_including_diagonal
+    - nineteen_locked_directed_pairs
+
+locked_structure_statistic:
+  name: S
+  numerator: median_absolute_gradient_over_19_locked_directed_pairs
+  denominator: median_absolute_gradient_over_same_five_targets_nonlocked_offdiagonal_marker_pairs
+  denominator_floor: 0.000000000001
+  formula: numerator_divided_by_max_denominator_and_floor
+
+graph_gradient_null:
+  primary_statistic: S
+  per_core_ensemble_rule: mean_signed_J_across_seeds_before_absolute_value
+  relative_improvement: observed_minus_permuted_divided_by_max_permuted_and_floor
+  secondary_statistic: raw_locked_pair_median_absolute_gradient
+
+parameter_randomization:
+  reference_core: ANC-01
+  mask_replicate: 0
+  graph_condition: observed
+  paired_initialization_seeds: [9100, 9101, 9102, 9103, 9104, 9105, 9106]
+  statistic: S
+  trained_value: S_from_mean_signed_gradient_across_seven_trained_models
+  pass_rule: trained_value_strictly_exceeds_each_of_seven_randomized_values
+
+matched_pair_null:
+  random_seed: 20260731
+  draws: 10000
+  statistic: median_absolute_gradient_over_19_pairs
+  gradient_value_per_pair:
+    first: mean_signed_mask_replicate_0_gradient_across_seeds_within_each_core
+    second: absolute_value_within_each_core
+    third: equal_core_mean_of_absolute_values
+  preserve_target: true
+  prohibited_null_edges:
+    - self_edges
+    - locked_edges_for_same_target
+  matching_features:
+    - source_nonzero_prevalence
+    - source_mean_log1p_cp10k_expression
+    - absolute_target_source_raw_pearson
+  matching_feature_core_aggregation:
+    source_nonzero_prevalence: equal_core_mean_of_per_core_nonzero_fraction
+    source_mean_log1p_cp10k_expression: equal_core_mean_of_per_core_mean
+    absolute_target_source_raw_pearson: equal_core_mean_of_per_core_absolute_pearson
+    constant_vector_pearson: zero_without_dropping_the_core
+  feature_standardization: per_target_mean_and_population_sd_over_eligible_marker_sources
+  candidate_pool_per_locked_edge: five_nearest_eligible_edges_by_euclidean_standardized_feature_distance
+  draw_rule: independent_uniform_draw_from_candidate_pool_with_repetition_retained
+  empirical_upper_tail_p: one_plus_null_at_least_observed_divided_by_10001
+  pass_rule: empirical_upper_tail_p_at_most_0.05
+
+rank_and_sign_rules:
+  spearman_ties: average_rank
+  constant_or_nonfinite_vector: fail
+  zero_gradient_sign: zero
+  seed_rank_stability_mask_replicate: 0
+  mask_rank_stability_seed_aggregation: mean_signed_gradient_across_seven_seeds_before_ranking
+  mask_rank_stability_entries: offdiagonal_38_sources_for_each_target_row
+  signed_pair_seed_value: equal_core_mean_signed_mask_replicate_0_gradient_for_each_seed
+  signed_pair_core_value: seven_seed_mean_signed_mask_replicate_0_gradient_for_each_core
+  signed_pair_common_direction_required_across_seed_and_core_prevalence: true
+  signed_pair_seed_prevalence: majority_nonzero_sign_must_cover_at_least_6_of_7
+  signed_pair_core_prevalence: majority_nonzero_sign_must_cover_at_least_8_of_10
+
+reporting:
+  biological_units: cores
+  seeds_and_masks: technical_repeats
+  cell_bootstrap_population_intervals: prohibited
+  source_pair_overlap_role: circular_reproduction_only
+  mechanism_gate_available: false
+  maximum_claim_if_all_computational_gates_pass: stable_faithful_graph_dependent_null_calibrated_model_implied_predictive_sensitivity

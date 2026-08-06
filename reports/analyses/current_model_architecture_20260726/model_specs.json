@@ -1,0 +1,599 @@
+{
+  "amp_equivalence_smoke": {
+    "chunked_fp32_vs_amp_max_abs_error": 0.0033186674118041992,
+    "fp32_ordinary_vs_chunked_max_abs_error": 1.6689300537109375e-06,
+    "passed": true,
+    "scope": "synthetic 512-node, 128-gene graph; not the full core"
+  },
+  "artifact_kind": "current_model_architecture_audit",
+  "current_campaign_runs": {
+    "g2": {
+      "conclusion_eligible": true,
+      "diagnostic_resource_pilot": false,
+      "evaluation_duration_seconds": 125.57423044403549,
+      "fixed_epoch_budget": 200,
+      "model_name": "g2",
+      "parameter_count": 3987880,
+      "peak_vram_gib": 7.974746227264404,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": 0.22887325559801985,
+      "run_id": "r_20260725T083929Z_8364b333_s000_f00_a01_f5c47601",
+      "total_duration_seconds": 1688.1384963369928,
+      "training_duration_seconds": 1509.90014647902
+    },
+    "matched": {
+      "conclusion_eligible": true,
+      "diagnostic_resource_pilot": false,
+      "evaluation_duration_seconds": 102.2111236450728,
+      "fixed_epoch_budget": 200,
+      "model_name": "b0-g2-matched",
+      "parameter_count": 3987880,
+      "peak_vram_gib": 1.9725184440612793,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": 0.22997546659909252,
+      "run_id": "r_20260725T090752Z_e05d042b_s000_f00_a01_4ff98df7",
+      "total_duration_seconds": 215.44896100996993,
+      "training_duration_seconds": 63.35352356790099
+    },
+    "resource_pilot": {
+      "conclusion_eligible": false,
+      "diagnostic_resource_pilot": true,
+      "evaluation_duration_seconds": 51.79110444802791,
+      "fixed_epoch_budget": 2,
+      "model_name": "g2",
+      "parameter_count": 3987880,
+      "peak_vram_gib": 7.973107814788818,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": 0.2465874618237903,
+      "run_id": "r_20260725T083634Z_457e0bfb_s000_f00_a01_1fb277a2",
+      "total_duration_seconds": 116.6869841190055,
+      "training_duration_seconds": 16.348466804018244
+    }
+  },
+  "data": {
+    "biological_targets": 1000,
+    "dataset_fingerprint": "a112fbb2bdf929197759c82913fc379c4df797f75676457bcd10419fe7a969d5",
+    "dataset_id": "cosmx_normal_core_full_core_fit_v1",
+    "expression_transform": "gene-wise log1p then population-mean centering and population-standard-deviation scaling, fitted on all nodes",
+    "fit_nodes": 24245,
+    "metadata_transform": "median imputation, log1p, mean centering and population-standard-deviation scaling, fitted on all nodes",
+    "node_covariates": 22,
+    "nodes": 24245,
+    "prohibited_node_inputs": [
+      "direct_identifiers",
+      "absolute_or_local_coordinates",
+      "expression_derived_library_size",
+      "vendor_cell_type_cluster_neighborhood_or_niche"
+    ],
+    "split_fingerprint": "2c8c59fb659401cc202126cb14154f064d2e3380819aff647f06a30db354d84c",
+    "technical_controls_excluded": [
+      "Negative*",
+      "SystemControl*"
+    ],
+    "test_nodes": 0,
+    "validation_nodes": 0,
+    "version": "full_core_fit_v1"
+  },
+  "graph": {
+    "components": 1,
+    "directed_candidates": 24245000,
+    "directed_edges": 21029944,
+    "duplicate_directed_edges": 0,
+    "edge_attribute_count": 17,
+    "edge_attributes": [
+      "distance_um",
+      "distance_over_radius",
+      "log1p_distance_um",
+      "delta_x_over_radius",
+      "delta_y_over_radius",
+      "cos_theta",
+      "sin_theta",
+      "cos_2theta",
+      "sin_2theta",
+      "distance_rbf_0",
+      "distance_rbf_1",
+      "distance_rbf_2",
+      "distance_rbf_3",
+      "distance_rbf_4",
+      "distance_rbf_5",
+      "distance_rbf_6",
+      "distance_rbf_7"
+    ],
+    "graph_sha256": "2469064e2fe14b48f642fca09a546d9e420d9fd851b9668996da62ee8246d060",
+    "isolated_nodes": 0,
+    "k": 1000,
+    "kind": "exact mutual k-nearest-neighbor",
+    "max_edge_distance_um": 510.3060302734375,
+    "mean_degree": 867.3930294906166,
+    "mean_edge_distance_um": 137.6639404296875,
+    "median_degree": 917.0,
+    "nodes": 24245,
+    "radius_guard_um": 650.0,
+    "radius_is_filter": false,
+    "self_loops": 0,
+    "undirected_relations": 10514972
+  },
+  "implementation_inventory_parameter_counts": {
+    "B0 self-only MLP": 2338792,
+    "B0\u2013G1 parameter-matched": 3916776,
+    "B0\u2013G2 parameter-matched": 3987880,
+    "B1 mean-neighbor": 2601960,
+    "Broad-field control": 2341352,
+    "G1 topology-only GATv2": 3916776,
+    "G2 edge-conditioned GATv2": 3987880,
+    "G3 additive edge-message (implementation defaults)": 3043880
+  },
+  "initialization_comparison": [
+    {
+      "g2_tensor": "encoder.expression_projection.weight",
+      "identical": true,
+      "matched_tensor": "encoder.expression_projection.weight",
+      "max_abs_difference": 0.0
+    },
+    {
+      "g2_tensor": "encoder.mask_projection.weight",
+      "identical": true,
+      "matched_tensor": "encoder.mask_projection.weight",
+      "max_abs_difference": 0.0
+    },
+    {
+      "g2_tensor": "encoder.covariate_projection.weight",
+      "identical": true,
+      "matched_tensor": "encoder.covariate_projection.weight",
+      "max_abs_difference": 0.0
+    },
+    {
+      "g2_tensor": "blocks.0.convolution.lin_l.weight",
+      "identical": false,
+      "matched_tensor": "blocks.0.left_projection.weight",
+      "max_abs_difference": 0.12057222425937653
+    },
+    {
+      "g2_tensor": "blocks.0.convolution.lin_r.weight",
+      "identical": false,
+      "matched_tensor": "blocks.0.right_projection.weight",
+      "max_abs_difference": 0.12062280625104904
+    },
+    {
+      "g2_tensor": "blocks.0.convolution.lin_edge.weight",
+      "identical": false,
+      "matched_tensor": "blocks.0.edge_projection.weight",
+      "max_abs_difference": 0.2251731902360916
+    },
+    {
+      "g2_tensor": "blocks.0.convolution.att",
+      "identical": false,
+      "matched_tensor": "blocks.0.routing_vector",
+      "max_abs_difference": 1.2130998373031616
+    },
+    {
+      "g2_tensor": "decoder.linear_in.weight",
+      "identical": false,
+      "matched_tensor": "decoder.linear_in.weight",
+      "max_abs_difference": 0.08804772049188614
+    },
+    {
+      "g2_tensor": "decoder.linear_out.weight",
+      "identical": false,
+      "matched_tensor": "decoder.linear_out.weight",
+      "max_abs_difference": 0.08828940987586975
+    },
+    {
+      "g2_tensor": "edge_encoder.network.0.weight",
+      "identical": false,
+      "matched_tensor": "edge_encoder.network.0.weight",
+      "max_abs_difference": 0.4775695502758026
+    }
+  ],
+  "interpretability_surface": {
+    "attention_receivers_sampled": 128,
+    "evidence_label": "no joint deletion-, organizer-enrichment-, and sender-program-supported TLS-related dependency detected",
+    "joint_tls_dependency_support": false,
+    "mean_attention_entropy_nats": 6.547743147469859,
+    "mean_effective_neighbor_count": 713.2040870536018
+  },
+  "models": {
+    "g2": {
+      "checkpoint_audit": {
+        "checkpoint_file_bytes": 15965733,
+        "checkpoint_file_sha256": "5cdbb4f80112565b63acadedbb76be474cccd17bea0c5bb00e7f5120de416cf3",
+        "checkpoint_keys": [
+          "checkpoint_policy",
+          "checkpoint_role",
+          "epoch",
+          "evaluation_mask_bundle_sha256",
+          "fixed_epoch_budget",
+          "full_core_preprocessing_sha256",
+          "graph_sha256",
+          "model_config",
+          "model_name",
+          "model_state_dict",
+          "run_id",
+          "schema_version",
+          "state_dict_sha256",
+          "training_protocol"
+        ],
+        "checkpoint_path": "artifacts/runs/2026/07/r_20260725T083929Z_8364b333_s000_f00_a01_f5c47601/checkpoints/last.ckpt",
+        "dtypes": [
+          "torch.float32"
+        ],
+        "module_groups": {
+          "Expression decoder": 775656,
+          "GATv2 residual block 1": 1084928,
+          "GATv2 residual block 2": 1084928,
+          "Node encoder": 1036800,
+          "Shared 17\u219264\u219264 encoder": 5568
+        },
+        "optimizer_state_present": false,
+        "parameter_count": 3987880,
+        "parameter_tensor_count": 42,
+        "raw_parameter_bytes": 15951520,
+        "run_id": "r_20260725T083929Z_8364b333_s000_f00_a01_f5c47601",
+        "state_dict_sha256": "e14a439bb2333da88c96c7c2ee13dde8ca24e3f89980c08f5b57e0391b11704d"
+      },
+      "display_name": "G2 \u00b7 edge-conditioned GATv2",
+      "model_config": {
+        "activation_checkpointing": true,
+        "attention_dropout": 0.1,
+        "attention_heads": 4,
+        "decoder_dim": 512,
+        "dropout": 0.1,
+        "edge_embedding_dim": 64,
+        "edge_hidden_dim": 64,
+        "embedding_dim": 512,
+        "exact_receiver_partitioning": true,
+        "family": "edge_conditioned_gatv2",
+        "ffn_dim": 512,
+        "graph_layers": 2,
+        "hidden_dim": 512,
+        "implicit_self_loops": false,
+        "name": "g2",
+        "receiver_chunk_size": 512,
+        "trainable_edge_identifiers": false,
+        "trainable_node_identifiers": false
+      }
+    },
+    "matched": {
+      "checkpoint_audit": {
+        "checkpoint_file_bytes": 15965989,
+        "checkpoint_file_sha256": "f53da3cf7e96a26f34f857e00cc251917b480b8c5546bf75e1ee4b21e53680e6",
+        "checkpoint_keys": [
+          "checkpoint_policy",
+          "checkpoint_role",
+          "epoch",
+          "evaluation_mask_bundle_sha256",
+          "fixed_epoch_budget",
+          "full_core_preprocessing_sha256",
+          "graph_sha256",
+          "model_config",
+          "model_name",
+          "model_state_dict",
+          "run_id",
+          "schema_version",
+          "state_dict_sha256",
+          "training_protocol"
+        ],
+        "checkpoint_path": "artifacts/runs/2026/07/r_20260725T090752Z_e05d042b_s000_f00_a01_4ff98df7/checkpoints/last.ckpt",
+        "dtypes": [
+          "torch.float32"
+        ],
+        "module_groups": {
+          "Cell-autonomous mixing block 1": 1084928,
+          "Cell-autonomous mixing block 2": 1084928,
+          "Expression decoder": 775656,
+          "Node encoder": 1036800,
+          "Shared 17\u219264\u219264 encoder": 5568
+        },
+        "optimizer_state_present": false,
+        "parameter_count": 3987880,
+        "parameter_tensor_count": 42,
+        "raw_parameter_bytes": 15951520,
+        "run_id": "r_20260725T090752Z_e05d042b_s000_f00_a01_4ff98df7",
+        "state_dict_sha256": "6c2806fcc60eac3acd5b134f382f6e9804fc7b4522a9ddd713ec8e35e85c34eb"
+      },
+      "display_name": "B0\u2013G2-matched \u00b7 cell-autonomous control",
+      "model_config": {
+        "attention_dropout": 0.1,
+        "attention_heads": 4,
+        "comparison_target": "g2_high_k_same_data_masks_width_depth_seed_and_budget",
+        "decoder_dim": 512,
+        "dropout": 0.1,
+        "edge_attribute_dim": 17,
+        "edge_embedding_dim": 64,
+        "edge_hidden_dim": 64,
+        "embedding_dim": 512,
+        "family": "edge_parameter_matched_self_control",
+        "ffn_dim": 512,
+        "graph_layers": 2,
+        "hidden_dim": 512,
+        "implicit_self_loops": false,
+        "name": "b0-g2-matched",
+        "parameter_match_reference": "edge_conditioned_gatv2",
+        "parameter_matching_method": "repurpose_g2_edge_encoder_and_projection_on_within_cell_embeddings",
+        "trainable_edge_identifiers": false,
+        "trainable_node_identifiers": false,
+        "uses_edge_inputs": false,
+        "uses_graph_inputs": false
+      }
+    }
+  },
+  "performance": {
+    "artifact_kind": "full_core_capacity_comparison",
+    "facts": {
+      "canonical_role": "fit",
+      "dataset": {
+        "dataset_fingerprint": "a112fbb2bdf929197759c82913fc379c4df797f75676457bcd10419fe7a969d5",
+        "dataset_id": "cosmx_normal_core_full_core_fit_v1",
+        "preprocessing_version": "full_core_fit_v1",
+        "split_fingerprint": "2c8c59fb659401cc202126cb14154f064d2e3380819aff647f06a30db354d84c",
+        "split_id": "2c8c59fb659401cc",
+        "version": "full_core_fit_v1"
+      },
+      "equal_parameter_count": true,
+      "evaluation_mask_bundle_sha256": "d2617dc3619645532ee9f8ca48a3f488209394b1a65129db670b0255c2834436",
+      "evaluation_protocol": "held_in_full_core_fixed_budget",
+      "g2_mean_whole_node_masked_huber": 0.22887325559801988,
+      "graph_sha256": "2469064e2fe14b48f642fca09a546d9e420d9fd851b9668996da62ee8246d060",
+      "matched_self_mean_whole_node_masked_huber": 0.22997546659909252,
+      "mean_self_minus_g2_masked_huber": 0.0011022110010726338,
+      "model_seed": 0,
+      "paired_whole_node_replicates": [
+        {
+          "favors_g2": true,
+          "g2_masked_huber": 0.22697028138553296,
+          "mask_checksum": "81996c157a1f672a9a14707f5b1ca6e41563f57102ab56a5b200b78df679641d",
+          "mask_replicate": 0,
+          "matched_self_masked_huber": 0.2281372387394803,
+          "self_minus_g2_masked_huber": 0.00116695735394734
+        },
+        {
+          "favors_g2": true,
+          "g2_masked_huber": 0.22949591146857545,
+          "mask_checksum": "c99e285c95e93ea67293f57e339a9ab31a037f4628fbaf313744f479ea4f8e95",
+          "mask_replicate": 1,
+          "matched_self_masked_huber": 0.2305048856710666,
+          "self_minus_g2_masked_huber": 0.0010089742024911585
+        },
+        {
+          "favors_g2": true,
+          "g2_masked_huber": 0.2301535739399512,
+          "mask_checksum": "45974bf97d521d0f3cf3d4da5b6f9d9d9f2ec8b1463a1792a727b733c2d7e9a8",
+          "mask_replicate": 2,
+          "matched_self_masked_huber": 0.23128427538673063,
+          "self_minus_g2_masked_huber": 0.0011307014467794307
+        }
+      ],
+      "parameter_count": 3987880,
+      "relative_mean_g2_gain": 0.004792732970052307
+    },
+    "inference": {
+      "label": "positive_but_subthreshold",
+      "maximum_claim": "held-in masked-expression reconstruction capacity in one transductively fitted core",
+      "statement": "The mean G2 gain is positive but below the locked 2% capacity threshold."
+    },
+    "inputs": {
+      "b0_g2_matched": {
+        "model_name": "b0-g2-matched",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260725T090752Z_e05d042b_s000_f00_a01_4ff98df7",
+        "run_id": "r_20260725T090752Z_e05d042b_s000_f00_a01_4ff98df7"
+      },
+      "g2": {
+        "model_name": "g2",
+        "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260725T083929Z_8364b333_s000_f00_a01_f5c47601",
+        "run_id": "r_20260725T083929Z_8364b333_s000_f00_a01_f5c47601"
+      }
+    },
+    "limits": [
+      "All fitted transforms, graph construction, and evaluation cells come from the same single core.",
+      "The comparison is held-in and is not an estimate of generalization.",
+      "The three mask replicates are technical repeats, not independent biological replicates.",
+      "This analysis does not verify the earlier held-out predictive hypothesis.",
+      "A capacity result does not establish cell-cell communication, a biological mechanism, or causality."
+    ],
+    "locked_gate": {
+      "criteria": {
+        "all_three_paired_replicates_favor_g2": true,
+        "both_runs_complete_200_finite_epochs": true,
+        "neither_run_has_unresolved_divergence": true,
+        "relative_mean_gain_at_least_2_percent": false
+      },
+      "passes": false,
+      "thresholds": {
+        "allowed_unresolved_divergence": false,
+        "minimum_relative_mean_g2_gain": 0.02,
+        "required_epochs_per_run": 200,
+        "required_favorable_paired_replicates": 3
+      }
+    },
+    "schema_version": 1,
+    "status": "complete",
+    "training_audit": {
+      "b0_g2_matched": {
+        "all_epoch_losses_and_gradients_finite": true,
+        "divergence_reasons": [],
+        "epochs_are_0_through_199": true,
+        "epochs_present": 200,
+        "gradient_spike_gt_10x_positive_median": false,
+        "last_20_gradient_max": 0.05794991925358772,
+        "last_20_losses_and_gradients_finite": true,
+        "nonfinite_last_20_epochs": [],
+        "positive_gradient_median_all_epochs": 0.012440185062587261,
+        "same_mode_loss_checks": [
+          {
+            "divergent": false,
+            "last_epoch": 199,
+            "last_loss": 0.19622701406478882,
+            "mask_mode": "block",
+            "observation_count": 19,
+            "previous_median_loss": 0.22696252167224884,
+            "previous_observations_used": 5,
+            "threshold_1_25x": 0.28370315209031105
+          },
+          {
+            "divergent": false,
+            "last_epoch": 196,
+            "last_loss": 0.2314268946647644,
+            "mask_mode": "node",
+            "observation_count": 53,
+            "previous_median_loss": 0.22778581082820892,
+            "previous_observations_used": 5,
+            "threshold_1_25x": 0.28473226353526115
+          },
+          {
+            "divergent": false,
+            "last_epoch": 198,
+            "last_loss": 0.22588708996772766,
+            "mask_mode": "partial",
+            "observation_count": 128,
+            "previous_median_loss": 0.22616127133369446,
+            "previous_observations_used": 5,
+            "threshold_1_25x": 0.2827015891671181
+          }
+        ],
+        "unresolved_divergence": false
+      },
+      "divergence_definition": {
+        "gradient_spike": "last-20 gradient max > 10x the positive median over all epochs",
+        "nonfinite_tail": "any nonfinite loss or gradient in the last 20 epochs",
+        "same_mode_deterioration": "for a mask mode with >=3 observations, its last loss > 1.25x the median of its previous up-to-5 observations"
+      },
+      "g2": {
+        "all_epoch_losses_and_gradients_finite": true,
+        "divergence_reasons": [],
+        "epochs_are_0_through_199": true,
+        "epochs_present": 200,
+        "gradient_spike_gt_10x_positive_median": false,
+        "last_20_gradient_max": 0.050617948174476624,
+        "last_20_losses_and_gradients_finite": true,
+        "nonfinite_last_20_epochs": [],
+        "positive_gradient_median_all_epochs": 0.01330682123079896,
+        "same_mode_loss_checks": [
+          {
+            "divergent": false,
+            "last_epoch": 199,
+            "last_loss": 0.1967286318540573,
+            "mask_mode": "block",
+            "observation_count": 19,
+            "previous_median_loss": 0.22758717834949493,
+            "previous_observations_used": 5,
+            "threshold_1_25x": 0.28448397293686867
+          },
+          {
+            "divergent": false,
+            "last_epoch": 196,
+            "last_loss": 0.23206757009029388,
+            "mask_mode": "node",
+            "observation_count": 53,
+            "previous_median_loss": 0.2278522104024887,
+            "previous_observations_used": 5,
+            "threshold_1_25x": 0.2848152630031109
+          },
+          {
+            "divergent": false,
+            "last_epoch": 198,
+            "last_loss": 0.22613978385925293,
+            "mask_mode": "partial",
+            "observation_count": 128,
+            "previous_median_loss": 0.22644922137260437,
+            "previous_observations_used": 5,
+            "threshold_1_25x": 0.28306152671575546
+          }
+        ],
+        "unresolved_divergence": false
+      }
+    }
+  },
+  "report_date": "2026-07-26",
+  "schema_version": 1,
+  "scope": {
+    "current_conclusion_bearing_models": [
+      "g2",
+      "b0-g2-matched"
+    ],
+    "diagnostic_runs": [
+      "r_20260725T083634Z_457e0bfb_s000_f00_a01_1fb277a2"
+    ],
+    "generalization_estimate": false,
+    "independent_biological_units": 1,
+    "maximum_scientific_claim": "held-in masked-expression reconstruction capacity in one transductively fitted spatial core",
+    "raw_or_row_level_data_read": false
+  },
+  "source_files": [
+    "src/spatial_benchmark/models.py",
+    "src/spatial_benchmark/dense_gat.py",
+    "src/spatial_benchmark/full_core_training.py",
+    "scripts/train/run_full_core_capacity.py",
+    "reports/analyses/full_core_high_k_capacity/comparison/comparison.json",
+    "artifacts/runs/2026/07/r_20260725T083929Z_8364b333_s000_f00_a01_f5c47601/checkpoints/last.ckpt",
+    "artifacts/runs/2026/07/r_20260725T090752Z_e05d042b_s000_f00_a01_4ff98df7/checkpoints/last.ckpt"
+  ],
+  "training": {
+    "batch_unit": "one complete full-core graph",
+    "checkpoint_selection": "final epoch only; no validation selection",
+    "deterministic_algorithms": true,
+    "early_stopping": false,
+    "edge_dropout": 0.0,
+    "epochs": 200,
+    "gradient_clip_global_norm": 1.0,
+    "huber_delta": 1.0,
+    "learning_rate": 0.0003,
+    "mask_curriculum": {
+      "partial_gene_rate": 0.2,
+      "post_warmup_probabilities": {
+        "partial_gene": 0.6,
+        "spatial_block": 0.1,
+        "whole_node": 0.3
+      },
+      "realized_epoch_counts": {
+        "block": 19,
+        "node": 53,
+        "partial": 128
+      },
+      "spatial_block_node_rate": 0.1,
+      "warmup_epochs": 10,
+      "warmup_mode": "partial-gene",
+      "whole_node_rate": 0.1
+    },
+    "mask_seed": 314159,
+    "model_seed": 0,
+    "neighbor_sampling": false,
+    "objective": "masked mean Huber loss",
+    "optimizer": "AdamW",
+    "precision": "FP32 parameters with CUDA FP16 autocast and GradScaler",
+    "weight_decay": 0.0001
+  },
+  "verification": {
+    "all_training_losses_and_gradients_finite": true,
+    "amp_equivalence_smoke_passed": true,
+    "both_histories_have_200_epochs": true,
+    "chunked_and_ordinary_g2_state_layout_identical": true,
+    "dataset_fingerprint_exact": true,
+    "g2_all_checkpoint_tensors_float32": true,
+    "g2_checkpoint_is_final_epoch_199": true,
+    "g2_current_code_parameter_count": true,
+    "g2_current_code_strict_checkpoint_load": true,
+    "g2_file_checksum_matches_artifact_manifest": true,
+    "g2_parameter_count_exact": true,
+    "g2_parameter_tensor_count_exact": true,
+    "g2_state_checksum_matches_checkpoint": true,
+    "matched_all_checkpoint_tensors_float32": true,
+    "matched_checkpoint_is_final_epoch_199": true,
+    "matched_current_code_parameter_count": true,
+    "matched_current_code_strict_checkpoint_load": true,
+    "matched_file_checksum_matches_artifact_manifest": true,
+    "matched_parameter_count_exact": true,
+    "matched_parameter_tensor_count_exact": true,
+    "matched_prediction_invariant_to_graph_arguments": true,
+    "matched_state_checksum_matches_checkpoint": true,
+    "paired_evaluation_mask_bundle_identical": true,
+    "paired_graph_checksum_identical": true,
+    "paired_mask_mode_counts_exact": true,
+    "paired_models_have_equal_parameter_count": true,
+    "paired_models_have_equal_raw_parameter_bytes": true,
+    "paired_module_group_budgets_identical": true,
+    "paired_training_masks_identical_each_epoch": true,
+    "same_seed_full_initialization_not_identical": true,
+    "same_seed_shared_encoder_initialization_identical": true,
+    "split_fingerprint_exact": true
+  }
+}

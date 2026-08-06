@@ -17,6 +17,7 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from spatial_benchmark.models import (  # noqa: E402
     AdditiveEdgeMessageModel,
     BroadSpatialFieldControl,
+    EdgeParameterMatchedSelfControl,
     EdgeConditionedGATv2,
     MeanNeighborModel,
     ParameterMatchedSelfControl,
@@ -110,6 +111,17 @@ def test_model_factory_covers_the_complete_ladder() -> None:
             **common,
         ),
         ParameterMatchedSelfControl,
+    )
+    assert isinstance(
+        build_model(
+            "B0-G2-matched",
+            seed=1,
+            edge_attribute_dim=3,
+            edge_embedding_dim=5,
+            attention_heads=3,
+            **common,
+        ),
+        EdgeParameterMatchedSelfControl,
     )
     assert isinstance(build_model("B1", seed=1, **common), MeanNeighborModel)
     assert isinstance(

@@ -1,0 +1,188 @@
+{
+  "aggregation": "mask_replicates_then_equal_core",
+  "artifact_kind": "myjju_genemae_10core_comparison",
+  "biological_unit": "tissue_core",
+  "campaign_id": "cmp_20260730_myjju_genemae_10core_comparison",
+  "common_scale_caveat": "BAGM decoded counts use the true full-cell library size for CP10k rescaling; this is an oracle-scale descriptive comparison.",
+  "comparison_scope": "end_to_end_trained_system_comparison_not_controlled_architecture_ablation",
+  "core_count": 10,
+  "coverage": {
+    "bagm_gat_members": 7,
+    "bagm_self_members": 7,
+    "expected_batches": 180,
+    "genemae_members": 7,
+    "observed_batches": 180,
+    "registered_failures_before_completion": 2
+  },
+  "current_bagm_campaign_id": "cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble",
+  "current_bagm_whole_node_context": {
+    "context_only_not_ranked_against_genemae": true,
+    "estimand": "held_in_whole_node_hybrid_count_reconstruction",
+    "failed_gates": [
+      "pooled_data_gate",
+      "representation_gate"
+    ],
+    "gat_equal_core_hybrid_loss": 0.4318688233693441,
+    "gat_favoring_core_count": 10,
+    "gat_favoring_seed_pair_count": 7,
+    "gat_relative_graph_improvement": 0.030060481801889465,
+    "graph_gate_passed": true,
+    "matched_self_equal_core_hybrid_loss": 0.4452541629473369,
+    "overall_campaign_outcome": "negative",
+    "source_comparison_sha256": "1e128b05453f67730c6c57621815a495e06b21ee3088ae042706fb770540b3e7",
+    "source_equal_core_table_sha256": "ab3f8aa58535e32f28461fbe9d8c0396e0ac1af0b05709d771956b396868dce1",
+    "source_graph_core_table_sha256": "e7ec24284ac7267bbccbc2da4560642b31f3bd1a7901d1bb93ac721236be07e8",
+    "source_manifest_sha256": "1ef63f7b9ae739d512a4cc1a8d4e756f782d373b0847b341eb2f84aa00467a6e"
+  },
+  "estimand": "held_in_partial_gene_reconstruction",
+  "exploratory": true,
+  "failed_gates": [
+    "graph_use"
+  ],
+  "frozen_gates": [
+    {
+      "gate": "primary_comparison",
+      "observed": {
+        "genemae_favoring_cores": 10,
+        "genemae_favoring_seed_pairs": 7,
+        "masked_mae_nonworse": true,
+        "mean_gene_pearson_nonworse": true,
+        "mean_huber_relative_improvement": 0.7293201490394673
+      },
+      "passed": true,
+      "threshold": {
+        "masked_mae_nonworse": true,
+        "mean_gene_pearson_nonworse": true,
+        "mean_huber_relative_improvement_minimum": 0.02,
+        "minimum_genemae_favoring_cores": 8,
+        "minimum_genemae_favoring_seed_pairs": 5
+      }
+    },
+    {
+      "gate": "baseline",
+      "observed": {
+        "genemae_favoring_cores": 10,
+        "mean_huber_relative_improvement": 0.10734005155640305
+      },
+      "passed": true,
+      "threshold": {
+        "mean_huber_relative_improvement_minimum": 0.02,
+        "minimum_genemae_favoring_cores": 8
+      }
+    },
+    {
+      "gate": "graph_use",
+      "observed": {
+        "mean_huber_relative_improvement": 0.010892877841427583,
+        "unpermuted_favoring_cores": 10
+      },
+      "passed": false,
+      "threshold": {
+        "mean_huber_relative_improvement_minimum": 0.02,
+        "minimum_unpermuted_favoring_cores": 8
+      }
+    }
+  ],
+  "graph_null": "deterministic_node_label_permutation_preserving_topology_and_degree",
+  "limitations": [
+    "all ten cores and all cells were used for fitting",
+    "held-in transductive reconstruction is not generalization",
+    "partial-gene masking can be dominated by same-cell co-expression",
+    "full-cell CP10k normalization uses hidden entries in its denominator",
+    "BAGM common-scale conversion uses the true full-cell library size",
+    "the per-core gene-mean control is target-derived and uses all fit cells, including hidden target entries",
+    "this compares end-to-end trained systems that differ in objective, masking, normalization, covariates, and graph; it does not isolate an architecture effect",
+    "adjacent-normal tissue is not true Normal",
+    "cores coupled by shared fitted weights are not independent model fits",
+    "no population confidence interval is reported because the held-in coupled cores do not support population inference",
+    "model seeds and mask replicates are not biological replicates",
+    "the fixed graph null tests graph use but not a biological mechanism",
+    "the targeted panel limits biological interpretation"
+  ],
+  "maximum_defensible_conclusion": "The reproduced GeneMAE ensemble met the frozen descriptive common-task comparison gate against the current BAGM GAT ensemble on held-in 20% partial-gene reconstruction across ten adjacent-normal core aliases. This supports only a comparison of the two end-to-end trained systems, not an isolated architecture effect. Non-primary frozen gates failed: graph_use. The graph-null result does not support graph-specific predictive gain.",
+  "model_seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "native_genemae_mask_rate": 0.5,
+  "negative_results": [
+    "graph_use failed its frozen threshold"
+  ],
+  "outcome": "supported",
+  "per_core_gene_mean_reference": {
+    "role": "oracle_descriptive_reference",
+    "target_derived": true,
+    "uses_all_fit_cells_and_hidden_targets": true
+  },
+  "prediction_ensembles": {
+    "current-bagm-matched-self": "mean_detection_and_ordinal_probabilities_and_continuous_predictions_then_decode",
+    "current-bagm-pooled-gat": "mean_detection_and_ordinal_probabilities_and_continuous_predictions_then_decode",
+    "mean_member_metrics_used_as_ensemble": false,
+    "metrics_recomputed_after_prediction_combination": true,
+    "myjju-genemae": "arithmetic_mean_normalized_log_predictions"
+  },
+  "primary_mask_rate": 0.2,
+  "prohibited_claims": [
+    "evaluation of missing historical MyJJu weights",
+    "patient-held-out or core-held-out generalization",
+    "true-Normal performance",
+    "whole-node performance from GeneMAE",
+    "direct cellular interaction",
+    "biological mechanism",
+    "causality"
+  ],
+  "protected_identifiers_emitted": false,
+  "schema_version": 1,
+  "scientific_question": "Does the reproduced seven-member GeneMAE ensemble improve held-in 20% partial-gene reconstruction over the current seven-member BAGM GAT ensemble on an identical normalized-log target and masks?",
+  "seeds_are_biological_replicates": false,
+  "source_native_50_percent_results_are_ranked_against_bagm": false,
+  "source_report_historical_context": {
+    "checkpoint_selection_leakage": true,
+    "context_only_not_comparable": true,
+    "historical_weights_available": false,
+    "metrics": {
+      "so1_sb50": {
+        "mean_per_gene_pearson": 0.19425549303899634,
+        "mse": 1.473328848684277,
+        "pooled_pearson": 0.3579464630678052,
+        "r2": 0.09142593865686577,
+        "shuffled_feature_pearson": 0.3427483352512594,
+        "spearman": 0.26885656293683063
+      },
+      "so2_sb50": {
+        "mean_per_gene_pearson": 0.15884219415337827,
+        "mse": 1.5256483386310153,
+        "pooled_pearson": 0.3080911201692664,
+        "r2": 0.05520760054390206,
+        "shuffled_feature_pearson": 0.29340109402242726,
+        "spearman": 0.22714354521359573
+      }
+    },
+    "selection_leakage_basis": [
+      "held_out_donor_was_used_for_early_stopping_and_scoring",
+      "lodo_test_donor_was_used_for_checkpoint_selection_and_scoring"
+    ],
+    "source_audit_sha256": "6f4eb7a557d5b488fe84d7b4f0d26d07f97dd6349f9cdd3203b12a426d6def91"
+  },
+  "status": "complete",
+  "system_differences": [
+    "training_objective",
+    "training_masking_scheme",
+    "normalization_and_target_scale",
+    "permitted_covariates",
+    "graph_construction"
+  ],
+  "target_scale": "full_cell_log1p_cp10k",
+  "total_fit_cells": 117386,
+  "uncertainty": {
+    "bootstrap_used": false,
+    "descriptive_core_effect_table": "core_effect_distributions",
+    "population_confidence_interval": null,
+    "reason": "all cores are held in and coupled by shared fitted weights; cells, masks, and model seeds are not independent biological replicates"
+  }
+}

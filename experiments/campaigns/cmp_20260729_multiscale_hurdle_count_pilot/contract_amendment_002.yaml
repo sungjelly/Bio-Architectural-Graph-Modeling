@@ -1,0 +1,131 @@
+schema_version: 1
+campaign_id: cmp_20260729_multiscale_hurdle_count_pilot
+amendment_id: replace_infeasible_rewiring_with_sender_state_permutation
+status: frozen_before_any_gpu_training
+exploratory: true
+original_frozen_contract_sha256: 54496bc73c8d6f2b3c2ec9885fba86b2021944462a106dbd10a23cfd88e25fb7
+supersedes_execution_design:
+  amendment_reference: experiments/campaigns/cmp_20260729_multiscale_hurdle_count_pilot/contract_amendment_001.yaml
+  amendment_sha256: 3e263145fb33b86b3fcfd2b36daab7c14282b05c3ae15b0c8fbbfb0ed0f4638a
+  retained_as_negative_design_record: true
+reason: >-
+  Pre-training feasibility analysis showed that the strengthened
+  degree-preserving rewiring null cannot simultaneously replace at least
+  50 percent of final local relations and retain the frozen distance
+  constraints on any of the five real core geometries. Lowering the
+  mechanism-breaking threshold after observing this failure would weaken the
+  control. The graph-rewiring arm is therefore prohibited and replaced before
+  training by a sender-state permutation control that leaves the observed
+  graph and its geometry unchanged.
+observed_pretraining_feasibility:
+  gpu_training_performed: false
+  target_expression_examined_for_null_construction: false
+  core_aliases:
+    - ANC-02
+    - ANC-03
+    - ANC-05
+    - ANC-06
+    - ANC-09
+  exact_eight_distance_strata_degree_relaxed_replacement_upper_bounds:
+    ANC-02: 0.1962
+    ANC-03: 0.2757
+    ANC-05: 0.2121
+    ANC-06: 0.1529
+    ANC-09: 0.2643
+  exact_four_distance_strata_degree_relaxed_replacement_upper_bounds:
+    ANC-02: 0.2614
+    ANC-03: 0.2923
+    ANC-05: 0.2859
+    ANC-06: 0.2532
+    ANC-09: 0.2886
+  exact_two_distance_strata_degree_relaxed_replacement_upper_bounds:
+    ANC-02: 0.50000
+    ANC-03: 0.50360
+    ANC-05: 0.50252
+    ANC-06: 0.50000
+    ANC-09: 0.50082
+  degree_relaxed_minimum_relative_mean_distance_change_at_half_replacement:
+    ANC-02: 0.1483
+    ANC-03: 0.1074
+    ANC-05: 0.1380
+    ANC-06: 0.1697
+    ANC-09: 0.1156
+  frozen_maximum_relative_mean_distance_change: 0.10
+  conclusion: >-
+    Even the optimistic degree-relaxed bounds fail at least one frozen gate on
+    every core; adding exact per-node degree preservation cannot restore
+    feasibility.
+replacement_null:
+  scientific_name: macroblock_stratified_spatial_antipode_sender_state_permutation
+  arm_name: self_regional_local_permuted
+  random_seed: not_applicable_deterministic_construction_without_rng
+  construction_inputs:
+    permitted:
+      - all_fit_macroblock_id
+      - all_fit_coordinates_um
+      - stable_node_row_index
+    prohibited:
+      - expression_counts
+      - transformed_expression
+      - hidden_target_values
+      - vendor_cell_type
+      - expression_derived_cluster
+      - neighborhood_or_niche_label
+      - patient_or_cell_identifier
+  construction:
+    grouping: separately_within_each_prepared_fov_qualified_300um_macroblock
+    coordinate_precision: float64
+    axis: deterministic_largest_eigenvector_of_centered_2d_coordinate_covariance
+    axis_sign: largest_absolute_loading_positive_with_x_tie_break
+    degenerate_axis: positive_x
+    ordering: stable_lexicographic_projection_then_node_row_index
+    mapping: circular_shift_by_floor_group_size_divided_by_two
+    singleton_policy: fixed_and_explicitly_counted
+  execution:
+    self_branch_source_states: observed_unpermuted
+    regional_branch_source_states: observed_unpermuted
+    local_branch_topology: observed_true_local
+    local_branch_receiver_identities: observed_unpermuted
+    local_branch_edge_attributes: observed_true_local_unchanged
+    local_branch_sender_states: gather_from_permuted_source_identity
+    model_parameters: exactly_matched_across_all_arms
+  mandatory_pre_gpu_qc:
+    global_mapping_is_bijection: true
+    mapping_is_bijection_within_every_macroblock: true
+    minimum_node_mapping_changed_fraction: 0.99
+    minimum_node_displacement_above_local_radius_fraction: 0.90
+    displacement_threshold_um: 75.0
+    minimum_local_edge_slot_sender_identity_changed_fraction: 0.99
+    local_edge_count_unchanged: true
+    local_receivers_unchanged: true
+    local_edge_attributes_bit_identical: true
+    permutation_checksum_required: true
+    effective_permuted_sender_equals_receiver_fraction_reported: true
+  interpretation: >-
+    This null breaks the alignment between local source-cell state and source
+    position while preserving the observed receiver neighborhoods, edge
+    geometry, and macroblock-level multiset of sender states. A true-local
+    advantage supports only a local topology-specific predictive dependency.
+    It does not distinguish cell-type composition from molecular signaling and
+    cannot establish communication or causality.
+contract_effects:
+  original_rewired_arm_authorized: false
+  old_materialization_authorized: false
+  rematerialization_required: true
+  stage0_selected_geometry:
+    core_alias: ANC-05
+    selected_node_count: 160
+    rejected_pre_outcome_node_count: 240
+    rejected_displacement_fraction_above_75um: 0.8583
+    accepted_displacement_fraction_above_75um: 0.9625
+    model_outcomes_examined_for_selection: false
+  stage0_must_compare_true_local_to_permuted_local: true
+  stage2_must_compare_true_local_to_permuted_local: true
+  original_frozen_accuracy_and_resource_thresholds_unchanged: true
+  graph_specific_claim_requires_stage0_and_stage2_controls: true
+stop_conditions_added:
+  - permutation_qc_failed
+  - permutation_checksum_changed
+  - local_topology_or_edge_attributes_changed_between_true_and_permuted_arms
+  - target_expression_or_expression_derived_label_used_to_construct_permutation
+scientific_direction: infeasible_control_replaced_without_relaxing_accuracy_or_resource_gates

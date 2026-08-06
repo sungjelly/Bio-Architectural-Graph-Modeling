@@ -1,0 +1,32 @@
+trainer:
+  optimizer: AdamW
+  learning_rate: 0.0003
+  batch_size: 1
+  batch_unit: complete_graphless_full_core
+  target_node_batch_size: 16384
+  neighbor_sampling: false
+  weight_decay: 0.0001
+  gradient_clip_norm: 1.0
+  huber_delta: 1.0
+  max_epochs: 200
+  fixed_epoch_budget: true
+  early_stopping: false
+  early_stopping_patience: null
+  validation_every: null
+  precision: mixed
+  amp: true
+  amp_dtype: auto
+  amp_requires_fp32_equivalence_smoke: true
+  deterministic: true
+  deterministic_warn_only: false
+  restore_best: false
+  monitored_metric: null
+  primary_checkpoint_role: last
+  checkpoint_policy: last_only
+  graph_execution: none_graph_inputs_prohibited
+  objective: equal_weight_balanced_detection_positive_huber
+  amp_authorization:
+    mode: require_external_resource_gate_receipt
+    receipt_schema: self_hurdle_resource_gate_v1
+    receipt_reference: scratch/locked_campaigns/cmp_20260729_self_hurdle_full_core_capacity/resource_gate_receipt.json
+

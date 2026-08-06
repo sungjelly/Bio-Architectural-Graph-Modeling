@@ -1,0 +1,372 @@
+{
+  "analysis_classification": "post_hoc_exploratory_artifact_and_claim_audit",
+  "artifact_kind": "jacobian_biological_validation_audit",
+  "dense_matrix_scale": {
+    "classes": 4,
+    "dense_entries": 846616000000000,
+    "dense_fp32_bytes": 3386464000000000,
+    "dense_fp32_decimal_petabytes": 3.386464,
+    "dense_fp32_pebibytes": 3.007784243891365,
+    "effective_input_coordinates": 87280000,
+    "genes": 1000,
+    "masked_target_nodes_per_mask": 2425,
+    "nodes": 24245,
+    "note": "This counts the four represented centered-logit and simplex coordinates; centering/tangent constraints reduce algebraic rank but do not create a stored entrywise matrix.",
+    "observed_source_nodes_per_mask": 21820,
+    "output_coordinates": 9700000
+  },
+  "facts": [
+    "The prespecified >95% accuracy gate failed for every wider seed.",
+    "The subsequent sensitivity run is explicitly post-hoc.",
+    "The protocol explicitly sets full_jacobian_materialized to false.",
+    "Only A2, B2, and AB trace-probe sufficient statistics are retained.",
+    "Those scalars support whole-Jacobian similarity metrics, not entry ranks.",
+    "The identical-checkpoint numerical control passed exactly.",
+    "The related TLS control found organizer-marker enrichment but no joint deletion and sender-program support."
+  ],
+  "generated_at_utc": "2026-07-26T16:34:15.856256+00:00",
+  "inferences": [
+    "A biological overlap analysis cannot be computed without inventing entry values that are not identifiable from A2/B2/AB.",
+    "Because balanced and nonzero accuracy do not beat the modal reference, any sensitivity ranking would have low biological credibility even if it were extracted.",
+    "The prior TLS result is a counterexample to equating plausible marker enrichment with faithful model dependence."
+  ],
+  "input_checksums": {
+    "reports/analyses/full_core_g2_count_tokens_multiseed/comparison/comparison.json": "cdc0fb4e66ae920a6525d19a7291b15f85f85ef877d821d70359da54c687942a",
+    "reports/analyses/full_core_high_k_capacity/interpretability/analysis.json": "55e5c6728d5929c79455d65abddcefe85cba15ab56776794b30e2b8dfaaf035e",
+    "reports/analyses/jacobian_biological_validation_20260726/sources.json": "1a097fb547064ffef725f9f3aadcb2beb3636dbefc0bd8f596d78189b966b118",
+    "scratch/active_runs/posthoc_g2_token_relaxed_categorical_sensitivity_v1/analysis_manifest.json": "da649acebdda0447fb54535f59aad84b1d725365c1d79b13e4c6e952f7eba82d",
+    "scratch/active_runs/posthoc_g2_token_relaxed_categorical_sensitivity_v1/identical_control_review.json": "02f496eb4e9e126a211f31dc9064b3bdba968d8833a1d81d6d63265bbf213158",
+    "scratch/active_runs/posthoc_g2_token_relaxed_categorical_sensitivity_v1/protocol.json": "61100a74895dabd064ba2093307114b3d688b807e4eca665d8fb02ab71271594",
+    "scratch/active_runs/posthoc_g2_token_relaxed_categorical_sensitivity_v1/resource_pilot.json": "a545ddcdfcfc421bb20b2c39b206c486dd452efa496bcf74cf8c24fea6a46b2b",
+    "scripts/analysis/run_g2_token_categorical_sensitivity.py": "49f6715f34f86ad3574fac3dcaab1187b57b4d639e6dab78f05e807544fe4459",
+    "src/spatial_benchmark/categorical_sensitivity.py": "8d351ec32ae5a0d21e9c8eb987a5e9ace3fbe5d228ccc01777fb375cade62fca"
+  },
+  "jacobian_contract": {
+    "cell_or_edge_ranks_retained": false,
+    "entrywise_axes_retained": false,
+    "estimand": "local model-implied relaxed categorical sensitivity, including direct and two-layer multihop paths",
+    "execution": {
+      "amp": false,
+      "dropout": "disabled_eval_mode",
+      "float32_matmul_precision": "highest",
+      "floating_point": "float32_vjp_float64_reduction",
+      "full_jacobian_materialized": false,
+      "parameter_gradients": false,
+      "tf32": false
+    },
+    "gene_pair_ranks_retained": false,
+    "gene_ranks_retained": false,
+    "input_coordinates": {
+      "coordinates": "four observed relaxed one-hot token channels",
+      "mask_only_channel_is_differentiated": false,
+      "projection": "subtract the four-channel gradient mean independently for every node and gene"
+    },
+    "mask_scope": {
+      "entry_count": 3,
+      "input_derivative_support": "observed_entries_only",
+      "mode": "whole_node",
+      "output_probe_support": "masked_receiver_predictions_only"
+    },
+    "maximum_claim": "paired local functional similarity of trained models on one transductive core; not a causal effect or biological mechanism",
+    "output_coordinates": {
+      "centering": "subtract the four-class mean logit independently for every masked receiver and gene",
+      "classes": 4
+    },
+    "retained_metrics": {
+      "cosine": "AB / sqrt(A2 * B2)",
+      "norm_ratio": "sqrt(B2 / A2)",
+      "primary_orientation": "B_wider_over_A_current_same_seed",
+      "relative_discrepancy": "sqrt(max(A2 + B2 - 2*AB, 0)) / (A2 * B2)**0.25",
+      "within_width_orientation": "B_higher_seed_over_A_lower_seed"
+    },
+    "retained_sufficient_statistics": {
+      "A2": "sum((J_A_transpose_u)**2)",
+      "AB": "sum((J_A_transpose_u)*(J_B_transpose_u))",
+      "B2": "sum((J_B_transpose_u)**2)",
+      "aggregation": "equal-weight mean of A2/B2/AB over 32 probes within each mask, then equal-weight mean over the 3 masks"
+    },
+    "sign_retained_for_biological_pairs": false
+  },
+  "model_fitness": {
+    "gate": {
+      "eligible": false,
+      "jacobians_computed": false,
+      "metric": "per-seed mean whole-node exact masked-token accuracy percent",
+      "operator": "strictly_greater_than",
+      "reason": "At least one wider-model seed is not strictly above 95% exact accuracy, so the relaxed categorical Jacobian is skipped.",
+      "status": "skipped",
+      "threshold_percent": 95.0,
+      "wider_seed_values_percent": {
+        "0": 91.78872852233677,
+        "1": 91.77142268041239,
+        "2": 91.74498969072165
+      }
+    },
+    "h1_width_gate": {
+      "criteria": {
+        "mean_balanced_gain_at_least_1_0_percentage_point": false,
+        "mean_exact_gain_at_least_0_5_percentage_points": false,
+        "no_seed_decreases_on_balanced_accuracy": false,
+        "no_seed_decreases_on_exact_accuracy": false
+      },
+      "observed": {
+        "baseline_mean_balanced_accuracy_percent": 28.167736913721626,
+        "baseline_mean_exact_accuracy_percent": 91.77985796105384,
+        "mean_balanced_gain_percentage_points": -0.06264974436228954,
+        "mean_exact_gain_percentage_points": -0.011477663230223811,
+        "wider_mean_balanced_accuracy_percent": 28.105087169359336,
+        "wider_mean_exact_accuracy_percent": 91.76838029782361
+      },
+      "passes": false,
+      "thresholds": {
+        "maximum_decreasing_seeds_on_each_primary_metric": 0,
+        "minimum_mean_balanced_gain_percentage_points": 1.0,
+        "minimum_mean_exact_gain_percentage_points": 0.5
+      }
+    },
+    "interpretation": "Both trained variants are at or below the per-gene modal reference on balanced and nonzero accuracy, with zero recall for tokens 1 and 2. Gradients can still be nonzero, but they describe a poorly informative held-in classifier.",
+    "scope": {
+      "entrywise_holdout": false,
+      "estimand": "held-in whole-node exact masked raw-count-token reconstruction",
+      "evaluation_entries_may_overlap_training_masks": true,
+      "evaluation_mask_seed_derivation": "separate_from_epoch_mask_seed_derivation",
+      "generalization_estimate": false,
+      "model_seeds_are_independent_biological_replicates": false,
+      "namespace_label_establishes_entrywise_disjointness": false,
+      "per_gene_modal_baseline_scope": "all_fit_transductive_reference",
+      "percentages_are_classification_accuracy": true,
+      "recorded_evaluation_mask_seed_namespace": "held_in_evaluation_disjoint_from_epoch_masks",
+      "technical_masks_are_independent_biological_replicates": false,
+      "tokens": {
+        "0": "count 0",
+        "1": "count 1",
+        "2": "count 2",
+        "3": "count >=3"
+      }
+    },
+    "variants": [
+      {
+        "balanced_minus_modal_pp": -0.13264145538920502,
+        "balanced_percent": 28.167736913721626,
+        "cross_entropy": 0.32653944359885323,
+        "exact_minus_modal_pp": 0.05452462772051092,
+        "exact_percent": 91.77985796105384,
+        "label": "g2_tokenized_width512_exact_k1000_full_core",
+        "modal_balanced_percent": 28.30037836911083,
+        "modal_exact_percent": 91.72533333333332,
+        "modal_nonzero_percent": 1.6031328319323725,
+        "nonzero_minus_modal_pp": -0.07178222688522173,
+        "nonzero_percent": 1.5313506050471508,
+        "parameter_count": 7062880,
+        "seed_count": 3,
+        "token_recall_percent": {
+          "0": 99.95187128169484,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 12.719076373191667
+        }
+      },
+      {
+        "balanced_minus_modal_pp": -0.19529119975149456,
+        "balanced_percent": 28.105087169359336,
+        "cross_entropy": 0.33273134297794765,
+        "exact_minus_modal_pp": 0.04304696449028711,
+        "exact_percent": 91.76838029782361,
+        "label": "g2_tokenized_width1024_exact_k1000_full_core",
+        "modal_balanced_percent": 28.30037836911083,
+        "modal_exact_percent": 91.72533333333332,
+        "modal_nonzero_percent": 1.6031328319323725,
+        "nonzero_minus_modal_pp": -0.10074894581057703,
+        "nonzero_percent": 1.5023838861217955,
+        "parameter_count": 18834784,
+        "seed_count": 3,
+        "token_recall_percent": {
+          "0": 99.9419777059336,
+          "1": 0.0,
+          "2": 0.0,
+          "3": 12.478370971503741
+        }
+      }
+    ]
+  },
+  "privacy": {
+    "aggregate_only": true,
+    "external_upload_of_project_data": false,
+    "protected_identifiers_emitted": false,
+    "row_level_data_loaded": false
+  },
+  "recommended_next_experiment": {
+    "decision": "Do not mine the current trace statistics for biological pairs. First establish graph-specific predictive value, then run a separately locked program-block sensitivity study.",
+    "minimum_acceptance": [
+      "graph-specific predictive gain over non-graph/context baselines",
+      "stable program-block ranks across all three seeds and masks",
+      "clear separation from randomized and mechanism-breaking nulls",
+      "matched-null enrichment with multiplicity correction",
+      "faithful prediction change under a bounded intervention",
+      "replication in independent biological units"
+    ],
+    "ordered_steps": [
+      {
+        "action": "Use class-aware loss or a count likelihood and compare against per-gene modal, same-cell, morphology/context, and spatial-smoothing baselines. Require reproducible gain on nonzero and balanced metrics.",
+        "name": "repair the predictive prerequisite",
+        "step": 1
+      },
+      {
+        "action": "Decompose same-cell, direct one-hop cross-cell, and multihop/regional sensitivity. Use contact/paracrine graphs rather than treating the k=1000 regional graph as direct communication.",
+        "name": "separate the estimand",
+        "step": 2
+      },
+      {
+        "action": "Define sender and receiver programs, distance bins, cell-type pairs, score normalization, top-set cutoffs, and the multiple-testing family before extraction. Prefer program-level blocks to one-gene perturbations.",
+        "name": "lock program blocks before looking",
+        "step": 3
+      },
+      {
+        "action": "Store an axis-labelled program-by-program statistic with sign/effect size. Require seed and mask stability, identical-model recovery, parameter randomization, label/target permutation, and planted-signal recovery.",
+        "name": "calibrate attribution",
+        "step": 4
+      },
+      {
+        "action": "Compare locked candidates with downloaded OmniPath and CellPhoneDB reference sets using prevalence-, distance-, degree-, compartment-, and cell-type-matched nulls. Treat overlap as annotation, not verification.",
+        "name": "test biological annotation locally",
+        "step": 5
+      },
+      {
+        "action": "Run bounded program deletion/insertion and graph interventions, then reproduce the locked candidates in independent patients/cores. Seek orthogonal protein or imaging support before a mechanism claim.",
+        "name": "test faithfulness and replication",
+        "step": 6
+      }
+    ]
+  },
+  "related_tls_control": {
+    "deletion_support": false,
+    "deletion_top_minus_null_huber_change_mean": -0.0008025601171299948,
+    "deletion_top_minus_null_prediction_mae_mean": 0.0034217772672491265,
+    "evidence_label": "no joint deletion-, organizer-enrichment-, and sender-program-supported TLS-related dependency detected",
+    "joint_tls_dependency_support": false,
+    "organizer_enrichment_support": true,
+    "organizer_genes": [
+      "CCL19",
+      "CCL21",
+      "CXCL13"
+    ],
+    "organizer_score_enrichment_mean": 0.1991559834423242,
+    "organizer_score_enrichment_minimum": 0.14045121043454856,
+    "receiver_program_genes": [
+      "CCR7",
+      "CXCR5",
+      "MS4A1",
+      "CD3D",
+      "CD3E",
+      "CD79A",
+      "CD74",
+      "HLA-DRA"
+    ],
+    "scope": {
+      "experimental_units": 1,
+      "model_family_relation": "related continuous-expression full-core G2; not one of the six tokenized checkpoints",
+      "outcome_conditioned_exploration": true,
+      "run_id": "r_20260725T083929Z_8364b333_s000_f00_a01_f5c47601",
+      "same_models_as_token_jacobian": false
+    },
+    "sender_ablation_top_minus_null_huber_change_mean": -4.274803407484061e-07,
+    "sender_ablation_top_minus_null_prediction_mae_mean": 1.0016614623964415e-05,
+    "sender_program_support": false
+  },
+  "schema_version": 1,
+  "sensitivity_execution": {
+    "analysis_mode": "post_hoc_exploratory_after_prespecified_gate_failure",
+    "bootstrap_replicates": 2000,
+    "expected_full_graph_vjps": 2304,
+    "identical_control": {
+      "full_graph_vjp_count": 192,
+      "interval_interpretation": "95% technical mask-plus-Rademacher-trace-probe bootstrap variability; not biological or training-seed uncertainty",
+      "intervals": {
+        "cosine": {
+          "lower": 1.0,
+          "upper": 1.0
+        },
+        "norm_ratio": {
+          "lower": 1.0,
+          "upper": 1.0
+        },
+        "relative_discrepancy": {
+          "lower": 0.0,
+          "upper": 0.0
+        }
+      },
+      "passes": true,
+      "point": {
+        "candidate_squared_norm": 84.61768790117152,
+        "cosine": 1.0,
+        "cross_inner_product": 84.61768790117152,
+        "norm_ratio": 1.0,
+        "reference_squared_norm": 84.61768790117152,
+        "relative_discrepancy": 0.0
+      },
+      "present": true,
+      "probe_count": 96,
+      "shard_count": 3
+    },
+    "mask_count": 3,
+    "pilot": {
+      "parameter_count": 18834784,
+      "peak_cuda_memory_allocated_bytes": 10008552448,
+      "status": "passed",
+      "tangent_squared_norm": 66.37714291586492,
+      "vjp_duration_seconds": 15.894951449008659
+    },
+    "prespecified_gate": {
+      "eligible": false,
+      "jacobians_computed": false,
+      "metric": "per-seed mean whole-node exact masked-token accuracy percent",
+      "operator": "strictly_greater_than",
+      "post_hoc_override": "user explicitly requested relaxed categorical sensitivity after the prespecified gate failed",
+      "reason": "At least one wider-model seed is not strictly above 95% exact accuracy, so the relaxed categorical Jacobian is skipped.",
+      "status": "skipped",
+      "threshold_percent": 95.0,
+      "wider_seed_values_percent": {
+        "0": 91.78872852233677,
+        "1": 91.77142268041239,
+        "2": 91.74498969072165
+      }
+    },
+    "probe_count_per_mask": 32,
+    "stage_snapshot": {
+      "final_output_json_files": [],
+      "identical_control_review_present": true,
+      "label": "identical-control review present; later shards may be pending",
+      "note": "This is a filesystem snapshot, not a process monitor. The stage can advance after report generation.",
+      "shard_file_counts": {
+        "identical": 3,
+        "random": 0,
+        "trained": 0
+      },
+      "shard_files": [
+        "identical/mask_r000.json",
+        "identical/mask_r001.json",
+        "identical/mask_r002.json"
+      ]
+    }
+  },
+  "uncertainties": [
+    "The global sensitivity run can still establish whether two trained functions are similar once finalized, but not which biological relationship explains that similarity.",
+    "No conclusion can be drawn about whether a newly defined, properly controlled program-block Jacobian would show enrichment.",
+    "One core provides no patient-level prevalence or replication."
+  ],
+  "verdict": {
+    "biological_correspondence": "not_established",
+    "claim_not_made": "This audit does not establish that no biological correspondence exists; the required entrywise statistic was not produced.",
+    "claim_rejected": "The current evidence does not justify saying that high Jacobian entries correspond to verified biology.",
+    "entrywise_biological_test": "not_testable_from_current_artifacts",
+    "reason_codes": [
+      "no_materialized_jacobian",
+      "no_gene_or_gene_pair_ranking",
+      "trace_statistics_are_not_entries",
+      "predictive_model_dominated_by_zero_class",
+      "single_transductive_core",
+      "direct_and_multihop_paths_not_separated",
+      "related_tls_positive_control_failed_joint_faithfulness"
+    ]
+  }
+}

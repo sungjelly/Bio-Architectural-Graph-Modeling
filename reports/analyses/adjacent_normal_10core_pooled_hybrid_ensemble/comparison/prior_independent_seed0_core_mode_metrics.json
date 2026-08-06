@@ -1,0 +1,302 @@
+[
+  {
+    "core_alias": "ANC-01",
+    "detection_bce": 0.5898860096931458,
+    "hybrid_loss": 0.4181242485841115,
+    "mask_mode": "partial_gene",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3305743436018626,
+    "positive_ordinal_mae": 0.916103454372592,
+    "reconstructed_count_log1p_mae": 0.2749999662240346
+  },
+  {
+    "core_alias": "ANC-01",
+    "detection_bce": 0.6017552018165588,
+    "hybrid_loss": 0.42729270458221436,
+    "mask_mode": "spatial_block",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.33910155296325684,
+    "positive_ordinal_mae": 0.9088744976834914,
+    "reconstructed_count_log1p_mae": 0.2886848747730255
+  },
+  {
+    "core_alias": "ANC-01",
+    "detection_bce": 0.5971567432085673,
+    "hybrid_loss": 0.4219098885854085,
+    "mask_mode": "whole_node",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.33145249883333844,
+    "positive_ordinal_mae": 0.9308539154293515,
+    "reconstructed_count_log1p_mae": 0.3006056249141693
+  },
+  {
+    "core_alias": "ANC-02",
+    "detection_bce": 0.5912200411160787,
+    "hybrid_loss": 0.4611814618110657,
+    "mask_mode": "partial_gene",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.4351888597011566,
+    "positive_ordinal_mae": 1.0093869227678793,
+    "reconstructed_count_log1p_mae": 0.28339701890945435
+  },
+  {
+    "core_alias": "ANC-02",
+    "detection_bce": 0.6441570520401001,
+    "hybrid_loss": 0.4673158327738444,
+    "mask_mode": "spatial_block",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.40311195453008014,
+    "positive_ordinal_mae": 0.8351088190286472,
+    "reconstructed_count_log1p_mae": 0.16116487483183542
+  },
+  {
+    "core_alias": "ANC-02",
+    "detection_bce": 0.6355162660280863,
+    "hybrid_loss": 0.4712928930918376,
+    "mask_mode": "whole_node",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.41460609436035156,
+    "positive_ordinal_mae": 0.8514336193637831,
+    "reconstructed_count_log1p_mae": 0.18406648933887482
+  },
+  {
+    "core_alias": "ANC-03",
+    "detection_bce": 0.611555794874827,
+    "hybrid_loss": 0.4406116803487142,
+    "mask_mode": "partial_gene",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.35906823476155597,
+    "positive_ordinal_mae": 0.9475020688954071,
+    "reconstructed_count_log1p_mae": 0.3232954641183217
+  },
+  {
+    "core_alias": "ANC-03",
+    "detection_bce": 0.629866361618042,
+    "hybrid_loss": 0.4584803382555644,
+    "mask_mode": "spatial_block",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3766356408596039,
+    "positive_ordinal_mae": 0.8856913037739084,
+    "reconstructed_count_log1p_mae": 0.3077527681986491
+  },
+  {
+    "core_alias": "ANC-03",
+    "detection_bce": 0.6210789283116659,
+    "hybrid_loss": 0.4459107617537181,
+    "mask_mode": "whole_node",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.36009956399599713,
+    "positive_ordinal_mae": 0.9299358396465366,
+    "reconstructed_count_log1p_mae": 0.3428179919719696
+  },
+  {
+    "core_alias": "ANC-04",
+    "detection_bce": 0.6069629192352295,
+    "hybrid_loss": 0.45682449142138165,
+    "mask_mode": "partial_gene",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.40938596924146015,
+    "positive_ordinal_mae": 1.0895554340938316,
+    "reconstructed_count_log1p_mae": 0.3728477656841278
+  },
+  {
+    "core_alias": "ANC-04",
+    "detection_bce": 0.6254106958707174,
+    "hybrid_loss": 0.45832501848538715,
+    "mask_mode": "spatial_block",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3935823241869609,
+    "positive_ordinal_mae": 0.9361950693862159,
+    "reconstructed_count_log1p_mae": 0.3059641222159068
+  },
+  {
+    "core_alias": "ANC-04",
+    "detection_bce": 0.6200381318728129,
+    "hybrid_loss": 0.46369752287864685,
+    "mask_mode": "whole_node",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.4139102300008138,
+    "positive_ordinal_mae": 1.0270286955258516,
+    "reconstructed_count_log1p_mae": 0.37673479318618774
+  },
+  {
+    "core_alias": "ANC-05",
+    "detection_bce": 0.6086530288060507,
+    "hybrid_loss": 0.44472557306289673,
+    "mask_mode": "partial_gene",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3738613228003184,
+    "positive_ordinal_mae": 1.0619363335133707,
+    "reconstructed_count_log1p_mae": 0.35331783692042035
+  },
+  {
+    "core_alias": "ANC-05",
+    "detection_bce": 0.624334971110026,
+    "hybrid_loss": 0.4510960876941681,
+    "mask_mode": "spatial_block",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.375074177980423,
+    "positive_ordinal_mae": 1.1056012044642083,
+    "reconstructed_count_log1p_mae": 0.4481417735417684
+  },
+  {
+    "core_alias": "ANC-05",
+    "detection_bce": 0.6280905803044637,
+    "hybrid_loss": 0.45250630378723145,
+    "mask_mode": "whole_node",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3733287254969279,
+    "positive_ordinal_mae": 1.1079115259792671,
+    "reconstructed_count_log1p_mae": 0.46402810017267865
+  },
+  {
+    "core_alias": "ANC-06",
+    "detection_bce": 0.5759809414545695,
+    "hybrid_loss": 0.4447544713815053,
+    "mask_mode": "partial_gene",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.4231341580549876,
+    "positive_ordinal_mae": 0.9714839420360925,
+    "reconstructed_count_log1p_mae": 0.33058425784111023
+  },
+  {
+    "core_alias": "ANC-06",
+    "detection_bce": 0.6087484558423361,
+    "hybrid_loss": 0.4664919475714366,
+    "mask_mode": "spatial_block",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.4403400818506877,
+    "positive_ordinal_mae": 1.0001545612644998,
+    "reconstructed_count_log1p_mae": 0.34837889671325684
+  },
+  {
+    "core_alias": "ANC-06",
+    "detection_bce": 0.5943669080734253,
+    "hybrid_loss": 0.4513328770796458,
+    "mask_mode": "whole_node",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.4219139913717906,
+    "positive_ordinal_mae": 0.9492108806415717,
+    "reconstructed_count_log1p_mae": 0.3249867459138234
+  },
+  {
+    "core_alias": "ANC-07",
+    "detection_bce": 0.592318614323934,
+    "hybrid_loss": 0.4221952557563782,
+    "mask_mode": "partial_gene",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3409202496210734,
+    "positive_ordinal_mae": 0.9380480803881258,
+    "reconstructed_count_log1p_mae": 0.29284919301668805
+  },
+  {
+    "core_alias": "ANC-07",
+    "detection_bce": 0.6064162055651346,
+    "hybrid_loss": 0.4276135365168254,
+    "mask_mode": "spatial_block",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3373917043209076,
+    "positive_ordinal_mae": 0.9169181003492431,
+    "reconstructed_count_log1p_mae": 0.3002955416838328
+  },
+  {
+    "core_alias": "ANC-07",
+    "detection_bce": 0.5993414719899496,
+    "hybrid_loss": 0.42581714193026227,
+    "mask_mode": "whole_node",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3418770531813304,
+    "positive_ordinal_mae": 0.9361459588082722,
+    "reconstructed_count_log1p_mae": 0.29961161812146503
+  },
+  {
+    "core_alias": "ANC-08",
+    "detection_bce": 0.583795408407847,
+    "hybrid_loss": 0.4116985897223155,
+    "mask_mode": "partial_gene",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.32153409719467163,
+    "positive_ordinal_mae": 0.8744177093839754,
+    "reconstructed_count_log1p_mae": 0.27801357706387836
+  },
+  {
+    "core_alias": "ANC-08",
+    "detection_bce": 0.6006928483645121,
+    "hybrid_loss": 0.41303972403208417,
+    "mask_mode": "spatial_block",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3152942856152852,
+    "positive_ordinal_mae": 0.8412974596295827,
+    "reconstructed_count_log1p_mae": 0.278542826573054
+  },
+  {
+    "core_alias": "ANC-08",
+    "detection_bce": 0.6056862274805704,
+    "hybrid_loss": 0.42298202713330585,
+    "mask_mode": "whole_node",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3252936502297719,
+    "positive_ordinal_mae": 0.8288195965688724,
+    "reconstructed_count_log1p_mae": 0.2674921949704488
+  },
+  {
+    "core_alias": "ANC-09",
+    "detection_bce": 0.599795937538147,
+    "hybrid_loss": 0.4447026352087657,
+    "mask_mode": "partial_gene",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3763924241065979,
+    "positive_ordinal_mae": 1.0517778867980712,
+    "reconstructed_count_log1p_mae": 0.35190768043200177
+  },
+  {
+    "core_alias": "ANC-09",
+    "detection_bce": 0.6108851830164591,
+    "hybrid_loss": 0.45641226569811505,
+    "mask_mode": "spatial_block",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.38990770777066547,
+    "positive_ordinal_mae": 1.0417664462407468,
+    "reconstructed_count_log1p_mae": 0.3766671021779378
+  },
+  {
+    "core_alias": "ANC-09",
+    "detection_bce": 0.633183757464091,
+    "hybrid_loss": 0.4570339620113373,
+    "mask_mode": "whole_node",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.37565943598747253,
+    "positive_ordinal_mae": 1.0994511310540773,
+    "reconstructed_count_log1p_mae": 0.48097488284111023
+  },
+  {
+    "core_alias": "ANC-10",
+    "detection_bce": 0.5932644406954447,
+    "hybrid_loss": 0.4540238380432129,
+    "mask_mode": "partial_gene",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.39926160375277203,
+    "positive_ordinal_mae": 1.0845098254537335,
+    "reconstructed_count_log1p_mae": 0.3247285683949788
+  },
+  {
+    "core_alias": "ANC-10",
+    "detection_bce": 0.6122692028681437,
+    "hybrid_loss": 0.4552181363105774,
+    "mask_mode": "spatial_block",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.3850148022174835,
+    "positive_ordinal_mae": 1.1007847087982012,
+    "reconstructed_count_log1p_mae": 0.42565147082010907
+  },
+  {
+    "core_alias": "ANC-10",
+    "detection_bce": 0.6116092205047607,
+    "hybrid_loss": 0.4639932115872701,
+    "mask_mode": "whole_node",
+    "mask_replicates": 3,
+    "positive_continuous_huber": 0.4064314564069112,
+    "positive_ordinal_mae": 1.128337987783583,
+    "reconstructed_count_log1p_mae": 0.42721377809842426
+  }
+]

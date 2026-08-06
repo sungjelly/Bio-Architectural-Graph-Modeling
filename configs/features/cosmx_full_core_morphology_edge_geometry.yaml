@@ -1,0 +1,59 @@
+features:
+  use_edge_features: true
+  fit_scope: all_nodes_transductive
+  node_expression:
+    biological_targets: 1000
+    transformed_with: full_core_fitted_gene_wise_standardized_log1p
+    masked_values_filled_with: 0.0
+    explicit_mask_channel: true
+  node_metadata:
+    transformed_with: full_core_fitted_median_imputation_log1p_standardization
+    fields:
+      - Area
+      - Area.um2
+      - AspectRatio
+      - Width
+      - Height
+      - Mean.PanCK
+      - Max.PanCK
+      - Mean.G
+      - Max.G
+      - Mean.Membrane
+      - Max.Membrane
+      - Mean.CD45
+      - Max.CD45
+      - Mean.DAPI
+      - Max.DAPI
+      - SplitRatioToLocal
+      - NucArea
+      - NucAspectRatio
+      - Circularity
+      - Eccentricity
+      - Perimeter
+      - Solidity
+  edge_features:
+    fit_scope: all_retained_directed_edges_transductive
+    standardization: full_core_edge_wise
+    fields:
+      - distance_um
+      - distance_over_radius
+      - log1p_distance_um
+      - delta_x_over_radius
+      - delta_y_over_radius
+      - cos_theta
+      - sin_theta
+      - cos_2theta
+      - sin_2theta
+      - distance_rbf_0
+      - distance_rbf_1
+      - distance_rbf_2
+      - distance_rbf_3
+      - distance_rbf_4
+      - distance_rbf_5
+      - distance_rbf_6
+      - distance_rbf_7
+  prohibited_node_inputs:
+    - direct_identifiers
+    - absolute_or_local_coordinates
+    - expression_derived_library_size
+    - vendor_cell_type_cluster_neighborhood_or_niche

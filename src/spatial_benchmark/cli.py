@@ -46,7 +46,13 @@ from .queueing import (
     WorkerSettings,
     command_for_config,
 )
-from .registry import QUEUE_STATUSES, Registry, RegistryError
+from .registry import (
+    ARTIFACT_STATUS_DELETED_BY_RETENTION,
+    ARTIFACT_STATUS_RETENTION_PENDING,
+    QUEUE_STATUSES,
+    Registry,
+    RegistryError,
+)
 from .run_archive import RunValidationError, verify_run_bundle
 
 
@@ -515,7 +521,7 @@ def _dispatch(
             else None
         )
         issues = registry.verify_artifacts(run_id=run_id)
-        bundle_issues = _verify_bundles(registry, run_id)
+        bundle_issues = _verify_bundles(registry, run_id, paths)
         return {
             "valid": not issues and not bundle_issues,
             "registry_issues": issues,
@@ -700,6 +706,7 @@ def _doctor(registry: Registry, paths: ProjectPaths) -> dict[str, Any]:
 
     missing_registered_paths: list[dict[str, str]] = []
     missing_artifact_paths: list[str] = []
+    retention_state_issues: list[dict[str, str]] = []
     missing_canonical_markers: list[str] = []
     with registry.connect() as connection:
         for row in connection.execute(
@@ -730,10 +737,30 @@ def _doctor(registry: Registry, paths: ProjectPaths) -> dict[str, Any]:
                 missing_registered_paths.append(
                     {"kind": "split", "id": str(row["split_id"]), "path": str(source)}
                 )
-        for row in connection.execute("SELECT DISTINCT path FROM artifacts"):
+        for row in connection.execute(
+            "SELECT DISTINCT path, status FROM artifacts"
+        ):
             artifact = Path(str(row["path"]))
             if not artifact.is_absolute():
                 artifact = paths.project_root / artifact
+            artifact_status = str(row["status"])
+            if artifact_status == ARTIFACT_STATUS_DELETED_BY_RETENTION:
+                if artifact.exists() or artifact.is_symlink():
+                    retention_state_issues.append(
+                        {
+                            "path": str(artifact),
+                            "issue": "retention_tombstone_path_exists",
+                        }
+                    )
+                continue
+            if artifact_status == ARTIFACT_STATUS_RETENTION_PENDING:
+                retention_state_issues.append(
+                    {
+                        "path": str(artifact),
+                        "issue": "retention_deletion_pending",
+                    }
+                )
+                continue
             if not artifact.exists():
                 missing_artifact_paths.append(str(artifact))
         for row in connection.execute(
@@ -765,6 +792,14 @@ def _doctor(registry: Registry, paths: ProjectPaths) -> dict[str, Any]:
                 "kind": "missing_artifact_paths",
                 "count": len(missing_artifact_paths),
                 "paths": missing_artifact_paths[:20],
+            }
+        )
+    if retention_state_issues:
+        issues.append(
+            {
+                "kind": "artifact_retention_state_issues",
+                "count": len(retention_state_issues),
+                "items": retention_state_issues[:20],
             }
         )
     if missing_canonical_markers:
@@ -993,7 +1028,11 @@ def _write_leaderboard(
         writer.writerows(rows)
 
 
-def _verify_bundles(registry: Registry, run_id: str | None) -> list[dict[str, Any]]:
+def _verify_bundles(
+    registry: Registry,
+    run_id: str | None,
+    paths: ProjectPaths,
+) -> list[dict[str, Any]]:
     parameters: tuple[str, ...] = (run_id,) if run_id else ()
     with registry.connect() as connection:
         records = [
@@ -1013,7 +1052,56 @@ def _verify_bundles(registry: Registry, run_id: str | None) -> list[dict[str, An
                 parameters,
             ).fetchall()
         ]
-    issues = []
+        tombstone_rows = [
+            dict(row)
+            for row in connection.execute(
+                """
+                SELECT a.run_id, a.path, a.sha256, a.size_bytes,
+                       r.artifact_path
+                FROM artifacts a
+                JOIN runs r ON r.run_id = a.run_id
+                WHERE a.status = ?
+                  AND a.kind IN ('checkpoints', 'predictions')
+                """
+                + (" AND a.run_id = ?" if run_id else "")
+                + " ORDER BY a.run_id, a.artifact_id",
+                (
+                    (ARTIFACT_STATUS_DELETED_BY_RETENTION, run_id)
+                    if run_id
+                    else (ARTIFACT_STATUS_DELETED_BY_RETENTION,)
+                ),
+            ).fetchall()
+        ]
+    issues: list[dict[str, Any]] = []
+    tombstones_by_run: dict[str, dict[str, dict[str, Any]]] = {}
+    for tombstone in tombstone_rows:
+        tombstone_run_id = str(tombstone["run_id"])
+        run_root = Path(str(tombstone["artifact_path"]))
+        payload = Path(str(tombstone["path"]))
+        if not run_root.is_absolute():
+            run_root = paths.project_root / run_root
+        if not payload.is_absolute():
+            payload = paths.project_root / payload
+        try:
+            relative = payload.resolve(strict=False).relative_to(
+                run_root.resolve(strict=False)
+            ).as_posix()
+        except ValueError:
+            issues.append(
+                {
+                    "run_id": tombstone_run_id,
+                    "issue": (
+                        "Retention tombstone path is outside its run bundle: "
+                        f"{payload}"
+                    ),
+                }
+            )
+            continue
+        tombstones_by_run.setdefault(tombstone_run_id, {})[relative] = {
+            "type": "file",
+            "size": tombstone["size_bytes"],
+            "sha256": tombstone["sha256"],
+        }
     for record in records:
         if not record or not record.get("artifact_path"):
             continue
@@ -1025,6 +1113,10 @@ def _verify_bundles(registry: Registry, run_id: str | None) -> list[dict[str, An
             verify_run_bundle(
                 record["artifact_path"],
                 require_success_contract=record.get("status") == "completed",
+                tombstoned_artifacts=tombstones_by_run.get(
+                    str(record["run_id"]),
+                    {},
+                ),
             )
         except (FileNotFoundError, RunValidationError) as error:
             issues.append({"run_id": record["run_id"], "issue": str(error)})

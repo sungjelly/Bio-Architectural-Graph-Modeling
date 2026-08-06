@@ -1,0 +1,176 @@
+contract_schema_version: 1
+campaign_id: cmp_20260731_myjju_genemae_gradient_audit_cpu_replay
+contract_status: frozen_after_failed_cuda_replay_pilot_before_successor_pilot
+exploratory: true
+
+predecessor:
+  campaign_id: cmp_20260731_myjju_genemae_gradient_audit
+  inherited_contract: experiments/campaigns/cmp_20260731_myjju_genemae_gradient_audit/frozen_task_contract.yaml
+  inherited_contract_sha256: 5e5b1321f5e9b9c0acfa98d22f1a3348eb856b76fc74ad18d4cc8df835f3a4b5
+  failed_run_id: r_20260731T081950Z_b2203286_s000_f00_a01_35181af2
+  failed_pilot_sha256: 6a61319559ec3be65f6603b8377a120337f834eae8c6bbf90f23162543aa7f3c
+  observed_cuda_replay_max_abs_error: 0.00000286102294921875
+  locked_absolute_tolerance: 0.000001
+  failure_preserved_and_registered: true
+
+amendment:
+  reason: upstream_documented_pyg_gatv2_cuda_last_bit_nondeterminism
+  strict_checkpoint_replay_device: cpu
+  upstream_precedent: scripts/train/run_myjju_genemae_pooled.py
+  cuda_gradient_execution_device_unchanged: true
+  replay_tolerance_unchanged: true
+  scientific_estimands_unchanged: true
+  genes_pairs_masks_cores_seeds_graphs_unchanged: true
+  computational_gate_thresholds_unchanged: true
+  mechanism_claim_ceiling_unchanged: true
+  cuda_discrepancy_retained_as_limitation: true
+
+objective:
+  primary: test_the_predecessor_gradient_claim_under_the_unchanged_locked_audit
+  corrective_hypothesis: strict_cpu_replay_passes_because_weights_are_identical_and_cuda_difference_is_kernel_ordering_noise
+  alternative: checkpoint_state_or_execution_is_not_reproducible_even_on_cpu
+  distinguishing_predictions:
+    - cpu_replay_and_cpu_checkpoint_reload_max_abs_error_at_most_0.000001
+    - all_other_resource_and_numerical_pilot_controls_pass_unchanged
+    - cuda_production_results_remain_subject_to_recorded_last_bit_nondeterminism
+  prohibited_reframing: learned_gradients_validate_biological_mechanisms
+
+deliverables:
+  - inherited_source_statistic_and_provenance_audit
+  - signed_directed_and_published_symmetric_source_statistic
+  - masked_target_same_cell_and_cross_cell_gradient_decomposition
+  - target_predictive_and_graph_use_eligibility
+  - seven_seed_three_mask_ten_core_stability
+  - bounded_finite_difference_faithfulness_at_0.10_and_0.25_sd
+  - observed_graph_parameter_randomization_and_matched_pair_nulls
+  - checksum_bound_registered_aggregate_run
+  - markdown_html_csv_and_json_reports
+
+estimand_and_units:
+  inherited_without_change_from_predecessor_contract: true
+  observational_unit: adjacent_normal_tissue_core
+  biological_unit_count: 10
+  technical_repeats:
+    model_seeds: 7
+    mask_replicates: 3
+  source_style_estimand: global_unmasked_signed_directed_input_gradient
+  primary_estimand: masked_receiver_target_gradient_with_respect_to_visible_normalized_source_input
+  same_vs_other_cell_decomposition: exact_for_eight_deterministic_receivers_per_target_per_tile
+  cross_cell_maximum_hops: 4
+  maximum_claim: stable_faithful_graph_dependent_null_calibrated_model_implied_predictive_sensitivity
+  mechanism_validation_available: false
+
+primary_metric:
+  name: audit/gate_row_pass_fraction_descriptive
+  role: registry_bookkeeping_only_not_an_evidence_score_or_claim
+  direction: maximize
+
+unchanged_gates:
+  predictive_eligibility:
+    relative_huber_gain_minimum: 0.02
+    minimum_favoring_cores: 8
+  graph_use_eligibility:
+    relative_huber_gain_minimum: 0.02
+    minimum_favoring_cores: 8
+  seed_rank_stability:
+    minimum_median_pairwise_spearman: 0.70
+    minimum_passing_cores: 8
+  mask_rank_stability:
+    minimum_median_pairwise_spearman: 0.70
+    minimum_passing_cores: 8
+  signed_pair_stability:
+    minimum_same_sign_seeds: 6
+    minimum_same_sign_cores: 8
+  faithfulness:
+    scales_within_core_sd: [0.10, 0.25]
+    minimum_testable_fraction: 0.90
+    minimum_spearman: 0.70
+    minimum_sign_agreement: 0.80
+    maximum_median_error_ratio: 0.50
+    both_scales_must_pass: true
+  graph_gradient_structure_null:
+    minimum_relative_improvement: 0.25
+    minimum_passing_cores: 8
+  parameter_randomization:
+    trained_must_exceed_all_seven_controls: true
+  matched_pair_null:
+    draws: 10000
+    upper_tail_p_maximum: 0.05
+
+controls:
+  positive:
+    - signed_same_vs_cross_cell_gradient_bookkeeping
+    - autograd_centered_finite_difference
+    - strict_cpu_checkpoint_replay
+  negative_and_null:
+    - masked_input_zero_gradient
+    - outside_four_hop_receptive_field_zero_gradient
+    - cross_tile_zero_gradient
+    - node_label_permuted_graph
+    - seven_parameter_randomized_models
+    - target_preserving_expression_and_coexpression_matched_pairs
+
+split_and_leakage:
+  fit_scope: all_117386_cells_across_ten_cores
+  held_out_generalization_estimate: false
+  full_cell_cp10k_denominator_uses_hidden_entries: true
+  core_to_patient_independence_verified: false
+  source_selected_pairs_are_circular_positive_controls: true
+  source_context_matches_adjacent_normal_cohort: false
+
+acceptance_and_falsification:
+  successor_pilot_acceptance:
+    strict_cpu_replay_tolerance: 0.000001
+    peak_allocated_vram_gib_maximum: 20.5
+    projected_runtime_hours_per_seed_maximum: 2.0
+    all_other_inherited_pilot_checks_must_pass: true
+  computational_candidate_acceptance: all_inherited_candidate_set_gates_pass
+  mechanism_claim_acceptance: unavailable_in_this_design
+  falsification:
+    - strict_cpu_replay_exceeds_0.000001
+    - any_inherited_computational_gate_fails
+    - artifact_or_registry_verification_fails
+
+resources_and_execution:
+  pilot_seed: 0
+  pilot_core: ANC-01
+  seed_zero_full_shard_is_largest_tile_memory_sentinel: true
+  production_gpu_map:
+    0: 0
+    1: 1
+    2: 2
+    3: 3
+    4: 5
+    5: 6
+    6: 7
+  expected_artifacts:
+    - pilot_json_and_checksum
+    - seven_seed_metadata_npz_and_checksums
+    - exact_forty_gate_rows
+    - source_reproduction_matrices
+    - aggregate_reports_and_manifest
+    - immutable_registered_run_bundle
+
+verification:
+  - focused_gradient_audit_unit_tests
+  - production_context_and_checkpoint_identity_checks
+  - seed_zero_full_shard_sentinel
+  - seven_seed_aggregate_manifest_validation
+  - repository_doctor
+  - registry_artifact_and_checkpoint_catalog_verification
+
+stop_conditions:
+  - successor_resource_or_numerical_pilot_failure
+  - checkpoint_cohort_graph_gene_or_mask_identity_mismatch
+  - nonfinite_output_or_gradient
+  - seed_zero_full_shard_vram_or_correctness_failure
+  - incomplete_seed_core_or_mask_coverage
+  - artifact_or_registry_verification_failure
+
+prohibited_claims:
+  - causal_gradient
+  - validated_biological_mechanism
+  - direct_cell_cell_interaction
+  - held_out_core_or_patient_generalization
+  - independent_biological_replication
+  - raw_molecule_effect

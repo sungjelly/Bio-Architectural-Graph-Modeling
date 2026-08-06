@@ -16,6 +16,7 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from spatial_benchmark.models import (  # noqa: E402
     AdditiveEdgeMessageModel,
     BroadSpatialFieldControl,
+    EdgeParameterMatchedSelfControl,
     EdgeConditionedGATv2,
     MeanNeighborModel,
     ModelOutput,
@@ -341,6 +342,43 @@ def test_parameter_matched_control_exactly_matches_g1_parameter_count() -> None:
     self_count = sum(parameter.numel() for parameter in self_control.parameters())
     graph_count = sum(parameter.numel() for parameter in graph_model.parameters())
     assert self_count == graph_count
+
+
+def test_edge_parameter_matched_control_exactly_matches_g2_and_is_self_only() -> None:
+    kwargs = {
+        **_common_kwargs(),
+        "edge_attribute_dim": EDGE_ATTRIBUTE_DIM,
+        "edge_hidden_dim": 7,
+        "edge_embedding_dim": 6,
+        "attention_heads": 4,
+        "graph_layers": 2,
+        "attention_dropout": 0.0,
+        "dropout": 0.0,
+    }
+    self_control = EdgeParameterMatchedSelfControl(**kwargs).eval()
+    graph_model = EdgeConditionedGATv2(**kwargs)
+    assert sum(
+        parameter.numel() for parameter in self_control.parameters()
+    ) == sum(parameter.numel() for parameter in graph_model.parameters())
+
+    expression = torch.randn(4, int(kwargs["num_genes"]))
+    mask = torch.zeros_like(expression, dtype=torch.bool)
+    covariates = torch.randn(4, int(kwargs["node_covariate_dim"]))
+    first = self_control(
+        expression,
+        mask,
+        edge_index=torch.tensor([[0, 1], [1, 2]]),
+        edge_attributes=torch.randn(2, EDGE_ATTRIBUTE_DIM),
+        node_covariates=covariates,
+    ).prediction
+    second = self_control(
+        expression,
+        mask,
+        edge_index=torch.tensor([[3, 2, 1], [0, 0, 0]]),
+        edge_attributes=torch.randn(3, EDGE_ATTRIBUTE_DIM) * 1000,
+        node_covariates=covariates,
+    ).prediction
+    torch.testing.assert_close(first, second, rtol=0.0, atol=0.0)
 
 
 @pytest.mark.parametrize("hidden_dim", [128, 256, 512])

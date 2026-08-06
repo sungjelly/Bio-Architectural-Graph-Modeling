@@ -1,0 +1,11 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260725_full_core_high_k_capacity
+display_name: Full-core high-k representation-capacity pilot
+status: completed
+outcome: positive_but_subthreshold_capacity_gate_failed
+definition: experiments/campaigns/cmp_20260725_full_core_high_k_capacity/README.md
+variants:
+  - configs/experiment/full_core_high_k_g2_resource_pilot.yaml
+  - configs/experiment/full_core_high_k_g2.yaml
+  - configs/experiment/full_core_high_k_b0_g2_matched.yaml
+automatic_enqueue: false

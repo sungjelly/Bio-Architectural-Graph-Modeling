@@ -1,0 +1,33 @@
+version: 1
+defaults:
+  - model: b0_g2_matched
+  - masking: p_n_b
+  - dataset: normal_core_cosmx_full_core
+  - features: cosmx_full_core_morphology_topology
+  - graph: k1000_r650_mutual
+  - trainer: full_core_fixed_200
+  - evaluation: held_in_full_core_v1
+  - launcher: local_single_gpu_3090
+
+masking:
+  validation_replicates: 0
+  test_replicates: 0
+  fit_replicates: 3
+
+campaign:
+  campaign_id: cmp_20260725_full_core_high_k_capacity
+  display_name: Full-core high-k representation-capacity pilot
+experiment:
+  variant_label: b0_g2_matched_full_core
+  estimand: held_in_full_core_whole_node_masked_reconstruction
+  permitted_claim: one_core_transductive_representation_capacity
+  paired_candidate: full_core_high_k_g2
+classification:
+  schema_version: 1
+  lifecycle_stage: exploratory_screen
+  study_axis: full_core_high_k_capacity
+  retention_class: retain_exploratory_evidence
+  classification_confidence: high
+seed: 0
+fold: 0
+attempt: 1

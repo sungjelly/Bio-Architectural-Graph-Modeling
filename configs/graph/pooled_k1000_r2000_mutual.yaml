@@ -1,0 +1,23 @@
+graph:
+  kind: exact_spatial_knn_radius_guard
+  neighbor_k: 1000
+  k: 1000
+  radius_um: 2000.0
+  radius_guard_um: 2000.0
+  radius_role: common_nontruncating_post_knn_guard
+  candidate_selection: exact_knn_before_radius_guard_validation
+  symmetry: mutual
+  min_distance_um: 0.0
+  rbf_bins: 8
+  edge_dropout: 0.0
+  self_loops: false
+  two_directed_edges_per_relation: true
+  cross_core_edges: false
+  graph_batches: ten_disconnected_complete_core_graphs
+  coordinates_are_node_covariates: false
+  query_chunk_size: 2048
+  receiver_shard_size: 64
+  mutual_search_chunk_size: 4000000
+  construction_workers: 8
+  exact_search_epsilon: 0.0
+  expected_core_graphs: materialized_before_enqueue

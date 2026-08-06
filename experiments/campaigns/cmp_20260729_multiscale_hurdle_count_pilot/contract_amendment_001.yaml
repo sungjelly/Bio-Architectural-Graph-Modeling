@@ -1,0 +1,36 @@
+schema_version: 1
+campaign_id: cmp_20260729_multiscale_hurdle_count_pilot
+amendment_id: strengthen_final_rewiring_divergence
+status: frozen_before_any_gpu_training
+original_frozen_contract_sha256: 54496bc73c8d6f2b3c2ec9885fba86b2021944462a106dbd10a23cfd88e25fb7
+reason: >-
+  Pre-training real-core graph QC showed that one successful 2-switch per
+  undirected edge changed only 6.33% to 8.20% of final relations because later
+  swaps could reintroduce original relations. Successful-swap count therefore
+  did not establish a mechanism-breaking topology null.
+observed_pretraining_qc:
+  gpu_training_performed: false
+  core_aliases:
+    - ANC-02
+    - ANC-03
+    - ANC-05
+    - ANC-06
+    - ANC-09
+  final_relation_replacement_fraction_range:
+    minimum: 0.0633
+    maximum: 0.0820
+  disposition: superseded_and_prohibited_for_graph_interpretation
+strengthened_rewiring_gate:
+  original_relations_may_be_reintroduced: false
+  minimum_final_relation_replacement_fraction: 0.50
+  successful_swap_count_is_sufficient_evidence: false
+  degree_preservation: exact
+  distance_bin_count_preservation: exact
+  maximum_relative_mean_distance_change: 0.10
+  fixed_seed: 271828
+effect_on_execution:
+  rematerialization_required: true
+  resource_or_science_runs_authorized_from_old_materialization: false
+  stage0_synthetic_interpretation_requires_strengthened_gate: true
+  stage2_real_data_graph_interpretation_requires_strengthened_gate: true
+scientific_direction: strengthened_not_relaxed

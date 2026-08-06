@@ -1,0 +1,50 @@
+dataset:
+  dataset_id: cosmx_adjacent_normal_10core_pooled_fit_v1
+  version: adjacent_normal_10core_pooled_fit_v1
+  split_id: materialized_before_enqueue
+  dataset_fingerprint: materialized_before_enqueue
+  preprocessing_version: pooled_10core_equal_core_expression_v1
+  task: masked_expression_hybrid_count
+  target_scale: raw_biological_probe_counts_with_shared_standardized_log1p
+  fit_scope: all_117386_cells_across_ten_cores_transductive
+  total_fit_cells: 117386
+  biological_target_count: 1000
+  core_aliases:
+    - ANC-01
+    - ANC-02
+    - ANC-03
+    - ANC-04
+    - ANC-05
+    - ANC-06
+    - ANC-07
+    - ANC-08
+    - ANC-09
+    - ANC-10
+  prepared_artifacts:
+    ANC-01: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-01/prepared_v1
+    ANC-02: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-02/prepared_v1
+    ANC-03: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-03/prepared_v1
+    ANC-04: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-04/prepared_v1
+    ANC-05: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-05/prepared_v1
+    ANC-06: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-06/prepared_v1
+    ANC-07: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-07/prepared_v1
+    ANC-08: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-08/prepared_v1
+    ANC-09: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-09/prepared_v1
+    ANC-10: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-10/prepared_v1
+  experimental_unit: adjacent_normal_spatial_core
+  tissue_context: pathology_confirmed_adjacent_normal
+  generalization_scope: held_in_reconstruction_only
+  validation_or_test_partition_present: false
+  patient_generalization_supported: false
+  technical_control_prefixes_excluded:
+    - Negative
+    - SystemControl
+  count_representation:
+    schema: hybrid_raw_count_0_1_2_3_4_7_8_15_16_31_32plus_v1
+    source_scale: raw_biological_probe_counts
+    num_output_states: 8
+    mask_token_id: 8
+    mask_token_is_output: false
+    fixed_boundaries: true
+    fit_required: false
+    continuous_transform: shared_equal_core_log1p_standardization

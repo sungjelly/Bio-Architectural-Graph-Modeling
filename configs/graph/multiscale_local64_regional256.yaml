@@ -1,0 +1,54 @@
+kind: multiscale_exact_mutual_knn
+neighbor_k: 64
+k: 64
+radius_um: 75.0
+radius_guard_um: 75.0
+symmetry: mutual
+min_distance_um: 0.0
+rbf_bins: 8
+edge_dropout: 0.0
+self_loops: false
+two_directed_edges_per_relation: true
+full_core_graph: true
+coordinates_are_node_covariates: false
+query_chunk_size: 2048
+receiver_shard_size: 128
+mutual_search_chunk_size: 4000000
+construction_workers: 8
+exact_search_epsilon: 0.0
+local:
+  neighbor_k_cap: 64
+  min_distance_um: 0.0
+  max_distance_um: 75.0
+  symmetry: mutual
+regional:
+  neighbor_k_cap: 256
+  min_distance_um_exclusive: 75.0
+  max_distance_um: 300.0
+  symmetry: mutual
+local_source_permutation:
+  schema: macroblock_spatial_antipode_sender_state_permutation_v1
+  grouping: separately_within_each_macroblock
+  construction_inputs:
+    - all_fit_macroblock_id
+    - all_fit_coordinates_um
+    - stable_node_row_index
+  uses_expression_labels_or_covariates: false
+  coordinate_precision: float64
+  covariance_precision: IEEE_754_float64
+  covariance_divisor: macroblock_node_count
+  axis: deterministic_largest_eigenvector_of_centered_2d_coordinate_covariance
+  eigenvalue_tie_discriminant: hypot(cov_xx_minus_cov_yy, 2_times_cov_xy)
+  tie_tolerance: 64_times_float64_epsilon_times_max_abs_covariance_entry_or_one
+  axis_sign: largest_absolute_loading_positive_with_x_tie_break
+  degenerate_axis: positive_x
+  ordering: stable_lexicographic_projection_then_node_row_index
+  mapping: forward_circular_shift_by_floor_group_size_divided_by_two
+  singleton_policy: fixed_and_explicitly_counted
+  minimum_node_mapping_changed_fraction: 0.99
+  displacement_threshold_um: 75.0
+  minimum_node_displacement_above_threshold_fraction: 0.90
+  minimum_local_edge_slot_sender_identity_changed_fraction: 0.99
+  observed_local_topology_unchanged: true
+  observed_local_receivers_unchanged: true
+  observed_local_edge_attributes_bit_identical: true

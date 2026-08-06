@@ -29,6 +29,7 @@ from .paths import PROJECT_ROOT as DEFAULT_PROJECT_ROOT
 
 from .data import (
     ALLOWED_METADATA_COLUMNS,
+    CoreSelection,
     discover_slide_raw_path,
     load_selected_core,
     select_unique_legacy_true_normal_core,
@@ -62,6 +63,9 @@ DEFAULT_PREPARE_CONFIG: dict[str, Any] = {
         "expected_biological_probes": 1000,
         "pixel_size_um": 0.120281,
         "qc_policy": "all",
+        "selection_source": "legacy_true_normal",
+        "selection_manifest": None,
+        "selection_alias": None,
     },
     "split": {
         "block_size_um": 300.0,
@@ -209,6 +213,31 @@ def _validate_config(config: Mapping[str, Any]) -> None:
         )
     if data["qc_policy"] not in {"all", "passed"}:
         raise ArtifactContractError("data.qc_policy must be 'all' or 'passed'.")
+    selection_source = data["selection_source"]
+    if selection_source not in {
+        "legacy_true_normal",
+        "protected_adjacent_normal_manifest",
+    }:
+        raise ArtifactContractError(
+            "data.selection_source must be 'legacy_true_normal' or "
+            "'protected_adjacent_normal_manifest'."
+        )
+    selection_manifest = data.get("selection_manifest")
+    selection_alias = data.get("selection_alias")
+    if selection_source == "legacy_true_normal":
+        if selection_manifest is not None or selection_alias is not None:
+            raise ArtifactContractError(
+                "Legacy true-Normal selection forbids a selection manifest or alias."
+            )
+    elif (
+        not isinstance(selection_manifest, str)
+        or not selection_manifest.strip()
+        or not isinstance(selection_alias, str)
+        or not selection_alias.strip()
+    ):
+        raise ArtifactContractError(
+            "Protected adjacent-normal selection requires a manifest path and alias."
+        )
     if not bool(config["split"]["fov_aware"]):
         raise ArtifactContractError(
             "This workflow requires split.fov_aware=true for preparation."
@@ -562,27 +591,67 @@ def _prepare_arrays_and_manifest(
 ) -> tuple[dict[str, np.ndarray], dict[str, Any]]:
     data_config = config["data"]
     raw_dir = _resolve_input_path(project_root, data_config["raw_dir"])
-    legacy_workbook = _resolve_input_path(
-        project_root, data_config["legacy_workbook"]
-    )
-    review_workbook = _resolve_input_path(
-        project_root, data_config["pathology_review_workbook"]
-    )
-    core_map_csv = _resolve_input_path(project_root, data_config["core_map_csv"])
+    selection_source = str(data_config["selection_source"])
+    selection_context: dict[str, Any]
+    if selection_source == "legacy_true_normal":
+        legacy_workbook = _resolve_input_path(
+            project_root, data_config["legacy_workbook"]
+        )
+        review_workbook = _resolve_input_path(
+            project_root, data_config["pathology_review_workbook"]
+        )
+        core_map_csv = _resolve_input_path(
+            project_root, data_config["core_map_csv"]
+        )
+        selection = select_unique_legacy_true_normal_core(
+            legacy_workbook,
+            core_map_csv,
+            pathology_review_workbook=review_workbook,
+        )
+        selection_input_paths: dict[str, Path] = {
+            "legacy_workbook": legacy_workbook,
+            "pathology_review_workbook": review_workbook,
+            "fov_to_tissue_map": core_map_csv,
+        }
+        artifact_kind = "normal_true_tissue_spatial_benchmark_preparation"
+        selection_context = {
+            "tissue_context": "legacy_true_normal",
+            "selection_source": selection_source,
+        }
+    else:
+        from .adjacent_normal_selection import load_adjacent_normal_route
 
-    selection = select_unique_legacy_true_normal_core(
-        legacy_workbook,
-        core_map_csv,
-        pathology_review_workbook=review_workbook,
-    )
+        selection_manifest = _resolve_input_path(
+            project_root, data_config["selection_manifest"]
+        )
+        route = load_adjacent_normal_route(
+            selection_manifest,
+            str(data_config["selection_alias"]),
+        )
+        selection = CoreSelection(
+            slide=route.slide,
+            fovs=route.fovs,
+            label_policy=(
+                "pathology-confirmed adjacent-normal protected manifest"
+            ),
+        )
+        selection_input_paths = {
+            "protected_selection_manifest": selection_manifest,
+        }
+        artifact_kind = (
+            "adjacent_normal_tissue_spatial_benchmark_preparation"
+        )
+        selection_context = {
+            "tissue_context": "pathology_confirmed_adjacent_normal",
+            "selection_source": selection_source,
+            "opaque_alias": route.alias,
+        }
     expression_path = discover_slide_raw_path(
         raw_dir, selection.slide, "expression"
     )
     metadata_path = discover_slide_raw_path(raw_dir, selection.slide, "metadata")
     input_paths = {
-        "legacy_workbook": legacy_workbook,
-        "pathology_review_workbook": review_workbook,
-        "fov_to_tissue_map": core_map_csv,
+        **selection_input_paths,
         "expression_csv": expression_path,
         "metadata_csv": metadata_path,
     }
@@ -740,13 +809,14 @@ def _prepare_arrays_and_manifest(
     }
     manifest: dict[str, Any] = {
         "format_version": PREPARED_ARTIFACT_FORMAT_VERSION,
-        "artifact_kind": "normal_true_tissue_spatial_benchmark_preparation",
+        "artifact_kind": artifact_kind,
         "configuration": deepcopy(dict(config)),
         "selection": {
             "policy": selection.label_policy,
             "slide": selection.slide,
             "n_fovs": len(selection.fovs),
             "n_cells": dataset.n_cells,
+            **selection_context,
             # Donor and tissue-unit numeric identifiers are intentionally absent.
             "restricted_identifiers_emitted": False,
         },

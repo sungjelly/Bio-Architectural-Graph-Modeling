@@ -1,0 +1,34 @@
+version: 1
+defaults:
+  - model: qkv_gat_width704
+  - masking: p_n_b
+  - dataset: normal_core_cosmx_full_core
+  - features: cosmx_full_core_morphology_edge_geometry
+  - graph: k5000_r1200_mutual
+  - trainer: full_core_qkv_resource_pilot_2
+  - evaluation: held_in_full_core_percent_pilot_v2
+  - launcher: local_single_gpu_3090
+
+masking:
+  validation_replicates: 0
+  test_replicates: 0
+  fit_replicates: 1
+
+campaign:
+  campaign_id: cmp_20260726_full_core_qkv_large_k
+  display_name: Full-core large-capacity QKV-GAT k stress test
+experiment:
+  variant_label: qkv_gat_width704_k5000_resource_pilot
+  estimand: implementation_resource_feasibility_on_held_in_full_core
+  permitted_claim: diagnostic_runtime_and_memory_feasibility_only
+  conclusion_eligible: false
+  excluded_from_capacity_comparison: true
+classification:
+  schema_version: 1
+  lifecycle_stage: diagnostic
+  study_axis: qkv_resource_feasibility
+  retention_class: retain_diagnostic_evidence
+  classification_confidence: high
+seed: 0
+fold: 0
+attempt: 1

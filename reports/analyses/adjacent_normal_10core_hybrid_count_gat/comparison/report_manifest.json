@@ -1,0 +1,27 @@
+{
+  "campaign_id": "cmp_20260729_adjacent_normal_10core_hybrid_count_gat",
+  "files": {
+    "attempt_inventory.csv": "9f7ae5e9d33d42d9dcb6bc92eeaebff8219128a92be1b2bd8d532f75f45230c0",
+    "categorical_descriptive_comparison.csv": "1d8774abcb5bd277341e75de1f43c4fdf8a10f90eaa6382f57e181be8fda5a62",
+    "checkpoint_content_duplicates.csv": "a67ce6929f485a9096f6aabcd5c4ae61fa482fa1d01cddddeca6513809fb6868",
+    "comparison.json": "1881aa425f29cbe2a3052aa387aed7d42357f6370746d9c9e5c90c87f21d3071",
+    "component_inference.csv": "75c8adadba33df414f7bf52040635ba9dc2455402fedd5f6d3c251aec5c15f73",
+    "core_mode_metrics.csv": "65317ee3dfd832759b47d0dea8e2b5ba6112efd925263983479fa6ebde712f1c",
+    "coverage_slots.csv": "e27d484aafd9a4be6462195b8067704160b5a6e2eb3f442f6772dd9a905e4859",
+    "duplicate_completed_slots.csv": "a67ce6929f485a9096f6aabcd5c4ae61fa482fa1d01cddddeca6513809fb6868",
+    "equal_core_aggregates.csv": "e5b9dfe7895f7c1fe334d227e7d298c0386f1f0a312153432bd9a0c8080dde8a",
+    "gate_criteria.csv": "e3543dff8bc96c87f221e6b8b6ca02dee8af310237dfd38e0028634e544bba6c",
+    "graph_core_comparisons.csv": "a99389d7954577d4b18a89cf56a0aaca90e210b1af279051d682c834d7b985b7",
+    "invalid_production_attempts.csv": "a67ce6929f485a9096f6aabcd5c4ae61fa482fa1d01cddddeca6513809fb6868",
+    "missing_slots.csv": "a67ce6929f485a9096f6aabcd5c4ae61fa482fa1d01cddddeca6513809fb6868",
+    "per_mask_metrics.csv": "ede47d6f4fc4697d31c6f709fb2ed4e53e46891a2047a4d1df87f5b3e0be0238",
+    "registered_failures.csv": "a67ce6929f485a9096f6aabcd5c4ae61fa482fa1d01cddddeca6513809fb6868",
+    "report.html": "d187eeaeaf746e96df206d2be29a6a3d50715fa0de5a9bda9dfe4f3d0bae1c12",
+    "report.md": "3b8102e8ae704e96be09aaf336dd882ba38dfd3bbff63a97c6ba13a9a780f80d",
+    "representation_core_comparisons.csv": "e1467f5413893459dc34145243bd28888da0fed97b36deb006c754b6dd96ce46",
+    "run_resources_and_convergence.csv": "e5d040b34e5bf06338d9f883dcf6a35964b4f2a83603c94610f44cd0cf1a10ca",
+    "verification.csv": "62bc5602e27700ed8cfb35dd1a69ebbc0c35db038a070334e336a554f3ac6d00",
+    "verification_failures.csv": "a67ce6929f485a9096f6aabcd5c4ae61fa482fa1d01cddddeca6513809fb6868"
+  },
+  "schema_version": 1
+}

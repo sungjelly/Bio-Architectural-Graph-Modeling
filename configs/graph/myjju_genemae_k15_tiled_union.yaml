@@ -1,0 +1,19 @@
+graph:
+  kind: symmetric_spatial_knn_tiled
+  neighbor_k: 15
+  k: 15
+  radius_um: 1.0
+  radius_applied: false
+  radius_role: schema_required_not_applied
+  symmetry: union
+  maximum_tile_nodes: 7000
+  tiling: recursive_median_longest_axis
+  edge_feature: gaussian_distance_kernel
+  edge_scale: within_tile_median_edge_length
+  edge_dropout: 0.2
+  constructed_graph_self_loops: false
+  convolution_add_self_loops: true
+  cross_core_edges: false
+  cross_tile_edges: false
+  coordinates_are_node_covariates: false
+  neighbor_sampling: false

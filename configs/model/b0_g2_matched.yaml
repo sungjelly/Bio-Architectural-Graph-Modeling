@@ -1,0 +1,22 @@
+model:
+  name: b0-g2-matched
+  family: edge_parameter_matched_self_control
+  embedding_dim: 512
+  hidden_dim: 512
+  graph_layers: 2
+  attention_heads: 4
+  ffn_dim: 512
+  decoder_dim: 512
+  edge_attribute_dim: 17
+  edge_hidden_dim: 64
+  edge_embedding_dim: 64
+  dropout: 0.10
+  attention_dropout: 0.10
+  implicit_self_loops: false
+  trainable_node_identifiers: false
+  trainable_edge_identifiers: false
+  uses_graph_inputs: false
+  uses_edge_inputs: false
+  parameter_match_reference: edge_conditioned_gatv2
+  parameter_matching_method: repurpose_g2_edge_encoder_and_projection_on_within_cell_embeddings
+  comparison_target: g2_high_k_same_data_masks_width_depth_seed_and_budget

@@ -1,0 +1,19 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260802_adjacent_normal_grouped_adjacency_ablation
+display_name: Grouped adjacent-normal adjacency ablation
+status: planned
+outcome: pending
+exploratory: true
+contract_status: frozen_before_implementation
+definition: experiments/campaigns/cmp_20260802_adjacent_normal_grouped_adjacency_ablation/README.md
+frozen_contract: experiments/campaigns/cmp_20260802_adjacent_normal_grouped_adjacency_ablation/frozen_task_contract.yaml
+frozen_contract_sha256: 08e4040ce8b0a3535c7bef1cbf896c68bc5e11693cb13bbdfb3b992467742eff
+dataset_id: cosmx_adjacent_normal_grouped_adjacency_v1
+split_id: adjacent_normal_10donor_slide_balanced_5fold_v1
+arms: [spatial, isolated, position_permuted_null]
+primary_arms: [spatial, isolated]
+production_folds: [0, 1, 2, 3, 4]
+production_seeds: [0, 1, 2, 3, 4]
+primary_production_run_count: 50
+conditional_null_run_count: 25
+automatic_enqueue: false

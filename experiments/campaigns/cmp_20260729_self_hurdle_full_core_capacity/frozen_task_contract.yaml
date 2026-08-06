@@ -1,0 +1,92 @@
+schema_version: 1
+campaign_id: cmp_20260729_self_hurdle_full_core_capacity
+frozen_before_new_training: true
+exploratory: true
+question: >-
+  Can a large graphless within-cell representation reconstruct masked raw
+  counts better than all-fit per-gene references on both ANC-03 and ANC-05?
+primary_hypothesis:
+  detection_balanced_accuracy_gain: "> 0 on both cores"
+  positive_continuous_huber_relative_improvement: ">= 0.02 on both cores"
+  positive_count_state_mae_relative_improvement: ">= 0.02 on both cores"
+alternative_explanations:
+  - per_gene_prevalence_and_positive_median_are_adequate
+  - masking_removes_insufficiently_redundant_within_cell_information
+  - morphology_or_technical_intensity_drives_apparent_capacity
+  - optimization_failure
+  - transductive_memorization_without_generalization
+estimand: held_in_masked_raw_count_reconstruction
+permitted_claim: two_core_exploratory_within_cell_representation_capacity
+prohibited_claims:
+  - unseen_patient_generalization
+  - spatial_predictive_dependency
+  - cell_cell_communication
+  - biological_mechanism
+  - causal_influence
+units:
+  biological:
+    - ANC-03
+    - ANC-05
+  technical: fixed_mask_replicates_nested_within_core
+split:
+  roles:
+    fit: all_nodes
+    validation: 0
+    test: 0
+  inductive: false
+  checkpoint_selection: final_epoch_only
+inputs:
+  targets: 1000_nontechnical_raw_count_probes
+  covariates: 22_permitted_morphology_imaging_fields
+  source_campaign: cmp_20260729_adjacent_normal_10core_hybrid_count_gat
+  preprocessing_scope: all_nodes_within_current_core
+prohibited_inputs:
+  - direct_identifiers
+  - coordinates_as_node_covariates
+  - expression_derived_library_size_or_rna_qc
+  - vendor_derived_annotations
+  - hidden_target_values
+  - graph_or_edge_inputs
+model:
+  name: self-hurdle-count
+  family: self_only_hurdle_count
+  hidden_dim: 768
+  decoder_dim: 768
+  ffn_dim: 1536
+  residual_blocks: 3
+  trainable_parameter_count: 16917200
+  graph_construction: prohibited
+objective:
+  name: equal_weight_balanced_detection_positive_huber
+  positive_huber_delta: 1.0
+  output_channels_per_gene: 2
+  detection_threshold: 0.5
+baselines:
+  primary: all_fit_per_gene_prevalence_and_positive_median
+  limitations:
+    - no_independently_trained_morphology_only_control
+    - no_patient_held_out_baseline
+resource_stages:
+  resource:
+    aliases: [ANC-03, ANC-05]
+    epochs: 2
+    peak_vram_gib_max: 12.0
+    fp32_amp_loss_discrepancy_max: 0.001
+    projected_gpu_hours_per_science_run_max: 6.0
+    projected_aggregate_science_gpu_hours_max: 12.0
+  science:
+    aliases: [ANC-03, ANC-05]
+    epochs: 200
+    peak_vram_gib_max: 20.5
+    preferred_aggregate_gpu_hours: 12.0
+    absolute_aggregate_gpu_hours: 24.0
+disk_used_decimal_gb_hard_stop: 55.0
+gpu_policy:
+  allowed_ids: [0, 1, 2, 3, 5, 6, 7]
+  excluded_ids: [4]
+completion:
+  required_resource_runs: 2
+  required_science_runs: 2
+  result_can_be_negative: true
+  all_results_must_be_reported: true
+

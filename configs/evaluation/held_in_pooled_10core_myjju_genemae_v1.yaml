@@ -1,0 +1,25 @@
+evaluation:
+  registry_version: 1
+  task_family: masked_expression_regression
+  protocol: held_in_pooled_10core_fixed_budget
+  canonical_prediction_split: fit
+  primary_metric: fit/partial_gene/log1p_cp10k_masked_huber
+  primary_direction: minimize
+  splits:
+    - fit
+  common_mask_rate: 0.2
+  native_mask_rate: 0.5
+  mask_replicates_per_rate: 3
+  fixed_mask_bundle: true
+  common_mask_source: exact_regeneration_of_current_bagm_partial_gene_masks
+  native_mask_source: prespecified_myjju_native_mask_namespace
+  graph_conditions:
+    - observed
+    - node_label_permuted
+  equal_core_aggregation: true
+  generalization_estimate: false
+  validation_or_test_selection: false
+  conclusion_bearing: true
+  diagnostic_only: false
+  save_full_per_core_replicate_metrics: true
+  canonical_predictions: compact_per_core_per_gene_masked_means

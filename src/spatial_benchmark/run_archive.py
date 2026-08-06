@@ -30,7 +30,7 @@ from pathlib import Path
 import re
 import shutil
 import traceback
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Collection, Iterable, Mapping, Sequence
 
 import yaml
 
@@ -55,7 +55,6 @@ SUCCESS_REQUIRED = (
     "summary.json",
     "metrics/events.jsonl",
     "metrics/final.json",
-    "checkpoints/best.ckpt",
     "provenance/git.json",
     "provenance/uncommitted_changes.patch",
     "provenance/environment.txt",
@@ -363,11 +362,100 @@ def _write_exclusive(path: Path, content: bytes) -> None:
         raise RunArchiveError(f"Refusing to overwrite run file: {path}") from error
 
 
-def _validate_success_contract_at(root: Path, run_id: str) -> None:
+def _canonical_prediction_split(root: Path) -> str:
+    """Return the explicitly configured canonical prediction data role.
+
+    Historical and ordinary predictive runs default to ``validation``.
+    Transductive capacity studies must opt into ``fit`` in their resolved
+    evaluation configuration so held-in predictions cannot be mistaken for
+    validation evidence.
+    """
+
+    config_path = root / "config.resolved.yaml"
+    try:
+        config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError, yaml.YAMLError) as error:
+        raise RunValidationError(
+            "config.resolved.yaml cannot be parsed for prediction semantics."
+        ) from error
+    if not isinstance(config, Mapping):
+        raise RunValidationError("config.resolved.yaml must contain a mapping.")
+    evaluation = config.get("evaluation", {})
+    if not isinstance(evaluation, Mapping):
+        raise RunValidationError("evaluation configuration must be a mapping.")
+    split = str(
+        evaluation.get("canonical_prediction_split", "validation")
+    ).strip().lower()
+    if split not in {"validation", "fit"}:
+        raise RunValidationError(
+            "evaluation.canonical_prediction_split must be validation or fit."
+        )
+    if split == "fit":
+        protocol = str(evaluation.get("protocol", "")).strip().lower()
+        held_in_protocols = {
+            "held_in_full_core_fixed_budget",
+            "held_in_pooled_10core_fixed_budget",
+        }
+        if protocol not in held_in_protocols:
+            raise RunValidationError(
+                "canonical fit predictions require an explicit held-in "
+                "full-core or pooled-ten-core evaluation protocol."
+            )
+    return split
+
+
+def _canonical_checkpoint_path(root: Path) -> Path:
+    """Resolve the declared primary checkpoint without inventing selection."""
+
+    config_path = root / "config.resolved.yaml"
+    try:
+        config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError, yaml.YAMLError) as error:
+        raise RunValidationError(
+            "config.resolved.yaml cannot be parsed for checkpoint semantics."
+        ) from error
+    if not isinstance(config, Mapping):
+        raise RunValidationError("config.resolved.yaml must contain a mapping.")
+    trainer = config.get("trainer", {})
+    if not isinstance(trainer, Mapping):
+        raise RunValidationError("trainer configuration must be a mapping.")
+    role = str(trainer.get("primary_checkpoint_role", "best")).strip().lower()
+    if role not in {"best", "last"}:
+        raise RunValidationError(
+            "trainer.primary_checkpoint_role must be best or last."
+        )
+    if role == "last":
+        restore_best = trainer.get("restore_best")
+        if restore_best not in {False, None}:
+            raise RunValidationError(
+                "a last-checkpoint protocol cannot restore a selected best state."
+            )
+    return root / "checkpoints" / f"{role}.ckpt"
+
+
+def _validate_success_contract_at(
+    root: Path,
+    run_id: str,
+    *,
+    tombstoned_paths: Collection[str] = (),
+) -> None:
     missing = [relative for relative in SUCCESS_REQUIRED if not (root / relative).is_file()]
     if missing:
         raise RunValidationError(
             "Successful run is missing required files: " + ", ".join(missing)
+        )
+    prediction_split = _canonical_prediction_split(root)
+    checkpoint = _canonical_checkpoint_path(root)
+    if not checkpoint.is_file():
+        checkpoint_relative = checkpoint.relative_to(root).as_posix()
+        if checkpoint_relative not in tombstoned_paths:
+            raise RunValidationError(
+                "Successful run is missing its declared primary checkpoint: "
+                f"{checkpoint_relative}"
+            )
+    elif checkpoint.stat().st_size == 0:
+        raise RunValidationError(
+            "Successful run declared primary checkpoint is empty."
         )
     history_paths = [
         root / f"metrics/history{suffix}"
@@ -379,17 +467,26 @@ def _validate_success_contract_at(root: Path, run_id: str) -> None:
             "Successful run is missing non-empty metrics/history in a supported format."
         )
     prediction_paths = [
-        root / f"predictions/validation{suffix}"
+        root / f"predictions/{prediction_split}{suffix}"
         for suffix in (".parquet", ".jsonl", ".csv")
-        if (root / f"predictions/validation{suffix}").is_file()
+        if (root / f"predictions/{prediction_split}{suffix}").is_file()
     ]
-    if not prediction_paths or all(path.stat().st_size == 0 for path in prediction_paths):
-        raise RunValidationError(
-            "Successful run requires non-empty canonical validation predictions."
+    tombstoned_prediction = any(
+        f"predictions/{prediction_split}{suffix}" in tombstoned_paths
+        for suffix in (".parquet", ".jsonl", ".csv")
+    )
+    if (
+        not tombstoned_prediction
+        and (
+            not prediction_paths
+            or all(path.stat().st_size == 0 for path in prediction_paths)
         )
-    checkpoint = root / "checkpoints/best.ckpt"
-    if checkpoint.stat().st_size == 0:
-        raise RunValidationError("Successful run best checkpoint is empty.")
+    ):
+        raise RunValidationError(
+            "Successful run requires non-empty canonical "
+            f"{prediction_split} predictions."
+        )
+    resolved_config: Mapping[str, Any] | None = None
     for relative in ("manifest.yaml", "config.resolved.yaml"):
         value = yaml.safe_load((root / relative).read_text(encoding="utf-8"))
         if not isinstance(value, Mapping):
@@ -401,6 +498,9 @@ def _validate_success_contract_at(root: Path, run_id: str) -> None:
                 raise RunValidationError(
                     "A finalized manifest may not retain status='running'."
                 )
+        else:
+            resolved_config = value
+    assert resolved_config is not None
     summary = json.loads((root / "summary.json").read_text(encoding="utf-8"))
     if not isinstance(summary, Mapping) or summary.get("run_id") != run_id:
         raise RunValidationError(
@@ -411,16 +511,97 @@ def _validate_success_contract_at(root: Path, run_id: str) -> None:
     )
     if not isinstance(final_metrics, Mapping) or not final_metrics:
         raise RunValidationError("metrics/final.json must contain metrics.")
+    if prediction_split == "fit":
+        forbidden_metric_prefixes = ("val/", "test/", "external/")
+        forbidden_metrics = sorted(
+            str(name)
+            for name in final_metrics
+            if str(name).startswith(forbidden_metric_prefixes)
+        )
+        if forbidden_metrics:
+            raise RunValidationError(
+                "Held-in fit runs may not contain held-out final metrics: "
+                + ", ".join(forbidden_metrics)
+            )
+        forbidden_prediction_files = sorted(
+            path.relative_to(root).as_posix()
+            for split in ("validation", "test", "external")
+            for path in (root / "predictions").glob(f"{split}.*")
+        )
+        if forbidden_prediction_files:
+            raise RunValidationError(
+                "Held-in fit runs may not contain held-out prediction artifacts: "
+                + ", ".join(forbidden_prediction_files)
+            )
+        misleading_best = root / "checkpoints/best.ckpt"
+        if misleading_best.exists() or misleading_best.is_symlink():
+            raise RunValidationError(
+                "Held-in fixed-budget runs may not contain best.ckpt because "
+                "no validation checkpoint selection occurred."
+            )
+    evaluation = resolved_config.get("evaluation", {})
+    configured_primary = (
+        evaluation.get("primary_metric")
+        if isinstance(evaluation, Mapping)
+        else None
+    )
     numeric_metrics = 0
     for name, value in final_metrics.items():
         if not isinstance(name, str) or "/" not in name:
             raise RunValidationError(
                 "Final metric names must be explicit and namespaced."
             )
+        if value is None:
+            if name == configured_primary:
+                raise RunValidationError(
+                    "The configured primary final metric must be finite numeric."
+                )
+            # Some prespecified metrics are mathematically undefined for a
+            # replicate/core (for example, precision with no predicted
+            # positives).  Preserve that distinction as an explicit null;
+            # append-only metric events remain finite-numeric only.
+            continue
         _finite_numeric(value, f"final metric {name}")
         numeric_metrics += 1
     if numeric_metrics == 0:
         raise RunValidationError("metrics/final.json has no numeric metrics.")
+    declared_primary = summary.get("primary_metric_name")
+    if (
+        declared_primary is not None
+        and configured_primary is not None
+        and declared_primary != configured_primary
+    ):
+        raise RunValidationError(
+            "summary primary_metric_name does not match the resolved "
+            "evaluation.primary_metric."
+        )
+    if prediction_split == "fit" and configured_primary is not None:
+        if declared_primary != configured_primary:
+            raise RunValidationError(
+                "Held-in summary must declare the configured primary metric."
+            )
+        if configured_primary not in final_metrics:
+            raise RunValidationError(
+                "Held-in final metrics omit the configured primary metric."
+            )
+        declared_value = summary.get("primary_metric_value")
+        if isinstance(declared_value, bool) or not isinstance(
+            declared_value, (int, float)
+        ):
+            raise RunValidationError(
+                "Held-in summary must declare a numeric primary_metric_value."
+            )
+        _finite_numeric(declared_value, "summary primary metric")
+        if not math.isclose(
+            float(declared_value),
+            float(final_metrics[configured_primary]),
+            rel_tol=1e-12,
+            abs_tol=0.0,
+        ):
+            raise RunValidationError(
+                "Held-in summary primary metric value does not match "
+                "metrics/final.json."
+            )
     event_lines = [
         line
         for line in (root / "metrics/events.jsonl").read_text(
@@ -440,7 +621,7 @@ def _validate_success_contract_at(root: Path, run_id: str) -> None:
         ):
             raise RunValidationError("Metric event is malformed or ambiguous.")
         _finite_numeric(event["value"], f"metric event {event['name']}")
-    jsonl_prediction = root / "predictions/validation.jsonl"
+    jsonl_prediction = root / f"predictions/{prediction_split}.jsonl"
     if jsonl_prediction.is_file():
         expected_columns: set[str] | None = None
         row_count = 0
@@ -450,18 +631,22 @@ def _validate_success_contract_at(root: Path, run_id: str) -> None:
                     continue
                 row = json.loads(line)
                 validated = validate_prediction_rows(
-                    [row], expected_run_id=run_id, expected_split="validation"
+                    [row],
+                    expected_run_id=run_id,
+                    expected_split=prediction_split,
                 )[0]
                 columns = set(validated)
                 if expected_columns is None:
                     expected_columns = columns
                 elif columns != expected_columns:
                     raise RunValidationError(
-                        "Canonical validation prediction rows change schema."
+                        f"Canonical {prediction_split} prediction rows change schema."
                     )
                 row_count += 1
         if row_count == 0:
-            raise RunValidationError("Canonical validation predictions are empty.")
+            raise RunValidationError(
+                f"Canonical {prediction_split} predictions are empty."
+            )
 
 
 def _rename_no_replace(source: Path, destination: Path) -> None:
@@ -566,6 +751,65 @@ class RunArchive:
         if resolved_config is not None:
             archive.write_resolved_config(resolved_config)
         return archive
+
+    @classmethod
+    def attach_active(
+        cls,
+        run_id: str,
+        *,
+        paths: ProjectPaths | None = None,
+        scratch_path: str | Path | None = None,
+    ) -> "RunArchive":
+        """Attach to the exact worker-owned active bundle for ``run_id``.
+
+        Scientific subprocesses use this entry point to add outputs to a
+        scratch bundle that the queue worker already created.  The canonical
+        location and ownership marker are both checked so a caller cannot
+        redirect writes into another run or an arbitrary directory.
+        """
+
+        selected_paths = paths or current_paths()
+        expected = selected_paths.scratch_root / "active_runs" / run_id
+        if _RUN_ID.fullmatch(run_id) is None:
+            raise RunArchiveError(f"Invalid canonical run_id: {run_id}")
+        if scratch_path is not None:
+            supplied = Path(scratch_path)
+            if supplied.resolve(strict=False) != expected.resolve(strict=False):
+                raise RunArchiveError(
+                    "Active scratch path does not match the canonical run path."
+                )
+        if expected.is_symlink() or not expected.is_dir():
+            raise RunArchiveError(
+                f"Active scratch run does not exist as a directory: {expected}"
+            )
+        owner_path = expected / ".bagm-run-owner.json"
+        try:
+            owner = json.loads(owner_path.read_text(encoding="utf-8"))
+        except (OSError, ValueError) as error:
+            raise RunArchiveError(
+                "Active scratch run has no readable ownership marker."
+            ) from error
+        if (
+            not isinstance(owner, Mapping)
+            or owner.get("run_id") != run_id
+            or owner.get("format_version") != 1
+        ):
+            raise RunArchiveError(
+                "Active scratch ownership marker does not match the run."
+            )
+        if any((expected / marker).exists() for marker in COMPLETION_MARKERS):
+            raise RunImmutableError(f"Run {run_id} is already finalized.")
+        artifact_path = cls.artifact_path_for(run_id, selected_paths)
+        if artifact_path.exists() or artifact_path.is_symlink():
+            raise RunArchiveError(
+                "Published artifact already exists for an active scratch run."
+            )
+        return cls(
+            run_id,
+            paths=selected_paths,
+            scratch_path=expected,
+            artifact_path=artifact_path,
+        )
 
     @classmethod
     def from_published(
@@ -1062,12 +1306,53 @@ class RunArchive:
         return self._mark_published("_PRUNED")
 
 
+def _verified_retention_tombstones(
+    root: Path,
+    expected: Mapping[str, Any],
+    tombstoned_artifacts: Mapping[str, Mapping[str, Any]] | None,
+) -> dict[str, dict[str, Any]]:
+    """Validate registry-supplied tombstones against the immutable manifest."""
+
+    verified: dict[str, dict[str, Any]] = {}
+    for raw_relative, raw_metadata in (tombstoned_artifacts or {}).items():
+        relative = _safe_relative(raw_relative).as_posix()
+        if relative in verified:
+            raise RunValidationError(
+                f"Duplicate normalized retention tombstone: {relative}"
+            )
+        if Path(relative).parts[0] not in {"checkpoints", "predictions"}:
+            raise RunValidationError(
+                "Retention tombstones may cover only checkpoint or prediction "
+                f"payloads, not {relative}."
+            )
+        target = root / relative
+        if target.exists() or target.is_symlink():
+            raise RunValidationError(
+                f"Retention tombstone path still exists: {relative}"
+            )
+        metadata = dict(raw_metadata)
+        if relative not in expected or expected[relative] != metadata:
+            raise RunValidationError(
+                "Retention tombstone does not match the immutable checksum "
+                f"manifest: {relative}"
+            )
+        verified[relative] = metadata
+    return verified
+
+
 def verify_run_bundle(
     run_path: str | Path,
     *,
     require_success_contract: bool = True,
+    tombstoned_artifacts: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Verify marker exclusivity, required files, symlinks, and all checksums."""
+    """Verify marker exclusivity, required files, symlinks, and all checksums.
+
+    ``tombstoned_artifacts`` is accepted only from an audited external
+    registry. Each absent checkpoint or prediction must match the original
+    immutable bundle manifest exactly; it never permits changed or unrecorded
+    missing content.
+    """
 
     root = Path(run_path)
     if not root.is_dir():
@@ -1094,13 +1379,19 @@ def verify_run_bundle(
     if not isinstance(expected, Mapping):
         raise RunValidationError("Artifact checksum manifest is malformed.")
     actual = _bundle_checksums(root)
-    if actual != expected:
-        missing = sorted(set(expected) - set(actual))
-        extra = sorted(set(actual) - set(expected))
+    verified_tombstones = _verified_retention_tombstones(
+        root,
+        expected,
+        tombstoned_artifacts,
+    )
+    effective_actual = {**actual, **verified_tombstones}
+    if effective_actual != expected:
+        missing = sorted(set(expected) - set(effective_actual))
+        extra = sorted(set(effective_actual) - set(expected))
         changed = sorted(
             key
-            for key in set(expected).intersection(actual)
-            if expected[key] != actual[key]
+            for key in set(expected).intersection(effective_actual)
+            if expected[key] != effective_actual[key]
         )
         raise RunValidationError(
             f"Artifact checksum mismatch; missing={missing}, extra={extra}, "
@@ -1144,11 +1435,17 @@ def verify_run_bundle(
                 f"{name} run_id does not match the run directory."
             )
     if markers[0] == "_SUCCESS" and require_success_contract:
-        _validate_success_contract_at(root, root.name)
+        _validate_success_contract_at(
+            root,
+            root.name,
+            tombstoned_paths=verified_tombstones,
+        )
     return {
         "valid": True,
         "status": expected_status,
-        "file_count": len(actual),
+        "file_count": len(expected),
+        "present_file_count": len(actual),
+        "tombstoned_file_count": len(verified_tombstones),
         "run_path": root.as_posix(),
     }
 

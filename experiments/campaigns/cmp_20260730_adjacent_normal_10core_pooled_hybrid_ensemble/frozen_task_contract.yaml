@@ -1,0 +1,301 @@
+contract_schema_version: 1
+campaign_id: cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble
+contract_status: frozen_before_implementation
+exploratory: true
+exploratory_reasons:
+  - ten_core_count_distribution_already_inspected
+  - prior_independent_core_hybrid_results_already_inspected
+  - architecture_and_metrics_reused_after_prior_outcome_review
+
+objective:
+  primary: determine_whether_one_shared_model_benefits_from_training_on_all_ten_cores
+  secondary:
+    - determine_whether_probability_level_ensembling_improves_over_individual_members
+    - determine_whether_broad_context_gat_improves_over_parameter_matched_self
+  deliverables:
+    - pooled_alias_safe_data_and_graph_contract
+    - paired_shared_model_training_for_seven_seeds
+    - two_arm_resource_and_precision_pilot
+    - fourteen_verified_production_runs
+    - member_and_prediction_ensemble_evaluation
+    - markdown_and_portable_single_file_html_reports
+
+cohort:
+  tissue_context: pathology_confirmed_adjacent_normal
+  aliases: [ANC-01, ANC-02, ANC-03, ANC-04, ANC-05, ANC-06, ANC-07, ANC-08, ANC-09, ANC-10]
+  tissue_context_is_true_normal: false
+  biological_unit: tissue_core
+  core_count: 10
+  total_fit_cells: 117386
+  genes: 1000
+  permitted_node_covariates: 22
+  fit_role: every_cell_in_every_core_transductive
+  evaluation_weighting: equal_core
+  cells_are_biological_replicates: false
+  mask_replicates_are_biological_replicates: false
+  seeds_are_biological_replicates: false
+  generalization_estimate: false
+
+inputs:
+  prepared_artifact_pattern: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-##/prepared_v1
+  immutable_prepared_artifacts_required: true
+  require_identical_ordered_gene_schema: true
+  require_identical_ordered_covariate_schema: true
+  count_validation: finite_nonnegative_integer
+  technical_control_prefixes_excluded: [Negative, SystemControl]
+  prohibited_node_inputs:
+    - identifiers
+    - core_alias
+    - slide_or_batch_label
+    - absolute_or_local_coordinates
+    - target_cell_library_size
+    - rna_derived_qc
+    - vendor_annotations
+    - hidden_target_values
+
+pooled_preprocessing:
+  expression_transform: log1p_raw_count
+  expression_moments: equal_core_mixture_of_within_core_first_and_second_moments
+  expression_moment_dtype: float64
+  expression_scale_epsilon: 1.0e-8
+  expression_statistics_fit_scope: all_cells_all_ten_cores_transductive
+  morphology_imaging_transform: existing_per_core_all_fit_standardization
+  edge_transform: existing_per_core_all_edge_standardization
+  core_conditioned_statistics_are_model_inputs: false
+  shared_expression_statistics_are_immutable_within_member: true
+
+tokenization:
+  output_tokens:
+    0: count_0
+    1: count_1
+    2: count_2
+    3: count_3
+    4: count_4_to_7
+    5: count_8_to_15
+    6: count_16_to_31
+    7: count_32_or_greater
+  input_only_mask_token: 8
+  mask_token_is_output: false
+  fixed_boundaries: true
+  quantile_or_gene_median_bins_prohibited: true
+  exact_within_bin_continuous_channel: true
+  masked_continuous_value: 0.0
+  explicit_mask_authoritative_inside_model: true
+
+graphs:
+  representation: ten_disconnected_existing_exact_mutual_k1000_graphs
+  graph_batches_per_global_epoch: 10
+  cross_core_edges: prohibited
+  graph_concatenation_on_gpu: prohibited
+  processing: sequential_complete_core_graph_batches
+  neighbor_sampling: false
+  edge_dropout: 0.0
+  self_loops: false
+  edge_feature_count: 17
+  graph_interpretation: broad_regional_context_not_direct_cellular_interaction
+  graph_checksums_must_match_prior_verified_materialization: true
+
+models:
+  hybrid-gat-k1000:
+    kind: exact_receiver_partitioned_edge_conditioned_gatv2
+    hidden_width: 512
+    attention_heads: 4
+    graph_layers: 2
+    ffn_width: 512
+    decoder_width: 512
+    expected_trainable_parameters: 11674880
+  hybrid-matched-self:
+    kind: strictly_cell_autonomous_parameter_matched_control
+    same_encoder_decoder_depth_and_output: true
+    expected_trainable_parameters: 11674880
+    prohibited_inputs: [topology, neighboring_cell_values, coordinates, measured_edge_attributes]
+  exact_parameter_match: required
+  paired_common_encoder_decoder_initialization_within_seed: required
+
+outputs_per_gene:
+  zero_versus_detected_logits: 1
+  positive_cumulative_ordinal_logits: 6
+  standardized_log1p_predictions: 1
+
+loss:
+  scope: masked_entries_within_one_core_batch
+  detection: equal_mean_zero_and_positive_bce
+  ordinal: equal_mean_below_or_equal_and_above_bce_per_threshold_then_mean_six_thresholds
+  continuous: positive_only_huber_delta_1
+  total: equal_mean_three_components
+  absent_expected_stratum: fail
+  pooling_across_cores_before_balancing: prohibited
+
+training:
+  optimizer: AdamW
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  gradient_clip_norm: 1.0
+  global_epochs: 200
+  optimizer_steps_per_global_epoch: 10
+  total_optimizer_steps: 2000
+  each_core_batches_per_epoch: 1
+  core_order: deterministic_epoch_shuffle
+  core_order_seed: 271828
+  core_sampling: exactly_once_per_epoch
+  core_weighting: equal
+  model_seeds: [0, 1, 2, 3, 4, 5, 6]
+  paired_masks_and_core_order_across_arms_and_seeds: true
+  mask_seed: 314159
+  mask_modes: [partial_gene, whole_node, spatial_block]
+  evaluation_mask_replicates_per_mode: 3
+  evaluation_masks: exact_regeneration_of_prior_per_core_fixed_masks
+  deterministic: true
+  amp: conditional_on_new_pooled_equivalence_pilot
+  fixed_epoch_budget: true
+  early_stopping: false
+  validation_selection: false
+  primary_checkpoint: final_epoch_only
+  resume_boundary: completed_global_epoch_only
+
+ensemble:
+  member_count_per_arm: 7
+  gat_members: 7
+  matched_self_members: 7
+  member_selection: none_all_prespecified_members_required
+  detection_combination: arithmetic_mean_probability
+  ordinal_combination: arithmetic_mean_threshold_probability
+  continuous_combination: arithmetic_mean_shared_standardized_prediction
+  decoding_after_combination: true
+  metrics_recomputed_from_combined_predictions: true
+  averaging_member_metrics_as_ensemble_result: prohibited
+
+references:
+  - all_zero
+  - per_core_all_fit_jeffreys_detection_prevalence
+  - per_core_all_fit_positive_cumulative_probabilities
+  - per_core_all_fit_median_positive_log1p
+  - equal_core_pooled_jeffreys_detection_prevalence
+  - equal_core_pooled_positive_cumulative_probabilities
+  - equal_core_pooled_median_positive_log1p
+  - prior_independently_fitted_seed0_hybrid_models
+
+primary_estimand:
+  mask_mode: whole_node
+  description: held_in_pooled_ten_core_masked_expression_reconstruction
+  aggregation: mask_replicates_then_equal_core
+secondary_estimands:
+  - partial_gene_masked_expression
+  - spatial_block_masked_expression
+  - individual_seed_stability
+  - prediction_level_ensemble_gain
+
+pooled_data_gate:
+  comparison: pooled_seed0_gat_vs_prior_independently_fitted_seed0_gat
+  masks: exact_same_per_core_fixed_whole_node_masks
+  comparable_metrics:
+    - detection_bce
+    - positive_ordinal_mae
+    - reconstructed_count_log1p_mae
+  mean_relative_improvement_minimum_each_metric: 0.02
+  minimum_pooled_favoring_cores_each_metric: 8
+
+graph_gate:
+  comparison: pooled_gat_ensemble_vs_pooled_matched_self_ensemble
+  required_production_runs: 14
+  mean_relative_whole_node_hybrid_loss_gain_minimum: 0.02
+  minimum_gat_favoring_cores: 8
+  minimum_gat_favoring_seed_pairs: 5
+  noninferiority_checks:
+    - positive_ordinal_mae
+    - positive_continuous_huber
+  formal_core_independence_test: none_shared_fitted_weights_couple_core_outcomes
+
+representation_gate:
+  arm: pooled_gat_prediction_ensemble
+  mean_positive_ordinal_mae_relative_gain_minimum: 0.02
+  mean_positive_continuous_huber_relative_gain_minimum: 0.02
+  minimum_reference_favoring_cores_each_positive_metric: 8
+  detection_balanced_accuracy_must_exceed_both_per_core_and_pooled_references: true
+
+ensemble_gate:
+  comparison: prediction_level_gat_ensemble_vs_mean_of_seven_gat_member_metrics
+  whole_node_hybrid_loss_not_worse: true
+  positive_ordinal_mae_not_worse: true
+  positive_continuous_huber_not_worse: true
+
+pilot_gate:
+  aliases: [ANC-01, ANC-02, ANC-03, ANC-04, ANC-05, ANC-06, ANC-07, ANC-08, ANC-09, ANC-10]
+  global_epochs: 2
+  optimizer_steps_per_arm: 20
+  seed: 0
+  both_arms_required: true
+  every_core_visited_each_epoch: true
+  finite_losses_and_gradients: true
+  exact_parameter_match: true
+  paired_common_initialization: true
+  maximum_fp32_amp_loss_discrepancy_each_core: 0.001
+  peak_allocated_vram_gib_maximum: 20.5
+  peak_host_memory_gib_per_process_maximum: 40.0
+  projected_200_epoch_gat_runtime_hours_maximum: 6.0
+  projected_final_free_disk_gib_minimum: 27.5
+
+execution:
+  safe_gpu_ids: [0, 1, 2, 3, 5, 6, 7]
+  excluded_gpu_ids: [4]
+  pilot_gpu_ids: [0, 1]
+  supervisor_queue_only: true
+  production_maximum_attempts: 2
+  production_enqueue_requires_passing_pilot_receipt: true
+
+storage_retention:
+  previous_canonical_runs_deleted: false
+  reason: sufficient_disk_and_deletion_would_invalidate_registry_provenance
+  previous_results_are_training_inputs: false
+  required_prepared_inputs_retained: true
+  final_checkpoint_per_member: 1
+  per_epoch_checkpoints: 0
+  large_embeddings_or_attention_dumps: prohibited
+  revisit_cleanup_if_projected_final_free_disk_gib_below: 27.5
+
+required_metrics:
+  - total_hybrid_loss
+  - detection_bce
+  - detection_balanced_accuracy
+  - detection_sensitivity
+  - detection_specificity
+  - detection_precision
+  - eight_state_exact_accuracy
+  - eight_state_balanced_accuracy
+  - per_state_support_and_recall
+  - positive_state_exact_accuracy
+  - positive_ordinal_mae
+  - positive_within_one_state_accuracy
+  - positive_standardized_log1p_huber
+  - positive_standardized_log1p_mae
+  - reconstructed_count_log1p_mae
+  - collapsed_0_1_2_3plus_metrics
+  - runtime
+  - peak_vram
+  - peak_host_memory
+  - parameter_count
+  - convergence
+  - failures
+
+stop_conditions:
+  - pooled_input_schema_or_checksum_mismatch
+  - cross_core_edge_detected
+  - prohibited_input_detected
+  - missing_or_duplicate_alias
+  - parameter_count_mismatch
+  - mask_pairing_mismatch
+  - nonfinite_loss_or_gradient
+  - failed_multigraph_synthetic_recovery
+  - failed_pilot_gate
+  - unsafe_gpu_collision
+  - projected_disk_below_safety_gate
+  - artifact_or_registry_verification_failure
+
+maximum_defensible_claim: held_in_masked_expression_capacity_of_shared_and_ensembled_models_across_ten_adjacent_normal_cores_and_descriptive_broad_context_graph_gain
+prohibited_claims:
+  - patient_held_out_generalization
+  - core_held_out_generalization
+  - true_normal_performance
+  - direct_cellular_interaction
+  - biological_mechanism
+  - causality

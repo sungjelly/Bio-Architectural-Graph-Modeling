@@ -1,0 +1,1000 @@
+{
+  "analysis_kind": "self_hurdle_two_core_capacity_audit_v1",
+  "analysis_population": {
+    "all_registered_resource_pilots_included": true,
+    "all_registered_science_runs_included": true,
+    "best_run_or_checkpoint_selection": false,
+    "biological_units": [
+      "ANC-03",
+      "ANC-05"
+    ],
+    "failed_attempts": [],
+    "science_run_count": 2
+  },
+  "campaign_id": "cmp_20260729_self_hurdle_full_core_capacity",
+  "estimands": {
+    "fit_scope": "all_nodes_transductive",
+    "primary": "whole_node",
+    "reported_separately": [
+      "partial_gene",
+      "spatial_block"
+    ],
+    "test_nodes": 0,
+    "validation_nodes": 0
+  },
+  "locked_receipts": {
+    "frozen_task_contract_sha256": "26cf4f094d843c4fa9020c52e1d45988f8e4a0c43f20beb186e4742b2dacba00",
+    "materialization_checksum": "17b1d7b28d158fa0c59a3eae4e3e8b0e348ddd121467736d988206d528d4bc59",
+    "resource_enqueue_checksum": "6a69107ae1ef96e51ef5b6a83f6bcbac230b1480245e8ed338e0b91172164ace",
+    "resource_gate_checksum": "4e9f6c9b4804c303a1e49737091a133e5831964a1a08d86db2102b75bc474af9",
+    "science_enqueue_checksum": "2563d0772b8a2ee285f180aac73099395fe880531e80bfe65d3c55f920dd9369"
+  },
+  "representation_gate": {
+    "campaign_passed": false,
+    "outcome": "negative",
+    "per_core": {
+      "ANC-03": {
+        "checks": {
+          "positive_continuous_huber_improvement_at_least_2_percent": true,
+          "positive_count_state_mae_improvement_at_least_2_percent": false,
+          "positive_detection_balanced_accuracy_gain": true
+        },
+        "observed": {
+          "detection_balanced_accuracy_gain_percentage_points": 13.759736787494115,
+          "positive_continuous_huber_relative_improvement_percent": 26.402616392371215,
+          "positive_count_state_mae_relative_improvement_percent": 0.8203924267738383
+        },
+        "passed": false,
+        "thresholds": {
+          "detection_balanced_accuracy_gain_percentage_points": "> 0",
+          "positive_continuous_huber_relative_improvement_percent": ">= 2",
+          "positive_count_state_mae_relative_improvement_percent": ">= 2"
+        }
+      },
+      "ANC-05": {
+        "checks": {
+          "positive_continuous_huber_improvement_at_least_2_percent": true,
+          "positive_count_state_mae_improvement_at_least_2_percent": false,
+          "positive_detection_balanced_accuracy_gain": true
+        },
+        "observed": {
+          "detection_balanced_accuracy_gain_percentage_points": 15.28500745361676,
+          "positive_continuous_huber_relative_improvement_percent": 28.94882625036456,
+          "positive_count_state_mae_relative_improvement_percent": 1.6000458396027046
+        },
+        "passed": false,
+        "thresholds": {
+          "detection_balanced_accuracy_gain_percentage_points": "> 0",
+          "positive_continuous_huber_relative_improvement_percent": ">= 2",
+          "positive_count_state_mae_relative_improvement_percent": ">= 2"
+        }
+      }
+    },
+    "rule": "all three whole-node criteria must pass on both cores"
+  },
+  "resources": {
+    "absolute_budget_gpu_hours": 24.0,
+    "accounting_basis": "one GPU per run; conservative registered start-to-end duration summed across both resource pilots and both science runs",
+    "campaign_registered_gpu_hours": 0.08727571438364168,
+    "filesystem_used_decimal_gb_hard_stop": 55.0,
+    "maximum_recorded_filesystem_used_decimal_gb": 49.383407616,
+    "maximum_science_peak_allocated_vram_gib": 1.6452908515930176,
+    "preferred_budget_gpu_hours": 12.0,
+    "resource_pilot_registered_gpu_hours": 0.02603833941445272,
+    "resource_pilots": {
+      "ANC-03": {
+        "bundle_content_sha256": "9e4e997b9229f24fe22ad77b492052c2a6e10039eb3c560dc3e8837b22f6a64a",
+        "checkpoint_catalog_verified": true,
+        "checkpoint_sha256": "99a543999c2714b0212b5340d15623eb889da0d77ee03f46964ddea9cbffc04d",
+        "config_sha256": "167ea8f88862f56650d6eda53b7421d64095d25d7d304dada12317dced2cdd32",
+        "filesystem_used_decimal_gb": 49.164939264,
+        "fp32_amp_absolute_loss_discrepancy": 1.9073486328125e-06,
+        "peak_allocated_vram_gib": 1.6447196006774902,
+        "projected_gpu_hours_per_200_epochs": 0.02545350064044922,
+        "registry_duration_seconds": 59.127588244038634,
+        "requested_gpu": "0",
+        "run_id": "r_20260729T172556Z_47141900_s000_f00_a01_289503ce",
+        "success_marker_sha256": "2ed526113530955b6bc1f141f3cd5077a48acca448fbf8e7f275dd87442d8385"
+      },
+      "ANC-05": {
+        "bundle_content_sha256": "9364068f9f094c1d7743eaa64d6f122bd59f4f614a3f08ca480cbf4e9954d938",
+        "checkpoint_catalog_verified": true,
+        "checkpoint_sha256": "598b5b4f7b2a3b1b6b46ea04aa9b22cad8de5e708c0f07394e63e37351c2fbce",
+        "config_sha256": "1bcff1b666c2b8733bf1ebb981264eb010c055514f963276af417ea1ad966854",
+        "filesystem_used_decimal_gb": 49.109487616,
+        "fp32_amp_absolute_loss_discrepancy": 1.3113021850585938e-06,
+        "peak_allocated_vram_gib": 0.9683122634887695,
+        "projected_gpu_hours_per_200_epochs": 0.0196088160866768,
+        "registry_duration_seconds": 34.61043364799116,
+        "requested_gpu": "1",
+        "run_id": "r_20260729T172557Z_de468a3e_s000_f00_a01_49f86de9",
+        "success_marker_sha256": "b6240315c38a4c526e3b1a028aa5ec6d6629ba37acac4ad6d252facf6b91b21b"
+      }
+    },
+    "runs": {
+      "ANC-03": {
+        "checkpoint_size_bytes": 67690033,
+        "cuda_visible_devices": "2",
+        "filesystem_used_decimal_gb": 49.383407616,
+        "gpu_model": "NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090",
+        "peak_allocated_vram_gib": 1.6452908515930176,
+        "peak_host_memory_bytes": 3674103808,
+        "registry_duration_seconds": 146.52503370004706,
+        "requested_gpu": "2",
+        "run_id": "r_20260729T172739Z_0570cda7_s000_f00_a01_7449d530",
+        "runner_duration_seconds": 134.48181947798003,
+        "training_duration_seconds": 46.86165616090875
+      },
+      "ANC-05": {
+        "checkpoint_size_bytes": 67690033,
+        "cuda_visible_devices": "3",
+        "filesystem_used_decimal_gb": 49.333886976,
+        "gpu_model": "NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090; NVIDIA GeForce RTX 3090",
+        "peak_allocated_vram_gib": 0.9688014984130859,
+        "peak_host_memory_bytes": 2892324864,
+        "registry_duration_seconds": 73.92951618903317,
+        "requested_gpu": "3",
+        "run_id": "r_20260729T172739Z_ea3ca4d1_s000_f00_a01_74a0b1a1",
+        "runner_duration_seconds": 63.11860196094494,
+        "training_duration_seconds": 26.363363637938164
+      }
+    },
+    "science_peak_vram_gib_limit": 20.5,
+    "science_registered_gpu_hours": 0.06123737496918895,
+    "within_absolute_budget": true,
+    "within_preferred_budget": true
+  },
+  "runs": {
+    "ANC-03": {
+      "artifact_bundle": "artifacts/runs/2026/07/r_20260729T172739Z_0570cda7_s000_f00_a01_7449d530",
+      "bundle_content_sha256": "c910174890f477e98b8ec09618159d5c7530d2712e3c7aa48049ed37e4ea5607",
+      "checkpoint_catalog_verified": true,
+      "checkpoint_sha256": "4b14d67ea935bf1fe397747dcc27507008be017b85409f6c71788ba4173ccb49",
+      "config_file_sha256": "05ca0e63efc7e33a6354788574cbb0b8e8dafc21541a2163690044a302baedde",
+      "config_sha256": "f6ed161a9cb802ff3ba2b923bd4bee1f8b492bf7fa1bc0979b33e473f89e4704",
+      "dataset_fingerprint": "f537fd86f8ad1beae08ff45c9824fb26bffcca0b5256c638e0a71da647462458",
+      "evaluation_mask_bundle_sha256": "84c03b6402682d980c57d3f4a9a1388946602fbcc6affbf74372b88f2edb3792",
+      "mask_estimands": {
+        "partial_gene": {
+          "detection_balanced_accuracy": {
+            "difference_percentage_points": 15.168202996231306,
+            "direction": "maximize",
+            "model": 0.6624824960810978,
+            "model_percent": 66.24824960810977,
+            "per_gene_reference": 0.5108004661187847,
+            "per_gene_reference_percent": 51.08004661187847,
+            "relative_improvement_percent": null
+          },
+          "detection_bce": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.6099728345870972,
+            "model_percent": null,
+            "per_gene_reference": 1.1532568136850994,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": 47.108672816941855
+          },
+          "detection_precision": {
+            "difference_percentage_points": -41.68289571903567,
+            "direction": "maximize",
+            "model": 0.16710372782090147,
+            "model_percent": 16.710372782090147,
+            "per_gene_reference": 0.5839326850112582,
+            "per_gene_reference_percent": 58.39326850112582,
+            "relative_improvement_percent": null
+          },
+          "detection_sensitivity": {
+            "difference_percentage_points": 69.61095717857394,
+            "direction": "maximize",
+            "model": 0.7195480023918011,
+            "model_percent": 71.9548002391801,
+            "per_gene_reference": 0.023438430606061707,
+            "per_gene_reference_percent": 2.343843060606171,
+            "relative_improvement_percent": null
+          },
+          "detection_specificity": {
+            "difference_percentage_points": -39.27455118611132,
+            "direction": "maximize",
+            "model": 0.6054169897703946,
+            "model_percent": 60.54169897703946,
+            "per_gene_reference": 0.9981625016315078,
+            "per_gene_reference_percent": 99.81625016315078,
+            "relative_improvement_percent": null
+          },
+          "hurdle_loss": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.48999297618865967,
+            "model_percent": null,
+            "per_gene_reference": 0.8231605887413025,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 40.47419387049257,
+            "relative_improvement_percent": 40.47419954590843
+          },
+          "positive_continuous_huber": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.3700131078561147,
+            "model_percent": null,
+            "per_gene_reference": 0.49306441346804303,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 24.956436167523915,
+            "relative_improvement_percent": 24.956440124729877
+          },
+          "positive_continuous_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.8089362382888794,
+            "model_percent": null,
+            "per_gene_reference": 0.7141267657279968,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -13.276280502416355
+          },
+          "positive_count_state_exact_accuracy": {
+            "difference_percentage_points": -5.170088013013202,
+            "direction": "maximize",
+            "model": 0.4995018740495046,
+            "model_percent": 49.950187404950455,
+            "per_gene_reference": 0.5512027541796366,
+            "per_gene_reference_percent": 55.12027541796366,
+            "relative_improvement_percent": null
+          },
+          "positive_count_state_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.5797987778981527,
+            "model_percent": null,
+            "per_gene_reference": 0.5679254531860352,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": -2.0906484549175874,
+            "relative_improvement_percent": -2.090735403322891
+          },
+          "positive_count_state_within_one_accuracy": {
+            "difference_percentage_points": 2.5780320167541504,
+            "direction": "maximize",
+            "model": 0.9340446790059408,
+            "model_percent": 93.40446790059408,
+            "per_gene_reference": 0.9082643588383993,
+            "per_gene_reference_percent": 90.82643588383993,
+            "relative_improvement_percent": null
+          },
+          "reconstructed_count_log1p_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.34725409746170044,
+            "model_percent": null,
+            "per_gene_reference": 0.09139713644981384,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -279.939800031238
+          },
+          "state8_balanced_accuracy": {
+            "difference_percentage_points": 5.165013265893018,
+            "direction": "maximize",
+            "model": 0.18585894040006679,
+            "model_percent": 18.58589404000668,
+            "per_gene_reference": 0.1342088077411366,
+            "per_gene_reference_percent": 13.42088077411366,
+            "relative_improvement_percent": null
+          },
+          "state8_exact_accuracy": {
+            "difference_percentage_points": -32.17726151148479,
+            "direction": "maximize",
+            "model": 0.5779373447100321,
+            "model_percent": 57.79373447100321,
+            "per_gene_reference": 0.89970995982488,
+            "per_gene_reference_percent": 89.970995982488,
+            "relative_improvement_percent": null
+          }
+        },
+        "spatial_block": {
+          "detection_balanced_accuracy": {
+            "difference_percentage_points": 13.224168556294103,
+            "direction": "maximize",
+            "model": 0.6423696395609209,
+            "model_percent": 64.23696395609208,
+            "per_gene_reference": 0.5101279539979798,
+            "per_gene_reference_percent": 51.01279539979798,
+            "relative_improvement_percent": null
+          },
+          "detection_bce": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.6318624218304952,
+            "model_percent": null,
+            "per_gene_reference": 1.1595540444056194,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": 45.50815247646484
+          },
+          "detection_precision": {
+            "difference_percentage_points": -38.687415776407796,
+            "direction": "maximize",
+            "model": 0.1706010003208361,
+            "model_percent": 17.06010003208361,
+            "per_gene_reference": 0.5574751580849141,
+            "per_gene_reference_percent": 55.74751580849141,
+            "relative_improvement_percent": null
+          },
+          "detection_sensitivity": {
+            "difference_percentage_points": 61.26373396793126,
+            "direction": "maximize",
+            "model": 0.6348643974584472,
+            "model_percent": 63.48643974584473,
+            "per_gene_reference": 0.022227057779134748,
+            "per_gene_reference_percent": 2.222705777913475,
+            "relative_improvement_percent": null
+          },
+          "detection_specificity": {
+            "difference_percentage_points": -34.81539685534305,
+            "direction": "maximize",
+            "model": 0.6498748816633946,
+            "model_percent": 64.98748816633946,
+            "per_gene_reference": 0.9980288502168251,
+            "per_gene_reference_percent": 99.80288502168251,
+            "relative_improvement_percent": null
+          },
+          "hurdle_loss": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.503965695699056,
+            "model_percent": null,
+            "per_gene_reference": 0.8326292634010315,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 39.472978208751286,
+            "relative_improvement_percent": 39.47831054004338
+          },
+          "positive_continuous_huber": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.37606896956761676,
+            "model_percent": null,
+            "per_gene_reference": 0.5057044823964437,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 25.634637884660876,
+            "relative_improvement_percent": 24.61558934261291
+          },
+          "positive_continuous_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.8161484201749166,
+            "model_percent": null,
+            "per_gene_reference": 0.7239128549893697,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -12.741252562354525
+          },
+          "positive_count_state_exact_accuracy": {
+            "difference_percentage_points": -2.1376709143320682,
+            "direction": "maximize",
+            "model": 0.5356132686138153,
+            "model_percent": 53.56132686138153,
+            "per_gene_reference": 0.556989977757136,
+            "per_gene_reference_percent": 55.6989977757136,
+            "relative_improvement_percent": null
+          },
+          "positive_count_state_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.5618390639623007,
+            "model_percent": null,
+            "per_gene_reference": 0.57106152176857,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 1.6149674693030378,
+            "relative_improvement_percent": 1.0700060041724655
+          },
+          "positive_count_state_within_one_accuracy": {
+            "difference_percentage_points": 1.8130560715993282,
+            "direction": "maximize",
+            "model": 0.9219565987586975,
+            "model_percent": 92.19565987586975,
+            "per_gene_reference": 0.9038260380427042,
+            "per_gene_reference_percent": 90.38260380427042,
+            "relative_improvement_percent": null
+          },
+          "reconstructed_count_log1p_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.3018067578474681,
+            "model_percent": null,
+            "per_gene_reference": 0.09388526777426402,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -221.46338291661112
+          },
+          "state8_balanced_accuracy": {
+            "difference_percentage_points": 4.428021814480113,
+            "direction": "maximize",
+            "model": 0.17801233827291676,
+            "model_percent": 17.801233827291675,
+            "per_gene_reference": 0.13373212012811564,
+            "per_gene_reference_percent": 13.373212012811564,
+            "relative_improvement_percent": null
+          },
+          "state8_exact_accuracy": {
+            "difference_percentage_points": -28.203229109446205,
+            "direction": "maximize",
+            "model": 0.6153762539227804,
+            "model_percent": 61.53762539227804,
+            "per_gene_reference": 0.8974085450172424,
+            "per_gene_reference_percent": 89.74085450172424,
+            "relative_improvement_percent": null
+          }
+        },
+        "whole_node": {
+          "detection_balanced_accuracy": {
+            "difference_percentage_points": 13.759736787494115,
+            "direction": "maximize",
+            "model": 0.6485211260266159,
+            "model_percent": 64.85211260266159,
+            "per_gene_reference": 0.5109237581516748,
+            "per_gene_reference_percent": 51.09237581516748,
+            "relative_improvement_percent": null
+          },
+          "detection_bce": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.623408039410909,
+            "model_percent": null,
+            "per_gene_reference": 1.1529933214187622,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": 45.931339945334344
+          },
+          "detection_precision": {
+            "difference_percentage_points": -41.91406077862651,
+            "direction": "maximize",
+            "model": 0.16910464966630945,
+            "model_percent": 16.910464966630943,
+            "per_gene_reference": 0.5882452574525745,
+            "per_gene_reference_percent": 58.824525745257446,
+            "relative_improvement_percent": null
+          },
+          "detection_sensitivity": {
+            "difference_percentage_points": 62.52501062491089,
+            "direction": "maximize",
+            "model": 0.6489263836258105,
+            "model_percent": 64.89263836258104,
+            "per_gene_reference": 0.023676277376701572,
+            "per_gene_reference_percent": 2.367627737670157,
+            "relative_improvement_percent": null
+          },
+          "detection_specificity": {
+            "difference_percentage_points": -35.005537049922665,
+            "direction": "maximize",
+            "model": 0.6481158684274214,
+            "model_percent": 64.81158684274214,
+            "per_gene_reference": 0.998171238926648,
+            "per_gene_reference_percent": 99.81712389266481,
+            "relative_improvement_percent": null
+          },
+          "hurdle_loss": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.49381667375564575,
+            "model_percent": null,
+            "per_gene_reference": 0.8239585955937704,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 40.06778054183827,
+            "relative_improvement_percent": 40.067799177199
+          },
+          "positive_continuous_huber": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.3642253081003825,
+            "model_percent": null,
+            "per_gene_reference": 0.4949238697687785,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 26.407811312365382,
+            "relative_improvement_percent": 26.402616392371215
+          },
+          "positive_continuous_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.8050510088602701,
+            "model_percent": null,
+            "per_gene_reference": 0.7166396975517273,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -12.336926297912946
+          },
+          "positive_count_state_exact_accuracy": {
+            "difference_percentage_points": -2.517900864283251,
+            "direction": "maximize",
+            "model": 0.5246731440226237,
+            "model_percent": 52.46731440226237,
+            "per_gene_reference": 0.5498521526654562,
+            "per_gene_reference_percent": 54.985215266545616,
+            "relative_improvement_percent": null
+          },
+          "positive_count_state_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.5653471748034159,
+            "model_percent": null,
+            "per_gene_reference": 0.5700435042381287,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 0.8238545654492593,
+            "relative_improvement_percent": 0.8203924267738383
+          },
+          "positive_count_state_within_one_accuracy": {
+            "difference_percentage_points": 1.8882334232330322,
+            "direction": "maximize",
+            "model": 0.9266231457392374,
+            "model_percent": 92.66231457392374,
+            "per_gene_reference": 0.9077408115069071,
+            "per_gene_reference_percent": 90.7740811506907,
+            "relative_improvement_percent": null
+          },
+          "reconstructed_count_log1p_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.30639798442522687,
+            "model_percent": null,
+            "per_gene_reference": 0.09170132875442505,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -234.12600295657288
+          },
+          "state8_balanced_accuracy": {
+            "difference_percentage_points": 4.426556860562414,
+            "direction": "maximize",
+            "model": 0.17870358610525727,
+            "model_percent": 17.870358610525727,
+            "per_gene_reference": 0.13443801749963313,
+            "per_gene_reference_percent": 13.443801749963313,
+            "relative_improvement_percent": null
+          },
+          "state8_exact_accuracy": {
+            "difference_percentage_points": -28.46198876698812,
+            "direction": "maximize",
+            "model": 0.6148428320884705,
+            "model_percent": 61.484283208847046,
+            "per_gene_reference": 0.8994627197583517,
+            "per_gene_reference_percent": 89.94627197583517,
+            "relative_improvement_percent": null
+          }
+        }
+      },
+      "metrics_sha256": "391a7769a91addca446664076084e1134670332863ef9be5f9fbc1e081fdfebf",
+      "per_gene_reference_sha256": "8ed2506abac414e53ff4b7372ad26ffdf6e07e8d198d31017b9e5e70c0fa678a",
+      "run_id": "r_20260729T172739Z_0570cda7_s000_f00_a01_7449d530",
+      "split_fingerprint": "7366ff8c2daba3a332d3b5bee26e57fb7e290d17473507d0945d4dad88922ea9",
+      "success_marker_sha256": "b717176395c7698b4bcb3f7c47e3e3ea142e0a606951e00f6486d271193af858",
+      "summary_sha256": "1e6659d82efcbf8e6987d846def74023f1b9761099385af2ab9f57773557e6c2"
+    },
+    "ANC-05": {
+      "artifact_bundle": "artifacts/runs/2026/07/r_20260729T172739Z_ea3ca4d1_s000_f00_a01_74a0b1a1",
+      "bundle_content_sha256": "907bec83dd60793521ee01eebe6bd12b0efc46260375e09c79ac76c62ebaf106",
+      "checkpoint_catalog_verified": true,
+      "checkpoint_sha256": "95a1e1c4e2712f34263b2bd1b1bb55253e338b89e075216283bb382757f39170",
+      "config_file_sha256": "1a509db4378a5001aee09011f5bf96ddfe31d69418f90dead2e685ac39cbd651",
+      "config_sha256": "4d1f73641cc19460794b4030a20f4752f127b3663656f353c63cb1118c2defab",
+      "dataset_fingerprint": "b12c1d688f07824ae3b029cdfaaf59990be48d1fbf4290ea6ee67a5c4d1688f7",
+      "evaluation_mask_bundle_sha256": "00578359f082bdbef338549e31be1f82cf1e3a2fd3e7a436117852fe0a252e33",
+      "mask_estimands": {
+        "partial_gene": {
+          "detection_balanced_accuracy": {
+            "difference_percentage_points": 16.45415375875071,
+            "direction": "maximize",
+            "model": 0.6679329736613258,
+            "model_percent": 66.79329736613258,
+            "per_gene_reference": 0.5033914360738186,
+            "per_gene_reference_percent": 50.339143607381864,
+            "relative_improvement_percent": null
+          },
+          "detection_bce": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.6048486630121866,
+            "model_percent": null,
+            "per_gene_reference": 1.1986424922943115,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": 49.538860260622755
+          },
+          "detection_precision": {
+            "difference_percentage_points": -50.15496471050983,
+            "direction": "maximize",
+            "model": 0.15996553741391106,
+            "model_percent": 15.996553741391107,
+            "per_gene_reference": 0.6615151845190094,
+            "per_gene_reference_percent": 66.15151845190094,
+            "relative_improvement_percent": null
+          },
+          "detection_sensitivity": {
+            "difference_percentage_points": 70.29896850271149,
+            "direction": "maximize",
+            "model": 0.7101395923069052,
+            "model_percent": 71.01395923069052,
+            "per_gene_reference": 0.007149907279790292,
+            "per_gene_reference_percent": 0.7149907279790292,
+            "relative_improvement_percent": null
+          },
+          "detection_specificity": {
+            "difference_percentage_points": -37.39066098521005,
+            "direction": "maximize",
+            "model": 0.6257263550157465,
+            "model_percent": 62.572635501574645,
+            "per_gene_reference": 0.9996329648678469,
+            "per_gene_reference_percent": 99.96329648678469,
+            "relative_improvement_percent": null
+          },
+          "hurdle_loss": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.49189749360084534,
+            "model_percent": null,
+            "per_gene_reference": 0.8628502686818441,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 42.99155815848496,
+            "relative_improvement_percent": 42.99158139841189
+          },
+          "positive_continuous_huber": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.37894631425539654,
+            "model_percent": null,
+            "per_gene_reference": 0.5270580450693766,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 28.10159757536461,
+            "relative_improvement_percent": 28.101257809078
+          },
+          "positive_continuous_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.8259746432304382,
+            "model_percent": null,
+            "per_gene_reference": 0.7697010437647501,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -7.3110982402263005
+          },
+          "positive_count_state_exact_accuracy": {
+            "difference_percentage_points": -2.831915020942688,
+            "direction": "maximize",
+            "model": 0.48268112540245056,
+            "model_percent": 48.268112540245056,
+            "per_gene_reference": 0.5110002756118774,
+            "per_gene_reference_percent": 51.100027561187744,
+            "relative_improvement_percent": null
+          },
+          "positive_count_state_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.5778692563374838,
+            "model_percent": null,
+            "per_gene_reference": 0.5804698467254639,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 0.44801472508012435,
+            "relative_improvement_percent": 0.4482540349705492
+          },
+          "positive_count_state_within_one_accuracy": {
+            "difference_percentage_points": 2.172931035359704,
+            "direction": "maximize",
+            "model": 0.9482229351997375,
+            "model_percent": 94.82229351997375,
+            "per_gene_reference": 0.9264936248461405,
+            "per_gene_reference_percent": 92.64936248461404,
+            "relative_improvement_percent": null
+          },
+          "reconstructed_count_log1p_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.3549053966999054,
+            "model_percent": null,
+            "per_gene_reference": 0.08430019517739613,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -321.00186832671545
+          },
+          "state8_balanced_accuracy": {
+            "difference_percentage_points": 5.520143150351942,
+            "direction": "maximize",
+            "model": 0.18266741186380386,
+            "model_percent": 18.266741186380386,
+            "per_gene_reference": 0.12746598036028445,
+            "per_gene_reference_percent": 12.746598036028445,
+            "relative_improvement_percent": null
+          },
+          "state8_exact_accuracy": {
+            "difference_percentage_points": -31.095884243647266,
+            "direction": "maximize",
+            "model": 0.597611645857493,
+            "model_percent": 59.761164585749306,
+            "per_gene_reference": 0.9085704882939657,
+            "per_gene_reference_percent": 90.85704882939658,
+            "relative_improvement_percent": null
+          }
+        },
+        "spatial_block": {
+          "detection_balanced_accuracy": {
+            "difference_percentage_points": 15.636123522851285,
+            "direction": "maximize",
+            "model": 0.6598984849273329,
+            "model_percent": 65.98984849273329,
+            "per_gene_reference": 0.5035372496988201,
+            "per_gene_reference_percent": 50.35372496988201,
+            "relative_improvement_percent": null
+          },
+          "detection_bce": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.6131436030069987,
+            "model_percent": null,
+            "per_gene_reference": 1.1974030335744221,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": 48.79388260971113
+          },
+          "detection_precision": {
+            "difference_percentage_points": -51.06668303082221,
+            "direction": "maximize",
+            "model": 0.1573421182376392,
+            "model_percent": 15.73421182376392,
+            "per_gene_reference": 0.6680089485458613,
+            "per_gene_reference_percent": 66.80089485458613,
+            "relative_improvement_percent": null
+          },
+          "detection_sensitivity": {
+            "difference_percentage_points": 67.27293436111624,
+            "direction": "maximize",
+            "model": 0.6801687620470024,
+            "model_percent": 68.01687620470024,
+            "per_gene_reference": 0.007439418435839955,
+            "per_gene_reference_percent": 0.7439418435839955,
+            "relative_improvement_percent": null
+          },
+          "detection_specificity": {
+            "difference_percentage_points": -36.00068731541367,
+            "direction": "maximize",
+            "model": 0.6396282078076636,
+            "model_percent": 63.962820780766364,
+            "per_gene_reference": 0.9996350809618003,
+            "per_gene_reference_percent": 99.96350809618004,
+            "relative_improvement_percent": null
+          },
+          "hurdle_loss": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.49439974625905353,
+            "model_percent": null,
+            "per_gene_reference": 0.8606946468353271,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 42.55805492959633,
+            "relative_improvement_percent": 42.56078470572273
+          },
+          "positive_continuous_huber": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.3756558696428935,
+            "model_percent": null,
+            "per_gene_reference": 0.5239862402280172,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 28.308065975277604,
+            "relative_improvement_percent": 28.267993947545694
+          },
+          "positive_continuous_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.8235695759455363,
+            "model_percent": null,
+            "per_gene_reference": 0.7656522194544474,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -7.564447019086146
+          },
+          "positive_count_state_exact_accuracy": {
+            "difference_percentage_points": -1.1719236771265629,
+            "direction": "maximize",
+            "model": 0.5013846755027771,
+            "model_percent": 50.13846755027771,
+            "per_gene_reference": 0.5131039122740427,
+            "per_gene_reference_percent": 51.310391227404274,
+            "relative_improvement_percent": null
+          },
+          "positive_count_state_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.5709405938784281,
+            "model_percent": null,
+            "per_gene_reference": 0.5792040030161539,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 1.4266837063789015,
+            "relative_improvement_percent": 1.3920102543879076
+          },
+          "positive_count_state_within_one_accuracy": {
+            "difference_percentage_points": 1.3804932435353634,
+            "direction": "maximize",
+            "model": 0.9394659996032715,
+            "model_percent": 93.94659996032715,
+            "per_gene_reference": 0.9256610671679179,
+            "per_gene_reference_percent": 92.56610671679178,
+            "relative_improvement_percent": null
+          },
+          "reconstructed_count_log1p_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.3234819173812866,
+            "model_percent": null,
+            "per_gene_reference": 0.0831179494659106,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -289.18418880624233
+          },
+          "state8_balanced_accuracy": {
+            "difference_percentage_points": 5.118589863801995,
+            "direction": "maximize",
+            "model": 0.17873278764697412,
+            "model_percent": 17.87327876469741,
+            "per_gene_reference": 0.12754688900895417,
+            "per_gene_reference_percent": 12.754688900895417,
+            "relative_improvement_percent": null
+          },
+          "state8_exact_accuracy": {
+            "difference_percentage_points": -29.899017016092934,
+            "direction": "maximize",
+            "model": 0.6107892592748007,
+            "model_percent": 61.078925927480064,
+            "per_gene_reference": 0.90977942943573,
+            "per_gene_reference_percent": 90.977942943573,
+            "relative_improvement_percent": null
+          }
+        },
+        "whole_node": {
+          "detection_balanced_accuracy": {
+            "difference_percentage_points": 15.28500745361676,
+            "direction": "maximize",
+            "model": 0.6563425860003805,
+            "model_percent": 65.63425860003805,
+            "per_gene_reference": 0.5034925114642129,
+            "per_gene_reference_percent": 50.349251146421295,
+            "relative_improvement_percent": null
+          },
+          "detection_bce": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.6155301531155905,
+            "model_percent": null,
+            "per_gene_reference": 1.1980629364649455,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": 48.62288662966243
+          },
+          "detection_precision": {
+            "difference_percentage_points": -51.20016449125187,
+            "direction": "maximize",
+            "model": 0.158244440098667,
+            "model_percent": 15.824444009866701,
+            "per_gene_reference": 0.6702460850111857,
+            "per_gene_reference_percent": 67.02460850111856,
+            "relative_improvement_percent": null
+          },
+          "detection_sensitivity": {
+            "difference_percentage_points": 66.37677769249545,
+            "direction": "maximize",
+            "model": 0.6711156617347193,
+            "model_percent": 67.11156617347193,
+            "per_gene_reference": 0.007347884809764803,
+            "per_gene_reference_percent": 0.7347884809764803,
+            "relative_improvement_percent": null
+          },
+          "detection_specificity": {
+            "difference_percentage_points": -35.806762785261945,
+            "direction": "maximize",
+            "model": 0.6415695102660418,
+            "model_percent": 64.15695102660418,
+            "per_gene_reference": 0.9996371381186613,
+            "per_gene_reference_percent": 99.96371381186613,
+            "relative_improvement_percent": null
+          },
+          "hurdle_loss": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.4948382079601288,
+            "model_percent": null,
+            "per_gene_reference": 0.8623278737068176,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 42.61600221351901,
+            "relative_improvement_percent": 42.61590863050961
+          },
+          "positive_continuous_huber": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.3741462628046672,
+            "model_percent": null,
+            "per_gene_reference": 0.5265928109486898,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 28.949606788095085,
+            "relative_improvement_percent": 28.94882625036456
+          },
+          "positive_continuous_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.821918765703837,
+            "model_percent": null,
+            "per_gene_reference": 0.7695682644844055,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -6.802580568275545
+          },
+          "positive_count_state_exact_accuracy": {
+            "difference_percentage_points": -1.0821392138799013,
+            "direction": "maximize",
+            "model": 0.4995112915833791,
+            "model_percent": 49.951129158337906,
+            "per_gene_reference": 0.5103326837221781,
+            "per_gene_reference_percent": 51.03326837221781,
+            "relative_improvement_percent": null
+          },
+          "positive_count_state_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.5706825256347656,
+            "model_percent": null,
+            "per_gene_reference": 0.5799640218416849,
+            "per_gene_reference_percent": null,
+            "ratio_of_aggregate_means_relative_improvement_percent": 1.6003572389621303,
+            "relative_improvement_percent": 1.6000458396027046
+          },
+          "positive_count_state_within_one_accuracy": {
+            "difference_percentage_points": 1.4051377773284912,
+            "direction": "maximize",
+            "model": 0.9412058194478353,
+            "model_percent": 94.12058194478354,
+            "per_gene_reference": 0.9271544416745504,
+            "per_gene_reference_percent": 92.71544416745505,
+            "relative_improvement_percent": null
+          },
+          "reconstructed_count_log1p_mae": {
+            "difference_percentage_points": null,
+            "direction": "minimize",
+            "model": 0.3252156476179759,
+            "model_percent": null,
+            "per_gene_reference": 0.08434900393088658,
+            "per_gene_reference_percent": null,
+            "relative_improvement_percent": -285.55955904879363
+          },
+          "state8_balanced_accuracy": {
+            "difference_percentage_points": 4.975613796462616,
+            "direction": "maximize",
+            "model": 0.17721852893009782,
+            "model_percent": 17.721852893009782,
+            "per_gene_reference": 0.12746239096547166,
+            "per_gene_reference_percent": 12.746239096547166,
+            "relative_improvement_percent": null
+          },
+          "state8_exact_accuracy": {
+            "difference_percentage_points": -29.71046964327494,
+            "direction": "maximize",
+            "model": 0.6114340027173361,
+            "model_percent": 61.143400271733604,
+            "per_gene_reference": 0.9085386991500854,
+            "per_gene_reference_percent": 90.85386991500854,
+            "relative_improvement_percent": null
+          }
+        }
+      },
+      "metrics_sha256": "df6500a433d19df2aaf2e868010a315e0a3b957af524cbc9a853c5a1460068d0",
+      "per_gene_reference_sha256": "077f0d43fc663bf85119b55826140432b7a21d23565b9a5711f1c197fb9fccb1",
+      "run_id": "r_20260729T172739Z_ea3ca4d1_s000_f00_a01_74a0b1a1",
+      "split_fingerprint": "3a01fab74089e721fadd893480d87b99ccbedb84140bfa9204aa4fe1347c6166",
+      "success_marker_sha256": "c25626895ad97a6310cb1749a92cd32548a05740df98f086a640eab5c18728ed",
+      "summary_sha256": "edc54d5f02c21451d0c19fe5d700c95b604972c089830224eb1e8675e285226e"
+    }
+  },
+  "schema_version": 1,
+  "scientific_interpretation": {
+    "facts": [
+      "The model is graphless and used no edge or coordinate input.",
+      "Every reported metric is held-in on the same core used for fitting.",
+      "The reference fits one prevalence and one positive-count median per gene on all nodes.",
+      "Both resource-pilot and both science bundles verified against the registry and checkpoint catalog."
+    ],
+    "maximum_defensible_claim": "The prespecified two-core representation-capacity hypothesis was not supported; individual held-in metric gains are descriptive.",
+    "prohibited_claims": [
+      "unseen-patient generalization",
+      "stable population biology",
+      "spatial predictive dependency",
+      "cell-cell communication",
+      "biological mechanism",
+      "causal influence"
+    ],
+    "strongest_alternative_explanations": [
+      "transductive memorization or common within-cell co-expression",
+      "morphology or technical intensity rather than biological state",
+      "a weak fixed-threshold prevalence reference for rare-gene detection"
+    ],
+    "untested": [
+      "unseen-patient or unseen-core generalization",
+      "independently validated biological labels or programs",
+      "graph-specific predictive gain or cell-cell interaction",
+      "mechanism or causality"
+    ]
+  }
+}

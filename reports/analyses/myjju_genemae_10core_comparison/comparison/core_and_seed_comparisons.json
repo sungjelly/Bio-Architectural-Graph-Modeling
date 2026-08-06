@@ -1,0 +1,181 @@
+[
+  {
+    "bagm_gat_huber": 1.261629497665922,
+    "core_alias": "ANC-01",
+    "genemae_favored_vs_bagm_gat": true,
+    "genemae_favored_vs_gene_mean": true,
+    "genemae_huber": 0.37642634380106443,
+    "genemae_observed_vs_permuted_relative_improvement": 0.014958820077798642,
+    "genemae_permuted_huber": 0.38214274841869517,
+    "genemae_vs_bagm_gat_relative_improvement": 0.7016347949239676,
+    "genemae_vs_gene_mean_relative_improvement": 0.11455091592933876,
+    "observed_graph_favored_vs_permuted": true,
+    "per_core_gene_mean_huber": 0.4251247763118411
+  },
+  {
+    "bagm_gat_huber": 1.2596584288335668,
+    "core_alias": "ANC-02",
+    "genemae_favored_vs_bagm_gat": true,
+    "genemae_favored_vs_gene_mean": true,
+    "genemae_huber": 0.3186469734829351,
+    "genemae_observed_vs_permuted_relative_improvement": 0.007538356147948056,
+    "genemae_permuted_huber": 0.3210672930856725,
+    "genemae_vs_bagm_gat_relative_improvement": 0.7470370013099507,
+    "genemae_vs_gene_mean_relative_improvement": 0.11019673529228709,
+    "observed_graph_favored_vs_permuted": true,
+    "per_core_gene_mean_huber": 0.3581094677008247
+  },
+  {
+    "bagm_gat_huber": 1.394653614722415,
+    "core_alias": "ANC-03",
+    "genemae_favored_vs_bagm_gat": true,
+    "genemae_favored_vs_gene_mean": true,
+    "genemae_huber": 0.368029498268809,
+    "genemae_observed_vs_permuted_relative_improvement": 0.007600838486109613,
+    "genemae_permuted_huber": 0.37084825596525633,
+    "genemae_vs_bagm_gat_relative_improvement": 0.736114046969247,
+    "genemae_vs_gene_mean_relative_improvement": 0.10559531716294324,
+    "observed_graph_favored_vs_permuted": true,
+    "per_core_gene_mean_huber": 0.4114798427725326
+  },
+  {
+    "bagm_gat_huber": 1.3145558480407813,
+    "core_alias": "ANC-04",
+    "genemae_favored_vs_bagm_gat": true,
+    "genemae_favored_vs_gene_mean": true,
+    "genemae_huber": 0.3221990298319212,
+    "genemae_observed_vs_permuted_relative_improvement": 0.008192918585468126,
+    "genemae_permuted_huber": 0.32486058616600677,
+    "genemae_vs_bagm_gat_relative_improvement": 0.7548989414849678,
+    "genemae_vs_gene_mean_relative_improvement": 0.10447217053257919,
+    "observed_graph_favored_vs_permuted": true,
+    "per_core_gene_mean_huber": 0.3597867304956186
+  },
+  {
+    "bagm_gat_huber": 1.491083054763765,
+    "core_alias": "ANC-05",
+    "genemae_favored_vs_bagm_gat": true,
+    "genemae_favored_vs_gene_mean": true,
+    "genemae_huber": 0.35380687966561125,
+    "genemae_observed_vs_permuted_relative_improvement": 0.005793724214086878,
+    "genemae_permuted_huber": 0.3558686846810833,
+    "genemae_vs_bagm_gat_relative_improvement": 0.762718194311674,
+    "genemae_vs_gene_mean_relative_improvement": 0.09263849436776309,
+    "observed_graph_favored_vs_permuted": true,
+    "per_core_gene_mean_huber": 0.3899293473102361
+  },
+  {
+    "bagm_gat_huber": 1.2039169641784404,
+    "core_alias": "ANC-06",
+    "genemae_favored_vs_bagm_gat": true,
+    "genemae_favored_vs_gene_mean": true,
+    "genemae_huber": 0.29867406778212063,
+    "genemae_observed_vs_permuted_relative_improvement": 0.007247053464015006,
+    "genemae_permuted_huber": 0.3008543755264436,
+    "genemae_vs_bagm_gat_relative_improvement": 0.7519147277852858,
+    "genemae_vs_gene_mean_relative_improvement": 0.10897046555273046,
+    "observed_graph_favored_vs_permuted": true,
+    "per_core_gene_mean_huber": 0.3352010861990074
+  },
+  {
+    "bagm_gat_huber": 1.1360823009354193,
+    "core_alias": "ANC-07",
+    "genemae_favored_vs_bagm_gat": true,
+    "genemae_favored_vs_gene_mean": true,
+    "genemae_huber": 0.3595219015657369,
+    "genemae_observed_vs_permuted_relative_improvement": 0.019268222394503126,
+    "genemae_permuted_huber": 0.3665853496085613,
+    "genemae_vs_bagm_gat_relative_improvement": 0.6835423795708142,
+    "genemae_vs_gene_mean_relative_improvement": 0.11863624438878871,
+    "observed_graph_favored_vs_permuted": true,
+    "per_core_gene_mean_huber": 0.4079154597370689
+  },
+  {
+    "bagm_gat_huber": 1.2361661791698777,
+    "core_alias": "ANC-08",
+    "genemae_favored_vs_bagm_gat": true,
+    "genemae_favored_vs_gene_mean": true,
+    "genemae_huber": 0.38411841484095105,
+    "genemae_observed_vs_permuted_relative_improvement": 0.015517737492177571,
+    "genemae_permuted_huber": 0.3901730172999424,
+    "genemae_vs_bagm_gat_relative_improvement": 0.6892663613407559,
+    "genemae_vs_gene_mean_relative_improvement": 0.10785133201603472,
+    "observed_graph_favored_vs_permuted": true,
+    "per_core_gene_mean_huber": 0.43055426592628715
+  },
+  {
+    "bagm_gat_huber": 1.2522933562180307,
+    "core_alias": "ANC-09",
+    "genemae_favored_vs_bagm_gat": true,
+    "genemae_favored_vs_gene_mean": true,
+    "genemae_huber": 0.3456459828930845,
+    "genemae_observed_vs_permuted_relative_improvement": 0.011166438052615761,
+    "genemae_permuted_huber": 0.349549202408116,
+    "genemae_vs_bagm_gat_relative_improvement": 0.7239896058085405,
+    "genemae_vs_gene_mean_relative_improvement": 0.10838472366849652,
+    "observed_graph_favored_vs_permuted": true,
+    "per_core_gene_mean_huber": 0.3876626972063823
+  },
+  {
+    "bagm_gat_huber": 1.3142406838692187,
+    "core_alias": "ANC-10",
+    "genemae_favored_vs_bagm_gat": true,
+    "genemae_favored_vs_gene_mean": true,
+    "genemae_huber": 0.35503228160095696,
+    "genemae_observed_vs_permuted_relative_improvement": 0.009671980697219024,
+    "genemae_permuted_huber": 0.3584996836208974,
+    "genemae_vs_bagm_gat_relative_improvement": 0.7298574865634835,
+    "genemae_vs_gene_mean_relative_improvement": 0.10130101939009499,
+    "observed_graph_favored_vs_permuted": true,
+    "per_core_gene_mean_huber": 0.39505139013289314
+  },
+  {
+    "bagm_gat_equal_core_huber": 1.5221847567964049,
+    "genemae_equal_core_huber": 0.34858248331387887,
+    "genemae_favored": true,
+    "genemae_relative_improvement": 0.7709985717847374,
+    "seed": 0
+  },
+  {
+    "bagm_gat_equal_core_huber": 1.143145775531477,
+    "genemae_equal_core_huber": 0.3483083384854175,
+    "genemae_favored": true,
+    "genemae_relative_improvement": 0.6953071550971001,
+    "seed": 1
+  },
+  {
+    "bagm_gat_equal_core_huber": 1.5388743164996241,
+    "genemae_equal_core_huber": 0.3492148462322344,
+    "genemae_favored": true,
+    "genemae_relative_improvement": 0.7730712362354774,
+    "seed": 2
+  },
+  {
+    "bagm_gat_equal_core_huber": 1.1099169537547162,
+    "genemae_equal_core_huber": 0.34845116863757164,
+    "genemae_favored": true,
+    "genemae_relative_improvement": 0.6860565401232921,
+    "seed": 3
+  },
+  {
+    "bagm_gat_equal_core_huber": 1.6585010418668653,
+    "genemae_equal_core_huber": 0.34876378594293744,
+    "genemae_favored": true,
+    "genemae_relative_improvement": 0.7897114459751217,
+    "seed": 4
+  },
+  {
+    "bagm_gat_equal_core_huber": 0.9597271291726326,
+    "genemae_equal_core_huber": 0.34903538657243344,
+    "genemae_favored": true,
+    "genemae_relative_improvement": 0.6363180992150009,
+    "seed": 5
+  },
+  {
+    "bagm_gat_equal_core_huber": 1.163754386773514,
+    "genemae_equal_core_huber": 0.3483883331061205,
+    "genemae_favored": true,
+    "genemae_relative_improvement": 0.7006341397586305,
+    "seed": 6
+  }
+]

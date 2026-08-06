@@ -767,6 +767,46 @@ def test_canonical_summary_best_epoch_and_configured_direction_are_indexed(
     assert checkpoint["monitored_value"] == pytest.approx(0.875)
 
 
+def test_canonical_summary_final_epoch_is_indexed_for_last_checkpoint(
+    tmp_path: Path,
+) -> None:
+    registry, paths = _registry(tmp_path)
+    configuration = _configuration()
+    configuration["trainer"] = {
+        "learning_rate": 0.001,
+        "batch_size": 1,
+        "primary_checkpoint_role": "last",
+        "restore_best": False,
+    }
+    run_id = "canonical_last_summary_run"
+    _register_checkpoint_fixture(
+        registry,
+        paths,
+        run_id=run_id,
+        filename="last.ckpt",
+        kind="checkpoints",
+        configuration=configuration,
+        summary={
+            "best_epoch": 17,
+            "final_epoch": 199,
+            "checkpoint_role": "last",
+            "primary_metric_name": "val/masked_huber",
+            "primary_metric_value": 0.125,
+        },
+    )
+
+    index_checkpoint_catalog(
+        registry,
+        paths,
+        run_reference=run_id,
+        verify=True,
+    )
+    checkpoint = registry.list_checkpoint_catalog(run_id=run_id)[0]
+    assert checkpoint["role"] == "last"
+    # Schema v1 calls this column best_epoch even for a final checkpoint.
+    assert checkpoint["best_epoch"] == 199
+
+
 @pytest.mark.parametrize("malformation", ["index", "manifest"])
 def test_targeted_canonical_index_ignores_unrelated_malformed_legacy_metadata(
     tmp_path: Path,

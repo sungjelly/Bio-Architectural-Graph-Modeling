@@ -1,0 +1,38 @@
+version: 1
+defaults:
+  - model: g2
+  - masking: p_n_b
+  - dataset: normal_core_cosmx_full_core
+  - features: cosmx_full_core_morphology_edge_geometry
+  - graph: k1000_r650_mutual
+  - trainer: full_core_fixed_200
+  - evaluation: held_in_full_core_percent_v2
+  - launcher: local_single_gpu_3090
+
+model:
+  receiver_chunk_size: 512
+  activation_checkpointing: true
+  exact_receiver_partitioning: true
+
+masking:
+  validation_replicates: 0
+  test_replicates: 0
+  fit_replicates: 3
+
+campaign:
+  campaign_id: cmp_20260726_full_core_g2_larger_multiseed
+  display_name: Full-core G2 width scaling across seeds
+experiment:
+  variant_label: g2_width512_exact_k1000_full_core
+  estimand: held_in_full_core_whole_node_masked_reconstruction
+  permitted_claim: one_core_transductive_width_capacity
+  paired_variant: full_core_g2_multiseed_width1024
+classification:
+  schema_version: 1
+  lifecycle_stage: exploratory_screen
+  study_axis: full_core_g2_width_capacity
+  retention_class: retain_exploratory_evidence
+  classification_confidence: high
+seed: 0
+fold: 0
+attempt: 1

@@ -16,12 +16,94 @@ and Spearman summaries. Negative log likelihood, deviance, and predictive
 interval calibration apply only when the model declares a valid likelihood or
 interval construction; they are not fabricated to fill a schema.
 
+Masked \(R^2\) is the percentage-style regression summary:
+
+```text
+masked_r2 = 1 - sum((prediction - target)^2)
+                  / sum((target - mean(masked finite targets))^2)
+masked_percent_variance_explained = 100 * masked_r2
+```
+
+Both sums use exactly the same finite masked prediction/target pairs. The
+calculation is flat across those entries and remains on the declared modeled
+expression scale. It is undefined when the selected targets have zero
+variance. Negative values are retained: for example, `-25%` means 25
+percentage points below the constant masked-target-mean reference in this
+variance-explained convention. It is not a classification accuracy and is not
+bounded below.
+
+For fixed technical mask replicates, compute \(R^2\) separately for every
+replicate and take the unweighted arithmetic mean within each mask mode. Derive
+the reported percentage from that mean (`100 * mean(masked_r2)`); do not clip
+replicate values or pool entries across replicates. The replicate table
+retains each value so the final summary can be reconciled. Model-seed
+predictions are still ensembled before scoring under protocols that declare
+that policy. Technical masks and model seeds are not biological replicates.
+
+No within-tolerance percentage is currently defined. Such a rate requires an
+absolute-error tolerance with a scientific or assay-based rationale, expressed
+on a declared scale and locked before outcomes are inspected. Introducing an
+arbitrary threshold after seeing results would create a tunable percentage
+that can be made favorable and must not be called generic accuracy.
+
+An explicitly transductive, no-holdout capacity run uses
+`fit/whole_node/masked_huber`. `fit/*` means that every evaluated cell belongs
+to the fitted core; it is never an alias for validation accuracy and cannot be
+used as generalization evidence. Such a run must not emit `val/*`, `test/*`, or
+`external/*` outcomes.
+
 Keep partial-gene, whole-node, and spatial-block results separate. For the
 legacy whole-node contrast, predictions are first averaged across the locked
 model seeds and the score is computed within held-out spatial blocks. Blocks,
 not cells or seeds, are the resampling units. Report the complete block
 distribution, paired contrast, uncertainty interval, effect size, and all seed
 and failure information.
+
+## Hybrid raw-count hurdle task
+
+The exploratory hybrid-count task uses raw biological-probe counts as targets
+and keeps zero detection distinct from positive count level. On masked entries
+its primary loss is the equal mean of three terms:
+
+```text
+hybrid_loss = (balanced_detection_bce
+               + balanced_positive_ordinal_bce
+               + positive_standardized_log1p_huber) / 3
+```
+
+Balanced detection BCE gives equal weight to the mean loss among zero and
+positive targets. Each of the six cumulative positive-state thresholds gives
+equal weight to its below-or-equal and above-threshold strata before the six
+threshold losses are averaged. Positive continuous Huber uses delta 1 on the
+recorded per-gene standardized `log1p(count)` scale and excludes zero targets.
+An absent required stratum is an error; it is not assigned a zero loss.
+
+Eight-state exact accuracy is descriptive because the zero state dominates.
+Detection balanced accuracy, positive ordinal MAE, and positive continuous
+Huber are required to assess whether positive expression levels were learned.
+The all-zero and all-fit per-gene references are transductive references, not
+generalization estimates. Fixed mask replicates are averaged within a tissue
+core before cores are aggregated with equal weight; neither masked entries nor
+cells are independent biological replicates.
+
+## Continuous hurdle-count pilot
+
+The multiscale hurdle-count pilot removes the conflicting balanced ordinal
+term and predicts one detection logit plus one positive standardized
+`log1p(count)` value per gene:
+
+```text
+hurdle_loss = (balanced_detection_bce
+               + positive_standardized_log1p_huber) / 2
+```
+
+The detection and positive-target strata must both be present. Positive count
+states are derived with the fixed inverse transform and half-up rounded count
+bins declared in the campaign contract; no fitted state threshold is allowed.
+`fit/whole_node/hurdle_loss` is the primary held-in metric. Detection balanced
+accuracy, positive count-state MAE, positive continuous Huber, and per-state
+recall must accompany it. Overall exact accuracy remains descriptive because
+the zero state dominates.
 
 ## Optional task families
 

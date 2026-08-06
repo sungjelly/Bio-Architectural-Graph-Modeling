@@ -1,0 +1,35 @@
+[
+  {
+    "candidate_huber": 0.3482101373695984,
+    "candidate_huber_relative_improvement": 0.02957849835012798,
+    "candidate_mae": 0.5470899327216163,
+    "candidate_mae_relative_improvement": -0.34553726604066015,
+    "candidate_model": "myjju-genemae",
+    "contrast": "genemae_vs_all_zero_common_partial_gene",
+    "estimand": "held_in_partial_gene_reconstruction",
+    "huber_favors_candidate": true,
+    "mae_favors_candidate": false,
+    "mask_rate": 0.2,
+    "metric_dependent_conclusion": true,
+    "metric_rank_agreement": false,
+    "reference_huber": 0.35882360064939345,
+    "reference_mae": 0.40659589780925776,
+    "reference_model": "all_zero"
+  },
+  {
+    "architecture_level_conclusion_permitted": false,
+    "candidate_huber": 1.2864279928397437,
+    "candidate_huber_relative_improvement": -0.1397997802042124,
+    "candidate_huber_relative_loss_increase": 0.1397997802042124,
+    "candidate_model": "current-bagm-pooled-gat",
+    "contrast": "bagm_gat_vs_matched_self_common_partial_gene",
+    "estimand": "held_in_partial_gene_reconstruction",
+    "estimands_are_distinct": true,
+    "huber_favors_candidate": false,
+    "mask_rate": 0.2,
+    "reference_huber": 1.128643833050451,
+    "reference_model": "current-bagm-matched-self",
+    "separate_whole_node_estimand": "held_in_whole_node_hybrid_count_reconstruction",
+    "separate_whole_node_graph_gate_passed": true
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+    "core_alias": "ANC-01",
+    "gat_detection_balanced_accuracy": 0.6787698672395396,
+    "gat_hybrid_loss": 0.4185943404833476,
+    "gat_positive_continuous_huber": 0.34747956196467084,
+    "gat_positive_ordinal_mae": 0.8646341494158426,
+    "gat_relative_hybrid_loss_improvement": 0.02542410455688296,
+    "matched_self_hybrid_loss": 0.42951435844103497,
+    "self_detection_balanced_accuracy": 0.673663884828604,
+    "self_positive_continuous_huber": 0.3563526173432668,
+    "self_positive_ordinal_mae": 0.9252508351374588
+  },
+  {
+    "core_alias": "ANC-02",
+    "gat_detection_balanced_accuracy": 0.6730557419917073,
+    "gat_hybrid_loss": 0.43384697039922077,
+    "gat_positive_continuous_huber": 0.36678532759348553,
+    "gat_positive_ordinal_mae": 0.9800692184900467,
+    "gat_relative_hybrid_loss_improvement": 0.02394326201064202,
+    "matched_self_hybrid_loss": 0.4444894989331563,
+    "self_detection_balanced_accuracy": 0.664104001654872,
+    "self_positive_continuous_huber": 0.3721245229244232,
+    "self_positive_ordinal_mae": 0.97817495403565
+  },
+  {
+    "core_alias": "ANC-03",
+    "gat_detection_balanced_accuracy": 0.6593760983491942,
+    "gat_hybrid_loss": 0.4394901196161906,
+    "gat_positive_continuous_huber": 0.37050752838452655,
+    "gat_positive_ordinal_mae": 0.944160795421152,
+    "gat_relative_hybrid_loss_improvement": 0.026904688884723905,
+    "matched_self_hybrid_loss": 0.45164139072100323,
+    "self_detection_balanced_accuracy": 0.6496421475001869,
+    "self_positive_continuous_huber": 0.37535078326861065,
+    "self_positive_ordinal_mae": 0.9360245734239815
+  },
+  {
+    "core_alias": "ANC-04",
+    "gat_detection_balanced_accuracy": 0.6653471112018093,
+    "gat_hybrid_loss": 0.4388233820597331,
+    "gat_positive_continuous_huber": 0.37482256690661114,
+    "gat_positive_ordinal_mae": 0.9888595842499597,
+    "gat_relative_hybrid_loss_improvement": 0.02283703847212084,
+    "matched_self_hybrid_loss": 0.4490790168444316,
+    "self_detection_balanced_accuracy": 0.6566939490796695,
+    "self_positive_continuous_huber": 0.38109879692395526,
+    "self_positive_ordinal_mae": 0.9741934188105262
+  },
+  {
+    "core_alias": "ANC-05",
+    "gat_detection_balanced_accuracy": 0.6604262197605227,
+    "gat_hybrid_loss": 0.44053613146146137,
+    "gat_positive_continuous_huber": 0.371617724498113,
+    "gat_positive_ordinal_mae": 1.0007748150583113,
+    "gat_relative_hybrid_loss_improvement": 0.02344473315671476,
+    "matched_self_hybrid_loss": 0.45111233989397687,
+    "self_detection_balanced_accuracy": 0.6533808042757331,
+    "self_positive_continuous_huber": 0.3766178588072459,
+    "self_positive_ordinal_mae": 0.9190003504464163
+  },
+  {
+    "core_alias": "ANC-06",
+    "gat_detection_balanced_accuracy": 0.6864883823732368,
+    "gat_hybrid_loss": 0.4253456989924113,
+    "gat_positive_continuous_huber": 0.3705521722634633,
+    "gat_positive_ordinal_mae": 0.9394038563040578,
+    "gat_relative_hybrid_loss_improvement": 0.024061407269684518,
+    "matched_self_hybrid_loss": 0.4358324408531189,
+    "self_detection_balanced_accuracy": 0.674334772198622,
+    "self_positive_continuous_huber": 0.37501858671506244,
+    "self_positive_ordinal_mae": 0.9714244402105886
+  },
+  {
+    "core_alias": "ANC-07",
+    "gat_detection_balanced_accuracy": 0.6777382357255086,
+    "gat_hybrid_loss": 0.4176017642021179,
+    "gat_positive_continuous_huber": 0.35401686032613117,
+    "gat_positive_ordinal_mae": 0.8614517053917972,
+    "gat_relative_hybrid_loss_improvement": 0.05727980361394718,
+    "matched_self_hybrid_loss": 0.4429753025372823,
+    "self_detection_balanced_accuracy": 0.6698084123051493,
+    "self_positive_continuous_huber": 0.3793982267379761,
+    "self_positive_ordinal_mae": 0.9302061667408754
+  },
+  {
+    "core_alias": "ANC-08",
+    "gat_detection_balanced_accuracy": 0.6732245388607567,
+    "gat_hybrid_loss": 0.42039965589841205,
+    "gat_positive_continuous_huber": 0.3449748754501343,
+    "gat_positive_ordinal_mae": 0.823293979263153,
+    "gat_relative_hybrid_loss_improvement": 0.03517914673751589,
+    "matched_self_hybrid_loss": 0.4357282022635142,
+    "self_detection_balanced_accuracy": 0.665109838482354,
+    "self_positive_continuous_huber": 0.35772324601809186,
+    "self_positive_ordinal_mae": 0.8938654611264522
+  },
+  {
+    "core_alias": "ANC-09",
+    "gat_detection_balanced_accuracy": 0.671102255490052,
+    "gat_hybrid_loss": 0.4276127815246582,
+    "gat_positive_continuous_huber": 0.35859520236651105,
+    "gat_positive_ordinal_mae": 0.8834538831098708,
+    "gat_relative_hybrid_loss_improvement": 0.028990769810337522,
+    "matched_self_hybrid_loss": 0.44037972887357074,
+    "self_detection_balanced_accuracy": 0.6628660376821114,
+    "self_positive_continuous_huber": 0.3659875790278117,
+    "self_positive_ordinal_mae": 0.9362029741493997
+  },
+  {
+    "core_alias": "ANC-10",
+    "gat_detection_balanced_accuracy": 0.6779582092377869,
+    "gat_hybrid_loss": 0.4564373890558879,
+    "gat_positive_continuous_huber": 0.4262007276217143,
+    "gat_positive_ordinal_mae": 1.0448825227061185,
+    "gat_relative_hybrid_loss_improvement": 0.03253986350632504,
+    "matched_self_hybrid_loss": 0.47178935011227924,
+    "self_detection_balanced_accuracy": 0.6695792425959776,
+    "self_positive_continuous_huber": 0.435124138991038,
+    "self_positive_ordinal_mae": 0.9816079181871128
+  }
+]

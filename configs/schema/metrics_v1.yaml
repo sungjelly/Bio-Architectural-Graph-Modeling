@@ -24,7 +24,124 @@ task_families:
     primary_metric: val/masked_huber
     primary_direction: minimize
     independent_uncertainty_unit: spatial_macroblock
+    masked_r2_contract:
+      definition: 1 - sum_squared_error / sum_squared_deviation_from_the_same_finite_masked_target_mean
+      scope: flat_across_finite_masked_entries_on_the_declared_modeled_expression_scale
+      negative_values: retained_without_clipping
+      zero_target_variance: undefined
+      fixed_mask_aggregation: unweighted_arithmetic_mean_of_replicate_level_masked_r2_within_mask_mode
+      percentage_reconciliation: 100 * aggregate_masked_r2
+      interpretation: percent_variance_explained_not_classification_accuracy
     metrics:
+      fit/whole_node/masked_huber:
+        description: Held-in whole-node masked Huber loss for an explicitly transductive full-core fixed-budget capacity protocol.
+        direction: minimize
+        unit: full_core_fitted_standardized_log1p_expression
+        applicable_when: evaluation_protocol_is_held_in_full_core_fixed_budget
+      fit/partial_gene/masked_huber:
+        description: Held-in partial-gene masked Huber loss; descriptive only.
+        direction: minimize
+        unit: full_core_fitted_standardized_log1p_expression
+      fit/partial_gene/log1p_cp10k_masked_huber:
+        description: Held-in partial-gene masked Huber loss after full-cell CP10k normalization and log1p transformation; descriptive only.
+        direction: minimize
+        unit: full_cell_log1p_cp10k_expression
+        applicable_when: evaluation_protocol_is_explicitly_held_in_and_hidden_entries_contribute_to_the_library_size_denominator
+      fit/spatial_block/masked_huber:
+        description: Held-in spatial-block masked Huber loss; descriptive only.
+        direction: minimize
+        unit: full_core_fitted_standardized_log1p_expression
+      fit/whole_node/masked_mse:
+        direction: minimize
+        unit: squared_full_core_fitted_standardized_log1p_expression
+      fit/partial_gene/masked_mse:
+        direction: minimize
+        unit: squared_full_core_fitted_standardized_log1p_expression
+      fit/spatial_block/masked_mse:
+        direction: minimize
+        unit: squared_full_core_fitted_standardized_log1p_expression
+      fit/whole_node/masked_mae:
+        direction: minimize
+        unit: full_core_fitted_standardized_log1p_expression
+      fit/partial_gene/masked_mae:
+        direction: minimize
+        unit: full_core_fitted_standardized_log1p_expression
+      fit/spatial_block/masked_mae:
+        direction: minimize
+        unit: full_core_fitted_standardized_log1p_expression
+      fit/whole_node/masked_r2:
+        description: Flat masked R-squared on one held-in whole-node mask replicate; negative values are valid and zero target variance is undefined.
+        direction: maximize
+        unit: proportion_of_masked_target_variance_relative_to_masked_target_mean
+        applicable_when: evaluation_protocol_is_held_in_full_core_fixed_budget
+      fit/partial_gene/masked_r2:
+        description: Flat masked R-squared on one held-in partial-gene mask replicate; descriptive only.
+        direction: maximize
+        unit: proportion_of_masked_target_variance_relative_to_masked_target_mean
+      fit/spatial_block/masked_r2:
+        description: Flat masked R-squared on one held-in spatial-block mask replicate; descriptive only.
+        direction: maximize
+        unit: proportion_of_masked_target_variance_relative_to_masked_target_mean
+      fit/whole_node/masked_percent_variance_explained:
+        description: Exactly 100 times the replicate-mean held-in whole-node masked R-squared; may be negative and is not classification accuracy.
+        direction: maximize
+        unit: percent_of_masked_target_variance_relative_to_masked_target_mean
+        reconciliation: 100 * fit/whole_node/masked_r2
+      fit/partial_gene/masked_percent_variance_explained:
+        description: Exactly 100 times the replicate-mean held-in partial-gene masked R-squared; descriptive only.
+        direction: maximize
+        unit: percent_of_masked_target_variance_relative_to_masked_target_mean
+        reconciliation: 100 * fit/partial_gene/masked_r2
+      fit/spatial_block/masked_percent_variance_explained:
+        description: Exactly 100 times the replicate-mean held-in spatial-block masked R-squared; descriptive only.
+        direction: maximize
+        unit: percent_of_masked_target_variance_relative_to_masked_target_mean
+        reconciliation: 100 * fit/spatial_block/masked_r2
+      fit/whole_node/gene_pearson_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/partial_gene/gene_pearson_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/spatial_block/gene_pearson_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/whole_node/gene_spearman_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/partial_gene/gene_spearman_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/spatial_block/gene_spearman_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/whole_node/cell_pearson_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/partial_gene/cell_pearson_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/spatial_block/cell_pearson_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/whole_node/cell_spearman_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/partial_gene/cell_spearman_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/spatial_block/cell_spearman_mean:
+        direction: maximize
+        unit: descriptive_correlation
+      fit/training/final_masked_huber:
+        direction: minimize
+        unit: epoch_specific_training_mask
+      fit/training/min_observed_masked_huber:
+        direction: descriptive
+        unit: epoch_specific_training_mask
+      fit/training/last_20_epoch_loss_slope:
+        direction: descriptive
+        unit: loss_per_epoch
       val/masked_huber:
         description: Mean Huber loss over finite masked expression entries.
         direction: minimize
@@ -38,14 +155,43 @@ task_families:
         description: Mean absolute error over finite masked expression entries.
         direction: minimize
         unit: standardized_log1p_expression
+      val/masked_r2:
+        description: Flat masked R-squared against the mean of the same finite masked validation targets; negative values are valid and zero target variance is undefined.
+        direction: maximize
+        unit: proportion_of_masked_target_variance_relative_to_masked_target_mean
+      val/masked_percent_variance_explained:
+        description: Exactly 100 times validation masked R-squared; may be negative and is not classification accuracy.
+        direction: maximize
+        unit: percent_of_masked_target_variance_relative_to_masked_target_mean
+        reconciliation: 100 * val/masked_r2
       test/masked_huber:
         description: Sealed-test masked Huber loss, evaluated only after lock.
         direction: minimize
         unit: standardized_log1p_expression
+      test/masked_r2:
+        description: Flat masked R-squared against the mean of the same finite masked sealed-test targets.
+        direction: maximize
+        unit: proportion_of_masked_target_variance_relative_to_masked_target_mean
+      test/masked_percent_variance_explained:
+        description: Exactly 100 times sealed-test masked R-squared; may be negative and is not classification accuracy.
+        direction: maximize
+        unit: percent_of_masked_target_variance_relative_to_masked_target_mean
+        reconciliation: 100 * test/masked_r2
       external/masked_huber:
         description: Masked Huber loss in an independently declared external dataset.
         direction: minimize
         unit: standardized_log1p_expression
+        applicable_when: an_external_dataset_is_declared
+      external/masked_r2:
+        description: Flat masked R-squared against the mean of the same finite masked external targets.
+        direction: maximize
+        unit: proportion_of_masked_target_variance_relative_to_masked_target_mean
+        applicable_when: an_external_dataset_is_declared
+      external/masked_percent_variance_explained:
+        description: Exactly 100 times external masked R-squared; may be negative and is not classification accuracy.
+        direction: maximize
+        unit: percent_of_masked_target_variance_relative_to_masked_target_mean
+        reconciliation: 100 * external/masked_r2
         applicable_when: an_external_dataset_is_declared
       val/gene_pearson:
         description: Gene-wise Pearson correlation summarized without treating genes or cells as biological replicates.
@@ -79,6 +225,319 @@ task_families:
         description: Mean predictive-interval width at the declared nominal level.
         direction: minimize_conditioned_on_coverage
         applicable_when: calibrated_predictive_intervals_are_available
+
+  masked_expression_token_classification:
+    active_in_current_project: true
+    primary_metric: fit/whole_node/masked_token_accuracy_percent
+    primary_direction: maximize
+    independent_uncertainty_unit: single_spatial_core
+    tokenization_schema: raw_count_tokens_0_1_2_3plus_v1
+    token_contract:
+      output_tokens: [0, 1, 2, 3]
+      raw_count_mapping:
+        "0": 0
+        "1": 1
+        "2": 2
+        "3+": 3
+      mask_input_token: 4
+      mask_input_token_is_output_class: false
+      fixed_vocabulary: true
+      percentages_are_on_0_to_100_scale: true
+      interpretation: held_in_transductive_masked_token_reconstruction_not_validation_or_test_accuracy
+    metrics:
+      fit/whole_node/masked_token_cross_entropy:
+        description: Unweighted categorical cross-entropy over masked whole-node output tokens.
+        direction: minimize
+        unit: nats_per_masked_token
+      fit/whole_node/masked_token_accuracy_percent:
+        description: Exact output-token matches over masked whole-node entries, multiplied by 100.
+        direction: maximize
+        unit: percent_of_masked_tokens
+        applicable_when: evaluation_protocol_is_held_in_full_core_fixed_budget
+      fit/whole_node/masked_token_balanced_accuracy_percent:
+        description: Unweighted mean recall of output tokens 0 through 3 on masked whole-node entries, multiplied by 100.
+        direction: maximize
+        unit: percent
+      fit/whole_node/masked_nonzero_token_accuracy_percent:
+        description: Exact matches restricted to masked whole-node targets in output tokens 1 through 3, multiplied by 100.
+        direction: maximize
+        unit: percent_of_masked_nonzero_tokens
+      fit/whole_node/baseline_uniform_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/whole_node/baseline_empirical_frequency_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/whole_node/baseline_always_zero_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/whole_node/baseline_always_zero_balanced_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/whole_node/baseline_per_gene_modal_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/whole_node/baseline_per_gene_modal_balanced_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/whole_node/baseline_per_gene_modal_nonzero_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/whole_node/token_0_recall_percent:
+        direction: maximize
+        unit: percent
+      fit/whole_node/token_1_recall_percent:
+        direction: maximize
+        unit: percent
+      fit/whole_node/token_2_recall_percent:
+        direction: maximize
+        unit: percent
+      fit/whole_node/token_3_recall_percent:
+        direction: maximize
+        unit: percent
+
+      fit/partial_gene/masked_token_cross_entropy:
+        description: Unweighted categorical cross-entropy over masked partial-gene output tokens.
+        direction: minimize
+        unit: nats_per_masked_token
+      fit/partial_gene/masked_token_accuracy_percent:
+        direction: maximize
+        unit: percent_of_masked_tokens
+      fit/partial_gene/masked_token_balanced_accuracy_percent:
+        direction: maximize
+        unit: percent
+      fit/partial_gene/masked_nonzero_token_accuracy_percent:
+        direction: maximize
+        unit: percent_of_masked_nonzero_tokens
+      fit/partial_gene/baseline_uniform_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/partial_gene/baseline_empirical_frequency_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/partial_gene/baseline_always_zero_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/partial_gene/baseline_always_zero_balanced_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/partial_gene/baseline_per_gene_modal_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/partial_gene/baseline_per_gene_modal_balanced_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/partial_gene/baseline_per_gene_modal_nonzero_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/partial_gene/token_0_recall_percent:
+        direction: maximize
+        unit: percent
+      fit/partial_gene/token_1_recall_percent:
+        direction: maximize
+        unit: percent
+      fit/partial_gene/token_2_recall_percent:
+        direction: maximize
+        unit: percent
+      fit/partial_gene/token_3_recall_percent:
+        direction: maximize
+        unit: percent
+
+      fit/spatial_block/masked_token_cross_entropy:
+        description: Unweighted categorical cross-entropy over masked spatial-block output tokens.
+        direction: minimize
+        unit: nats_per_masked_token
+      fit/spatial_block/masked_token_accuracy_percent:
+        direction: maximize
+        unit: percent_of_masked_tokens
+      fit/spatial_block/masked_token_balanced_accuracy_percent:
+        direction: maximize
+        unit: percent
+      fit/spatial_block/masked_nonzero_token_accuracy_percent:
+        direction: maximize
+        unit: percent_of_masked_nonzero_tokens
+      fit/spatial_block/baseline_uniform_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/spatial_block/baseline_empirical_frequency_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/spatial_block/baseline_always_zero_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/spatial_block/baseline_always_zero_balanced_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/spatial_block/baseline_per_gene_modal_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/spatial_block/baseline_per_gene_modal_balanced_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/spatial_block/baseline_per_gene_modal_nonzero_accuracy_percent:
+        direction: descriptive
+        unit: percent
+      fit/spatial_block/token_0_recall_percent:
+        direction: maximize
+        unit: percent
+      fit/spatial_block/token_1_recall_percent:
+        direction: maximize
+        unit: percent
+      fit/spatial_block/token_2_recall_percent:
+        direction: maximize
+        unit: percent
+      fit/spatial_block/token_3_recall_percent:
+        direction: maximize
+        unit: percent
+
+  masked_expression_hybrid_count:
+    active_in_current_project: true
+    primary_metric: fit/whole_node/hybrid_loss
+    primary_direction: minimize
+    independent_uncertainty_unit: spatial_tissue_core
+    representation_schema: hybrid_raw_count_0_1_2_3_4_7_8_15_16_31_32plus_v1
+    loss_contract:
+      detection: equal_mean_zero_and_positive_bce
+      ordinal: equal_mean_below_or_equal_and_above_bce_per_positive_threshold
+      positive_continuous: huber_delta_1_on_per_gene_standardized_log1p
+      total: equal_mean_of_the_three_components
+      absent_expected_stratum: fail
+    metrics:
+      fit/whole_node/hybrid_loss:
+        description: Equal-weight balanced detection, positive ordinal, and positive continuous loss on held-in whole-node masks.
+        direction: minimize
+        unit: equal_weight_hybrid_objective
+      fit/partial_gene/hybrid_loss:
+        direction: minimize
+        unit: equal_weight_hybrid_objective
+      fit/spatial_block/hybrid_loss:
+        direction: minimize
+        unit: equal_weight_hybrid_objective
+      fit/whole_node/detection_bce:
+        direction: minimize
+        unit: balanced_binary_cross_entropy
+      fit/whole_node/ordinal_bce:
+        direction: minimize
+        unit: balanced_cumulative_binary_cross_entropy
+      fit/whole_node/positive_continuous_huber:
+        direction: minimize
+        unit: standardized_log1p_positive_targets
+      fit/whole_node/detection_balanced_accuracy:
+        direction: maximize
+        unit: proportion
+      fit/whole_node/detection_sensitivity:
+        direction: maximize
+        unit: proportion
+      fit/whole_node/detection_specificity:
+        direction: maximize
+        unit: proportion
+      fit/whole_node/detection_precision:
+        direction: maximize
+        unit: proportion
+      fit/whole_node/state8_exact_accuracy:
+        direction: descriptive
+        unit: proportion
+      fit/whole_node/state8_balanced_accuracy:
+        direction: maximize
+        unit: proportion
+      fit/whole_node/positive_state_exact_accuracy:
+        direction: maximize
+        unit: proportion_of_positive_targets
+      fit/whole_node/positive_ordinal_mae:
+        direction: minimize
+        unit: positive_count_state
+      fit/whole_node/positive_within_one_state_accuracy:
+        direction: maximize
+        unit: proportion_of_positive_targets
+      fit/whole_node/positive_continuous_mae:
+        direction: minimize
+        unit: standardized_log1p_positive_targets
+      fit/whole_node/reconstructed_count_log1p_mae:
+        direction: minimize
+        unit: log1p_raw_count
+      fit/whole_node/collapsed4_exact_accuracy:
+        direction: descriptive
+        unit: proportion
+      fit/whole_node/collapsed4_balanced_accuracy:
+        direction: descriptive
+        unit: proportion
+      fit/whole_node/reference_per_gene_positive_ordinal_mae:
+        direction: descriptive
+        unit: positive_count_state
+      fit/whole_node/reference_per_gene_positive_continuous_huber:
+        direction: descriptive
+        unit: standardized_log1p_positive_targets
+      fit/whole_node/reference_per_gene_detection_balanced_accuracy:
+        direction: descriptive
+        unit: proportion
+
+  masked_expression_hurdle_count:
+    active_in_current_project: true
+    primary_metric: fit/whole_node/hurdle_loss
+    primary_direction: minimize
+    independent_uncertainty_unit: spatial_tissue_core
+    representation_schema: hurdle_detection_plus_positive_standardized_log1p_v1
+    loss_contract:
+      detection: equal_mean_zero_and_positive_bce
+      positive_continuous: huber_delta_1_on_per_gene_standardized_log1p
+      total: equal_mean_of_the_two_components
+      absent_expected_stratum: fail
+    metrics:
+      fit/whole_node/hurdle_loss:
+        description: Equal-weight balanced detection and positive continuous loss on held-in whole-node masks.
+        direction: minimize
+        unit: equal_weight_hurdle_objective
+      fit/partial_gene/hurdle_loss:
+        direction: minimize
+        unit: equal_weight_hurdle_objective
+      fit/spatial_block/hurdle_loss:
+        direction: minimize
+        unit: equal_weight_hurdle_objective
+      fit/whole_node/detection_bce:
+        direction: minimize
+        unit: balanced_binary_cross_entropy
+      fit/whole_node/positive_continuous_huber:
+        direction: minimize
+        unit: standardized_log1p_positive_targets
+      fit/whole_node/detection_balanced_accuracy:
+        direction: maximize
+        unit: proportion
+      fit/whole_node/detection_sensitivity:
+        direction: maximize
+        unit: proportion
+      fit/whole_node/detection_specificity:
+        direction: maximize
+        unit: proportion
+      fit/whole_node/state8_exact_accuracy:
+        direction: descriptive
+        unit: proportion
+      fit/whole_node/state8_balanced_accuracy:
+        direction: maximize
+        unit: proportion
+      fit/whole_node/positive_count_state_exact_accuracy:
+        direction: maximize
+        unit: proportion_of_positive_targets
+      fit/whole_node/positive_count_state_mae:
+        direction: minimize
+        unit: positive_count_state
+      fit/whole_node/positive_count_state_within_one_accuracy:
+        direction: maximize
+        unit: proportion_of_positive_targets
+      fit/whole_node/positive_continuous_mae:
+        direction: minimize
+        unit: standardized_log1p_positive_targets
+      fit/whole_node/reconstructed_count_log1p_mae:
+        direction: minimize
+        unit: log1p_raw_count
+      fit/whole_node/reference_per_gene_positive_count_state_mae:
+        direction: descriptive
+        unit: positive_count_state
+      fit/whole_node/reference_per_gene_positive_continuous_huber:
+        direction: descriptive
+        unit: standardized_log1p_positive_targets
+      fit/whole_node/reference_per_gene_detection_balanced_accuracy:
+        direction: descriptive
+        unit: proportion
 
   classification:
     active_in_current_project: false
@@ -162,6 +621,8 @@ diagnostic_families:
       resource/training_duration_seconds:
         direction: minimize
       resource/inference_duration_seconds:
+        direction: minimize
+      resource/total_duration_seconds:
         direction: minimize
       resource/samples_per_second:
         direction: maximize

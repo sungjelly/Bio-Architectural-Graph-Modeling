@@ -1,0 +1,50 @@
+[
+  {
+    "all_zero_exact_accuracy_percent": 90.4213735515793,
+    "collapsed4_balanced_accuracy_percent": 42.64262712130896,
+    "collapsed4_exact_accuracy_percent": 62.324449466861054,
+    "collapsed4_positive_exact_accuracy_percent": 30.966838220126668,
+    "comparison_is_descriptive_only": true,
+    "core_count": 10,
+    "model_seed_count": 7,
+    "scope": "ten_shared_fit_cores_equal_core",
+    "source": "current_ten_core_pooled_hybrid_gat_ensemble",
+    "state_0_recall_percent": 65.62390750601223,
+    "state_1_recall_percent": 35.440954416245575,
+    "state_2_recall_percent": 13.351341270273629,
+    "state_3_recall_percent": 56.15430529270438,
+    "variant": "pooled-hybrid-gat-k1000"
+  },
+  {
+    "all_zero_exact_accuracy_percent": 91.69683848797251,
+    "collapsed4_balanced_accuracy_percent": 28.167736913721626,
+    "collapsed4_exact_accuracy_percent": 91.77985796105384,
+    "collapsed4_positive_exact_accuracy_percent": 1.5313506050471508,
+    "comparison_is_descriptive_only": true,
+    "core_count": 1,
+    "model_seed_count": 3,
+    "scope": "one_core_three_model_seeds",
+    "source": "prior_one_core_categorical_gat",
+    "state_0_recall_percent": 99.95187128169484,
+    "state_1_recall_percent": 0.0,
+    "state_2_recall_percent": 0.0,
+    "state_3_recall_percent": 12.719076373191667,
+    "variant": "g2_tokenized_width512_exact_k1000_full_core"
+  },
+  {
+    "all_zero_exact_accuracy_percent": 91.69683848797251,
+    "collapsed4_balanced_accuracy_percent": 28.105087169359336,
+    "collapsed4_exact_accuracy_percent": 91.76838029782361,
+    "collapsed4_positive_exact_accuracy_percent": 1.5023838861217955,
+    "comparison_is_descriptive_only": true,
+    "core_count": 1,
+    "model_seed_count": 3,
+    "scope": "one_core_three_model_seeds",
+    "source": "prior_one_core_categorical_gat",
+    "state_0_recall_percent": 99.9419777059336,
+    "state_1_recall_percent": 0.0,
+    "state_2_recall_percent": 0.0,
+    "state_3_recall_percent": 12.478370971503741,
+    "variant": "g2_tokenized_width1024_exact_k1000_full_core"
+  }
+]

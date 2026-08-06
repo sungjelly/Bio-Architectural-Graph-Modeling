@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at_utc: "2026-07-24"
+updated_at_utc: "2026-07-31"
 
 datasets:
   cosmx_gastric_snapshot_20260724:
@@ -94,3 +94,129 @@ datasets:
       - This single-core subset supports within-core spatial evaluation only.
       - It does not support patient-level generalization or causal claims.
     verification_status: verified_from_prepared_full_v1_manifest
+
+  cosmx_normal_core_full_core_fit_v1:
+    dataset_id: cosmx_normal_core_full_core_fit_v1
+    display_name: Transductive full-core refit of the protected legacy true-Normal core
+    source_version: full_core_fit_v1
+    parent_dataset_id: cosmx_normal_core_legacy_v1
+    protected_source_path: artifacts/legacy_runs/lr_spatial_benchmark_batch/original/prepared_full_v1
+    protected_selection_reference: artifacts/legacy_runs/lr_spatial_benchmark_batch/original/prepared_full_v1/manifest.json
+    raw_fingerprint:
+      algorithm: sha256
+      value: 25a985a45f7a5ef173fdb02df73df88bb99178697a770d26a5b4fd8cf7fcfe5f
+      role: verified_source_prepared_data_checksum
+      artifact_id: d353fc34efc8e65d
+    preprocessing_version: full_core_fit_v1
+    processed_fingerprint:
+      algorithm: sha256_full_core_preprocessing_payload_v1
+      value: a112fbb2bdf929197759c82913fc379c4df797f75676457bcd10419fe7a969d5
+      role: verified_materialized_preprocessing_checksum
+      basis:
+        recipe_schema: full_core_fit_v1
+        source_dataset_id: cosmx_normal_core_legacy_v1
+        source_version: prepared_full_v1
+        source_artifact_id: d353fc34efc8e65d
+        source_prepared_data_sha256: 25a985a45f7a5ef173fdb02df73df88bb99178697a770d26a5b4fd8cf7fcfe5f
+        fitted_nodes: 24245
+        biological_targets: 1000
+        technical_control_prefixes_excluded:
+          - Negative
+          - SystemControl
+        expression_transform: gene_wise_log1p_standardization
+        metadata_transform: inverse_prepared_transform_then_median_imputation_log1p_standardization
+        numerical_epsilon: 0.00000001
+        fit_scope: all_nodes_transductive
+      materialized_component_checksums:
+        expression_counts: 10fdf81216ba9de599ffa9257344deaca7e095f3119a4b50cabec6adb73c857a
+        target_expression: d8f484bf6e3ffb67578b2bc828fe8fa73cc66b6a9e3f1cc06b2129545d2aafe9
+        node_covariates: e369c10903e7cefb57126346a8faf52910ddb8c405f2bdcb04d1f70b9f2089ae
+        coordinates_um: 95f7772e25c472850929650ce21f2ecb89581a09cc1a042b7eaa4a0b423e8088
+        macroblock_ids: 604ff976d4bf50e340ae994d36ef951118d4c28dd0f011cd800e065b9f91a355
+    aggregate_patient_count: 1
+    aggregate_sample_count: 24245
+    aggregate_fov_count: 24
+    graph_count: 1
+    graph_count_definition: One exact full-core graph; no validation or test graph exists.
+    node_feature_schema:
+      expression:
+        biological_targets: 1000
+        scale: full_core_fitted_gene_wise_standardized_log1p_counts
+        technical_controls_excluded: true
+        fit_scope: all_nodes_transductive
+      morphology_and_imaging:
+        field_count: 22
+        fit_scope: all_nodes_transductive
+        transform: median_imputation_log1p_standardization
+      direct_identifiers_present_as_model_inputs: false
+      coordinates_present_as_model_inputs: false
+    edge_feature_schema:
+      field_count: 17
+      family:
+        - distance
+        - normalized_displacement
+        - angular_basis
+        - distance_rbf
+      fit_scope: all_retained_directed_edges_transductive
+    creation_date: "2026-07-25"
+    status: materialized_and_verified
+    notes:
+      - The processed fingerprint is the materialized full-core preprocessing checksum produced after verifying and refitting the source artifact.
+      - Every cell contributes to fitted transforms and evaluation; validation and test sets do not exist.
+      - This single-core transductive dataset supports held-in capacity claims only.
+      - Run provenance must additionally record materialized preprocessing and graph checksums.
+    verification_status: verified_materialized_full_core_preprocessing
+
+  cosmx_adjacent_normal_10core_pooled_fit_v1:
+    dataset_id: cosmx_adjacent_normal_10core_pooled_fit_v1
+    display_name: Transductive ten-core adjacent-normal CosMx pooled-fit cohort
+    source_version: adjacent_normal_10core_pooled_fit_v1
+    parent_dataset_id: cosmx_gastric_snapshot_20260724
+    protected_source_path: data/raw/
+    protected_selection_reference: data/processed/adjacent_normal_10core_qkv_large_k_v1/
+    raw_fingerprint:
+      algorithm: sha256
+      value: 6dee0f3836f429c897498850bb2f9014fc7a5d6403c36034e6aebe6c635f9480
+      role: verified_parent_raw_snapshot_fingerprint
+    preprocessing_version: pooled_10core_equal_core_expression_v1
+    processed_fingerprint:
+      algorithm: sha256_canonical_cohort_manifest_v1
+      value: b3c06228ce7fda4d4c5da09c3281de46e67b8069dfadb14276ba6402af87767e
+      role: verified_ten_core_cohort_fingerprint
+      basis:
+        core_count: 10
+        fitted_cells: 117386
+        biological_targets: 1000
+        technical_control_prefixes_excluded:
+          - Negative
+          - SystemControl
+        expression_transform: per_cell_log1p_cp10k
+        fit_scope: all_cells_transductive
+    aggregate_patient_count: null
+    aggregate_sample_count: 117386
+    aggregate_core_count: 10
+    aggregate_tile_count: 26
+    graph_count: 26
+    graph_count_definition: Exact within-tile symmetric k=15 graphs; no cross-tile or cross-core edges.
+    node_feature_schema:
+      expression:
+        biological_targets: 1000
+        scale: per_cell_log1p_cp10k
+        technical_controls_excluded: true
+        fit_scope: all_cells_transductive
+      direct_identifiers_present_as_model_inputs: false
+      coordinates_present_as_model_inputs: false
+    edge_feature_schema:
+      family:
+        - symmetric_knn
+      k: 15
+      cross_tile_edges: false
+      cross_core_edges: false
+    creation_date: "2026-07-30"
+    status: materialized_and_verified
+    notes:
+      - All ten cores contribute to fitting and evaluation; no validation or independent test partition exists.
+      - Core-to-patient independence has not been verified, so cores cannot be treated as patient-level replicates.
+      - Full-cell CP10k normalization uses the complete cell library before masking and is oracle normalization for strict masking.
+      - This cohort supports held-in model-behaviour claims only, not patient generalization or biological-mechanism validation.
+    verification_status: verified_from_ten_prepared_manifests_and_cohort_fingerprint

@@ -226,6 +226,15 @@ unnecessary checkpoints. Checkpoint catalog duplicate annotations do not
 authorize deletion. Retention and physical deduplication remain separate,
 reviewed decisions.
 
+An approved payload deletion must use a checksum-bound plan and retain the
+artifact registry row. Mark an artifact `retention_deletion_pending` before
+unlinking it, then `deleted_by_retention` only after its registered path is
+absent. Apply the same tombstone to checkpoint-catalog verification status.
+`doctor` and `verify-artifacts` treat an absent tombstoned payload as expected,
+but report pending deletions or a tombstoned path that still exists. Preserve
+the decision, plan, receipt, compact run evidence, and an SQLite-consistent
+pre-deletion snapshot together.
+
 Back up the SQLite database together with canonical artifacts using an
 SQLite-consistent snapshot and an approved protected destination. A database
 without artifact bundles, or bundles without their registry/provenance, is not

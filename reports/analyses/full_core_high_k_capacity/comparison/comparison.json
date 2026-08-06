@@ -1,0 +1,187 @@
+{
+  "artifact_kind": "full_core_capacity_comparison",
+  "facts": {
+    "canonical_role": "fit",
+    "dataset": {
+      "dataset_fingerprint": "a112fbb2bdf929197759c82913fc379c4df797f75676457bcd10419fe7a969d5",
+      "dataset_id": "cosmx_normal_core_full_core_fit_v1",
+      "preprocessing_version": "full_core_fit_v1",
+      "split_fingerprint": "2c8c59fb659401cc202126cb14154f064d2e3380819aff647f06a30db354d84c",
+      "split_id": "2c8c59fb659401cc",
+      "version": "full_core_fit_v1"
+    },
+    "equal_parameter_count": true,
+    "evaluation_mask_bundle_sha256": "d2617dc3619645532ee9f8ca48a3f488209394b1a65129db670b0255c2834436",
+    "evaluation_protocol": "held_in_full_core_fixed_budget",
+    "g2_mean_whole_node_masked_huber": 0.22887325559801988,
+    "graph_sha256": "2469064e2fe14b48f642fca09a546d9e420d9fd851b9668996da62ee8246d060",
+    "matched_self_mean_whole_node_masked_huber": 0.22997546659909252,
+    "mean_self_minus_g2_masked_huber": 0.0011022110010726338,
+    "model_seed": 0,
+    "paired_whole_node_replicates": [
+      {
+        "favors_g2": true,
+        "g2_masked_huber": 0.22697028138553296,
+        "mask_checksum": "81996c157a1f672a9a14707f5b1ca6e41563f57102ab56a5b200b78df679641d",
+        "mask_replicate": 0,
+        "matched_self_masked_huber": 0.2281372387394803,
+        "self_minus_g2_masked_huber": 0.00116695735394734
+      },
+      {
+        "favors_g2": true,
+        "g2_masked_huber": 0.22949591146857545,
+        "mask_checksum": "c99e285c95e93ea67293f57e339a9ab31a037f4628fbaf313744f479ea4f8e95",
+        "mask_replicate": 1,
+        "matched_self_masked_huber": 0.2305048856710666,
+        "self_minus_g2_masked_huber": 0.0010089742024911585
+      },
+      {
+        "favors_g2": true,
+        "g2_masked_huber": 0.2301535739399512,
+        "mask_checksum": "45974bf97d521d0f3cf3d4da5b6f9d9d9f2ec8b1463a1792a727b733c2d7e9a8",
+        "mask_replicate": 2,
+        "matched_self_masked_huber": 0.23128427538673063,
+        "self_minus_g2_masked_huber": 0.0011307014467794307
+      }
+    ],
+    "parameter_count": 3987880,
+    "relative_mean_g2_gain": 0.004792732970052307
+  },
+  "inference": {
+    "label": "positive_but_subthreshold",
+    "maximum_claim": "held-in masked-expression reconstruction capacity in one transductively fitted core",
+    "statement": "The mean G2 gain is positive but below the locked 2% capacity threshold."
+  },
+  "inputs": {
+    "b0_g2_matched": {
+      "model_name": "b0-g2-matched",
+      "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260725T090752Z_e05d042b_s000_f00_a01_4ff98df7",
+      "run_id": "r_20260725T090752Z_e05d042b_s000_f00_a01_4ff98df7"
+    },
+    "g2": {
+      "model_name": "g2",
+      "path": "/workspace/Bio-Architectural-Graph-Modeling/artifacts/runs/2026/07/r_20260725T083929Z_8364b333_s000_f00_a01_f5c47601",
+      "run_id": "r_20260725T083929Z_8364b333_s000_f00_a01_f5c47601"
+    }
+  },
+  "limits": [
+    "All fitted transforms, graph construction, and evaluation cells come from the same single core.",
+    "The comparison is held-in and is not an estimate of generalization.",
+    "The three mask replicates are technical repeats, not independent biological replicates.",
+    "The qualitative no-divergence requirement was predeclared, but its exact numerical thresholds were finalized after G2 started and are therefore a post-specified audit.",
+    "This analysis does not verify the earlier held-out predictive hypothesis.",
+    "A capacity result does not establish cell-cell communication, a biological mechanism, or causality."
+  ],
+  "locked_gate": {
+    "criteria": {
+      "all_three_paired_replicates_favor_g2": true,
+      "both_runs_complete_200_finite_epochs": true,
+      "neither_run_has_unresolved_divergence": true,
+      "relative_mean_gain_at_least_2_percent": false
+    },
+    "passes": false,
+    "thresholds": {
+      "allowed_unresolved_divergence": false,
+      "minimum_relative_mean_g2_gain": 0.02,
+      "required_epochs_per_run": 200,
+      "required_favorable_paired_replicates": 3
+    }
+  },
+  "schema_version": 1,
+  "status": "complete",
+  "training_audit": {
+    "b0_g2_matched": {
+      "all_epoch_losses_and_gradients_finite": true,
+      "divergence_reasons": [],
+      "epochs_are_0_through_199": true,
+      "epochs_present": 200,
+      "gradient_spike_gt_10x_positive_median": false,
+      "last_20_gradient_max": 0.05794991925358772,
+      "last_20_losses_and_gradients_finite": true,
+      "nonfinite_last_20_epochs": [],
+      "positive_gradient_median_all_epochs": 0.012440185062587261,
+      "same_mode_loss_checks": [
+        {
+          "divergent": false,
+          "last_epoch": 199,
+          "last_loss": 0.19622701406478882,
+          "mask_mode": "block",
+          "observation_count": 19,
+          "previous_median_loss": 0.22696252167224884,
+          "previous_observations_used": 5,
+          "threshold_1_25x": 0.28370315209031105
+        },
+        {
+          "divergent": false,
+          "last_epoch": 196,
+          "last_loss": 0.2314268946647644,
+          "mask_mode": "node",
+          "observation_count": 53,
+          "previous_median_loss": 0.22778581082820892,
+          "previous_observations_used": 5,
+          "threshold_1_25x": 0.28473226353526115
+        },
+        {
+          "divergent": false,
+          "last_epoch": 198,
+          "last_loss": 0.22588708996772766,
+          "mask_mode": "partial",
+          "observation_count": 128,
+          "previous_median_loss": 0.22616127133369446,
+          "previous_observations_used": 5,
+          "threshold_1_25x": 0.2827015891671181
+        }
+      ],
+      "unresolved_divergence": false
+    },
+    "divergence_definition": {
+      "gradient_spike": "last-20 gradient max > 10x the positive median over all epochs",
+      "nonfinite_tail": "any nonfinite loss or gradient in the last 20 epochs",
+      "same_mode_deterioration": "for a mask mode with >=3 observations, its last loss > 1.25x the median of its previous up-to-5 observations"
+    },
+    "g2": {
+      "all_epoch_losses_and_gradients_finite": true,
+      "divergence_reasons": [],
+      "epochs_are_0_through_199": true,
+      "epochs_present": 200,
+      "gradient_spike_gt_10x_positive_median": false,
+      "last_20_gradient_max": 0.050617948174476624,
+      "last_20_losses_and_gradients_finite": true,
+      "nonfinite_last_20_epochs": [],
+      "positive_gradient_median_all_epochs": 0.01330682123079896,
+      "same_mode_loss_checks": [
+        {
+          "divergent": false,
+          "last_epoch": 199,
+          "last_loss": 0.1967286318540573,
+          "mask_mode": "block",
+          "observation_count": 19,
+          "previous_median_loss": 0.22758717834949493,
+          "previous_observations_used": 5,
+          "threshold_1_25x": 0.28448397293686867
+        },
+        {
+          "divergent": false,
+          "last_epoch": 196,
+          "last_loss": 0.23206757009029388,
+          "mask_mode": "node",
+          "observation_count": 53,
+          "previous_median_loss": 0.2278522104024887,
+          "previous_observations_used": 5,
+          "threshold_1_25x": 0.2848152630031109
+        },
+        {
+          "divergent": false,
+          "last_epoch": 198,
+          "last_loss": 0.22613978385925293,
+          "mask_mode": "partial",
+          "observation_count": 128,
+          "previous_median_loss": 0.22644922137260437,
+          "previous_observations_used": 5,
+          "threshold_1_25x": 0.28306152671575546
+        }
+      ],
+      "unresolved_divergence": false
+    }
+  }
+}

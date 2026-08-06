@@ -1,5 +1,5 @@
 schema_version: 1
-updated_at_utc: "2026-07-24"
+updated_at_utc: "2026-07-25"
 
 splits:
   "127b17da70688537":
@@ -39,3 +39,45 @@ splits:
       - No patient or cell lists are stored in this registry.
       - Cells and model seeds are not independent biological replicates.
       - The test split is sealed for new model-selection decisions.
+
+  "2c8c59fb659401cc":
+    split_id: "2c8c59fb659401cc"
+    dataset_id: cosmx_normal_core_full_core_fit_v1
+    dataset_version: full_core_fit_v1
+    method: deterministic_all_cells_full_core_fit_no_holdout
+    seed: null
+    fold_count: 1
+    designation: transductive_full_core_fit_no_holdout
+    experimental_unit: single_spatial_core
+    patient_level: false
+    sample_level: false
+    stratification_fields: []
+    fractions:
+      fit: 1.00
+      validation: 0.00
+      test: 0.00
+    observed_counts:
+      fit: 24245
+      validation: 0
+      test: 0
+      total: 24245
+      spatial_macroblocks: 144
+    constraints:
+      every_cell_is_fit_data: true
+      validation_partition_absent: true
+      test_partition_absent: true
+      full_core_graph: true
+      preprocessing_fit_scope: all_nodes_transductive
+      evaluation_role: held_in_fit
+      evaluation_masks_disjoint_from_epoch_masks: true
+    fingerprint:
+      algorithm: sha256_canonical_full_core_no_holdout_roles_v1
+      value: "2c8c59fb659401cc202126cb14154f064d2e3380819aff647f06a30db354d84c"
+      role: verified_materialized_role_assignment
+    protected_path: artifacts/legacy_runs/lr_spatial_benchmark_batch/original/prepared_full_v1
+    verification_status: verified_all_materialized_nodes_assigned_fit
+    notes:
+      - This is an explicit no-holdout role assignment, not a generalization split.
+      - The fingerprint binds the materialized preprocessing checksum, 24,245-node count, and all-fit role counts.
+      - No patient, FOV, macroblock, or cell assignment lists are stored here.
+      - Fresh fixed masks are technical evaluation repeats over fitted cells.

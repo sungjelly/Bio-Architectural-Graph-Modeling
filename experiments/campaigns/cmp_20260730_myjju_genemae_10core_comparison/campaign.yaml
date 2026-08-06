@@ -1,0 +1,41 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260730_myjju_genemae_10core_comparison
+display_name: MyJJu GeneMAE ten-core comparison
+status: complete
+outcome: supported
+exploratory: true
+contract_status: frozen_before_implementation
+definition: experiments/campaigns/cmp_20260730_myjju_genemae_10core_comparison/README.md
+frozen_contract: experiments/campaigns/cmp_20260730_myjju_genemae_10core_comparison/frozen_task_contract.yaml
+frozen_contract_sha256: 6f171b5bece63df943dd8fe679121fbdd41baf290339d64576dc6bfec847eada
+external_source_audit: experiments/campaigns/cmp_20260730_myjju_genemae_10core_comparison/external_source_audit.yaml
+current_comparator_campaign: cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble
+core_aliases:
+  - ANC-01
+  - ANC-02
+  - ANC-03
+  - ANC-04
+  - ANC-05
+  - ANC-06
+  - ANC-07
+  - ANC-08
+  - ANC-09
+  - ANC-10
+production_seeds: [0, 1, 2, 3, 4, 5, 6]
+production_run_count: 7
+resource_pilot_run_count: 1
+automatic_enqueue: false
+pilot_gate_status: passed
+production_status: complete
+comparison_status: complete
+primary_gate_status: passed
+baseline_gate_status: passed
+graph_use_gate_status: failed
+authoritative_report: reports/analyses/myjju_genemae_10core_comparison/comparison_v2/report.md
+authoritative_manifest: reports/analyses/myjju_genemae_10core_comparison/comparison_v2/manifest.json
+authoritative_manifest_sha256: 463617420a1ab671d7794e5c88c0c7319c5960ca28fb0e26a83d3408b9be2e41
+registry_finalization_receipt: reports/analyses/myjju_genemae_10core_comparison/registry_reconciliation/campaign_finalization_20260730T191024047253Z.json
+registry_finalization_receipt_sha256: dbad942ab8d6481f74bb6d7a0d35b7e5b2a4f02f43423c23652224a60f00b842
+superseded_report: reports/analyses/myjju_genemae_10core_comparison/comparison
+superseded_manifest_sha256: 2ac14b3f3e2d8e29cb1bb4c35b687e692212dbff90a63162e526c3b030d627b8
+supersession_reason: initial_report_omitted_genemae_resource_pilot_inventory

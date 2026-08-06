@@ -1,0 +1,224 @@
+schema_version: 1
+campaign_id: cmp_20260802_genemae_jacobian_pair_annotation
+review_date: '2026-08-02'
+exploratory: true
+search_scope:
+  resources: [PubMed, PubMed Central, UniProt, Complex Portal, IntAct, STRING]
+  concepts:
+    - exact_gene_pair
+    - protein_interaction_or_complex
+    - coexpression_or_shared_cell_state
+    - perturbation_or_genetic_loss
+    - gastric_epithelium_or_stroma
+  caveats:
+    - the_39_gene_universe_was_selected_using_prior_biology
+    - a_literature_match_is_annotation_not_independent_model_validation
+    - a_database_no_hit_is_not_proof_of_absence
+
+sources:
+  - id: collagen_i_iii_crosslink_1982
+    title: Covalent crosslinks between type I and type III collagen molecules
+    url: https://pubmed.ncbi.nlm.nih.gov/6120835/
+    type: primary_biochemistry
+    identifiers: PMID 6120835; DOI 10.1111/j.1432-1033.1982.tb05868.x
+  - id: col3a1_knockout_1997
+    title: Type III collagen is crucial for collagen I fibrillogenesis and normal cardiovascular development
+    url: https://pubmed.ncbi.nlm.nih.gov/9050868/
+    type: primary_genetic_perturbation
+    identifiers: PMID 9050868; DOI 10.1073/pnas.94.5.1852
+  - id: k8_k19_filaments_1998
+    title: K8 expression stabilizes K19 and supports K8-K19 filament formation
+    url: https://pubmed.ncbi.nlm.nih.gov/9857055/
+    type: primary_cell_biology
+    identifiers: PMID 9857055; DOI 10.1074/jbc.273.52.35176
+  - id: gastric_keratin_ihc_2004
+    title: Cytokeratin expression profile in gastric carcinomas
+    url: https://pubmed.ncbi.nlm.nih.gov/15138932/
+    type: primary_gastric_histology
+    identifiers: PMID 15138932; DOI 10.1016/j.humpath.2003.12.007
+  - id: k8_k18_structure_1990
+    title: Direct structural analysis of the K8-K18 heterodimer
+    url: https://pubmed.ncbi.nlm.nih.gov/1691189/
+    type: primary_structural_biochemistry
+    identifiers: PMID 1691189; DOI 10.1083/jcb.110.4.1199
+  - id: k8_k18_stabilization_1989
+    title: Reciprocal K8-K18 stabilization and filament rescue
+    url: https://pubmed.ncbi.nlm.nih.gov/2471065/
+    type: primary_cell_perturbation
+    identifiers: PMID 2471065; DOI 10.1128/MCB.9.4.1553
+  - id: k18_k19_double_knockout_2000
+    title: K18 and K19 functional compensation and double-knockout lethality
+    url: https://pubmed.ncbi.nlm.nih.gov/11013209/
+    type: primary_genetic_perturbation
+    identifiers: PMID 11013209; DOI 10.1093/emboj/19.19.5060
+  - id: collagen_i_heterotrimer_structure_2017
+    title: Structural basis of type I collagen heterotrimer formation
+    url: https://pubmed.ncbi.nlm.nih.gov/28281531/
+    type: primary_structural_biochemistry
+    identifiers: PMID 28281531; DOI 10.1038/ncomms14671
+  - id: collagen_transcript_coordination_1996
+    title: Developmental coordination of type I and type III collagen transcripts
+    url: https://pubmed.ncbi.nlm.nih.gov/8785585/
+    type: primary_expression_study
+    identifiers: PMID 8785585; DOI 10.1016/S0945-053X(05)80013-7
+  - id: col1_dcn_binding_2000
+    title: Decorin binding site mapped to the type I collagen alpha-1 chain
+    url: https://pubmed.ncbi.nlm.nih.gov/10823816/
+    type: primary_biochemistry
+    identifiers: PMID 10823816; DOI 10.1074/jbc.C000278200
+  - id: dcn_knockout_1997
+    title: Decorin loss disrupts collagen fibril morphology and tissue strength
+    url: https://pubmed.ncbi.nlm.nih.gov/9024701/
+    type: primary_genetic_perturbation
+    identifiers: PMID 9024701; DOI 10.1083/jcb.136.3.729
+  - id: col3_dcn_fibrillogenesis_2006
+    title: Decorin alters type III collagen fibrillogenesis and fibril diameter
+    url: https://pubmed.ncbi.nlm.nih.gov/16903686/
+    type: primary_in_vitro_perturbation
+    identifiers: PMID 16903686; DOI 10.1021/bm0603746
+  - id: gastric_col1_acta2_2025
+    title: Collagen and alpha-SMA association and induction in gastric-cancer fibroblasts
+    url: https://pubmed.ncbi.nlm.nih.gov/41625254/
+    type: primary_gastric_observational_and_cell_perturbation
+    identifiers: PMID 41625254; DOI 10.1016/j.omton.2025.201045
+  - id: acta2_knockdown_col1a1_2023
+    title: ACTA2 knockdown suppresses TGF-beta-induced COL1A1 and collagen production
+    url: https://pubmed.ncbi.nlm.nih.gov/37021273/
+    type: primary_cell_perturbation
+    identifiers: PMID 37021273; DOI 10.1016/j.jds.2022.08.030
+  - id: psca_acta2_cocapture_2020
+    title: PSCA-FLAG co-immunoprecipitation mass spectrometry candidate table
+    url: https://aacrjournals.org/mcr/article/18/3/501/90114/A-PSCA-PGRN-NF-B-Integrin-4-Axis-Promotes-Prostate
+    type: primary_proteomics_unvalidated_candidate
+    identifiers: PMID 31722969; DOI 10.1158/1541-7786.MCR-19-0278
+  - id: psca_gastric_epithelium_2008
+    title: PSCA gastric-cancer susceptibility and gastric epithelial localization
+    url: https://pubmed.ncbi.nlm.nih.gov/18488030/
+    type: primary_gastric_genetics_and_histology
+    identifiers: PMID 18488030; DOI 10.1038/ng.152
+  - id: acta2_gastric_caf_2023
+    title: ACTA2 signal localizes to gastric stromal and alpha-SMA-positive CAF compartments
+    url: https://pmc.ncbi.nlm.nih.gov/articles/PMC10173146/
+    type: primary_gastric_single_cell_and_spatial_profiling
+    identifiers: PMID 36508166; DOI 10.1158/1078-0432.CCR-22-1897
+  - id: intact_acta2_psca_query_2026
+    title: IntAct exact ACTA2-PSCA pair query returned no curated interaction
+    url: https://www.ebi.ac.uk/Tools/webservices/psicquic/intact/webservices/current/search/query/id%3AP62736%20AND%20id%3AO43653?format=count
+    type: authoritative_database_search
+    identifiers: queried 2026-08-02; ACTA2 P62736; PSCA O43653
+  - id: string_acta2_psca_query_2026
+    title: STRING ACTA2-PSCA network query returned no pair edge
+    url: https://string-db.org/api/json/network?identifiers=ACTA2%0DPSCA&species=9606&required_score=0
+    type: authoritative_database_search
+    identifiers: queried 2026-08-02; species 9606; required score 0
+
+pair_evidence:
+  - genes: [COL1A1, COL3A1]
+    classification: direct ECM crosslink and functional coupling
+    summary: Type I and III collagen molecules occupy shared fibrils and can form intermolecular covalent crosslinks; Col3a1 loss disrupts collagen-I fibrillogenesis.
+    direct_relationship: Crosslinked alpha-1(I) and alpha-1(III) peptides were isolated from native tissues, supporting a direct assembled-fibril relationship.
+    shared_program_or_pathway: Both are fibrillar-collagen components of fibroblast extracellular-matrix programs.
+    coexpression_or_cell_state: Coordinated expression is reported in many fibroblast-containing tissues but is not universal across all collagen-producing cell types.
+    perturbational_evidence: Col3a1 gene inactivation caused abnormal collagen-I fibrillogenesis across multiple organs.
+    gastric_specific_evidence: The direct biochemical and knockout evidence is not gastric-specific.
+    limitations: This evidence does not validate transcriptional direction, the Jacobian sign, or a gastric graph-mediated mechanism.
+    source_ids: [collagen_i_iii_crosslink_1982, col3a1_knockout_1997]
+
+  - genes: [KRT8, KRT19]
+    classification: direct alternative keratin-filament partnership
+    summary: KRT8 and KRT19 can form type-II/type-I heterodimers and filament arrays; KRT8 expression stabilizes KRT19.
+    direct_relationship: Cellular and recombinant experiments support K8-K19 filament formation.
+    shared_program_or_pathway: Both belong to the simple and glandular epithelial intermediate-filament program.
+    coexpression_or_cell_state: Both stain normal gastric epithelial compartments and are common in gastric carcinomas.
+    perturbational_evidence: Introducing K8 stabilized endogenous K19 and generated K8-K19 filaments.
+    gastric_specific_evidence: Gastric immunohistochemistry supports shared epithelial localization but did not calculate pairwise correlation or test direction.
+    limitations: The papers do not establish a KRT19-to-KRT8 regulatory effect or spatial graph dependence in this cohort.
+    source_ids: [k8_k19_filaments_1998, gastric_keratin_ihc_2004]
+
+  - genes: [KRT8, KRT18]
+    classification: direct heterodimer complex
+    summary: KRT8 and KRT18 are the canonical type-II/type-I coiled-coil keratin heterodimer and assemble into epithelial intermediate filaments.
+    direct_relationship: Site-specific crosslinking and recombinant assembly establish direct heterodimeric structure.
+    shared_program_or_pathway: They form a core simple-epithelial keratin program.
+    coexpression_or_cell_state: Both are highly prevalent in gastric mucosa and gastric carcinoma, and independent tissue profiles show coordinated expression.
+    perturbational_evidence: Either protein alone was unstable, whereas coexpression stabilized both and rescued filament formation.
+    gastric_specific_evidence: The gastric study demonstrates high prevalence and shared compartments, not pairwise dependence.
+    limitations: Strong structural biology does not validate the model's derivative magnitude or direction in gastric tissue.
+    source_ids: [k8_k18_structure_1990, k8_k18_stabilization_1989, gastric_keratin_ihc_2004]
+
+  - genes: [KRT18, KRT19]
+    classification: shared epithelial program and functional redundancy; no direct dimer
+    summary: KRT18 and KRT19 are coexpressed type-I keratins with compensatory epithelial functions, but canonical keratin heterodimers require a type-II partner such as KRT8.
+    direct_relationship: No convincing direct K18-K19 heterodimer evidence was found; both are type-I chains and may coexist in a K8-containing network.
+    shared_program_or_pathway: Both mark simple epithelial intermediate-filament states.
+    coexpression_or_cell_state: Both are frequent in normal gastric epithelium and gastric carcinoma.
+    perturbational_evidence: Single K18 or K19 loss was compensated, while double knockout removed early keratin filaments and caused trophoblast fragility and embryonic lethality.
+    gastric_specific_evidence: Gastric immunohistochemistry supports shared epithelial-state abundance but not a pairwise correlation coefficient.
+    limitations: Functional redundancy is not a direct physical interaction and does not validate either signed Jacobian direction.
+    source_ids: [k18_k19_double_knockout_2000, gastric_keratin_ihc_2004]
+
+  - genes: [COL1A1, COL1A2]
+    classification: direct molecular complex
+    summary: Normal type-I collagen is a heterotrimer containing two alpha-1(I) chains and one alpha-2(I) chain.
+    direct_relationship: Structural and mutational analysis identifies the chain interfaces responsible for COL1A1-COL1A2 heterotrimerization.
+    shared_program_or_pathway: Both are obligatory components of the type-I collagen fibril program.
+    coexpression_or_cell_state: Their transcripts are coordinated across examined developmental regions.
+    perturbational_evidence: Interface mutations altered homo- versus heterotrimer assembly in the structural study.
+    gastric_specific_evidence: The molecular-complex evidence is general rather than gastric-specific.
+    limitations: Stoichiometric assembly does not establish transcriptional regulation or a graph-mediated effect.
+    source_ids: [collagen_i_heterotrimer_structure_2017, collagen_transcript_coordination_1996]
+
+  - genes: [COL1A1, DCN]
+    classification: direct binding and matrix-function evidence
+    summary: Decorin binds a mapped region of the type-I collagen alpha-1 chain and regulates collagen fibril organization.
+    direct_relationship: Electron microscopy and photoaffinity labeling mapped decorin binding to an alpha-1(I) fragment.
+    shared_program_or_pathway: Both participate in fibroblast extracellular-matrix assembly.
+    coexpression_or_cell_state: Shared stromal expression can also produce association independent of direct binding.
+    perturbational_evidence: Decorin knockout caused irregular collagen fibrils, lateral fusion, and reduced tissue tensile strength.
+    gastric_specific_evidence: The decisive binding and knockout experiments are not gastric-specific.
+    limitations: The knockout phenotype concerns the collagen network broadly and does not validate the model's COL1A1-directed sensitivity.
+    source_ids: [col1_dcn_binding_2000, dcn_knockout_1997]
+
+  - genes: [COL3A1, DCN]
+    classification: direct in-vitro biochemical interaction
+    summary: Decorin binds type-III collagen fibrils during fibrillogenesis and changes fibril incorporation and diameter.
+    direct_relationship: Cell-free fibrillogenesis experiments directly measured decorin association with type-III collagen.
+    shared_program_or_pathway: Both are components of fibroblast extracellular-matrix programs.
+    coexpression_or_cell_state: A shared fibroblast or activated-stromal state remains an additional explanation for tissue-level association.
+    perturbational_evidence: Adding decorin reduced type-III collagen incorporation into fibrils and decreased fibril diameter.
+    gastric_specific_evidence: The direct experiment is in vitro and not gastric-cancer-specific.
+    limitations: It does not establish gene regulation, model direction, or an in-vivo gastric mechanism.
+    source_ids: [col3_dcn_fibrillogenesis_2006]
+
+  - genes: [COL1A2, COL3A1]
+    classification: shared fibril system; chain-specific direct binding not shown
+    summary: COL1A2 is an obligatory type-I collagen chain, and type-I and type-III collagens form coupled fibrils; direct COL1A2-to-COL3A1 chain binding was not established.
+    direct_relationship: Evidence supports interaction at the assembled-collagen and fibril level, but the native crosslink study identified alpha-1(I), not alpha-2(I), crosslinks to alpha-1(III).
+    shared_program_or_pathway: Both participate in fibrillar-collagen extracellular-matrix assembly.
+    coexpression_or_cell_state: Their transcripts are coordinated in many fibroblast-containing tissues.
+    perturbational_evidence: Col3a1 loss disrupts type-I fibrillogenesis, but the effect is not specific to the COL1A2 chain.
+    gastric_specific_evidence: No direct gastric-specific pair perturbation was found.
+    limitations: The relationship is biologically strong at the fibril level but weaker as a chain-specific pair claim.
+    source_ids: [collagen_i_iii_crosslink_1982, col3a1_knockout_1997, collagen_transcript_coordination_1996]
+
+  - genes: [COL1A1, ACTA2]
+    classification: shared myofibroblast program with limited regulatory evidence
+    summary: COL1A1 and ACTA2 co-mark activated myofibroblast and fibrotic states; no direct protein complex is established.
+    direct_relationship: COL1A1 is a secreted matrix chain and ACTA2 is a cytoskeletal contractile actin; a direct complex was not supported.
+    shared_program_or_pathway: Both are induced in TGF-beta-associated activated fibroblast programs.
+    coexpression_or_cell_state: Advanced gastric-cancer samples showed correlated collagen-I and alpha-SMA staining.
+    perturbational_evidence: ACTA2 knockdown reduced TGF-beta-induced COL1A1 and collagen production in cultured periodontal-ligament cells, with proliferation as a possible confounder.
+    gastric_specific_evidence: Gastric fibroblast experiments and clinical staining support a common activated-stroma state.
+    limitations: The evidence is consistent with shared cell state and indirect regulation, not direct binding or the model's aggregate direction.
+    source_ids: [gastric_col1_acta2_2025, acta2_knockdown_col1a1_2023]
+
+  - genes: [ACTA2, PSCA]
+    classification: weak unvalidated co-capture; compartment association more plausible
+    summary: One PSCA-FLAG proteomics table listed ACTA2 with two peptides, but the study did not validate or functionally test that hit; gastric epithelial-versus-stromal compartment mixing is better supported.
+    direct_relationship: No replicated direct interaction was found. The low-peptide ACTA2 co-capture occurred with several homologous actins, while the paper validated a different interactor.
+    shared_program_or_pathway: ACTA2 marks smooth-muscle and CAF states, whereas PSCA is a gastric epithelial surface protein; they do not define one canonical program.
+    coexpression_or_cell_state: Gastric studies place PSCA in differentiating epithelium and ACTA2 in stromal or alpha-SMA-positive CAF compartments, making an inverse abundance association plausible.
+    perturbational_evidence: No targeted reciprocal co-immunoprecipitation, ACTA2-PSCA perturbation, rescue, or regulatory experiment was found.
+    gastric_specific_evidence: Independent gastric histology and single-cell or spatial studies support different primary compartments, not a direct pairwise mechanism.
+    limitations: IntAct and STRING had no exact pair edge, but database absence is incomplete evidence; the proteomic co-capture remains an unvalidated hint.
+    source_ids: [psca_acta2_cocapture_2020, psca_gastric_epithelium_2008, acta2_gastric_caf_2023, intact_acta2_psca_query_2026, string_acta2_psca_query_2026]

@@ -1,0 +1,286 @@
+{
+  "checks": {
+    "comparisons_within_tolerance": true,
+    "finite_forward_backward": true,
+    "identical_state_dict": true,
+    "locked_model_shape": true,
+    "receiver_sorted_no_self_loops": true
+  },
+  "comparisons": {
+    "amp_ordinary_vs_chunked": {
+      "atol": 0.005,
+      "max_abs_error": 0.0005486011505126953,
+      "max_relative_error": 124.21428571428571,
+      "mean_abs_error": 4.194296565560307e-05,
+      "passed": true,
+      "rtol": 0.005,
+      "tensors": {
+        "node_embedding": {
+          "max_abs_error": 0.0005486011505126953,
+          "max_relative_error": 37.80426633111929,
+          "mean_abs_error": 4.004743623425497e-05,
+          "passed": true,
+          "shape": [
+            512,
+            512
+          ]
+        },
+        "prediction": {
+          "max_abs_error": 0.00048828125,
+          "max_relative_error": 124.21428571428571,
+          "mean_abs_error": 4.952508334099548e-05,
+          "passed": true,
+          "shape": [
+            512,
+            128
+          ]
+        }
+      }
+    },
+    "chunked_fp32_vs_amp": {
+      "atol": 0.01,
+      "max_abs_error": 0.0033186674118041992,
+      "max_relative_error": 12149.857142857143,
+      "mean_abs_error": 0.0002916803662817616,
+      "passed": true,
+      "rtol": 0.01,
+      "tensors": {
+        "node_embedding": {
+          "max_abs_error": 0.0033186674118041992,
+          "max_relative_error": 120.04302386733654,
+          "mean_abs_error": 0.0003358931264592722,
+          "passed": true,
+          "shape": [
+            512,
+            512
+          ]
+        },
+        "prediction": {
+          "max_abs_error": 0.0007641315460205078,
+          "max_relative_error": 12149.857142857143,
+          "mean_abs_error": 0.00011482932557171921,
+          "passed": true,
+          "shape": [
+            512,
+            128
+          ]
+        }
+      }
+    },
+    "fp32_ordinary_vs_chunked": {
+      "atol": 5e-05,
+      "max_abs_error": 1.6689300537109375e-06,
+      "max_relative_error": 0.8157894736842105,
+      "mean_abs_error": 1.3950479921531756e-07,
+      "passed": true,
+      "rtol": 5e-05,
+      "tensors": {
+        "node_embedding": {
+          "max_abs_error": 1.6689300537109375e-06,
+          "max_relative_error": 0.016682534141140654,
+          "mean_abs_error": 1.5822015924163435e-07,
+          "passed": true,
+          "shape": [
+            512,
+            512
+          ]
+        },
+        "prediction": {
+          "max_abs_error": 3.5762786865234375e-07,
+          "max_relative_error": 0.8157894736842105,
+          "mean_abs_error": 6.464335911005037e-08,
+          "passed": true,
+          "shape": [
+            512,
+            128
+          ]
+        }
+      }
+    }
+  },
+  "device": {
+    "compute_capability": [
+      8,
+      6
+    ],
+    "cuda_runtime": "13.0",
+    "index": 0,
+    "name": "NVIDIA GeForce RTX 3090",
+    "requested": "cuda:0",
+    "torch_version": "2.11.0+cu130",
+    "total_memory_bytes": 25296044032
+  },
+  "diagnostic": "dense_gat_amp_equivalence",
+  "executions": {
+    "ordinary_amp": {
+      "autocast_enabled": true,
+      "finite": {
+        "backward_loss": true,
+        "forward_outputs": true,
+        "gradients": true
+      },
+      "grad_scaler_enabled": true,
+      "gradients": {
+        "all_finite": true,
+        "any_nonzero": true,
+        "global_l2_norm": 0.22392880537117987,
+        "gradient_tensor_count": 42,
+        "max_abs": 0.006683349609375,
+        "missing_gradient_parameters": [],
+        "parameter_tensor_count": 42
+      },
+      "implementation": "ordinary",
+      "loss": 1.0520596504211426,
+      "peak_vram": {
+        "allocated_bytes": 538327552,
+        "reserved_bytes": 593494016
+      },
+      "precision": "amp_fp16"
+    },
+    "ordinary_fp32": {
+      "autocast_enabled": false,
+      "finite": {
+        "backward_loss": true,
+        "forward_outputs": true,
+        "gradients": true
+      },
+      "grad_scaler_enabled": false,
+      "gradients": {
+        "all_finite": true,
+        "any_nonzero": true,
+        "global_l2_norm": 0.22394131532964756,
+        "gradient_tensor_count": 42,
+        "max_abs": 0.006681966595351696,
+        "missing_gradient_parameters": [],
+        "parameter_tensor_count": 42
+      },
+      "implementation": "ordinary",
+      "loss": 1.0520625114440918,
+      "peak_vram": {
+        "allocated_bytes": 706591744,
+        "reserved_bytes": 725614592
+      },
+      "precision": "fp32"
+    },
+    "receiver_chunked_amp": {
+      "autocast_enabled": true,
+      "finite": {
+        "backward_loss": true,
+        "forward_outputs": true,
+        "gradients": true
+      },
+      "grad_scaler_enabled": true,
+      "gradients": {
+        "all_finite": true,
+        "any_nonzero": true,
+        "global_l2_norm": 0.22392997820947477,
+        "gradient_tensor_count": 42,
+        "max_abs": 0.006683349609375,
+        "missing_gradient_parameters": [],
+        "parameter_tensor_count": 42
+      },
+      "implementation": "receiver_chunked",
+      "loss": 1.0520609617233276,
+      "peak_vram": {
+        "allocated_bytes": 95023104,
+        "reserved_bytes": 125829120
+      },
+      "precision": "amp_fp16"
+    },
+    "receiver_chunked_fp32": {
+      "autocast_enabled": false,
+      "finite": {
+        "backward_loss": true,
+        "forward_outputs": true,
+        "gradients": true
+      },
+      "grad_scaler_enabled": false,
+      "gradients": {
+        "all_finite": true,
+        "any_nonzero": true,
+        "global_l2_norm": 0.2239413070120882,
+        "gradient_tensor_count": 42,
+        "max_abs": 0.006681966595351696,
+        "missing_gradient_parameters": [],
+        "parameter_tensor_count": 42
+      },
+      "implementation": "receiver_chunked",
+      "loss": 1.0520625114440918,
+      "peak_vram": {
+        "allocated_bytes": 110739968,
+        "reserved_bytes": 127926272
+      },
+      "precision": "fp32"
+    }
+  },
+  "model": {
+    "activation_checkpointing": true,
+    "attention_dropout": 0.0,
+    "attention_heads": 4,
+    "decoder_dim": 512,
+    "dropout": 0.0,
+    "edge_attribute_dim": 17,
+    "edge_embedding_dim": 64,
+    "edge_hidden_dim": 64,
+    "ffn_dim": 512,
+    "graph_layers": 2,
+    "hidden_dim": 512,
+    "node_covariate_dim": 22,
+    "num_genes": 128,
+    "receiver_chunk_size": 64,
+    "state_dict_sha256": "f2d7db20180f42d4beb89ba9e525e34f420c459f0dd61a9d67242b375054fa1d"
+  },
+  "passed": true,
+  "schema_version": 1,
+  "seed": 20260725,
+  "shapes": {
+    "edge_attributes": [
+      32768,
+      17
+    ],
+    "edge_index": [
+      2,
+      32768
+    ],
+    "gene_mask": [
+      512,
+      128
+    ],
+    "input_expression": [
+      512,
+      128
+    ],
+    "node_covariates": [
+      512,
+      22
+    ],
+    "target_expression": [
+      512,
+      128
+    ]
+  },
+  "synthetic_graph": {
+    "incoming_degree": 64,
+    "input_sha256": "86a719b2ef2f2ed9fed1739bdaa7d1e5ee4f34a162e5a3cedf310b31f1123b7d",
+    "mask_rate": 0.2,
+    "n_directed_edges": 32768,
+    "n_nodes": 512,
+    "receiver_chunk_size": 64,
+    "receiver_sorted": true,
+    "self_loops": false
+  },
+  "tolerances": {
+    "amp_ordinary_vs_chunked": {
+      "atol": 0.005,
+      "rtol": 0.005
+    },
+    "chunked_fp32_vs_amp": {
+      "atol": 0.01,
+      "rtol": 0.01
+    },
+    "fp32_ordinary_vs_chunked": {
+      "atol": 5e-05,
+      "rtol": 5e-05
+    }
+  }
+}

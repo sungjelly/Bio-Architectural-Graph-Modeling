@@ -806,6 +806,153 @@ class ParameterMatchedSelfControl(_BaseMaskedExpressionModel):
         )
 
 
+class _EdgeMatchedSelfMixingBlock(_MatchedSelfMixingBlock):
+    """Cell-autonomous block matching one edge-conditioned GATv2 block."""
+
+    def __init__(
+        self,
+        hidden_dim: int,
+        attention_heads: int,
+        attention_head_dim: Optional[int],
+        edge_embedding_dim: int,
+        ffn_dim: Optional[int],
+        dropout: float,
+    ) -> None:
+        super().__init__(
+            hidden_dim=hidden_dim,
+            attention_heads=attention_heads,
+            attention_head_dim=attention_head_dim,
+            ffn_dim=ffn_dim,
+            dropout=dropout,
+        )
+        _, raw_attention_dim = _validate_hidden_dimensions(
+            hidden_dim, attention_heads, attention_head_dim
+        )
+        # This has exactly the shape and bias policy of GATv2Conv.lin_edge,
+        # but receives a within-cell surrogate rather than an edge feature.
+        self.edge_projection = nn.Linear(
+            edge_embedding_dim, raw_attention_dim, bias=False
+        )
+
+    def forward(
+        self,
+        node_embedding: Tensor,
+        cell_edge_embedding: Tensor,
+    ) -> Tensor:
+        update = F.gelu(
+            (
+                self.left_projection(node_embedding)
+                + self.right_projection(node_embedding)
+                + self.edge_projection(cell_edge_embedding)
+            )
+            * self.routing_vector
+        )
+        update = self.output_projection(update)
+        node_embedding = self.normalization(
+            node_embedding + self.dropout(update)
+        )
+        return self.feed_forward(node_embedding)
+
+
+class EdgeParameterMatchedSelfControl(_BaseMaskedExpressionModel):
+    """Cell-autonomous control exactly parameter-matched to G2.
+
+    The shared edge encoder and each edge projection are retained as trainable
+    capacity, but consume a deterministic projection of the same cell's node
+    embedding.  No graph topology, neighboring cell, coordinate, or measured
+    edge attribute enters the forward pass.  Thus, with matching constructor
+    dimensions, this model has exactly the same trainable parameter count as
+    :class:`EdgeConditionedGATv2` while remaining a strict single-cell model.
+    """
+
+    def __init__(
+        self,
+        num_genes: int,
+        edge_attribute_dim: int,
+        node_covariate_dim: int = 0,
+        hidden_dim: int = 256,
+        attention_heads: int = 4,
+        attention_head_dim: Optional[int] = None,
+        graph_layers: int = 1,
+        ffn_dim: Optional[int] = None,
+        decoder_dim: Optional[int] = None,
+        edge_hidden_dim: int = 64,
+        edge_embedding_dim: int = 32,
+        dropout: float = 0.1,
+        attention_dropout: float = 0.1,
+    ) -> None:
+        del attention_dropout  # Kept for constructor parity with G2.
+        if graph_layers <= 0:
+            raise ValueError("graph_layers must be positive")
+        if edge_attribute_dim <= 0:
+            raise ValueError("edge_attribute_dim must be positive")
+        super().__init__(
+            num_genes=num_genes,
+            node_covariate_dim=node_covariate_dim,
+            hidden_dim=hidden_dim,
+            dropout=dropout,
+        )
+        self.edge_attribute_dim = int(edge_attribute_dim)
+        self.edge_encoder = SharedEdgeEncoder(
+            edge_attribute_dim=edge_attribute_dim,
+            edge_embedding_dim=edge_embedding_dim,
+            edge_hidden_dim=edge_hidden_dim,
+        )
+        self.blocks = nn.ModuleList(
+            [
+                _EdgeMatchedSelfMixingBlock(
+                    hidden_dim=hidden_dim,
+                    attention_heads=attention_heads,
+                    attention_head_dim=attention_head_dim,
+                    edge_embedding_dim=edge_embedding_dim,
+                    ffn_dim=ffn_dim,
+                    dropout=dropout,
+                )
+                for _ in range(graph_layers)
+            ]
+        )
+        self.decoder = ExpressionDecoder(
+            hidden_dim=hidden_dim,
+            num_genes=num_genes,
+            decoder_dim=decoder_dim,
+            dropout=dropout,
+        )
+
+    def _cell_edge_surrogate(self, node_embedding: Tensor) -> Tensor:
+        indices = torch.arange(
+            self.edge_attribute_dim,
+            device=node_embedding.device,
+            dtype=torch.long,
+        ).remainder(node_embedding.shape[1])
+        return node_embedding.index_select(1, indices)
+
+    def forward(
+        self,
+        input_expression: Tensor,
+        gene_mask: Tensor,
+        edge_index: Optional[Tensor] = None,
+        edge_attributes: Optional[Tensor] = None,
+        node_covariates: Optional[Tensor] = None,
+        return_explanations: bool = False,
+        target_nodes: Optional[Tensor | Sequence[int]] = None,
+    ) -> ModelOutput:
+        del edge_index, edge_attributes, return_explanations
+        embedding, targets = self._encode_and_targets(
+            input_expression, gene_mask, node_covariates, target_nodes
+        )
+        embedding = _select_targets(embedding, targets)
+        cell_edge_embedding = self.edge_encoder(
+            self._cell_edge_surrogate(embedding)
+        )
+        for block in self.blocks:
+            embedding = block(embedding, cell_edge_embedding)
+        prediction = self.decoder(embedding)
+        return ModelOutput(
+            prediction=prediction,
+            node_embedding=embedding,
+        )
+
+
 class MeanNeighborModel(_BaseMaskedExpressionModel):
     """B1: uniform incoming-neighbor mean message passing."""
 
@@ -1439,6 +1586,7 @@ class AdditiveEdgeMessageModel(_BaseMaskedExpressionModel):
 B0 = SelfOnlyMLP
 B0SelfMLP = SelfOnlyMLP
 ParameterMatchedB0 = ParameterMatchedSelfControl
+G2ParameterMatchedB0 = EdgeParameterMatchedSelfControl
 BroadField = BroadSpatialFieldControl
 B1 = MeanNeighborModel
 B1MeanNeighbor = MeanNeighborModel
@@ -1458,6 +1606,7 @@ __all__ = [
     "B1MeanNeighbor",
     "BroadField",
     "BroadSpatialFieldControl",
+    "EdgeParameterMatchedSelfControl",
     "EdgeConditionedGATv2",
     "ExpressionDecoder",
     "G1",
@@ -1470,6 +1619,7 @@ __all__ = [
     "ModelOutput",
     "NodeEncoder",
     "ParameterMatchedB0",
+    "G2ParameterMatchedB0",
     "ParameterMatchedSelfControl",
     "ResidualFeedForward",
     "SelfOnlyMLP",

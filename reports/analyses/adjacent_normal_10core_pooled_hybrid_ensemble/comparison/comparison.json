@@ -1,0 +1,195 @@
+{
+  "aggregation_contract": {
+    "cells_are_biological_replicates": false,
+    "core_weighting": "equal",
+    "formal_core_level_inference": false,
+    "mask_replicates_are_biological_replicates": false,
+    "model_seeds_are_biological_replicates": false,
+    "reason": "shared fitted weights couple core outcomes",
+    "technical_mask_replicates_averaged_first": true
+  },
+  "artifact_kind": "pooled_hybrid_ensemble_comparison",
+  "campaign_id": "cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble",
+  "coverage": {
+    "ensemble_replicate_rows": 180,
+    "failed_attempts_before_completion": 2,
+    "failed_pilot_attempts_before_completion": 2,
+    "failed_production_attempts_before_completion": 0,
+    "member_replicate_rows": 1260,
+    "production_slots_completed": 14,
+    "production_slots_expected": 14
+  },
+  "ensemble_contract": {
+    "average_member_metrics_as_ensemble": false,
+    "continuous": "arithmetic_mean_shared_standardized_prediction",
+    "decode_after_combination": true,
+    "detection": "arithmetic_mean_probability",
+    "member_logits_retained_or_written": false,
+    "metrics_recomputed_after_prediction_combination": true,
+    "ordinal": "arithmetic_mean_threshold_probability"
+  },
+  "exploratory": true,
+  "failed_gates": [
+    "pooled_data_gate",
+    "representation_gate"
+  ],
+  "failure_attempt_count": 2,
+  "frozen_gates": {
+    "ensemble_gate": {
+      "metrics": {
+        "hybrid_loss": {
+          "ensemble_equal_core_mean": 0.4318688233693441,
+          "mean_individual_equal_core_metric": 0.4354104587009974,
+          "passed": true
+        },
+        "positive_continuous_huber": {
+          "ensemble_equal_core_mean": 0.3685552547375361,
+          "mean_individual_equal_core_metric": 0.37301031095641,
+          "passed": true
+        },
+        "positive_ordinal_mae": {
+          "ensemble_equal_core_mean": 0.9330984509410308,
+          "mean_individual_equal_core_metric": 0.9420458104318525,
+          "passed": true
+        }
+      },
+      "passed": true
+    },
+    "formal_core_level_inference": "not_performed_shared_fitted_weights_couple_core_outcomes",
+    "graph_gate": {
+      "favoring_core_count": 10,
+      "favoring_seed_pair_count": 7,
+      "mean_relative_hybrid_loss_improvement": 0.030060481801889465,
+      "passed": true,
+      "positive_metric_noninferiority": {
+        "positive_continuous_huber": true,
+        "positive_ordinal_mae": true
+      }
+    },
+    "pooled_data_gate": {
+      "metrics": {
+        "detection_bce": {
+          "favoring_core_count": 10,
+          "mean_relative_improvement": 0.023185887614856963,
+          "passed": true
+        },
+        "positive_ordinal_mae": {
+          "favoring_core_count": 7,
+          "mean_relative_improvement": 0.037570573300312805,
+          "passed": false
+        },
+        "reconstructed_count_log1p_mae": {
+          "favoring_core_count": 4,
+          "mean_relative_improvement": -0.085667071693371,
+          "passed": false
+        }
+      },
+      "passed": false
+    },
+    "representation_gate": {
+      "detection_balanced_accuracy": {
+        "model": 0.6723486660230114,
+        "passed": true,
+        "per_core_reference": 0.5110214581954629,
+        "pooled_reference": 0.5090040820836745
+      },
+      "passed": false,
+      "positive_metrics": {
+        "positive_continuous_huber": {
+          "favoring_core_count": 10,
+          "mean_relative_improvement": 0.26156431369067323,
+          "passed": true
+        },
+        "positive_ordinal_mae": {
+          "favoring_core_count": 0,
+          "mean_relative_improvement": -0.6115708864144944,
+          "passed": false
+        }
+      }
+    }
+  },
+  "limitations": [
+    "held-in transductive reconstruction is not generalization",
+    "shared fitted weights couple core outcomes",
+    "cells masks and seeds are not biological replicates",
+    "whole-node prediction may infer state and return learned means",
+    "partial-gene masking may use same-cell co-expression",
+    "mutual k1000 is broad context not direct interaction",
+    "adjacent-normal is not true Normal",
+    "targeted-panel coverage limits interpretation",
+    "pooled versus prior independent fitting changes cross-core weight sharing, optimizer-step budget, and expression normalization, so it does not isolate an effect of data size",
+    "the prior categorical comparison used one legacy true-Normal core while the current campaign uses adjacent-normal cores"
+  ],
+  "maximum_defensible_conclusion": "The complete exploratory held-in experiment was technically valid, but the frozen pooled_data_gate, representation_gate failed; no graph, representation, or ensemble success is claimed beyond the specific gates that passed",
+  "negative_results": [
+    "pooled_data_gate failed its frozen descriptive threshold",
+    "representation_gate failed its frozen descriptive threshold"
+  ],
+  "operational_failures": {
+    "diagnosis": "The two attempt-1 pilot jobs failed before model construction or GPU work because long-lived workers retained a stale protocol validator. Safely reloaded workers and immutable attempt-2 retries completed. These were operational invalid_configuration failures, not model outcomes.",
+    "pilot_invalid_configuration_attempts": 2,
+    "production_failed_attempts": 0
+  },
+  "outcome": "negative",
+  "pilot_failure_attempt_count": 2,
+  "prior_categorical_comparison": {
+    "current_core_count": 10,
+    "current_tissue_context": "pathology_confirmed_adjacent_normal",
+    "descriptive_only": true,
+    "differences_not_attributable_to_tokenizer_alone": true,
+    "previous_core_count": 1,
+    "previous_tissue_context": "legacy_true_normal"
+  },
+  "production_failure_attempt_count": 0,
+  "prohibited_claims": [
+    "patient-held-out generalization",
+    "core-held-out generalization",
+    "true-Normal performance",
+    "direct cellular interaction",
+    "biological mechanism",
+    "causality"
+  ],
+  "schema_version": 1,
+  "status": "complete",
+  "tables": [
+    "run_audit",
+    "attempt_inventory",
+    "registered_failures",
+    "run_resources_and_convergence",
+    "member_replicate_metrics",
+    "member_core_mode_metrics",
+    "prior_independent_seed0_replicate_metrics",
+    "prior_independent_seed0_core_mode_metrics",
+    "ensemble_replicate_metrics",
+    "ensemble_core_mode_metrics",
+    "ensemble_equal_core_aggregates",
+    "pooled_seed0_vs_prior",
+    "graph_core_comparison",
+    "seed_pair_comparison",
+    "representation_core_comparison",
+    "ensemble_member_comparison",
+    "categorical_descriptive_comparison",
+    "gate_results"
+  ],
+  "tissue_context": "pathology_confirmed_adjacent_normal",
+  "tissue_context_is_true_normal": false,
+  "training_scope": {
+    "core_aliases": [
+      "ANC-01",
+      "ANC-02",
+      "ANC-03",
+      "ANC-04",
+      "ANC-05",
+      "ANC-06",
+      "ANC-07",
+      "ANC-08",
+      "ANC-09",
+      "ANC-10"
+    ],
+    "cross_core_edges": false,
+    "member_count_per_arm": 7,
+    "one_shared_model_per_member": true,
+    "production_run_count": 14,
+    "total_fit_cells": 117386
+  }
+}

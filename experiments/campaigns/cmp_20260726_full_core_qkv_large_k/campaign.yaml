@@ -1,0 +1,23 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260726_full_core_qkv_large_k
+display_name: Full-core large-capacity QKV-GAT k stress test
+status: complete
+outcome: locked_representation_and_large_k_gates_failed
+definition: experiments/campaigns/cmp_20260726_full_core_qkv_large_k/README.md
+variants:
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_xlarge.yaml
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_large.yaml
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_medium.yaml
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_width896.yaml
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_width832.yaml
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_width768.yaml
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_width704.yaml
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_width640.yaml
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_width896_chunk300k.yaml
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_width640_chunk300k.yaml
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_width576_chunk300k.yaml
+  - configs/experiment/full_core_qkv_k5000_resource_pilot_width576_chunk320k.yaml
+  - configs/experiment/full_core_qkv_k1000.yaml
+  - configs/experiment/full_core_qkv_k5000.yaml
+  - configs/experiment/full_core_qkv_matched_self.yaml
+automatic_enqueue: false

@@ -1,0 +1,18 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260729_self_hurdle_full_core_capacity
+display_name: Self-only continuous-hurdle full-core capacity
+status: planned
+outcome: pending
+exploratory: true
+contract_status: frozen_before_any_campaign_training
+definition: experiments/campaigns/cmp_20260729_self_hurdle_full_core_capacity/README.md
+frozen_contract: experiments/campaigns/cmp_20260729_self_hurdle_full_core_capacity/frozen_task_contract.yaml
+core_aliases:
+  - ANC-03
+  - ANC-05
+resource_run_count: 2
+science_run_count: 2
+maximum_attempts_per_job: 2
+automatic_enqueue: false
+graph_arms_authorized: false
+

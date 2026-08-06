@@ -1,0 +1,55 @@
+{
+  "campaign_id": "cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble",
+  "checksum": "693ca02dd689a62f3e5fc12178e5df690b051ac5e074338eac8fb28cf874894c",
+  "checksum_algorithm": "canonical-json-sha256",
+  "comparison": {
+    "comparison_sha256": "1e128b05453f67730c6c57621815a495e06b21ee3088ae042706fb770540b3e7",
+    "comparison_size_bytes": 7066,
+    "directory": "/workspace/Bio-Architectural-Graph-Modeling/reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison",
+    "failed_gates": [
+      "pooled_data_gate",
+      "representation_gate"
+    ],
+    "manifest_path": "/workspace/Bio-Architectural-Graph-Modeling/reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/manifest.json",
+    "manifest_sha256": "1ef63f7b9ae739d512a4cc1a8d4e756f782d373b0847b341eb2f84aa00467a6e",
+    "manifest_size_bytes": 6605,
+    "outcome": "negative",
+    "status": "complete",
+    "verified_file_count": 40,
+    "verified_files_checksum": "5e8aa901739427c01a462cebb22c7b47152c36555d1efbcbda70e7558e8b2e25"
+  },
+  "database": {
+    "backup": {
+      "integrity_check": "ok",
+      "path": "/workspace/Bio-Architectural-Graph-Modeling/state/tracking/backups/bagm.before_pooled_campaign_finalization.20260730T090842737296Z.1ef63f7b9ae7.sqlite3",
+      "sha256": "3d20f014c60bef79d201c8bc9b2d629f591700f145e67dbeb760aaba524937c0",
+      "size_bytes": 8794112
+    },
+    "integrity_check_before": "ok",
+    "path": "/workspace/Bio-Architectural-Graph-Modeling/state/tracking/bagm.sqlite3"
+  },
+  "finalized_at": "2026-07-30T09:08:42.737296Z",
+  "receipt_kind": "pooled_campaign_registry_finalization_v1",
+  "schema_version": 1,
+  "transaction": {
+    "active_queue_or_run_states": false,
+    "changed_count": 1,
+    "compare_and_swap": "planned->complete",
+    "config_json_sha256_after": "fb8281510ce2bdaa3ff58e1ede547c9ca3f96df4c8515de7a4f2776ff03948d5",
+    "config_json_sha256_before": "fb8281510ce2bdaa3ff58e1ede547c9ca3f96df4c8515de7a4f2776ff03948d5",
+    "config_json_unchanged": true,
+    "idempotent_already_complete": false,
+    "mode": "BEGIN IMMEDIATE",
+    "post_status": "complete",
+    "pre_status": "planned",
+    "queue_status_counts": {
+      "completed": 16,
+      "failed": 2
+    },
+    "run_or_queue_rows_modified": false,
+    "run_status_counts": {
+      "completed": 16,
+      "failed": 2
+    }
+  }
+}

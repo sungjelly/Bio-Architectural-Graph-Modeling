@@ -1,0 +1,10 @@
+version: 1
+name: full_core_g2_larger_multiseed
+campaign_id: cmp_20260726_full_core_g2_larger_multiseed
+enqueue_automatically: false
+experiment_configs:
+  - configs/experiment/full_core_g2_multiseed_baseline.yaml
+  - configs/experiment/full_core_g2_multiseed_width1024.yaml
+factors:
+  seed: [0, 1, 2]
+  fold: [0]

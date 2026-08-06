@@ -1,0 +1,48 @@
+dataset:
+  dataset_id: cosmx_normal_core_full_core_fit_v1
+  version: full_core_fit_v1
+  split_id: "2c8c59fb659401cc"
+  dataset_fingerprint: "a112fbb2bdf929197759c82913fc379c4df797f75676457bcd10419fe7a969d5"
+  dataset_fingerprint_role: materialized_full_core_preprocessing_checksum
+  dataset_fingerprint_basis:
+    recipe_schema: full_core_fit_v1
+    source_dataset_id: cosmx_normal_core_legacy_v1
+    source_version: prepared_full_v1
+    source_artifact_id: d353fc34efc8e65d
+    source_prepared_data_sha256: "25a985a45f7a5ef173fdb02df73df88bb99178697a770d26a5b4fd8cf7fcfe5f"
+    biological_targets: 1000
+    technical_control_prefixes_excluded:
+      - Negative
+      - SystemControl
+    expression_transform: gene_wise_log1p_standardization
+    metadata_transform: inverse_prepared_transform_then_median_imputation_log1p_standardization
+    numerical_epsilon: 0.00000001
+    fit_scope: all_24245_nodes_transductive
+    materialized_preprocessing_sha256: "a112fbb2bdf929197759c82913fc379c4df797f75676457bcd10419fe7a969d5"
+  split_fingerprint: "2c8c59fb659401cc202126cb14154f064d2e3380819aff647f06a30db354d84c"
+  split_fingerprint_status: verified_materialized_no_holdout_role_assignment
+  split_fingerprint_basis:
+    schema: full_core_no_holdout_roles_v1
+    dataset_fingerprint: "a112fbb2bdf929197759c82913fc379c4df797f75676457bcd10419fe7a969d5"
+    n_nodes: 24245
+    role_assignment: every row in verified prepared artifact order assigned fit
+    role_counts:
+      fit: 24245
+      validation: 0
+      test: 0
+    experimental_unit: single_spatial_core
+  preprocessing_version: full_core_fit_v1
+  registry_reference: data/registry/datasets.yaml#cosmx_normal_core_full_core_fit_v1
+  protected_source_reference: data/registry/datasets.yaml#cosmx_normal_core_legacy_v1
+  prepared_artifact_reference: artifacts/legacy_runs/lr_spatial_benchmark_batch/original/prepared_full_v1
+  task: masked_expression_regression
+  target_scale: full_core_fitted_gene_wise_standardized_log1p_counts
+  biological_target_count: 1000
+  technical_control_prefixes_excluded:
+    - Negative
+    - SystemControl
+  preprocessing_fit_scope: all_nodes_transductive
+  experimental_unit: single_spatial_core
+  generalization_scope: held_in_reconstruction_only
+  validation_or_test_partition_present: false
+  patient_generalization_supported: false

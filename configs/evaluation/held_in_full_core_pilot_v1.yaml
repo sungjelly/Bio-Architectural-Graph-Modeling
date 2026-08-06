@@ -1,0 +1,33 @@
+evaluation:
+  registry_version: 1
+  task_family: masked_expression_regression
+  protocol: held_in_full_core_fixed_budget
+  canonical_prediction_split: fit
+  primary_metric: fit/whole_node/masked_huber
+  primary_direction: minimize
+  splits:
+    - fit
+  mask_modes:
+    - partial_gene
+    - whole_node
+    - spatial_block
+  mask_replicates_per_mode: 1
+  fixed_mask_bundle: true
+  mask_seed_namespace: held_in_evaluation_disjoint_from_epoch_masks
+  metrics:
+    - fit/whole_node/masked_huber
+  descriptive_summaries:
+    - masked_mse
+    - masked_mae
+    - gene_pearson
+    - gene_spearman
+    - cell_pearson
+    - cell_spearman
+  uncertainty_unit: technical_mask_replicate
+  independent_biological_replicates: 1
+  generalization_estimate: false
+  validation_or_test_selection: false
+  save_per_macroblock_descriptives: true
+  save_curve_numeric_data: true
+  diagnostic_only: true
+  conclusion_bearing: false

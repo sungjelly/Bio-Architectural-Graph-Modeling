@@ -1,0 +1,26 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260729_adjacent_normal_10core_hybrid_count_gat
+display_name: Ten-core adjacent-normal hybrid raw-count GAT
+status: planned
+outcome: pending
+exploratory: true
+contract_status: frozen_before_implementation
+definition: experiments/campaigns/cmp_20260729_adjacent_normal_10core_hybrid_count_gat/README.md
+frozen_contract: experiments/campaigns/cmp_20260729_adjacent_normal_10core_hybrid_count_gat/frozen_task_contract.yaml
+core_aliases:
+  - ANC-01
+  - ANC-02
+  - ANC-03
+  - ANC-04
+  - ANC-05
+  - ANC-06
+  - ANC-07
+  - ANC-08
+  - ANC-09
+  - ANC-10
+variants_per_core:
+  - hybrid-gat-k1000
+  - hybrid-matched-self
+production_run_count: 20
+production_maximum_attempts: 2
+automatic_enqueue: false

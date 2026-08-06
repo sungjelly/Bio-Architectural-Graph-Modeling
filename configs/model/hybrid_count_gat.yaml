@@ -1,0 +1,27 @@
+model:
+  name: hybrid-count-gat
+  family: hybrid_count_edge_conditioned_gatv2
+  count_representation_schema: hybrid_raw_count_0_1_2_3_4_7_8_15_16_31_32plus_v1
+  output_count_states: 8
+  input_mask_token_id: 8
+  detection_logits_per_gene: 1
+  positive_ordinal_logits_per_gene: 6
+  continuous_predictions_per_gene: 1
+  embedding_dim: 512
+  hidden_dim: 512
+  graph_layers: 2
+  attention_heads: 4
+  ffn_dim: 512
+  decoder_dim: 512
+  edge_hidden_dim: 64
+  edge_embedding_dim: 64
+  dropout: 0.10
+  attention_dropout: 0.10
+  receiver_chunk_size: 512
+  activation_checkpointing: true
+  exact_receiver_partitioning: true
+  implicit_self_loops: false
+  trainable_node_identifiers: false
+  trainable_edge_identifiers: false
+  uses_graph_inputs: true
+  uses_edge_inputs: true

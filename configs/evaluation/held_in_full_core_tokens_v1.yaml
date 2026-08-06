@@ -1,0 +1,37 @@
+evaluation:
+  registry_version: 1
+  task_family: masked_expression_token_classification
+  protocol: held_in_full_core_fixed_budget
+  canonical_prediction_split: fit
+  primary_metric: fit/whole_node/masked_token_accuracy_percent
+  primary_direction: maximize
+  splits:
+    - fit
+  mask_modes:
+    - partial_gene
+    - whole_node
+    - spatial_block
+  mask_replicates_per_mode: 3
+  fixed_mask_bundle: true
+  mask_seed_namespace: held_in_evaluation_disjoint_from_epoch_masks
+  metrics:
+    - fit/whole_node/masked_token_accuracy_percent
+    - fit/whole_node/masked_token_balanced_accuracy_percent
+    - fit/whole_node/masked_nonzero_token_accuracy_percent
+    - fit/whole_node/masked_token_cross_entropy
+  descriptive_summaries:
+    - baseline_uniform_accuracy_percent
+    - baseline_empirical_frequency_accuracy_percent
+    - baseline_always_zero_accuracy_percent
+    - baseline_always_zero_balanced_accuracy_percent
+    - baseline_per_gene_modal_accuracy_percent
+    - baseline_per_gene_modal_balanced_accuracy_percent
+    - baseline_per_gene_modal_nonzero_accuracy_percent
+    - token_recall_percent
+    - token_support
+  uncertainty_unit: technical_mask_replicate
+  independent_biological_replicates: 1
+  generalization_estimate: false
+  validation_or_test_selection: false
+  save_per_token_descriptives: true
+  save_per_mask_numeric_data: true

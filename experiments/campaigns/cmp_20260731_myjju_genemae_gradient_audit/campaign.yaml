@@ -1,0 +1,28 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260731_myjju_genemae_gradient_audit
+display_name: MyJJu GeneMAE gradient claim audit
+status: complete
+outcome: blocked
+exploratory: true
+contract_status: frozen_before_new_gradient_inspection
+definition: experiments/campaigns/cmp_20260731_myjju_genemae_gradient_audit/README.md
+frozen_contract: experiments/campaigns/cmp_20260731_myjju_genemae_gradient_audit/frozen_task_contract.yaml
+frozen_contract_sha256: 5e5b1321f5e9b9c0acfa98d22f1a3348eb856b76fc74ad18d4cc8df835f3a4b5
+upstream_campaign: cmp_20260730_myjju_genemae_10core_comparison
+core_aliases:
+  - ANC-01
+  - ANC-02
+  - ANC-03
+  - ANC-04
+  - ANC-05
+  - ANC-06
+  - ANC-07
+  - ANC-08
+  - ANC-09
+  - ANC-10
+checkpoint_seeds: [0, 1, 2, 3, 4, 5, 6]
+automatic_enqueue: false
+gradient_status: pilot_failed_numerical_replay
+report_status: failed_run_archived
+failed_run_id: r_20260731T081950Z_b2203286_s000_f00_a01_35181af2
+successor_campaign: cmp_20260731_myjju_genemae_gradient_audit_cpu_replay

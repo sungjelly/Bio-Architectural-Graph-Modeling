@@ -1,0 +1,251 @@
+schema_version: 1
+model:
+  name: multiscale-hurdle-count
+  family: additive_multiscale_hurdle_count
+  embedding_dim: 32
+  hidden_dim: 32
+  decoder_dim: 32
+  ffn_dim: 48
+  attention_heads: 2
+  attention_head_dim: 8
+  value_head_dim: 4
+  message_dim: 16
+  edge_hidden_dim: 16
+  edge_embedding_dim: 8
+  receiver_chunk_size: 64
+  activation_checkpointing: true
+  dropout: 0.0
+  attention_dropout: 0.0
+  count_representation_schema: hurdle_detection_plus_positive_standardized_log1p_v1
+  output_channels_per_gene: 2
+  regional_routing: true
+  local_routing: true_and_permuted_paired_arms
+  exact_additive_decomposition: true
+  trainable_node_identifiers: false
+  trainable_edge_identifiers: false
+masking:
+  type: mixed_expression_masking
+  rate:
+    partial_gene: 0.35
+    whole_node: 0.35
+  rates:
+    partial_gene: 0.35
+    whole_node: 0.35
+  curriculum: P+N
+  mask_seed: 314159
+  validation_replicates: 0
+  test_replicates: 0
+  explicit_gene_mask_channel: true
+dataset:
+  dataset_id: cosmx_anc05_adjacent_normal_full_core_fit_v1
+  version: adjacent_normal_full_core_fit_v1
+  split_id: 3a01fab74089e721
+  dataset_fingerprint: b12c1d688f07824ae3b029cdfaaf59990be48d1fbf4290ea6ee67a5c4d1688f7
+  dataset_fingerprint_role: materialized_full_core_preprocessing_checksum
+  dataset_fingerprint_basis:
+    source_prepared_data_sha256: c0713d5d70fc9597a54b30c1d5264a175e353cdd9d9f7d9c0e47f08c10d0dd3e
+  split_fingerprint: 3a01fab74089e721fadd893480d87b99ccbedb84140bfa9204aa4fe1347c6166
+  split_fingerprint_status: verified_materialized_no_holdout_role_assignment
+  preprocessing_version: adjacent_normal_full_core_fit_v1
+  prepared_artifact_reference: data/processed/adjacent_normal_10core_qkv_large_k_v1/anc-05/prepared_v1
+  prepared_data_sha256: c0713d5d70fc9597a54b30c1d5264a175e353cdd9d9f7d9c0e47f08c10d0dd3e
+  task: masked_expression_hurdle_count
+  target_scale: generated_synthetic_raw_counts_on_observed_geometry_only
+  biological_unit_alias: ANC-05
+  experimental_unit: one_observed_geometry_with_generated_expression
+  preprocessing_fit_scope: synthetic_fixture_only
+  generalization_scope: none_synthetic_recovery_diagnostic
+  validation_or_test_partition_present: false
+features:
+  use_edge_features: true
+  fit_scope: synthetic_fixture_only
+  edge_features:
+    - distance_um
+    - distance_over_radius
+    - log1p_distance_um
+    - delta_x_over_radius
+    - delta_y_over_radius
+    - cos_theta
+    - sin_theta
+    - cos_2theta
+    - sin_2theta
+    - distance_rbf_0
+    - distance_rbf_1
+    - distance_rbf_2
+    - distance_rbf_3
+    - distance_rbf_4
+    - distance_rbf_5
+    - distance_rbf_6
+    - distance_rbf_7
+  prohibited_node_inputs:
+    - direct_identifiers
+    - absolute_coordinates
+    - observed_expression
+    - expression_derived_annotations
+graph:
+  kind: synthetic_observed_geometry_multiscale_exact_mutual_knn
+  neighbor_k: 64
+  k: 64
+  radius_um: 75.0
+  radius_guard_um: 75.0
+  symmetry: mutual
+  self_loops: false
+  local:
+    neighbor_k_cap: 64
+    maximum_distance_um: 75.0
+  regional:
+    neighbor_k_cap: 256
+    minimum_distance_exclusive_um: 75.0
+    maximum_distance_um: 300.0
+  sender_state_permutation:
+    schema: macroblock_spatial_antipode_sender_state_permutation_v1
+    observed_topology_unchanged: true
+    observed_receivers_unchanged: true
+    observed_edge_attributes_bit_identical: true
+    minimum_node_mapping_changed_fraction: 0.99
+    minimum_node_displacement_above_75um_fraction: 0.90
+    minimum_local_edge_slot_sender_identity_changed_fraction: 0.99
+trainer:
+  optimizer: AdamW
+  learning_rate: 0.003
+  batch_size: 1
+  max_epochs: 96
+  synthetic_max_epochs: 96
+  weight_decay: 0.0
+  gradient_clip_norm: 1.0
+  target_node_batch_size: 512
+  synthetic_target_node_batch_size: 512
+  fixed_epoch_budget: true
+  early_stopping: false
+  validation_every: null
+  precision: float32
+  amp: false
+  synthetic_amp: false
+  amp_dtype: auto
+  deterministic: true
+  restore_best: false
+  monitored_metric: null
+  primary_checkpoint_role: last
+  checkpoint_policy: last_only
+  neighbor_sampling: false
+evaluation:
+  task_family: masked_expression_hurdle_count
+  protocol: held_in_full_core_fixed_budget
+  canonical_prediction_split: fit
+  primary_metric: fit/whole_node/hurdle_loss
+  primary_direction: minimize
+  splits:
+    - fit
+  validation_or_test_selection: false
+  generalization_estimate: false
+  diagnostic_only: true
+campaign:
+  campaign_id: cmp_20260729_multiscale_hurdle_count_pilot
+  exploratory: true
+  frozen_contract: experiments/campaigns/cmp_20260729_multiscale_hurdle_count_pilot/frozen_task_contract.yaml
+  frozen_contract_sha256: 54496bc73c8d6f2b3c2ec9885fba86b2021944462a106dbd10a23cfd88e25fb7
+  active_contract_amendment: experiments/campaigns/cmp_20260729_multiscale_hurdle_count_pilot/contract_amendment_002.yaml
+  active_contract_amendment_sha256: 6864fff7d35ce3af2312b8985a5fb7356b36bdd568bdcba4514ab0eaa3867cd2
+  required_contract_supplement: experiments/campaigns/cmp_20260729_multiscale_hurdle_count_pilot/contract_amendment_003.yaml
+  required_contract_supplement_sha256: 6e89d83ccc909be16b7282d2dfb5cf826c0714ea6ce3923b33293cb96c4de09f
+experiment:
+  variant_label: anc05_stage0_synthetic_sender_state_recovery
+  arm: paired_stage0_synthetic_recovery
+  biological_unit_alias: ANC-05
+  stage: 0
+  estimand: synthetic_recovery_of_correctly_aligned_local_sender_state_conditional_on_identical_topology
+  permitted_claim: synthetic_recovery_only
+  conclusion_eligible: false
+classification:
+  schema_version: 1
+  lifecycle_stage: diagnostic
+  study_axis: multiscale_synthetic_sender_state_recovery
+  scientific_variant: anc05_stage0_locked_recovery
+  retention_class: retain_diagnostic_evidence
+  classification_confidence: high
+metadata:
+  execution_role: stage0_synthetic_recovery
+  frozen_scientific_contract: true
+  no_post_outcome_tuning: true
+  pre_run_negative_diagnostic:
+    reference: experiments/campaigns/cmp_20260729_multiscale_hurdle_count_pilot/stage0_prerun_negative_diagnostic_v1.json
+    file_sha256: 87d21ba39de9972d787ebec185d4de433743bfc623349f57287275060bc22c72
+    payload_checksum: 4b06b1d3d08afe560ed727cb1e0da53254b9f358626fda067b2de6cc224dade3
+    registered_stage0_result_inferred: false
+  expected_fixture_preflight:
+    selected_node_count: 160
+    full_node_count: 7450
+    prepared_manifest_sha256: d3c02c88b65903dec1268c4ff2fcd5674bd176a0d986ce57e7c933ee684fced0
+    selection_index_sha256: 85f028b0185257611d25f5b2d8c042efafe83210a0e905d54553ac08d8b5a6bc
+    geometry_sha256: d026cdf5ab397ce0911a6a0800558c01667c29ebec36924da26c4992a25a5423
+    macroblock_ids_sha256: 9b70d267847b4a63eefbec727fd3b5013b55bbf217aa373f6dc3f340c46d5e66
+    macroblock_count: 2
+    true_graph_bundle_sha256: befb12b8a78d83f44c6b0f66434608907557dac76d02616f21c9be6b4abf9143
+    true_local_graph_sha256: ee98466db7cd6e0e5a021047747c64970320a5353a1243c85b1d8d99aba113a2
+    true_regional_graph_sha256: 05822664f4cb5acdea955adc89603a07f9f5f431cd12097168c2c34c24ca66a0
+    sender_state_permutation_receipt_checksum: 6e74850d4e224fbde27293d8e6cfc13a16bee8adda46f2c0ae312aa39f9089eb
+    sender_state_permutation_mapping_sha256: 931073a4b25951fd46a53e65ba4467f5768a9e4d35cd2733c940bb3f852a6af5
+    effective_permuted_source_equals_receiver_count: 6
+    effective_permuted_source_equals_receiver_fraction: 0.000687757909215956
+    affected_receiver_count: 6
+    affected_receiver_fraction: 0.0375
+    fixture_checksum: f53076d07e81842b4e73a4bb6ec66b795d2899d207a620c35a136377b2aa1cd7
+  synthetic_recovery:
+    seed: 0
+    null_seed: 104729
+    selected_node_count: 160
+    num_genes: 4
+    active_sender_count: 24
+    effect_size: 4.0
+    baseline_positive_probability: 0.12
+    regional_decoy_max_count: 8
+    evaluation_node_rate: 0.20
+    maximum_null_absolute_correlation: 0.05
+    maximum_permuted_signal_correlation: 0.80
+    top_edge_count: 16
+    minimum_loss_advantage: 0.0
+    minimum_contribution: 0.0
+    minimum_deletion_advantage: 0.0
+    max_epochs: 96
+    learning_rate: 0.003
+    weight_decay: 0.0
+    gradient_clip_norm: 1.0
+    partial_gene_rate: 0.35
+    node_rate: 0.35
+    mask_seed: 314159
+    model_seed: 2718
+    target_node_batch_size: 512
+    hidden_dim: 32
+    decoder_dim: 32
+    ffn_dim: 48
+    attention_heads: 2
+    attention_head_dim: 8
+    value_head_dim: 4
+    message_dim: 16
+    edge_hidden_dim: 16
+    edge_embedding_dim: 8
+    receiver_chunk_size: 64
+    activation_checkpointing: true
+    dropout: 0.0
+    attention_dropout: 0.0
+    amp: false
+    amp_dtype: auto
+    device: null
+    query_chunk_size: 128
+    graph_receiver_chunk_size: 128
+    mutual_search_chunk_size: 100000
+    graph_workers: 1
+launcher:
+  kind: local_subprocess
+  requested_gpu: "0"
+  requested_gpu_count: 1
+  set_cuda_visible_devices: true
+  concurrency: 1
+  process_count: 1
+  distributed: false
+  disk_safety_max_used_decimal_gb: 55.0
+  per_process_peak_vram_gib_hard_stop: 20.5
+  aggregate_process_vram_gib_target: 50.0
+seed: 0
+fold: 0
+attempt: 1

@@ -1,0 +1,15 @@
+graph:
+  kind: disabled_self_only_schema_placeholder
+  enabled: false
+  construction_performed: false
+  neighbor_k: 1
+  k: 1
+  radius_um: 1.0
+  symmetry: mutual
+  edge_dropout: 0.0
+  self_loops: false
+  full_core_graph: false
+  coordinates_are_node_covariates: false
+  expected_directed_edges: 0
+  expected_graph_sha256: null
+

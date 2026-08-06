@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "sources": [
+    {
+      "id": "collagen_i_iii_crosslink_1982",
+      "title": "Covalent crosslinks between type I and type III collagen molecules",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/6120835/",
+      "type": "primary_biochemistry",
+      "identifiers": "PMID 6120835; DOI 10.1111/j.1432-1033.1982.tb05868.x"
+    },
+    {
+      "id": "col3a1_knockout_1997",
+      "title": "Type III collagen is crucial for collagen I fibrillogenesis and normal cardiovascular development",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9050868/",
+      "type": "primary_genetic_perturbation",
+      "identifiers": "PMID 9050868; DOI 10.1073/pnas.94.5.1852"
+    },
+    {
+      "id": "k8_k19_filaments_1998",
+      "title": "K8 expression stabilizes K19 and supports K8-K19 filament formation",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9857055/",
+      "type": "primary_cell_biology",
+      "identifiers": "PMID 9857055; DOI 10.1074/jbc.273.52.35176"
+    },
+    {
+      "id": "gastric_keratin_ihc_2004",
+      "title": "Cytokeratin expression profile in gastric carcinomas",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/15138932/",
+      "type": "primary_gastric_histology",
+      "identifiers": "PMID 15138932; DOI 10.1016/j.humpath.2003.12.007"
+    },
+    {
+      "id": "k8_k18_structure_1990",
+      "title": "Direct structural analysis of the K8-K18 heterodimer",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/1691189/",
+      "type": "primary_structural_biochemistry",
+      "identifiers": "PMID 1691189; DOI 10.1083/jcb.110.4.1199"
+    },
+    {
+      "id": "k8_k18_stabilization_1989",
+      "title": "Reciprocal K8-K18 stabilization and filament rescue",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/2471065/",
+      "type": "primary_cell_perturbation",
+      "identifiers": "PMID 2471065; DOI 10.1128/MCB.9.4.1553"
+    },
+    {
+      "id": "k18_k19_double_knockout_2000",
+      "title": "K18 and K19 functional compensation and double-knockout lethality",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/11013209/",
+      "type": "primary_genetic_perturbation",
+      "identifiers": "PMID 11013209; DOI 10.1093/emboj/19.19.5060"
+    },
+    {
+      "id": "collagen_i_heterotrimer_structure_2017",
+      "title": "Structural basis of type I collagen heterotrimer formation",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/28281531/",
+      "type": "primary_structural_biochemistry",
+      "identifiers": "PMID 28281531; DOI 10.1038/ncomms14671"
+    },
+    {
+      "id": "collagen_transcript_coordination_1996",
+      "title": "Developmental coordination of type I and type III collagen transcripts",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/8785585/",
+      "type": "primary_expression_study",
+      "identifiers": "PMID 8785585; DOI 10.1016/S0945-053X(05)80013-7"
+    },
+    {
+      "id": "col1_dcn_binding_2000",
+      "title": "Decorin binding site mapped to the type I collagen alpha-1 chain",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/10823816/",
+      "type": "primary_biochemistry",
+      "identifiers": "PMID 10823816; DOI 10.1074/jbc.C000278200"
+    },
+    {
+      "id": "dcn_knockout_1997",
+      "title": "Decorin loss disrupts collagen fibril morphology and tissue strength",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/9024701/",
+      "type": "primary_genetic_perturbation",
+      "identifiers": "PMID 9024701; DOI 10.1083/jcb.136.3.729"
+    },
+    {
+      "id": "col3_dcn_fibrillogenesis_2006",
+      "title": "Decorin alters type III collagen fibrillogenesis and fibril diameter",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/16903686/",
+      "type": "primary_in_vitro_perturbation",
+      "identifiers": "PMID 16903686; DOI 10.1021/bm0603746"
+    },
+    {
+      "id": "gastric_col1_acta2_2025",
+      "title": "Collagen and alpha-SMA association and induction in gastric-cancer fibroblasts",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41625254/",
+      "type": "primary_gastric_observational_and_cell_perturbation",
+      "identifiers": "PMID 41625254; DOI 10.1016/j.omton.2025.201045"
+    },
+    {
+      "id": "acta2_knockdown_col1a1_2023",
+      "title": "ACTA2 knockdown suppresses TGF-beta-induced COL1A1 and collagen production",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37021273/",
+      "type": "primary_cell_perturbation",
+      "identifiers": "PMID 37021273; DOI 10.1016/j.jds.2022.08.030"
+    },
+    {
+      "id": "psca_acta2_cocapture_2020",
+      "title": "PSCA-FLAG co-immunoprecipitation mass spectrometry candidate table",
+      "url": "https://aacrjournals.org/mcr/article/18/3/501/90114/A-PSCA-PGRN-NF-B-Integrin-4-Axis-Promotes-Prostate",
+      "type": "primary_proteomics_unvalidated_candidate",
+      "identifiers": "PMID 31722969; DOI 10.1158/1541-7786.MCR-19-0278"
+    },
+    {
+      "id": "psca_gastric_epithelium_2008",
+      "title": "PSCA gastric-cancer susceptibility and gastric epithelial localization",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/18488030/",
+      "type": "primary_gastric_genetics_and_histology",
+      "identifiers": "PMID 18488030; DOI 10.1038/ng.152"
+    },
+    {
+      "id": "acta2_gastric_caf_2023",
+      "title": "ACTA2 signal localizes to gastric stromal and alpha-SMA-positive CAF compartments",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10173146/",
+      "type": "primary_gastric_single_cell_and_spatial_profiling",
+      "identifiers": "PMID 36508166; DOI 10.1158/1078-0432.CCR-22-1897"
+    },
+    {
+      "id": "intact_acta2_psca_query_2026",
+      "title": "IntAct exact ACTA2-PSCA pair query returned no curated interaction",
+      "url": "https://www.ebi.ac.uk/Tools/webservices/psicquic/intact/webservices/current/search/query/id%3AP62736%20AND%20id%3AO43653?format=count",
+      "type": "authoritative_database_search",
+      "identifiers": "queried 2026-08-02; ACTA2 P62736; PSCA O43653"
+    },
+    {
+      "id": "string_acta2_psca_query_2026",
+      "title": "STRING ACTA2-PSCA network query returned no pair edge",
+      "url": "https://string-db.org/api/json/network?identifiers=ACTA2%0DPSCA&species=9606&required_score=0",
+      "type": "authoritative_database_search",
+      "identifiers": "queried 2026-08-02; species 9606; required score 0"
+    }
+  ]
+}

@@ -1,0 +1,121 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble
+display_name: Pooled ten-core adjacent-normal hybrid-count ensemble
+status: complete
+outcome: negative
+completed_at_utc: "2026-07-30T09:08:42.737296Z"
+analysis_completed_at_utc: "2026-07-30T09:00:57Z"
+exploratory: true
+contract_status: frozen_before_implementation
+definition: experiments/campaigns/cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble/README.md
+frozen_contract: experiments/campaigns/cmp_20260730_adjacent_normal_10core_pooled_hybrid_ensemble/frozen_task_contract.yaml
+frozen_contract_sha256: c6af3dc756155ee502506f08304a7436ae99da36ad2b4ed8fae48672a312f6e2
+core_aliases:
+  - ANC-01
+  - ANC-02
+  - ANC-03
+  - ANC-04
+  - ANC-05
+  - ANC-06
+  - ANC-07
+  - ANC-08
+  - ANC-09
+  - ANC-10
+arms:
+  - pooled-hybrid-gat-k1000
+  - pooled-hybrid-matched-self
+production_seeds: [0, 1, 2, 3, 4, 5, 6]
+production_run_count: 14
+resource_pilot_run_count: 2
+production_maximum_attempts: 2
+automatic_enqueue: false
+pilot_gate_status: passed
+pilot_gate_receipt_checksum: 549a7de5684279492c43de774d546226161cd8f8e14393d0ac92d4696a7cd068
+production_enqueue_receipt_checksum: 76ab088c9e26e970cea99827114471e1dda83b450a3423bb7c2e2e77d80aac58
+production_status: completed
+production_status_as_of: "2026-07-30T09:00:57Z"
+production_completed_count: 14
+production_running_count: 0
+production_queued_count: 0
+production_failed_count: 0
+production_retry_count: 0
+pilot_completed_run_count: 2
+pilot_failed_attempt_count: 2
+pilot_failure_category: invalid_configuration
+total_failed_attempt_count: 2
+convergence_diagnostics:
+  gat_all_last_20_epoch_loss_slopes_positive: true
+  gat_last_20_epoch_loss_slope_min: 0.000007419090970113577
+  gat_last_20_epoch_loss_slope_max: 0.0008611126972320439
+  gat_final_train_hybrid_loss_min: 0.4392456889152527
+  gat_final_train_hybrid_loss_max: 0.443867826461792
+  gat_observed_minimum_train_hybrid_loss_min: 0.4255484104156494
+  gat_observed_minimum_train_hybrid_loss_max: 0.4267608016729355
+  matched_self_all_last_20_epoch_loss_slopes_negative: true
+  final_epoch_remains_canonical: true
+  interpretation: unfavorable_late_gat_training_degradation_or_incomplete_convergence
+analysis:
+  status: complete
+  outcome: negative
+  output_directory: reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison
+  report_markdown: reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/report.md
+  report_markdown_sha256: 045650071cd98ee4df27dd14d558715f816768f8e74ac9dd268cf466e8c3de5d
+  report_html: reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/report.html
+  report_html_sha256: a3024b1dc84eb3ff4f42cbf483926e5b4824306fd95578ea6939cbdb19735432
+  comparison: reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/comparison.json
+  comparison_sha256: 1e128b05453f67730c6c57621815a495e06b21ee3088ae042706fb770540b3e7
+  manifest: reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/manifest.json
+  manifest_sha256: 1ef63f7b9ae739d512a4cc1a8d4e756f782d373b0847b341eb2f84aa00467a6e
+frozen_gate_results:
+  pooled_data_gate:
+    passed: false
+    detection_bce_mean_relative_improvement: 0.023185887614856963
+    detection_bce_favoring_alias_count: 10
+    positive_ordinal_mae_mean_relative_improvement: 0.037570573300312805
+    positive_ordinal_mae_favoring_alias_count: 7
+    reconstructed_count_log1p_mae_mean_relative_improvement: -0.085667071693371
+    reconstructed_count_log1p_mae_favoring_alias_count: 4
+  graph_gate:
+    passed: true
+    mean_relative_hybrid_loss_improvement: 0.030060481801889465
+    favoring_alias_count: 10
+    favoring_seed_pair_count: 7
+    positive_ordinal_mae_nonworse: true
+    positive_continuous_huber_nonworse: true
+  representation_gate:
+    passed: false
+    positive_ordinal_mae_mean_relative_improvement: -0.6115708864144944
+    positive_ordinal_mae_favoring_alias_count: 0
+    positive_continuous_huber_mean_relative_improvement: 0.26156431369067323
+    positive_continuous_huber_favoring_alias_count: 10
+    detection_balanced_accuracy: 0.6723486660230114
+    per_core_reference_detection_balanced_accuracy: 0.5110214581954629
+    equal_core_reference_detection_balanced_accuracy: 0.5090040820836745
+  ensemble_gate:
+    passed: true
+    hybrid_loss: 0.4318688233693441
+    mean_member_hybrid_loss: 0.4354104587009974
+    positive_ordinal_mae: 0.9330984509410308
+    mean_member_positive_ordinal_mae: 0.9420458104318525
+    positive_continuous_huber: 0.3685552547375361
+    mean_member_positive_continuous_huber: 0.37301031095641
+registry_reconciliation:
+  peak_vram_status: complete
+  application_receipt: reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/registry_reconciliation/peak_vram_application_20260730T075908338478Z.json
+  application_checksum: cad5d223e1d6b66136eec7e06ae265a323e3d6c36c8b0facc12b77abaeebd809
+  campaign_status: complete
+  campaign_finalization_receipt: reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/registry_reconciliation/campaign_finalization_20260730T090842737296Z.json
+  campaign_finalization_checksum: 693ca02dd689a62f3e5fc12178e5df690b051ac5e074338eac8fb28cf874894c
+  campaign_finalization_receipt_sha256: 6e1d15b43384ef5d792de7a019633749dba3b3215a06a4d1c2a15932f74bd3d2
+  registry_config_json_unchanged: true
+verification:
+  full_test_suite_passed: 784
+  full_test_suite_skipped: 1
+  full_test_suite_warnings: 3
+  artifact_verification_valid: true
+  artifact_bundle_issue_count: 0
+  artifact_registry_issue_count: 0
+  doctor_ok: true
+  doctor_issue_count: 0
+  doctor_warning_count: 0
+  doctor_free_disk_gib: 39.596

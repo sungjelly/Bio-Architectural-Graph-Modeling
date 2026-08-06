@@ -1,0 +1,109 @@
+contract_schema_version: 1
+campaign_id: cmp_20260802_genemae_jacobian_pair_annotation
+contract_status: frozen_after_upstream_matrix_inspection
+exploratory: true
+
+objective:
+  primary: rank_and_biologically_annotate_gene_pairs_from_the_verified_genemae_jacobian
+  deliverables:
+    - signed_directed_39_by_39_matrix
+    - symmetric_absolute_39_by_39_matrix
+    - top_ten_unique_offdiagonal_mutual_sensitivity_pairs
+    - receiver_and_source_jacobian_profile_correlations
+    - pair_level_biological_evidence_and_sources
+    - provenance_and_verification_records
+
+input:
+  run_id: r_20260731T083020Z_8f363415_s000_f00_a01_5375b35a
+  relative_path: artifacts/runs/2026/07/r_20260731T083020Z_8f363415_s000_f00_a01_5375b35a/interpretation/report.json
+  sha256: 6a5bdbcc17c397a84696062a249cd56f83b17be3a6cb3b80e8772606c1b9cf33
+  matrix_key: source_style_reproduction.equal_core_seven_seed_signed_directed_matrix
+  symmetric_matrix_key: source_style_reproduction.equal_core_seven_seed_published_symmetric_absolute_matrix
+  axis_key: source_style_reproduction.marker_gene_order
+  expected_gene_count: 39
+  expected_shape: [39, 39]
+
+model_selection:
+  model: seven_seed_myjju_genemae_ensemble
+  selection_basis: lowest_common_task_held_in_partial_gene_huber_among_compared_models
+  equal_core_huber: 0.348210
+  select_single_best_seed: false
+  held_out_generalization: false
+  graph_use_gate_passed: false
+  graph_gain_vs_node_label_permutation: 0.0109
+
+estimands:
+  signed_directed: global_unmasked_input_output_gradient_equal_core_equal_seed
+  row_axis: target_gene
+  column_axis: source_gene
+  mutual_score: 0.5_times_sum_of_opposite_direction_absolute_gradients
+  top_pair_count: 10
+  exclude_diagonal: true
+  receiver_profile_correlation: signed_spearman_across_other_source_genes
+  source_profile_correlation: signed_spearman_across_other_target_genes
+  exclude_pair_coordinates_from_profile_correlations: true
+
+units_and_scope:
+  observational_unit: adjacent_normal_tissue_core
+  core_count: 10
+  model_seed_count: 7
+  seeds_are_biological_replicates: false
+  gene_universe_size: 39
+  full_panel_size: 1000
+  full_panel_analysis: false
+  all_cells_used_for_fitting: true
+  cell_count: 117386
+  patient_independence_verified: false
+  input_scale: log1p_cp10k
+  source_statistic_uses_unmasked_inputs: true
+  maximum_graph_hops: 4
+
+required_adverse_evidence:
+  global_graph_use_gate_failed: true
+  graph_gradient_structure_null_passing_cores: 0
+  graph_gradient_structure_null_total_cores: 10
+  source_selected_gene_universe: true
+  literature_overlap_is_independent_validation: false
+
+biological_evidence_axes:
+  - direct_physical_or_biochemical_relation
+  - shared_curated_complex_pathway_or_structural_program
+  - independent_coexpression_or_cell_state
+  - perturbational_evidence
+  - gastric_specific_evidence
+  - no_pair_specific_evidence_found
+
+acceptance:
+  input_checksum_must_match: true
+  matrix_must_be_finite: true
+  upstream_symmetric_transform_must_reproduce: true
+  deterministic_top_pair_count: 10
+  retain_both_directed_signed_entries: true
+  every_pair_requires_source_or_documented_no_evidence: true
+  focused_tests_must_pass: true
+  verifier_must_pass: true
+  repository_doctor_must_pass: true
+
+maximum_claim: literature_annotated_held_in_aggregate_model_implied_sensitivity
+prohibited_claims:
+  - expression_correlation_from_jacobian_magnitude
+  - independently_validated_biology
+  - graph_dependent_mechanism
+  - direct_cell_cell_communication
+  - patient_generalization
+  - causal_influence
+
+outputs:
+  directory: reports/analyses/genemae_jacobian_gene_pairs_20260802
+  expected:
+    - signed_directed_jacobian.csv
+    - symmetric_absolute_jacobian.csv
+    - receiver_profile_spearman.csv
+    - source_profile_spearman.csv
+    - top_mutual_sensitivity_pairs.csv
+    - top_receiver_profile_pairs.csv
+    - top_source_profile_pairs.csv
+    - biological_evidence.csv
+    - report.md
+    - provenance.json
+    - verification.json

@@ -1,0 +1,38 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260729_multiscale_hurdle_count_pilot
+display_name: Multiscale hurdle-count biological-signal pilot
+status: planned
+outcome: pending
+exploratory: true
+contract_status: frozen_before_new_training
+definition: experiments/campaigns/cmp_20260729_multiscale_hurdle_count_pilot/README.md
+frozen_contract: experiments/campaigns/cmp_20260729_multiscale_hurdle_count_pilot/frozen_task_contract.yaml
+frozen_contract_sha256: 54496bc73c8d6f2b3c2ec9885fba86b2021944462a106dbd10a23cfd88e25fb7
+contract_amendments:
+  - experiments/campaigns/cmp_20260729_multiscale_hurdle_count_pilot/contract_amendment_001.yaml
+  - experiments/campaigns/cmp_20260729_multiscale_hurdle_count_pilot/contract_amendment_002.yaml
+  - experiments/campaigns/cmp_20260729_multiscale_hurdle_count_pilot/contract_amendment_003.yaml
+contract_amendment_sha256:
+  - 3e263145fb33b86b3fcfd2b36daab7c14282b05c3ae15b0c8fbbfb0ed0f4638a
+  - 6864fff7d35ce3af2312b8985a5fb7356b36bdd568bdcba4514ab0eaa3867cd2
+  - 6e89d83ccc909be16b7282d2dfb5cf826c0714ea6ce3923b33293cb96c4de09f
+tissue_context: pathology_confirmed_adjacent_normal
+stage1_core_aliases:
+  - ANC-03
+  - ANC-05
+stage2_core_aliases:
+  - ANC-02
+  - ANC-03
+  - ANC-05
+  - ANC-06
+  - ANC-09
+variants:
+  - self
+  - self_regional
+  - self_regional_local
+  - self_regional_local_permuted
+stage1_resource_pilot_runs: 2
+stage1_science_runs: 2
+stage2_total_science_runs: 20
+production_maximum_attempts: 2
+automatic_enqueue: false
