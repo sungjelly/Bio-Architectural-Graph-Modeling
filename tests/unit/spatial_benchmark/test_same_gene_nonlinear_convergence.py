@@ -334,6 +334,19 @@ def test_convergence_configuration_has_fold_invariant_full_scientific_id(
     assert pilot["trainer"]["anchor_epoch"] == 12
     assert pilot["evaluation"]["statistical_partition"] == "resource_validation"
     assert full_configs[0]["evaluation"]["statistical_partition"] == "outer_geometry_test"
+    assert pilot["evaluation"]["canonical_prediction_split"] == "validation"
+    assert pilot["evaluation"]["protocol"] == "resource_validation"
+    assert full_configs[0]["evaluation"]["canonical_prediction_split"] == "test"
+    assert (
+        full_configs[0]["evaluation"]["protocol"]
+        == "held_out_geometry_masked_reconstruction"
+    )
+    assert pilot["evaluation"]["primary_metric"].startswith("validation/")
+    assert full_configs[0]["evaluation"]["primary_metric"].startswith("test/")
+    assert full_configs[0]["dataset"]["version"] == runner.DATASET_VERSION
+    assert full_configs[0]["model"]["embedding_dim"] == runner.HIDDEN_COUNT
+    assert full_configs[0]["graph"]["neighbor_k"] == 12
+    assert full_configs[0]["features"]["use_edge_features"] is False
     assert pilot["masking"]["receiver_expression_input"] is False
 
     changed_schedule = copy.deepcopy(full_configs[0])

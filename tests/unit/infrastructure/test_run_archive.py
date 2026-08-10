@@ -91,6 +91,41 @@ def test_canonical_fit_prediction_accepts_explicit_held_in_protocols(
     assert _canonical_prediction_split(tmp_path) == "fit"
 
 
+@pytest.mark.parametrize(
+    "protocol",
+    (
+        "held_out_geometry_masked_reconstruction",
+        "held_out_slide_masked_reconstruction",
+    ),
+)
+def test_canonical_test_prediction_accepts_explicit_held_out_protocols(
+    tmp_path: Path,
+    protocol: str,
+) -> None:
+    (tmp_path / "config.resolved.yaml").write_text(
+        "evaluation:\n"
+        f"  protocol: {protocol}\n"
+        "  canonical_prediction_split: test\n",
+        encoding="utf-8",
+    )
+
+    assert _canonical_prediction_split(tmp_path) == "test"
+
+
+def test_canonical_test_prediction_rejects_missing_held_out_protocol(
+    tmp_path: Path,
+) -> None:
+    (tmp_path / "config.resolved.yaml").write_text(
+        "evaluation:\n"
+        "  protocol: resource_validation\n"
+        "  canonical_prediction_split: test\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(RunValidationError, match="held-out"):
+        _canonical_prediction_split(tmp_path)
+
+
 def test_prediction_deidentification_is_copying_and_salted() -> None:
     source = [
         {

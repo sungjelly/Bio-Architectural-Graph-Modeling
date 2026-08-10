@@ -14,7 +14,7 @@ import socket
 import subprocess
 import sys
 import time
-from typing import Any
+from typing import Any, Mapping
 
 import numpy as np
 import torch
@@ -88,7 +88,7 @@ LEARNING_RATE = 1e-3
 WEIGHT_DECAY = 1e-4
 SEED_BASE = 20260810
 TRACKING_SEED = 810
-PRIMARY_METRIC = "validation/observed_near_component_equal_mse"
+PRIMARY_METRIC_SUFFIX = "observed_near_component_equal_mse"
 PROVENANCE_SOURCE_PATHS = (
     "src/spatial_benchmark/same_gene_jacobian.py",
     "src/spatial_benchmark/same_gene_nonlinear.py",
@@ -110,6 +110,22 @@ def _json_write(path: Path, value: Any) -> None:
         json.dumps(value, indent=2, sort_keys=True, allow_nan=False) + "\n",
         encoding="utf-8",
     )
+
+
+def _all_numeric_values_finite(value: Any) -> bool:
+    """Recursively verify every numeric value that will enter a result bundle."""
+
+    if isinstance(value, Mapping):
+        return all(_all_numeric_values_finite(item) for item in value.values())
+    if isinstance(value, (list, tuple)):
+        return all(_all_numeric_values_finite(item) for item in value)
+    if isinstance(value, np.ndarray):
+        return bool(np.isfinite(value).all())
+    if isinstance(value, torch.Tensor):
+        return bool(torch.isfinite(value).all().item())
+    if isinstance(value, (float, np.floating)):
+        return bool(np.isfinite(value))
+    return True
 
 
 def _git_output(root: Path, *arguments: str) -> str:
@@ -162,6 +178,15 @@ def _provenance(root: Path, configuration: dict[str, Any]) -> dict[str, Any]:
                 }
             )
     untracked_files.sort(key=lambda item: str(item["path"]))
+    missing_sources = [
+        relative
+        for relative in PROVENANCE_SOURCE_PATHS
+        if not (root / relative).is_file()
+    ]
+    if missing_sources:
+        raise NonlinearRunError(
+            f"declared provenance sources are missing: {missing_sources}"
+        )
     source_snapshot_manifest = [
         {
             "path": relative,
@@ -169,7 +194,6 @@ def _provenance(root: Path, configuration: dict[str, Any]) -> dict[str, Any]:
             "sha256": sha256_file(root / relative),
         }
         for relative in PROVENANCE_SOURCE_PATHS
-        if (root / relative).is_file()
     ]
     dirty_payload = {
         "status": status,
@@ -307,6 +331,22 @@ def _split_masks(
         np.unique(groups[masks["final_train"]])
     ):
         raise NonlinearRunError("a geometry component crosses train and test")
+    component_sets = {
+        name: set(int(value) for value in np.unique(groups[mask]))
+        for name, mask in masks.items()
+    }
+    for first, second in (
+        ("tuning_train", "validation"),
+        ("tuning_train", "test"),
+        ("validation", "test"),
+        ("final_train", "test"),
+    ):
+        overlap = component_sets[first] & component_sets[second]
+        if overlap:
+            raise NonlinearRunError(
+                f"geometry components overlap between {first} and {second}: "
+                f"{sorted(overlap)}"
+            )
     return masks
 
 
@@ -896,6 +936,7 @@ def _artifact_inventory(directory: Path) -> list[dict[str, Any]]:
 def _canonical_prediction_rows(
     run_id: str,
     fold: int,
+    split: str,
     component_predictions: list[dict[str, Any]],
     component_losses: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
@@ -910,7 +951,7 @@ def _canonical_prediction_rows(
                 "run_id": run_id,
                 "sample_key": f"geometry_group_{group:03d}",
                 "dataset_id": DATASET_ID,
-                "split": "validation",
+                "split": split,
                 "y_true": item["y_true"],
                 "y_pred": item["y_pred"],
                 "graph_id": "within_fov_k12_0_25um",
@@ -932,18 +973,31 @@ def _write_canonical_contract(
     run_id = str(result_payload["run_id"])
     fold = int(result_payload["outer_fold"])
     observed = result_payload["arms"]["observed_near"]
+    canonical_split = str(
+        configuration["evaluation"]["canonical_prediction_split"]
+    )
+    expected_split = (
+        "validation"
+        if result_payload["statistical_evaluation_role"] == "resource_validation"
+        else "test"
+    )
+    if canonical_split != expected_split:
+        raise NonlinearRunError(
+            "canonical prediction split disagrees with statistical evaluation role"
+        )
+    primary_metric = str(configuration["evaluation"]["primary_metric"])
     final_metrics: dict[str, float] = {
-        PRIMARY_METRIC: float(observed["evaluation"]["component_equal_mse"])
+        primary_metric: float(observed["evaluation"]["component_equal_mse"])
     }
     for arm, result in result_payload["arms"].items():
-        final_metrics[f"validation/{arm}_component_equal_mse"] = float(
+        final_metrics[f"{canonical_split}/{arm}_component_equal_mse"] = float(
             result["evaluation"]["component_equal_mse"]
         )
     if "relative_mse_gain_vs_morphology" in observed["evaluation"]:
-        final_metrics["validation/near_gain_vs_morphology"] = float(
+        final_metrics[f"{canonical_split}/near_gain_vs_morphology"] = float(
             observed["evaluation"]["relative_mse_gain_vs_morphology"]
         )
-        final_metrics["validation/near_gain_vs_permuted"] = float(
+        final_metrics[f"{canonical_split}/near_gain_vs_permuted"] = float(
             observed["evaluation"]["relative_mse_gain_vs_permuted"]
         )
     archive.write_manifest(
@@ -968,8 +1022,8 @@ def _write_canonical_contract(
             "status": "completed",
             "profile": result_payload["profile"],
             "fold": fold,
-            "primary_metric_name": PRIMARY_METRIC,
-            "primary_metric_value": final_metrics[PRIMARY_METRIC],
+            "primary_metric_name": primary_metric,
+            "primary_metric_value": final_metrics[primary_metric],
             "duration_seconds": result_payload["duration_seconds"],
             "peak_vram_gb": result_payload["peak_vram_gb"],
             "parameter_count": result_payload["parameter_count"],
@@ -979,7 +1033,7 @@ def _write_canonical_contract(
     archive.write_json("metrics/final.json", final_metrics)
     for name, value in final_metrics.items():
         archive.append_metric_event(
-            {"name": name, "value": value, "step": 0, "split": "validation"}
+            {"name": name, "value": value, "step": 0, "split": canonical_split}
         )
     archive.write_text(
         "metrics/history.jsonl",
@@ -993,17 +1047,18 @@ def _write_canonical_contract(
     prediction_rows = _canonical_prediction_rows(
         run_id,
         fold,
+        canonical_split,
         observed["component_predictions"],
         observed["evaluation"]["per_component"],
     )
     if not np.isclose(
         np.mean([row["sample_loss"] for row in prediction_rows]),
-        final_metrics[PRIMARY_METRIC],
+        final_metrics[primary_metric],
         rtol=1e-12,
         atol=0.0,
     ):
         raise NonlinearRunError("canonical predictions do not reproduce primary MSE")
-    archive.write_prediction_jsonl_stream("validation", prediction_rows)
+    archive.write_prediction_jsonl_stream(canonical_split, prediction_rows)
     archive.copy_file(
         archive.scratch_path / "nonlinear_checkpoint.pt", "checkpoints/last.ckpt"
     )
@@ -1069,6 +1124,7 @@ def _configuration(*, profile: str, fold: int, attempt: int) -> dict[str, Any]:
         "profile": profile,
         "dataset": {
             "dataset_id": DATASET_ID,
+            "version": DATASET_VERSION,
             "dataset_version": DATASET_VERSION,
             "dataset_fingerprint": RAW_FINGERPRINT,
             "processed_fingerprint": PROCESSED_FINGERPRINT,
@@ -1078,6 +1134,7 @@ def _configuration(*, profile: str, fold: int, attempt: int) -> dict[str, Any]:
         },
         "model": {
             "family": "additive_neighbor_mlp",
+            "embedding_dim": HIDDEN_COUNT,
             "gene_count": 1000,
             "morphology_count": 22,
             "hidden_count": HIDDEN_COUNT,
@@ -1087,10 +1144,12 @@ def _configuration(*, profile: str, fold: int, attempt: int) -> dict[str, Any]:
         "graph": {
             "partition": "fov",
             "k": 12,
+            "neighbor_k": 12,
             "near_um": [0, 25],
             "annular_um": [25, 50],
             "self_edges": False,
         },
+        "features": {"use_edge_features": False},
         "masking": {"type": "whole_node", "receiver_expression_input": False},
         "trainer": {
             "optimizer": "AdamW",
@@ -1116,11 +1175,21 @@ def _configuration(*, profile: str, fold: int, attempt: int) -> dict[str, Any]:
         "evaluation": {
             "fold": fold,
             "component_equal": True,
-            "canonical_prediction_split": "validation",
+            "canonical_prediction_split": (
+                "validation" if profile == "pilot" else "test"
+            ),
+            "protocol": (
+                "resource_validation"
+                if profile == "pilot"
+                else "held_out_geometry_masked_reconstruction"
+            ),
             "statistical_partition": (
                 "resource_validation" if profile == "pilot" else "outer_geometry_test"
             ),
-            "primary_metric": PRIMARY_METRIC,
+            "primary_metric": (
+                f"{'validation' if profile == 'pilot' else 'test'}/"
+                f"{PRIMARY_METRIC_SUFFIX}"
+            ),
         },
         "classification": {
             "lifecycle_stage": (
@@ -1181,6 +1250,7 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
         fold=arguments.fold,
         attempt=arguments.attempt,
     )
+    primary_metric = str(configuration["evaluation"]["primary_metric"])
     provenance = _provenance(paths.project_root, configuration)
     scientific_identifier = scientific_id(configuration)
     reproduction_identifier = repro_id(
@@ -1429,11 +1499,18 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
             projected_hours = duration * full_work / max(1, pilot_work) / 3600
         else:
             projected_hours = duration / 3600
+        oracle = diagonal_summary(
+            np.eye(1000, dtype=np.float64), np.ones(1000, dtype=bool)
+        ).as_dict()
+        all_outputs_finite = _all_numeric_values_finite(results) and all(
+            bool(np.isfinite(value).all()) for value in matrices.values()
+        )
         controls = {
             "analytical_nonlinear_jacobian": control,
             "receiver_expression_input": False,
-            "identity_oracle_row_top1_fraction": 1.0,
-            "all_outputs_finite": True,
+            "identity_oracle": oracle,
+            "identity_oracle_row_top1_fraction": oracle["row_top1_fraction"],
+            "all_outputs_finite": all_outputs_finite,
             "peak_vram_gb": peak_vram_gb,
             "peak_vram_gate_passed": peak_vram_gb <= 20.5,
             "projected_full_hours_per_fold": projected_hours,
@@ -1441,6 +1518,10 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
         }
         if not controls["peak_vram_gate_passed"]:
             raise NonlinearRunError(f"resource gate failed: {controls}")
+        if not controls["all_outputs_finite"]:
+            raise NonlinearRunError("result finite-value control failed")
+        if controls["identity_oracle_row_top1_fraction"] != 1.0:
+            raise NonlinearRunError(f"identity-oracle control failed: {oracle}")
         if (
             arguments.profile == "pilot"
             and not controls["runtime_advisory_under_two_hours"]
@@ -1523,7 +1604,7 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
             duration_seconds=duration,
             peak_vram_gb=peak_vram_gb,
             parameter_count=parameter_count,
-            primary_metric_name=PRIMARY_METRIC,
+            primary_metric_name=primary_metric,
             primary_metric_value=near_mse,
             artifact_path=final,
         )
@@ -1560,7 +1641,7 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
                 "diagnostic" if arguments.profile == "pilot" else "exploratory_screen"
             ),
             verification_status="verified",
-            monitored_metric=PRIMARY_METRIC,
+            monitored_metric=primary_metric,
             monitored_mode="min",
             monitored_value=near_mse,
             metadata={
@@ -1577,9 +1658,10 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
         for arm, result in results.items():
             registry.record_metric(
                 run_id,
-                f"validation/{arm}_component_equal_mse",
+                f"{configuration['evaluation']['canonical_prediction_split']}/"
+                f"{arm}_component_equal_mse",
                 result["evaluation"]["component_equal_mse"],
-                split="validation",
+                split=configuration["evaluation"]["canonical_prediction_split"],
             )
         archive.mark_success()
         verify_run_bundle(final)

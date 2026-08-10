@@ -386,9 +386,9 @@ def _canonical_prediction_split(root: Path) -> str:
     split = str(
         evaluation.get("canonical_prediction_split", "validation")
     ).strip().lower()
-    if split not in {"validation", "fit"}:
+    if split not in {"validation", "test", "fit"}:
         raise RunValidationError(
-            "evaluation.canonical_prediction_split must be validation or fit."
+            "evaluation.canonical_prediction_split must be validation, test, or fit."
         )
     if split == "fit":
         protocol = str(evaluation.get("protocol", "")).strip().lower()
@@ -400,6 +400,17 @@ def _canonical_prediction_split(root: Path) -> str:
             raise RunValidationError(
                 "canonical fit predictions require an explicit held-in "
                 "full-core or pooled-ten-core evaluation protocol."
+            )
+    if split == "test":
+        protocol = str(evaluation.get("protocol", "")).strip().lower()
+        held_out_protocols = {
+            "held_out_geometry_masked_reconstruction",
+            "held_out_slide_masked_reconstruction",
+        }
+        if protocol not in held_out_protocols:
+            raise RunValidationError(
+                "canonical test predictions require an explicit held-out "
+                "geometry or slide masked-reconstruction protocol."
             )
     return split
 
