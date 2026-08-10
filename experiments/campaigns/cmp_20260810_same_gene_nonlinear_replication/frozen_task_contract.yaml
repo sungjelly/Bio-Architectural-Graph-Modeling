@@ -1,0 +1,131 @@
+schema_version: 1
+campaign_id: cmp_20260810_same_gene_nonlinear_replication
+frozen_at: '2026-08-10T17:40:57Z'
+status: frozen_before_nonlinear_outcomes
+exploratory: true
+question: >-
+  Does a nonlinear additive neighbor-expression model replicate the held-out
+  predictive and same-name Jacobian enrichment seen in the prespecified ridge
+  experiment, and are high sensitivities exclusive to matching RNA names?
+dataset:
+  dataset_id: gastric_cosmx_drive_public
+  dataset_version: drive_snapshot_20260810
+  raw_fingerprint: e1513d598d4ea910386842cdf4a6d9bd58e21318d484bdb34dfb3962f1490ea5
+  processed_fingerprint: 6304132b4a57699c81b8616324dbeb2faee24b58ce70490be552595d84af34ce
+  split_id: opaque_geometry_components_075mm_4fold_v1
+  split_fingerprint: 12c0d46244ed443a482586fc85422672f9f04132c7def49a741c40ba48bf4264
+  cells: 407999
+  genes: 1000
+  matched_eligible_only: true
+split:
+  outer_folds: 4
+  unit: opaque_spatial_geometry_component
+  component_count: 27
+  validation_fold: '(outer_fold + 1) mod 4'
+  final_train: all_non_outer_test_components
+  forbidden: graph_or_scaler_fit_across_outer_test_components
+inputs:
+  receiver_expression: fully_hidden
+  morphology_features: 22
+  neighbor_graph: frozen_within_fov_k12
+  observed_near_um: [0, 25]
+  observed_annular_um: [25, 50]
+  self_edges: false
+  permutation_null: frozen_within_fov_source_state_permutation
+model:
+  family: additive_neighbor_mlp
+  morphology_branch: linear_22_to_1000
+  neighbor_branch: >-
+    full_linear_1000_to_1000_plus_linear_1000_to_64_exact_gelu_linear_64_to_1000_residual
+  ridge_nesting: nonlinear_neighbor_branch_contains_a_full_linear_skip
+  cross_branch_interactions: false
+  hidden_units: 64
+  optimizer: AdamW
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  batch_size: 4096
+  epoch_candidates: [1, 2, 4, 8, 12]
+  selection_metric: validation_component_equal_mse
+  refit: reinitialize_and_fit_all_non_test_components_for_selected_epoch_count
+  seed_base: 20260810
+arms:
+  - morphology_only
+  - observed_near
+  - observed_annular
+  - within_fov_permuted_near
+  - analytical_same_cell_identity_oracle
+jacobian:
+  estimand: >-
+    Exact component-equal-weighted test-population mean derivative of
+    standardized reconstructed target RNA with respect to standardized
+    neighbor-mean source RNA.
+  orientation: target_rows_source_columns
+  signed_fold_aggregation: equal_fold_mean_before_absolute_value
+  oracle: identity_matrix
+primary_metrics:
+  prediction:
+    - near_relative_mse_gain_vs_morphology
+    - near_relative_mse_gain_vs_permuted
+  sensitivity:
+    - median_absolute_diagonal_over_offdiagonal
+    - same_name_row_top1_fraction
+    - same_name_row_top1_percent_fraction
+    - near_absolute_diagonal_over_permuted
+  stability:
+    - median_pairwise_signed_diagonal_spearman
+    - sign_consistent_gene_fraction
+frozen_gates:
+  near_vs_morphology:
+    minimum_relative_mse_gain: 0.02
+    minimum_folds_favoring_near: 3
+  near_vs_permuted:
+    minimum_relative_mse_gain: 0.01
+    minimum_folds_favoring_near: 3
+  diagonal_enrichment:
+    minimum_ratio: 2.0
+  strict_row_selectivity:
+    minimum_row_top1_fraction: 0.25
+    minimum_row_top1_percent_fraction: 0.50
+  near_vs_permuted_diagonal:
+    minimum_ratio: 1.25
+    minimum_folds_at_or_above_ratio: 3
+  fold_stability:
+    minimum_median_spearman: 0.70
+    minimum_sign_consistent_fraction: 0.75
+  technical:
+    finite_outputs: true
+    exact_nonlinear_control: true
+    identity_oracle_row_top1_fraction: 1.0
+    maximum_peak_vram_gb: 20.5
+resource_plan:
+  pilot:
+    gpu: logical_0
+    fold: 0
+    caps:
+      tuning_train: 24000
+      validation: 12000
+      final_train: 36000
+      test: 12000
+  production:
+    device_map:
+      fold_0: logical_0
+      fold_1: logical_1
+      fold_2: logical_2
+      fold_3: logical_3
+    note: logical_0_to_3_are_container_remaps_of_the_user_allocated_four_devices
+interpretation:
+  maximum_claim: >-
+    Exploratory held-out-geometry graph-alignment-dependent nonlinear model
+    sensitivity replicated within the two available slides.
+  forbidden_claims:
+    - direct_cell_cell_communication
+    - molecular_mechanism
+    - causality
+    - patient_generalization
+    - clinical_validity
+  unresolved_alternatives:
+    - spatial_autocorrelation
+    - shared_cell_state
+    - tissue_compartment
+    - technical_field_effect
+    - segmentation_spillover

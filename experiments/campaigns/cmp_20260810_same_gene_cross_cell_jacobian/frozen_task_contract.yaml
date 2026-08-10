@@ -1,0 +1,94 @@
+contract_schema_version: 1
+campaign_id: cmp_20260810_same_gene_cross_cell_jacobian
+design: exploratory_label_free_geometry_group_held_out
+contract_status: frozen_before_expression_outcomes
+objective: test_same_name_diagonal_selectivity_of_cross_cell_jacobian
+input:
+  raw_root: data/raw/Gastric_Cancer_Analysis
+  slides: [SO_1, SO_2]
+  biological_probe_count: 1000
+  excluded_prefixes: [Negative, SystemControl]
+  qc_policy: all
+  permitted_metadata_columns: repository_fixed_22_column_allow_list
+  prohibited_inputs:
+    - clinical_labels
+    - donor_or_patient_identifiers
+    - vendor_cell_types
+    - clusters
+    - neighborhoods
+    - niches
+    - target_derived_annotations
+split:
+  unit: opaque_fov_origin_connected_component
+  component_threshold_mm: 0.75
+  folds: 4
+  assignment: frozen_component_ordinal_map_balanced_on_slide_fov_and_cell_count
+  component_ordinal_definition: minimum_fov_ascending_within_slide
+  fold_component_ordinals:
+    0:
+      SO_1: [1, 8, 11, 13]
+      SO_2: [7, 13, 14]
+    1:
+      SO_1: [6, 7, 9]
+      SO_2: [4, 10, 12]
+    2:
+      SO_1: [2, 4, 5]
+      SO_2: [5, 6, 8, 9]
+    3:
+      SO_1: [3, 10, 12]
+      SO_2: [1, 2, 3, 11]
+  outer_test: one_fold
+  validation: next_fold_cyclically
+  tuning_train: remaining_two_folds
+  final_refit: all_three_non_test_folds
+graph:
+  partition: fov
+  self_edges: false
+  cross_fov_edges: false
+  k: 12
+  near_distance_um: [0, 25]
+  annular_distance_um: [25, 50]
+  minimum_degree_each_arm: 4
+model:
+  family: additive_multivariate_ridge
+  target: train_standardized_log1p_receiver_counts
+  neighbor_feature: degree_normalized_mean_log1p_source_counts
+  ridge_grid: [0.0001, 0.001, 0.01, 0.1, 1.0]
+  primary_estimand: standardized_uniform_neighbor_shift_coefficient_matrix
+arms:
+  - morphology_only
+  - observed_near
+  - observed_annular
+  - within_fov_permuted_near
+  - same_cell_oracle_positive_control
+gene_eligibility:
+  minimum_nonzero_prevalence_each_final_train_fold: 0.05
+  require_nonzero_train_variance: true
+  matrices_still_include_all_genes: true
+primary_metric: component_equal_held_out_mse
+gates:
+  near_vs_morphology_gain_minimum: 0.02
+  near_vs_morphology_folds_favored_minimum: 3
+  near_vs_permuted_gain_minimum: 0.01
+  near_vs_permuted_folds_favored_minimum: 3
+  median_absolute_diagonal_offdiagonal_ratio_minimum: 2.0
+  diagonal_row_top1_fraction_minimum: 0.25
+  diagonal_row_top1_percent_fraction_minimum: 0.50
+  near_vs_permuted_median_absolute_diagonal_ratio_minimum: 1.25
+  near_vs_permuted_folds_favored_minimum: 3
+  median_fold_signed_diagonal_spearman_minimum: 0.70
+  diagonal_sign_consistent_gene_fraction_minimum: 0.75
+  matched_cell_coverage_minimum: 0.80
+  permutation_changed_fraction_minimum: 1.0
+  peak_vram_gb_maximum: 20.5
+  projected_runtime_hours_per_fold_maximum: 2.0
+spillover_flag:
+  near_to_annular_diagonal_enrichment_ratio_minimum: 1.5
+maximum_claim: stable_held_out_geometry_graph_alignment_dependent_same_gene_model_sensitivity
+prohibited_claims:
+  - causal_effect
+  - direct_cell_cell_communication
+  - signaling_mechanism
+  - molecular_interaction
+  - patient_generalization
+  - clinical_generalization

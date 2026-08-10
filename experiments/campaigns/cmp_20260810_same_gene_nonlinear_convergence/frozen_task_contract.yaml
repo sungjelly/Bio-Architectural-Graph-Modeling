@@ -1,0 +1,279 @@
+schema_version: 2
+campaign_id: cmp_20260810_same_gene_nonlinear_convergence
+frozen_at: '2026-08-10T19:49:04Z'
+status: refrozen_after_preflight_correction_before_any_usable_pilot_or_scientific_outcome
+exploratory: true
+post_hoc_optimization_audit: true
+preflight_history:
+  - run_id: r_20260810T194217Z_2f03a1e0_s810_f00_a01_af0ffe47
+    profile: pilot
+    attempt: 1
+    registry_status: failed
+    exclusion_reason: >-
+      Concurrent static audit found incomplete wrapper source binding before
+      result publication; the process was interrupted and the contract was
+      corrected without inspecting scientific effect outputs.
+    outer_test_evaluated: false
+    scientific_effect_output_inspected: false
+    usable_for_any_gate: false
+motivation:
+  antecedent_evaluation: eval_same_gene_nonlinear_replication_20260810_v1
+  observed_without_new_training:
+    selected_epoch: 12
+    selected_epoch_count: 16
+    candidate_upper_boundary: 12
+    validation_mse_decreased_from_epoch_8_to_12_count: 16
+  allowed_followup_change: optimization_horizon_only
+question: >-
+  Did the 12-epoch optimization budget explain either of the two prespecified
+  failures (near-versus-morphology gain and row selectivity) in the otherwise
+  identical additive neighbor MLP?
+
+dataset:
+  dataset_id: gastric_cosmx_drive_public
+  dataset_version: drive_snapshot_20260810
+  raw_fingerprint: e1513d598d4ea910386842cdf4a6d9bd58e21318d484bdb34dfb3962f1490ea5
+  processed_fingerprint: 6304132b4a57699c81b8616324dbeb2faee24b58ce70490be552595d84af34ce
+  split_id: opaque_geometry_components_075mm_4fold_v1
+  split_fingerprint: 12c0d46244ed443a482586fc85422672f9f04132c7def49a741c40ba48bf4264
+  cells: 407999
+  genes: 1000
+  matched_eligible_only: true
+  frozen_common_eligible_gene_count: 932
+  eligible_mask_sha256_uint8_c_order: 2420a9d160894a78e6a1db1cc4ff2c52757211cf31dec859856f7c3cf231712d
+  gene_order_sha256_canonical_json_utf8: 046eb86c7ea8f1fe6977598a0190132340400fc61802fcde63ab5ac0e9502b03
+split:
+  outer_folds: 4
+  unit: opaque_spatial_geometry_component
+  component_count: 27
+  validation_fold: '(outer_fold + 1) mod 4'
+  tuning_train: non_test_non_validation_components
+  final_train: all_non_outer_test_components
+  outer_test_already_observed: true
+  forbidden: graph_or_scaler_fit_across_outer_test_components
+
+antecedent_anchor:
+  scientific_id: sci_12587b9d9e7f69f7
+  attempt: 2
+  run_ids:
+    - r_20260810T180451Z_12587b9d_s810_f00_a02_e272ac34
+    - r_20260810T180451Z_12587b9d_s810_f01_a02_b1fb76b9
+    - r_20260810T180451Z_12587b9d_s810_f02_a02_4d06f899
+    - r_20260810T180451Z_12587b9d_s810_f03_a02_2994062a
+  checkpoint_sha256_by_fold:
+    0: 88615d377d6fd2decc6d8e040a2aea8adc1e12c593e30e5e92b76f66756bd5fe
+    1: b239b1898e6ea8c54b03733233b1b89459ae581b9dc5dde8222b1e9fa244f776
+    2: 0ebd683a47a63c27d455be151319e8ea3cbfb7daab7a5e050b8649d1123d7f25
+    3: 859aef14bafac845dff42e59f0efc91aefb36076199c2dfe1cf3993eff6c2b8b
+  aggregate_results_sha256: 962a1e91129cb1cb74009422e3663b4014c3926f0b49bbf826ae537032a46c6f
+  aggregate_jacobians_sha256: e82e01314e680b98dee494e540a0d59166e82f918ea208a7214b5627a670004a
+  fixed12_row_top1_fraction: 0.24356223175965666
+  fixed12_row_top1_percent_fraction: 0.4248927038626609
+  required_reproduction_before_interpretation:
+    candidate12_validation_mse_all_16_abs_tolerance: 1.0e-7
+    anchor12_component_metrics_and_prediction_abs_tolerance: 1.0e-7
+    anchor12_jacobian_max_abs_tolerance: 1.0e-6
+    eligible_mask_and_gene_order_exact: true
+  failure_verdict: attribution_invalid_anchor_mismatch
+
+ridge_anchor:
+  evaluation_id: eval_same_gene_cross_cell_jacobian_20260810_v2
+  aggregate_results_sha256: 253b1dbb4b43992c1d9ac8427f7501cb50e94ecd5730e362ff27fbeb4ef57b40
+  aggregate_jacobians_sha256: 22d71833af192b03c4130b5105e98628232afd36ae06a8e4a66b2360e0321883
+
+inputs:
+  receiver_expression: fully_hidden
+  morphology_features: 22
+  neighbor_graph: frozen_within_fov_k12
+  observed_near_um: [0, 25]
+  observed_annular_um: [25, 50]
+  self_edges: false
+  permutation_null: frozen_within_fov_source_state_permutation
+model:
+  family: additive_neighbor_mlp
+  morphology_branch: linear_22_to_1000
+  neighbor_branch: >-
+    full_linear_1000_to_1000_plus_linear_1000_to_64_exact_gelu_linear_64_to_1000_residual
+  hidden_units: 64
+  optimizer: AdamW
+  learning_rate: 0.001
+  learning_rate_schedule: constant
+  weight_decay: 0.0001
+  batch_size: 4096
+  epoch_candidates: [12, 24, 48, 96, 192]
+  selection_metric: validation_component_equal_mse
+  tie_break: earliest_epoch
+  tuning_trajectory: continuous_optimizer_state_through_epoch_192
+  refit: reinitialize_and_fit_all_non_test_components_for_selected_epoch_count
+  anchor_epoch: 12
+  anchor_snapshot: epoch_12_on_the_same_final_refit_trajectory
+  seed_base: 20260810
+  forbidden_changes:
+    - architecture
+    - optimizer
+    - learning_rate
+    - learning_rate_schedule
+    - weight_decay
+    - batch_size
+    - loss
+    - feature_arms
+    - gene_eligibility
+    - scientific_gates
+arms:
+  - morphology_only
+  - observed_near
+  - observed_annular
+  - within_fov_permuted_near
+  - analytical_same_cell_identity_oracle
+jacobian:
+  estimand: >-
+    Exact component-equal-weighted test-population mean derivative of
+    standardized reconstructed target RNA with respect to standardized
+    neighbor-mean source RNA.
+  orientation: target_rows_source_columns
+  signed_fold_aggregation: equal_fold_mean_before_absolute_value
+  decomposition: [full_linear_skip, nonlinear_residual, total]
+
+resource_pilot:
+  must_pass_before_production: true
+  attempt: 2
+  logical_gpu: 0
+  outer_fold: 0
+  arms: [morphology_only, observed_near, observed_annular, within_fov_permuted_near]
+  tuning_train_cap: 24000
+  validation_cap: 12000
+  generated_but_never_evaluated_outer_test_cap: 12000
+  tuning_candidates: [12, 24, 48, 96, 192]
+  forced_final_refit_epochs: 192
+  final_refit_population: capped_tuning_train_only
+  scientific_effects_must_not_be_interpreted: true
+  outer_test_outcomes_must_not_be_evaluated: true
+  gates:
+    finite_losses_predictions_jacobians: true
+    analytical_autograd_max_abs_error: 1.0e-10
+    analytical_finite_difference_max_abs_error: 1.0e-8
+    identity_oracle_row_top1_fraction: 1.0
+    receiver_expression_input: false
+    split_overlap: false
+    maximum_peak_vram_gb: 20.5
+    maximum_projected_hours_per_full_fold: 2.0
+  forbidden_after_pilot:
+    - change_batch_size
+    - change_learning_rate
+    - change_epoch_candidates
+    - change_architecture
+
+convergence_gate:
+  evaluated_arms: [morphology_only, observed_near]
+  evaluated_folds: [0, 1, 2, 3]
+  per_trajectory_saturated_if_either:
+    selected_epoch_is_below_192: true
+    literal_relative_gain_condition: '(MSE_at_96 - MSE_at_192) / MSE_at_96 <= 0.001'
+  combination: all_eight_trajectories_must_be_saturated
+  failure_verdict: optimization_inconclusive_at_192_epochs
+
+frozen_scientific_gates:
+  near_vs_morphology:
+    minimum_relative_mse_gain: 0.02
+    minimum_folds_favoring_near: 3
+  near_vs_permuted:
+    minimum_relative_mse_gain: 0.01
+    minimum_folds_favoring_near: 3
+  diagonal_enrichment:
+    minimum_ratio: 2.0
+  strict_row_selectivity:
+    minimum_row_top1_fraction: 0.25
+    minimum_row_top1_percent_fraction: 0.50
+  near_vs_permuted_diagonal:
+    minimum_ratio: 1.25
+    minimum_folds_at_or_above_ratio: 3
+  fold_stability:
+    minimum_median_spearman: 0.70
+    minimum_sign_consistent_fraction: 0.75
+  technical:
+    finite_outputs: true
+    exact_nonlinear_control: true
+    identity_oracle_row_top1_fraction: 1.0
+    maximum_peak_vram_gb: 20.5
+
+attribution_gates:
+  bootstrap:
+    unit: geometry_component
+    paired_component_count: 27
+    draws: 10000
+    seed: 20260821
+    confidence_interval: [0.025, 0.975]
+    same_resample_for_selected_and_anchor12: true
+  prediction_failure_explained:
+    - selected_near_vs_morphology_frozen_gate_passes
+    - lower_95_bound_of_selected_minus_anchor12_relative_gain_is_above_zero
+    - selected_near_mse_better_than_anchor12_near_mse_in_at_least_3_of_4_folds
+  row_failure_explained:
+    - selected_strict_row_selectivity_frozen_gate_passes
+    - aggregate_row_top1_fraction_exceeds_fixed12
+    - aggregate_row_top1_percent_fraction_exceeds_fixed12
+    - row_top1_fraction_improves_in_at_least_3_of_4_fold_matrices
+    - row_top1_percent_fraction_improves_in_at_least_3_of_4_fold_matrices
+  strong_budget_explanation_requires:
+    - antecedent_anchor_valid
+    - convergence_gate_passes
+    - prediction_failure_explained
+    - row_failure_explained
+
+secondary_comparisons:
+  antecedent_12_epoch:
+    interpretation: paired_attribution_not_independent_replication
+  ridge:
+    superiority_requires:
+      paired_component_bootstrap_95_lower_bound_above_zero: true
+      minimum_folds_improved: 3
+
+verdict_precedence:
+  - if: antecedent_anchor_invalid
+    verdict: attribution_invalid_anchor_mismatch
+  - if: convergence_gate_fails
+    verdict: optimization_inconclusive_at_192_epochs
+  - if: all_seven_scientific_gates_pass_and_both_attribution_gates_pass
+    verdict: strict_selectivity_supported_and_12_epoch_budget_explains_both
+  - if: all_seven_scientific_gates_pass
+    verdict: strict_selectivity_supported_without_full_budget_attribution
+  - if: both_attribution_gates_pass
+    verdict: budget_explains_both_prior_failures_but_other_gate_failed
+  - if: prediction_failure_explained_only
+    verdict: budget_explains_prediction_failure_only
+  - if: row_failure_explained_only
+    verdict: budget_explains_row_failure_only
+  - if: all_non_row_scientific_gates_pass_and_strict_row_selectivity_fails
+    verdict: robust_nonexclusive_enrichment_after_convergence
+  - if: otherwise
+    verdict: evidence_against_12_epoch_budget_explanation
+
+resource_basis:
+  identical_architecture_prior_peak_vram_gb: 7.318222522735596
+  maximum_peak_vram_gb: 20.5
+  logical_device_map:
+    fold_0: 0
+    fold_1: 1
+    fold_2: 2
+    fold_3: 3
+code_identity:
+  wrapper_sha256: e0afc85a2702916c8179b2174ab10bbab8579435df25b17f76f17476d52c116b
+  base_runner_sha256: ecd7d08e571cbd3cd7c86e6b29dfe92dddf4ba5d82de73048dbf3711174e8192
+  model_sha256: d354673b7b8670d9b1bc5e58b6918e3756ad7b425d05abd24e44cf7fe301510c
+  kernel_unit_test_sha256: be29f85aeec5dca3f836ef3436bc4987f1c7f385796601a46590eaf95b462f45
+  convergence_unit_test_sha256: 1e997e13885df1d43bb550d0b0e0bf6cc33df09cde36a7814728ffa5ca65fe80
+interpretation:
+  maximum_positive_claim: >-
+    Within this fixed model, optimizer, and already-observed held-out-geometry
+    split, the 12-epoch budget materially limited the prespecified metric(s).
+  maximum_negative_claim: >-
+    After prespecified practical convergence, the fixed model does not support
+    strict same-name exclusivity and the 12-epoch budget does not explain the
+    prespecified failure(s).
+  forbidden_claims:
+    - independent_confirmation
+    - direct_cell_cell_communication
+    - molecular_mechanism
+    - causality
+    - patient_generalization
+    - clinical_validity
