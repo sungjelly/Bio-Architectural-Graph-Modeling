@@ -14,6 +14,7 @@
     "diagnosis",
     "outcome_access_record",
     "correction",
+    "execution_contract",
     "authorities",
     "recovery_sources",
     "scientific_invariants"
@@ -161,6 +162,42 @@
           "const": false
         },
         "provenance_extended": {
+          "const": true
+        }
+      }
+    },
+    "execution_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_path",
+        "launch_manifest_path",
+        "full_plan_path",
+        "registry_database_path",
+        "output_path",
+        "required_plan_count",
+        "verify_only_supported"
+      ],
+      "properties": {
+        "contract_path": {
+          "const": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml"
+        },
+        "launch_manifest_path": {
+          "const": "state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json"
+        },
+        "full_plan_path": {
+          "const": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json"
+        },
+        "registry_database_path": {
+          "const": "state/tracking/bagm.sqlite3"
+        },
+        "output_path": {
+          "const": "reports/analyses/same_gene_robustness_20260811"
+        },
+        "required_plan_count": {
+          "const": 1
+        },
+        "verify_only_supported": {
           "const": true
         }
       }

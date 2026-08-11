@@ -11,7 +11,6 @@ recovery authority.  Publish and ``--verify-only`` therefore use identical code.
 
 from __future__ import annotations
 
-import argparse
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 import hashlib
@@ -48,8 +47,8 @@ TEST_PATH = (
 
 EXPECTED_SCHEMA_IDENTITY = {
     "path": SCHEMA_PATH,
-    "size_bytes": 8070,
-    "sha256": "27ff6935a6ab9fe63b156edb4d623f72d569e99a5f8fe0ae6c1f7be764e47b20",
+    "size_bytes": 9224,
+    "sha256": "a0694d74664298c6d8a9ddeac6c0461f0e1b70a236c577294ec5195e93c35321",
 }
 EXPECTED_AUTHORITIES = {
     "contract": {
@@ -136,6 +135,15 @@ EXPECTED_CORRECTION = {
     "scientific_payload_schema_changed": False,
     "provenance_extended": True,
 }
+EXPECTED_EXECUTION_CONTRACT = {
+    "contract_path": EXPECTED_AUTHORITIES["contract"]["path"],
+    "launch_manifest_path": EXPECTED_AUTHORITIES["launch_manifest"]["path"],
+    "full_plan_path": EXPECTED_AUTHORITIES["full_plan"]["path"],
+    "registry_database_path": EXPECTED_AUTHORITIES["registry_database"]["path"],
+    "output_path": "reports/analyses/same_gene_robustness_20260811",
+    "required_plan_count": 1,
+    "verify_only_supported": True,
+}
 EXPECTED_INVARIANTS = {
     "contract_unchanged": True,
     "launch_unchanged": True,
@@ -161,6 +169,7 @@ TOP_LEVEL_KEYS = frozenset(
         "diagnosis",
         "outcome_access_record",
         "correction",
+        "execution_contract",
         "authorities",
         "recovery_sources",
         "scientific_invariants",
@@ -176,9 +185,27 @@ class AnalysisRecoveryError(RuntimeError):
 @dataclass(frozen=True)
 class RecoveryAuthority:
     amendment_path: Path
+    amendment_size_bytes: int
     amendment_sha256: str
     payload: dict[str, Any]
     recovery_sources: tuple[dict[str, Any], ...]
+
+
+@dataclass(frozen=True)
+class RecoveryArguments:
+    amendment_path: Path
+    authority_check_only: bool
+    analyzer_argv: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class AnalyzerInvocation:
+    contract_path: str
+    launch_manifest_path: str
+    plan_path: str
+    output_path: str
+    verify_only: bool
+    argv: tuple[str, ...]
 
 
 def _sha256_file(path: Path) -> str:
@@ -208,18 +235,48 @@ def _strict_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return result
 
 
-def _strict_json(path: Path, *, label: str) -> dict[str, Any]:
+def _strict_json_bytes(content: bytes, *, label: str) -> dict[str, Any]:
     try:
         value = json.loads(
-            path.read_text(encoding="utf-8"),
+            content.decode("utf-8"),
             object_pairs_hook=_strict_object,
             parse_constant=lambda token: (_ for _ in ()).throw(ValueError(token)),
         )
-    except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as error:
-        raise AnalysisRecoveryError(f"invalid {label}: {path}") from error
+    except (UnicodeError, json.JSONDecodeError, ValueError) as error:
+        raise AnalysisRecoveryError(f"invalid {label}") from error
     if not isinstance(value, dict):
-        raise AnalysisRecoveryError(f"{label} is not an object: {path}")
+        raise AnalysisRecoveryError(f"{label} is not an object")
     return value
+
+
+def _read_amendment_snapshot(path: Path) -> tuple[dict[str, Any], int, str]:
+    try:
+        before = path.stat()
+        content = path.read_bytes()
+        after = path.stat()
+    except OSError as error:
+        raise AnalysisRecoveryError("cannot read analysis recovery amendment") from error
+    identity_before = (
+        before.st_dev,
+        before.st_ino,
+        before.st_size,
+        before.st_mtime_ns,
+        before.st_ctime_ns,
+    )
+    identity_after = (
+        after.st_dev,
+        after.st_ino,
+        after.st_size,
+        after.st_mtime_ns,
+        after.st_ctime_ns,
+    )
+    if identity_before != identity_after or len(content) != before.st_size:
+        raise AnalysisRecoveryError("analysis recovery amendment changed while reading")
+    return (
+        _strict_json_bytes(content, label="analysis recovery amendment"),
+        len(content),
+        hashlib.sha256(content).hexdigest(),
+    )
 
 
 def _exact_keys(value: Mapping[str, Any], expected: frozenset[str], *, label: str) -> None:
@@ -297,6 +354,7 @@ def _validate_amendment(payload: Any) -> dict[str, Any]:
         "diagnosis": EXPECTED_DIAGNOSIS,
         "outcome_access_record": EXPECTED_OUTCOME_ACCESS,
         "correction": EXPECTED_CORRECTION,
+        "execution_contract": EXPECTED_EXECUTION_CONTRACT,
         "scientific_invariants": EXPECTED_INVARIANTS,
     }
     for key, expected in exact_sections.items():
@@ -416,16 +474,21 @@ def _verify_authority(
     amendment_path: Path = DEFAULT_AMENDMENT, *, project_root: Path = PROJECT_ROOT
 ) -> RecoveryAuthority:
     root = project_root.resolve(strict=True)
+    candidate = amendment_path if amendment_path.is_absolute() else root / amendment_path
+    if candidate.is_symlink():
+        raise AnalysisRecoveryError("analysis recovery amendment may not be a symlink")
     try:
-        relative_amendment = amendment_path.resolve(strict=True).relative_to(root).as_posix()
+        relative_amendment = candidate.resolve(strict=True).relative_to(root).as_posix()
     except (OSError, ValueError) as error:
         raise AnalysisRecoveryError("analysis recovery amendment escapes the project") from error
     amendment = _project_file(
         relative_amendment, project_root=root, label="analysis recovery amendment"
     )
-    payload = _validate_amendment(
-        _strict_json(amendment, label="analysis recovery amendment")
-    )
+    expected_relative = DEFAULT_AMENDMENT.relative_to(PROJECT_ROOT).as_posix()
+    if relative_amendment != expected_relative:
+        raise AnalysisRecoveryError("analysis recovery amendment path differs")
+    raw_payload, amendment_size, amendment_sha = _read_amendment_snapshot(amendment)
+    payload = _validate_amendment(raw_payload)
     for row in payload["authorities"]:
         _verify_file_row(row, project_root=root, label=f"authority {row['role']}")
     database_row = next(
@@ -447,12 +510,35 @@ def _verify_authority(
     )
     for row in recovery_sources:
         _verify_file_row(row, project_root=root, label="analysis recovery source")
-    return RecoveryAuthority(
+    authority = RecoveryAuthority(
         amendment_path=amendment,
-        amendment_sha256=_sha256_file(amendment),
+        amendment_size_bytes=amendment_size,
+        amendment_sha256=amendment_sha,
         payload=payload,
         recovery_sources=recovery_sources,
     )
+    _verify_authority_unchanged(authority, project_root=root)
+    return authority
+
+
+def _verify_authority_unchanged(
+    authority: RecoveryAuthority, *, project_root: Path = PROJECT_ROOT
+) -> None:
+    try:
+        relative = authority.amendment_path.resolve(strict=True).relative_to(
+            project_root.resolve(strict=True)
+        ).as_posix()
+    except (OSError, ValueError) as error:
+        raise AnalysisRecoveryError("analysis recovery amendment moved or escaped") from error
+    path = _project_file(
+        relative, project_root=project_root, label="analysis recovery amendment recheck"
+    )
+    if path != authority.amendment_path:
+        raise AnalysisRecoveryError("analysis recovery amendment path changed")
+    if path.stat().st_size != authority.amendment_size_bytes:
+        raise AnalysisRecoveryError("analysis recovery amendment size changed")
+    if _sha256_file(path) != authority.amendment_sha256:
+        raise AnalysisRecoveryError("analysis recovery amendment SHA-256 changed")
 
 
 def _decoded_registry_configuration(
@@ -480,21 +566,13 @@ def _decoded_registry_configuration(
     return decoded
 
 
-def _source_record(path: Path, *, project_root: Path) -> dict[str, Any]:
-    relative = path.resolve(strict=True).relative_to(project_root.resolve(strict=True))
-    return {
-        "path": relative.as_posix(),
-        "size_bytes": path.stat().st_size,
-        "sha256": _sha256_file(path),
-    }
-
-
 def _extend_provenance(
     provenance: Mapping[str, Any],
     *,
     authority: RecoveryAuthority,
     project_root: Path = PROJECT_ROOT,
 ) -> dict[str, Any]:
+    _verify_authority_unchanged(authority, project_root=project_root)
     if not isinstance(provenance, Mapping):
         raise AnalysisRecoveryError("canonical analyzer provenance is not an object")
     result = json.loads(_canonical_json(provenance))
@@ -516,9 +594,13 @@ def _extend_provenance(
         if not isinstance(path, str) or path in sources:
             raise AnalysisRecoveryError("canonical provenance source paths are invalid")
         sources[path] = row
-    amendment_record = _source_record(
-        authority.amendment_path, project_root=project_root
-    )
+    amendment_record = {
+        "path": authority.amendment_path.relative_to(
+            project_root.resolve(strict=True)
+        ).as_posix(),
+        "size_bytes": authority.amendment_size_bytes,
+        "sha256": authority.amendment_sha256,
+    }
     authority_records = [
         {
             "path": row["path"],
@@ -544,6 +626,7 @@ def _extend_provenance(
         "schema_version": 1,
         "amendment_id": authority.payload["amendment_id"],
         "amendment_path": amendment_record["path"],
+        "amendment_size_bytes": amendment_record["size_bytes"],
         "amendment_sha256": amendment_record["sha256"],
         "entrypoint_path": WRAPPER_PATH,
         "entrypoint_sha256": next(
@@ -559,6 +642,7 @@ def _extend_provenance(
         ],
         "diagnosis": dict(authority.payload["diagnosis"]),
         "outcome_access_record": dict(authority.payload["outcome_access_record"]),
+        "execution_contract": dict(authority.payload["execution_contract"]),
         "bound_authorities": [
             dict(row)
             for row in sorted(
@@ -612,7 +696,9 @@ def _install_patches(
         return _decoded_registry_configuration(row, error_type=error_type)
 
     def source_provenance(**kwargs: Any) -> dict[str, Any]:
+        _verify_authority_unchanged(authority, project_root=project_root)
         base = original_provenance(**kwargs)
+        _verify_authority_unchanged(authority, project_root=project_root)
         return _extend_provenance(
             base, authority=authority, project_root=project_root
         )
@@ -621,41 +707,296 @@ def _install_patches(
     analyzer._source_provenance = source_provenance
 
 
-def _arguments(
-    argv: Sequence[str] | None,
-) -> tuple[argparse.Namespace, list[str]]:
+def _arguments(argv: Sequence[str] | None) -> RecoveryArguments:
     values = list(sys.argv[1:] if argv is None else argv)
-    if values.count("--recovery-amendment") > 1:
-        raise AnalysisRecoveryError("--recovery-amendment may be supplied only once")
-    parser = argparse.ArgumentParser(add_help=False)
-    parser.add_argument("--recovery-amendment", type=Path, default=DEFAULT_AMENDMENT)
-    parser.add_argument("--authority-check-only", action="store_true")
-    recovery, analyzer_argv = parser.parse_known_args(values)
-    return recovery, analyzer_argv
+    amendment = DEFAULT_AMENDMENT
+    amendment_seen = False
+    authority_check_only = False
+    analyzer_argv: list[str] = []
+    index = 0
+    while index < len(values):
+        token = values[index]
+        if token == "--recovery-amendment":
+            if amendment_seen:
+                raise AnalysisRecoveryError(
+                    "--recovery-amendment may be supplied only once"
+                )
+            if index + 1 >= len(values) or values[index + 1].startswith("--"):
+                raise AnalysisRecoveryError("--recovery-amendment requires one path")
+            amendment = Path(values[index + 1])
+            amendment_seen = True
+            index += 2
+            continue
+        if token == "--authority-check-only":
+            if authority_check_only:
+                raise AnalysisRecoveryError(
+                    "--authority-check-only may be supplied only once"
+                )
+            authority_check_only = True
+            index += 1
+            continue
+        if token.startswith("--recovery-amendment=") or token.startswith(
+            "--authority-check-only="
+        ):
+            raise AnalysisRecoveryError(f"noncanonical recovery argument: {token}")
+        analyzer_argv.append(token)
+        index += 1
+    if authority_check_only and analyzer_argv:
+        raise AnalysisRecoveryError(
+            "--authority-check-only does not accept analyzer arguments"
+        )
+    return RecoveryArguments(
+        amendment_path=amendment,
+        authority_check_only=authority_check_only,
+        analyzer_argv=tuple(analyzer_argv),
+    )
+
+
+def _parse_analyzer_invocation(argv: Sequence[str]) -> AnalyzerInvocation:
+    value_options = {
+        "--contract": "contract_path",
+        "--launch-manifest": "launch_manifest_path",
+        "--plan": "plan_path",
+        "--output": "output_path",
+    }
+    seen: dict[str, str] = {}
+    verify_only = False
+    values = list(argv)
+    index = 0
+    while index < len(values):
+        token = values[index]
+        if token in value_options:
+            if token in seen:
+                raise AnalysisRecoveryError(f"duplicate analyzer authority: {token}")
+            if index + 1 >= len(values) or values[index + 1].startswith("--"):
+                raise AnalysisRecoveryError(f"analyzer argument requires one path: {token}")
+            seen[token] = values[index + 1]
+            index += 2
+            continue
+        if token == "--verify-only":
+            if verify_only:
+                raise AnalysisRecoveryError("duplicate analyzer flag: --verify-only")
+            verify_only = True
+            index += 1
+            continue
+        if token.startswith("--"):
+            raise AnalysisRecoveryError(f"unrecognized analyzer argument: {token}")
+        raise AnalysisRecoveryError(f"unexpected analyzer positional argument: {token}")
+    missing = [option for option in value_options if option not in seen]
+    if missing:
+        raise AnalysisRecoveryError(
+            f"analyzer authority arguments are missing: {sorted(missing)}"
+        )
+    return AnalyzerInvocation(
+        contract_path=seen["--contract"],
+        launch_manifest_path=seen["--launch-manifest"],
+        plan_path=seen["--plan"],
+        output_path=seen["--output"],
+        verify_only=verify_only,
+        argv=tuple(values),
+    )
+
+
+def _verify_invocation_authority(
+    invocation: AnalyzerInvocation,
+    authority: RecoveryAuthority,
+    *,
+    project_root: Path = PROJECT_ROOT,
+) -> None:
+    expected = authority.payload["execution_contract"]
+    observed = {
+        "contract_path": invocation.contract_path,
+        "launch_manifest_path": invocation.launch_manifest_path,
+        "full_plan_path": invocation.plan_path,
+        "output_path": invocation.output_path,
+    }
+    for key, value in observed.items():
+        if value != expected[key]:
+            raise AnalysisRecoveryError(f"analyzer {key} differs from amendment")
+    if Path.cwd().resolve(strict=True) != project_root.resolve(strict=True):
+        raise AnalysisRecoveryError("analyzer must run from the bound project root")
+    for label, relative in (
+        ("contract", invocation.contract_path),
+        ("launch manifest", invocation.launch_manifest_path),
+        ("full plan", invocation.plan_path),
+    ):
+        _project_file(relative, project_root=project_root, label=f"CLI {label}")
+    output = project_root / invocation.output_path
+    if output.is_symlink():
+        raise AnalysisRecoveryError("analysis output may not be a symlink")
+    try:
+        output.resolve(strict=False).relative_to(project_root.resolve(strict=True))
+    except ValueError as error:
+        raise AnalysisRecoveryError("analysis output escapes the project root") from error
+
+
+def _authority_row(authority: RecoveryAuthority, role: str) -> dict[str, Any]:
+    rows = [row for row in authority.payload["authorities"] if row["role"] == role]
+    if len(rows) != 1:
+        raise AnalysisRecoveryError(f"authority role is not unique: {role}")
+    return dict(rows[0])
+
+
+def _verify_effective_registry_path(
+    analyzer: ModuleType,
+    authority: RecoveryAuthority,
+    *,
+    project_root: Path = PROJECT_ROOT,
+) -> Path:
+    row = _authority_row(authority, "registry_database")
+    bound = _verify_file_row(
+        row, project_root=project_root, label="bound registry database"
+    )
+    current_paths = getattr(analyzer, "current_paths", None)
+    if not callable(current_paths):
+        raise AnalysisRecoveryError("canonical analyzer current_paths is unavailable")
+    try:
+        paths = current_paths()
+        effective_root = Path(paths.project_root).resolve(strict=False)
+        effective = (
+            Path(paths.state_root) / "tracking" / "bagm.sqlite3"
+        ).resolve(strict=False)
+    except Exception as error:
+        raise AnalysisRecoveryError("cannot resolve the effective state registry") from error
+    if effective_root != project_root.resolve(strict=True):
+        raise AnalysisRecoveryError(
+            "effective current_paths project root differs; BAGM_ROOT override is not authorized"
+        )
+    if effective != bound:
+        raise AnalysisRecoveryError(
+            "effective current_paths registry differs from the bound database; "
+            "BAGM_STATE_ROOT/BAGM_ROOT override is not authorized"
+        )
+    return bound
+
+
+def _verify_public_registry_lifecycle(
+    analyzer: ModuleType,
+    authority: RecoveryAuthority,
+    *,
+    bound_database: Path,
+    project_root: Path = PROJECT_ROOT,
+) -> None:
+    registry_type = getattr(analyzer, "Registry", None)
+    adapter = getattr(analyzer, "_registry_configuration", None)
+    if not callable(registry_type) or not callable(adapter):
+        raise AnalysisRecoveryError("canonical Registry public lifecycle is unavailable")
+    try:
+        registry = registry_type()
+    except Exception as error:
+        raise AnalysisRecoveryError("cannot initialize the effective Registry") from error
+    if Path(registry.path).resolve(strict=False) != bound_database:
+        raise AnalysisRecoveryError("Registry lifecycle selected an unbound database")
+    try:
+        with registry.connect() as connection:
+            identities = connection.execute(
+                "SELECT run_id FROM runs WHERE campaign_id = ? ORDER BY run_id",
+                (CAMPAIGN_ID,),
+            ).fetchall()
+    except Exception as error:
+        raise AnalysisRecoveryError("cannot enumerate bound campaign Registry rows") from error
+    if len(identities) != int(EXPECTED_DIAGNOSIS["campaign_registry_rows"]):
+        raise AnalysisRecoveryError("public Registry campaign row count differs")
+    run_ids = [str(row["run_id"]) for row in identities]
+    if len(set(run_ids)) != len(run_ids):
+        raise AnalysisRecoveryError("public Registry run IDs are not unique")
+    protocol_counts = {
+        "held_out_geometry_masked_reconstruction": 0,
+        "resource_validation": 0,
+    }
+    for run_id in run_ids:
+        try:
+            row = registry.get_run(run_id)
+        except Exception as error:
+            raise AnalysisRecoveryError(
+                f"public Registry.get_run failed: {run_id}"
+            ) from error
+        if not isinstance(row, Mapping) or row.get("campaign_id") != CAMPAIGN_ID:
+            raise AnalysisRecoveryError(f"public Registry row identity differs: {run_id}")
+        try:
+            configuration = adapter(row)
+        except Exception as error:
+            raise AnalysisRecoveryError(
+                f"public Registry decoded configuration differs: {run_id}"
+            ) from error
+        evaluation = configuration.get("evaluation")
+        protocol = evaluation.get("protocol") if isinstance(evaluation, Mapping) else None
+        if protocol not in protocol_counts:
+            raise AnalysisRecoveryError(
+                f"public Registry row has an unexpected protocol: {run_id}"
+            )
+        protocol_counts[str(protocol)] += 1
+    if protocol_counts != {
+        "held_out_geometry_masked_reconstruction": 140,
+        "resource_validation": 14,
+    }:
+        raise AnalysisRecoveryError(
+            f"public Registry protocol inventory differs: {protocol_counts}"
+        )
+    _verify_file_row(
+        _authority_row(authority, "registry_database"),
+        project_root=project_root,
+        label="registry database after public lifecycle",
+    )
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     try:
-        recovery, analyzer_argv = _arguments(argv)
-        authority = _verify_authority(recovery.recovery_amendment)
+        recovery = _arguments(argv)
+        invocation = (
+            None
+            if recovery.authority_check_only
+            else _parse_analyzer_invocation(recovery.analyzer_argv)
+        )
+        authority = _verify_authority(recovery.amendment_path)
         if recovery.authority_check_only:
+            _verify_authority_unchanged(authority)
             print(
                 _canonical_json(
                     {
                         "verified": True,
                         "amendment_id": authority.payload["amendment_id"],
+                        "amendment_size_bytes": authority.amendment_size_bytes,
                         "amendment_sha256": authority.amendment_sha256,
                         "scientific_outcomes_read": False,
                     }
                 )
             )
             return 0
+        assert invocation is not None
+        _verify_invocation_authority(invocation, authority)
+        _verify_authority_unchanged(authority)
         analyzer = _load_analyzer(authority)
         _install_patches(analyzer, authority=authority)
+        _verify_authority_unchanged(authority)
+        bound_database = _verify_effective_registry_path(analyzer, authority)
+        _verify_public_registry_lifecycle(
+            analyzer,
+            authority,
+            bound_database=bound_database,
+        )
+        _verify_authority_unchanged(authority)
     except AnalysisRecoveryError as error:
         print(f"ERROR: analysis recovery authority invalid: {error}", file=sys.stderr)
         return 2
-    return int(analyzer.main(analyzer_argv))
+    try:
+        result = int(analyzer.main(invocation.argv))
+    except AnalysisRecoveryError as error:
+        try:
+            _verify_authority_unchanged(authority)
+        except AnalysisRecoveryError as recheck_error:
+            error = recheck_error
+        print(f"ERROR: analysis recovery authority invalid: {error}", file=sys.stderr)
+        return 2
+    except BaseException:
+        _verify_authority_unchanged(authority)
+        raise
+    try:
+        _verify_authority_unchanged(authority)
+    except AnalysisRecoveryError as error:
+        print(f"ERROR: analysis recovery authority invalid: {error}", file=sys.stderr)
+        return 2
+    return result
 
 
 if __name__ == "__main__":

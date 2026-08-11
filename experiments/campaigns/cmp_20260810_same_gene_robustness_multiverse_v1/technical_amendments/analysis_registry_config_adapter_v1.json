@@ -3,7 +3,7 @@
   "amendment_id": "ta_cmp_20260810_same_gene_robustness_analysis_registry_config_adapter_v1",
   "campaign_id": "cmp_20260810_same_gene_robustness_multiverse_v1",
   "status": "frozen_analysis_technical_recovery",
-  "frozen_at": "2026-08-11T04:03:16Z",
+  "frozen_at": "2026-08-11T04:27:18Z",
   "scope": "analysis_adapter_only_no_scientific_change",
   "diagnosis": {
     "failure_message": "registry row omits config_json",
@@ -38,6 +38,15 @@
     "randomization_changed": false,
     "scientific_payload_schema_changed": false,
     "provenance_extended": true
+  },
+  "execution_contract": {
+    "contract_path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml",
+    "launch_manifest_path": "state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json",
+    "full_plan_path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json",
+    "registry_database_path": "state/tracking/bagm.sqlite3",
+    "output_path": "reports/analyses/same_gene_robustness_20260811",
+    "required_plan_count": 1,
+    "verify_only_supported": true
   },
   "authorities": [
     {
@@ -87,20 +96,20 @@
     {
       "role": "recovery_wrapper",
       "path": "scripts/analysis/run_same_gene_robustness_registry_recovery.py",
-      "size_bytes": 25742,
-      "sha256": "e095f084ac29a70d8d689b5518223394982e53b363e41d7a931f56f3ddf279e5"
+      "size_bytes": 39505,
+      "sha256": "1bd72017bb94ac7e372822b1f23e35de871b26c544921f45d295557d2ae2b569"
     },
     {
       "role": "amendment_schema",
       "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_registry_config_adapter_v1.schema.json",
-      "size_bytes": 8070,
-      "sha256": "27ff6935a6ab9fe63b156edb4d623f72d569e99a5f8fe0ae6c1f7be764e47b20"
+      "size_bytes": 9224,
+      "sha256": "a0694d74664298c6d8a9ddeac6c0461f0e1b70a236c577294ec5195e93c35321"
     },
     {
       "role": "dedicated_tests",
       "path": "tests/unit/spatial_benchmark/test_same_gene_robustness_analysis_registry_recovery.py",
-      "size_bytes": 8452,
-      "sha256": "ea87a12f495da5f54ca45c51eb7c9fcf057a7c20e87e0a23a40e3938443d42fb"
+      "size_bytes": 16852,
+      "sha256": "b4ee73649d9622e00e4a8df9c75e41c0bfb6f73beff0af4bdc7ff565090c54e9"
     }
   ],
   "scientific_invariants": {
