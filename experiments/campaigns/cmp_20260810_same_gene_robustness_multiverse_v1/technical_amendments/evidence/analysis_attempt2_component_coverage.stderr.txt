@@ -1,0 +1,25 @@
+Traceback (most recent call last):
+  File "/workspace/Bio-Architectural-Graph-Modeling/scripts/analysis/run_same_gene_robustness_registry_recovery.py", line 1003, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/workspace/Bio-Architectural-Graph-Modeling/scripts/analysis/run_same_gene_robustness_registry_recovery.py", line 983, in main
+    result = int(analyzer.main(invocation.argv))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Bio-Architectural-Graph-Modeling/scripts/analysis/analyze_same_gene_robustness.py", line 3976, in main
+    result = run(_arguments(argv))
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Bio-Architectural-Graph-Modeling/scripts/analysis/analyze_same_gene_robustness.py", line 3936, in run
+    payload, arrays, checks, component_rows, gene_rows = _build_payload(
+                                                         ^^^^^^^^^^^^^^^
+  File "/workspace/Bio-Architectural-Graph-Modeling/scripts/analysis/analyze_same_gene_robustness.py", line 3074, in _build_payload
+    component_axis = _verify_component_coverage(selected_rows)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Bio-Architectural-Graph-Modeling/scripts/analysis/analyze_same_gene_robustness.py", line 1971, in _verify_component_coverage
+    if len({canonical_json(value) for value in arm_folds.values()}) != 1:
+            ^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Bio-Architectural-Graph-Modeling/src/spatial_benchmark/identifiers.py", line 178, in canonical_json
+    _canonical_value(value),
+    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Bio-Architectural-Graph-Modeling/src/spatial_benchmark/identifiers.py", line 153, in _canonical_value
+    raise IdentifierError("Canonical JSON mappings require string keys.")
+spatial_benchmark.identifiers.IdentifierError: Canonical JSON mappings require string keys.

@@ -1,0 +1,439 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bagm:same-gene-robustness:analysis-component-coverage-adapter:v2",
+  "title": "Same-gene robustness layered analysis component-coverage recovery v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "amendment_id",
+    "campaign_id",
+    "status",
+    "frozen_at",
+    "scope",
+    "parent_layer",
+    "correction",
+    "execution_contract",
+    "failed_analysis_attempts",
+    "recovery_sources",
+    "scientific_invariants"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 2
+    },
+    "amendment_id": {
+      "const": "ta_cmp_20260810_same_gene_robustness_analysis_component_coverage_adapter_v2"
+    },
+    "campaign_id": {
+      "const": "cmp_20260810_same_gene_robustness_multiverse_v1"
+    },
+    "status": {
+      "const": "frozen_layered_analysis_technical_recovery"
+    },
+    "frozen_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "scope": {
+      "const": "component_coverage_equality_adapter_only_no_scientific_change"
+    },
+    "parent_layer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "git_commit",
+        "amendment_id",
+        "files"
+      ],
+      "properties": {
+        "git_commit": {
+          "const": "5508e7b1e67e04b1987ad18cb13c6fcecf87d1ff"
+        },
+        "amendment_id": {
+          "const": "ta_cmp_20260810_same_gene_robustness_analysis_registry_config_adapter_v1"
+        },
+        "files": {
+          "type": "array",
+          "minItems": 4,
+          "maxItems": 4,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/layer_file"
+          }
+        }
+      }
+    },
+    "correction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "newly_patched_symbols",
+        "arm_fold_equality",
+        "arm_count_equality",
+        "integer_key_semantics_changed",
+        "model_or_training_changed",
+        "scientific_computation_changed",
+        "gate_or_threshold_changed",
+        "randomization_changed",
+        "scientific_payload_schema_changed",
+        "provenance_extended"
+      ],
+      "properties": {
+        "kind": {
+          "const": "integer_item_tuple_component_coverage_equality_adapter"
+        },
+        "newly_patched_symbols": {
+          "const": [
+            "_verify_component_coverage",
+            "_source_provenance"
+          ]
+        },
+        "arm_fold_equality": {
+          "const": "tuple_sorted_integer_items"
+        },
+        "arm_count_equality": {
+          "const": "tuple_sorted_integer_items"
+        },
+        "integer_key_semantics_changed": {
+          "const": false
+        },
+        "model_or_training_changed": {
+          "const": false
+        },
+        "scientific_computation_changed": {
+          "const": false
+        },
+        "gate_or_threshold_changed": {
+          "const": false
+        },
+        "randomization_changed": {
+          "const": false
+        },
+        "scientific_payload_schema_changed": {
+          "const": false
+        },
+        "provenance_extended": {
+          "const": true
+        }
+      }
+    },
+    "execution_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_path",
+        "launch_manifest_path",
+        "full_plan_path",
+        "registry_database_path",
+        "output_path",
+        "required_plan_count",
+        "verify_only_supported"
+      ],
+      "properties": {
+        "contract_path": {
+          "const": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml"
+        },
+        "launch_manifest_path": {
+          "const": "state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json"
+        },
+        "full_plan_path": {
+          "const": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json"
+        },
+        "registry_database_path": {
+          "const": "state/tracking/bagm.sqlite3"
+        },
+        "output_path": {
+          "const": "reports/analyses/same_gene_robustness_20260811"
+        },
+        "required_plan_count": {
+          "const": 1
+        },
+        "verify_only_supported": {
+          "const": true
+        }
+      }
+    },
+    "failed_analysis_attempts": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        {
+          "$ref": "#/$defs/attempt_one"
+        },
+        {
+          "$ref": "#/$defs/attempt_two"
+        }
+      ],
+      "items": false
+    },
+    "recovery_sources": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/recovery_source"
+      }
+    },
+    "scientific_invariants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "v1_layer_unchanged",
+        "original_48_sources_unchanged",
+        "contract_launch_plan_ledger_registry_unchanged",
+        "run_bundles_and_prepared_data_unchanged",
+        "seeds_folds_models_hyperparameters_unchanged",
+        "component_rows_unchanged",
+        "gates_statistics_bootstrap_and_nulls_unchanged",
+        "same_v2_wrapper_required_for_publish_and_verify_only",
+        "no_retraining_authorized"
+      ],
+      "properties": {
+        "v1_layer_unchanged": {
+          "const": true
+        },
+        "original_48_sources_unchanged": {
+          "const": true
+        },
+        "contract_launch_plan_ledger_registry_unchanged": {
+          "const": true
+        },
+        "run_bundles_and_prepared_data_unchanged": {
+          "const": true
+        },
+        "seeds_folds_models_hyperparameters_unchanged": {
+          "const": true
+        },
+        "component_rows_unchanged": {
+          "const": true
+        },
+        "gates_statistics_bootstrap_and_nulls_unchanged": {
+          "const": true
+        },
+        "same_v2_wrapper_required_for_publish_and_verify_only": {
+          "const": true
+        },
+        "no_retraining_authorized": {
+          "const": true
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "project_path": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "pattern": "(^/|(^|/)\\.\\.(/|$)|\\\\)"
+      }
+    },
+    "file_row": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "path",
+        "size_bytes",
+        "sha256"
+      ],
+      "properties": {
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "$ref": "#/$defs/project_path"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "layer_file": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/file_row"
+        },
+        {
+          "properties": {
+            "role": {
+              "enum": [
+                "v1_amendment",
+                "v1_schema",
+                "v1_wrapper",
+                "v1_tests"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "recovery_source": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/file_row"
+        },
+        {
+          "properties": {
+            "role": {
+              "enum": [
+                "v2_amendment_schema",
+                "v2_wrapper",
+                "v2_tests",
+                "attempt_two_stderr_evidence"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "attempt_one": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempt",
+        "recovery_layer",
+        "exit_code",
+        "failure_message",
+        "failure_stage",
+        "automated_first_run_payload_loaded",
+        "aggregate_computed",
+        "output_published",
+        "staging_retained",
+        "evidence_path",
+        "evidence_sha256"
+      ],
+      "properties": {
+        "attempt": {
+          "const": 1
+        },
+        "recovery_layer": {
+          "const": "pre_v1"
+        },
+        "exit_code": {
+          "const": 2
+        },
+        "failure_message": {
+          "const": "registry row omits config_json"
+        },
+        "failure_stage": {
+          "const": "first_selected_run_registry_configuration_reconciliation"
+        },
+        "automated_first_run_payload_loaded": {
+          "const": true
+        },
+        "aggregate_computed": {
+          "const": false
+        },
+        "output_published": {
+          "const": false
+        },
+        "staging_retained": {
+          "const": false
+        },
+        "evidence_path": {
+          "const": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_registry_config_adapter_v1.json"
+        },
+        "evidence_sha256": {
+          "const": "7e4053886d402e50d6a417242cfa62edaa6a180f7fc0e3b0b5e56da96311e684"
+        }
+      }
+    },
+    "attempt_two": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "attempt",
+        "recovery_layer",
+        "started_at",
+        "ended_at",
+        "exit_code",
+        "stderr_path",
+        "stderr_size_bytes",
+        "stderr_sha256",
+        "verified_run_count",
+        "build_payload_reached",
+        "component_coverage_reached",
+        "gates_computed",
+        "bootstrap_computed",
+        "gene_label_null_computed",
+        "publication_started",
+        "output_published",
+        "staging_retained",
+        "scientific_effect_values_printed",
+        "scientific_effect_values_human_inspected"
+      ],
+      "properties": {
+        "attempt": {
+          "const": 2
+        },
+        "recovery_layer": {
+          "const": "v1"
+        },
+        "started_at": {
+          "const": "2026-08-11T04:33:27Z"
+        },
+        "ended_at": {
+          "const": "2026-08-11T05:29:31Z"
+        },
+        "exit_code": {
+          "const": 1
+        },
+        "stderr_path": {
+          "const": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/evidence/analysis_attempt2_component_coverage.stderr.txt"
+        },
+        "stderr_size_bytes": {
+          "const": 1896
+        },
+        "stderr_sha256": {
+          "const": "6e17a70269444a009bfb495ed79cafa02df13326427821a6814c3ad05546d2a5"
+        },
+        "verified_run_count": {
+          "const": 140
+        },
+        "build_payload_reached": {
+          "const": true
+        },
+        "component_coverage_reached": {
+          "const": true
+        },
+        "gates_computed": {
+          "const": false
+        },
+        "bootstrap_computed": {
+          "const": false
+        },
+        "gene_label_null_computed": {
+          "const": false
+        },
+        "publication_started": {
+          "const": false
+        },
+        "output_published": {
+          "const": false
+        },
+        "staging_retained": {
+          "const": false
+        },
+        "scientific_effect_values_printed": {
+          "const": false
+        },
+        "scientific_effect_values_human_inspected": {
+          "const": false
+        }
+      }
+    }
+  }
+}
