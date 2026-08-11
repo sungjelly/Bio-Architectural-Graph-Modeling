@@ -33,12 +33,30 @@ _SOURCE_ROOT = str(PROJECT_ROOT / "src")
 if not sys.path or sys.path[0] != _SOURCE_ROOT:
     sys.path.insert(0, _SOURCE_ROOT)
 
-from spatial_benchmark.identifiers import canonical_json, canonical_sha256
+from spatial_benchmark.identifiers import (
+    canonical_json,
+    canonical_sha256,
+    scientific_id,
+    scientific_payload,
+)
 from spatial_benchmark.environment_lock import (
     EnvironmentLockError,
     verify_live_environment,
 )
 from spatial_benchmark.run_archive import verify_run_bundle
+from spatial_benchmark.same_gene_recovery import (
+    AUTHORIZED_CORRECTIONS,
+    TECHNICAL_AMENDMENT_ID,
+    TECHNICAL_AMENDMENT_RELATIVE_PATH,
+    TECHNICAL_AMENDMENT_SCHEMA_RELATIVE_PATH,
+    TechnicalAmendment,
+    TechnicalAmendmentError,
+    load_technical_amendment,
+    normalized_source_rows,
+    source_manifest_sha256 as recovery_source_manifest_sha256,
+    verify_child_launch_binding,
+    verify_parent_git_sources,
+)
 
 
 CAMPAIGN_ID = "cmp_20260810_same_gene_robustness_multiverse_v1"
@@ -82,6 +100,9 @@ BASE_ANALYZER_RELATIVE_PATH = "scripts/analysis/analyze_same_gene_nonlinear.py"
 RESIDUALIZATION_RELATIVE_PATH = (
     "src/spatial_benchmark/same_gene_residualization.py"
 )
+RECOVERY_AUTHORITY_RELATIVE_PATH = (
+    "src/spatial_benchmark/same_gene_recovery.py"
+)
 REQUIRED_SOURCES = frozenset(
     {
         CONTRACT_RELATIVE_PATH,
@@ -101,6 +122,8 @@ REQUIRED_SOURCES = frozenset(
         ANALYZER_RELATIVE_PATH,
         BASE_ANALYZER_RELATIVE_PATH,
         RESIDUALIZATION_RELATIVE_PATH,
+        RECOVERY_AUTHORITY_RELATIVE_PATH,
+        TECHNICAL_AMENDMENT_SCHEMA_RELATIVE_PATH,
     }
 )
 
@@ -571,6 +594,7 @@ class LaunchIdentity:
     source_manifest_sha: str
     payload: dict[str, Any]
     prepared_binding: PreparedContractBinding
+    technical_amendment: TechnicalAmendment | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -808,6 +832,419 @@ def build_launch_manifest(
     return payload
 
 
+def build_technical_amendment(
+    *,
+    parent_launch: str | Path,
+    parent_plan: str | Path,
+    parent_ledger: str | Path,
+    parent_git_commit: str,
+    child_source_list: str | Path,
+    child_launch: str | Path,
+    output: str | Path,
+    frozen_at: str,
+    project_root: str | Path = PROJECT_ROOT,
+) -> dict[str, Any]:
+    """Freeze a no-effect-access recovery authority before the child launch.
+
+    The source list must already contain the canonical amendment path.  Every
+    other source is hashed into ``launch_core_sha256``; after this file is
+    written, ``build-launch`` adds its source row and completes the two-way
+    non-circular binding.
+    """
+
+    root = Path(project_root).resolve(strict=True)
+    output_path = _project_path(
+        output, project_root=root, label="technical amendment output"
+    )
+    if _relative(output_path, project_root=root, must_exist=False) != (
+        TECHNICAL_AMENDMENT_RELATIVE_PATH
+    ):
+        raise SameGeneMaterializationError(
+            "technical amendment output path is not canonical"
+        )
+    if not isinstance(frozen_at, str):
+        raise SameGeneMaterializationError("technical amendment frozen_at is required")
+    try:
+        parsed_frozen_at = datetime.strptime(frozen_at, "%Y-%m-%dT%H:%M:%SZ")
+    except ValueError as error:
+        raise SameGeneMaterializationError(
+            "technical amendment frozen_at is not canonical UTC"
+        ) from error
+    if parsed_frozen_at.strftime("%Y-%m-%dT%H:%M:%SZ") != frozen_at:
+        raise SameGeneMaterializationError(
+            "technical amendment frozen_at is not canonical UTC"
+        )
+    if re.fullmatch(r"[0-9a-f]{40}", parent_git_commit) is None:
+        raise SameGeneMaterializationError("parent Git commit must be a full SHA")
+
+    contract_path, contract_sha, _ = _contract_identity(
+        root / CONTRACT_RELATIVE_PATH, project_root=root
+    )
+    parent_launch_path = _project_path(
+        parent_launch,
+        project_root=root,
+        label="parent launch",
+        require_file=True,
+    )
+    parent_plan_path = _project_path(
+        parent_plan,
+        project_root=root,
+        label="parent pilot plan",
+        require_file=True,
+    )
+    parent_ledger_path = _project_path(
+        parent_ledger,
+        project_root=root,
+        label="parent pilot ledger",
+        require_file=True,
+    )
+    parent_launch_payload = _strict_json(
+        parent_launch_path, label="parent launch"
+    )
+    _exact_keys(parent_launch_payload, _LAUNCH_KEYS, label="parent launch")
+    parent_contract = parent_launch_payload.get("contract")
+    if (
+        parent_launch_payload.get("campaign_id") != CAMPAIGN_ID
+        or not isinstance(parent_contract, Mapping)
+        or parent_contract.get("path") != CONTRACT_RELATIVE_PATH
+        or parent_contract.get("sha") != contract_sha
+    ):
+        raise SameGeneMaterializationError(
+            "parent launch does not bind the unchanged frozen contract"
+        )
+    parent_source_sha = _source_manifest_sha(
+        list(normalized_source_rows(parent_launch_payload["sources"]))
+    )
+    parent_plan_payload = _strict_json(parent_plan_path, label="parent pilot plan")
+    _exact_keys(parent_plan_payload, _PLAN_KEYS, label="parent pilot plan")
+    if (
+        parent_plan_payload.get("plan_id") != f"{CAMPAIGN_ID}-pilot-core-v1"
+        or parent_plan_payload.get("source_manifest")
+        != {
+            "path": _relative(parent_launch_path, project_root=root),
+            "sha256": _sha256_file(parent_launch_path),
+        }
+        or not isinstance(parent_plan_payload.get("jobs"), list)
+        or len(parent_plan_payload["jobs"]) != 7
+    ):
+        raise SameGeneMaterializationError(
+            "parent pilot plan is not the complete attempt-one authority"
+        )
+    parent_ledger_payload = _strict_json(
+        parent_ledger_path, label="parent pilot ledger"
+    )
+    parent_job_ids = {
+        str(job.get("job_id"))
+        for job in parent_plan_payload["jobs"]
+        if isinstance(job, Mapping)
+    }
+    ledger_jobs = parent_ledger_payload.get("jobs")
+    ledger_source = parent_ledger_payload.get("source_manifest")
+    if (
+        parent_ledger_payload.get("schema_version") != 1
+        or parent_ledger_payload.get("plan_id")
+        != f"{CAMPAIGN_ID}-pilot-core-v1"
+        or Path(str(parent_ledger_payload.get("plan_path"))).resolve(strict=False)
+        != parent_plan_path
+        or parent_ledger_payload.get("plan_sha256") != _sha256_file(parent_plan_path)
+        or not isinstance(ledger_source, Mapping)
+        or set(ledger_source) != {"path", "sha256"}
+        or Path(str(ledger_source["path"])).resolve(strict=False)
+        != parent_launch_path
+        or ledger_source["sha256"] != _sha256_file(parent_launch_path)
+        or parent_ledger_payload.get("status") not in {"failed", "interrupted"}
+        or parent_ledger_payload.get("status_counts")
+        != {"retry_required": 7}
+        or not isinstance(ledger_jobs, Mapping)
+        or set(ledger_jobs) != parent_job_ids
+    ):
+        raise SameGeneMaterializationError(
+            "parent pilot ledger is not bound to the failed attempt-one plan"
+        )
+    for job_id, raw_state in ledger_jobs.items():
+        attempts = raw_state.get("attempts") if isinstance(raw_state, Mapping) else None
+        if (
+            not isinstance(raw_state, Mapping)
+            or raw_state.get("status") != "retry_required"
+            or not isinstance(attempts, list)
+            or len(attempts) != 1
+            or not isinstance(attempts[0], Mapping)
+            or attempts[0].get("number") != 1
+            or attempts[0].get("status") != "failed"
+            or attempts[0].get("return_code") in {None, 0}
+        ):
+            raise SameGeneMaterializationError(
+                f"parent pilot ledger state is not terminal failed: {job_id}"
+            )
+
+    source_list_path = _project_path(
+        child_source_list,
+        project_root=root,
+        label="child source list",
+        require_file=True,
+    )
+    raw_sources = _strict_json_value(source_list_path, label="child source list")
+    if (
+        not isinstance(raw_sources, list)
+        or any(not isinstance(item, str) for item in raw_sources)
+        or len(raw_sources) != len(set(raw_sources))
+        or TECHNICAL_AMENDMENT_RELATIVE_PATH not in raw_sources
+        or _relative(source_list_path, project_root=root) not in raw_sources
+    ):
+        raise SameGeneMaterializationError(
+            "child source list must uniquely include itself and the amendment"
+        )
+    required = _transitive_local_sources(tuple(REQUIRED_SOURCES), project_root=root)
+    missing = required.difference(raw_sources)
+    if missing:
+        raise SameGeneMaterializationError(
+            f"child source list omits required authorities: {sorted(missing)}"
+        )
+    child_rows: list[dict[str, Any]] = []
+    for relative in sorted(raw_sources):
+        raw_path = Path(relative)
+        if (
+            raw_path.is_absolute()
+            or raw_path.as_posix() != relative
+            or ".." in raw_path.parts
+            or "\\" in relative
+        ):
+            raise SameGeneMaterializationError(
+                "child source list path is not normalized"
+            )
+        if relative == TECHNICAL_AMENDMENT_RELATIVE_PATH:
+            continue
+        source_path = _project_path(
+            relative,
+            project_root=root,
+            label="child source",
+            require_file=True,
+        )
+        child_rows.append(
+            {
+                "path": relative,
+                "size": source_path.stat().st_size,
+                "sha": _sha256_file(source_path),
+            }
+        )
+    child_launch_path = _project_path(
+        child_launch,
+        project_root=root,
+        label="child launch",
+    )
+    child_core = {
+        "campaign_id": CAMPAIGN_ID,
+        "contract": {
+            "path": _relative(contract_path, project_root=root),
+            "sha": contract_sha,
+        },
+        "sources": child_rows,
+    }
+
+    configs_by_variant: dict[str, tuple[Path, str]] = {}
+    for raw_job in parent_plan_payload["jobs"]:
+        if not isinstance(raw_job, Mapping):
+            raise SameGeneMaterializationError("parent pilot job is malformed")
+        argv = raw_job.get("argv")
+        if not isinstance(argv, list) or len(argv) != 4:
+            raise SameGeneMaterializationError("parent pilot argv is malformed")
+        config_path = _project_path(
+            str(argv[3]),
+            project_root=root,
+            label="parent pilot config",
+            require_file=True,
+        )
+        config = _load_job_config(config_path, project_root=root)
+        variant_root = _project_path(
+            str(config["variant_root"]),
+            project_root=root,
+            label="parent pilot variant",
+            require_directory=True,
+        )
+        variant_manifest = _strict_json(
+            variant_root / "manifest.json", label="parent pilot variant manifest"
+        )
+        variant = variant_manifest.get("variant_id")
+        if (
+            variant not in VARIANTS
+            or variant in configs_by_variant
+            or config["attempt"] != 1
+            or config["profile"] != "pilot"
+            or config["model_seed"] != PILOT_SEED
+            or config["fold"] != PILOT_FOLD
+            or config["launch_manifest"]
+            != _relative(parent_launch_path, project_root=root)
+            or raw_job.get("expected_config_sha256") != _sha256_file(config_path)
+        ):
+            raise SameGeneMaterializationError(
+                "parent pilot slot/config inventory changed"
+            )
+        configs_by_variant[str(variant)] = (config_path, _sha256_file(config_path))
+    if set(configs_by_variant) != set(VARIANTS):
+        raise SameGeneMaterializationError("parent pilot variant inventory is incomplete")
+
+    registry_path = root / "state/tracking/bagm.sqlite3"
+    if registry_path.is_symlink() or not registry_path.is_file():
+        raise SameGeneMaterializationError("parent pilot registry is missing")
+    connection = sqlite3.connect(f"file:{registry_path}?mode=ro", uri=True)
+    connection.row_factory = sqlite3.Row
+    try:
+        rows = connection.execute(
+            """
+            SELECT run_id, campaign_id, scientific_id, seed, fold, attempt,
+                   status, artifact_path, failure_category, retry_of, config_json
+            FROM runs
+            WHERE campaign_id = ? AND seed = ? AND fold = ? AND attempt = 1
+            ORDER BY created_at, run_id
+            """,
+            (CAMPAIGN_ID, PILOT_SEED % 1_000_000, PILOT_FOLD),
+        ).fetchall()
+    except sqlite3.Error as error:
+        raise SameGeneMaterializationError(
+            "cannot read parent pilot registry inventory"
+        ) from error
+    finally:
+        connection.close()
+    failed_attempts: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        try:
+            configuration = json.loads(str(row["config_json"]))
+        except (TypeError, ValueError) as error:
+            raise SameGeneMaterializationError(
+                "parent pilot registry config is malformed"
+            ) from error
+        robustness = (
+            configuration.get("robustness_variant")
+            if isinstance(configuration, Mapping)
+            else None
+        )
+        variant = robustness.get("variant_id") if isinstance(robustness, Mapping) else None
+        if variant not in VARIANTS:
+            continue
+        if variant in failed_attempts:
+            raise SameGeneMaterializationError(
+                f"parent pilot registry duplicates {variant}"
+            )
+        config_path, config_sha = configs_by_variant[str(variant)]
+        campaign = configuration.get("campaign")
+        if (
+            row["campaign_id"] != CAMPAIGN_ID
+            or row["scientific_id"] != scientific_id(configuration)
+            or row["seed"] != PILOT_SEED % 1_000_000
+            or row["fold"] != PILOT_FOLD
+            or row["attempt"] != 1
+            or row["status"] != "failed"
+            or row["retry_of"] is not None
+            or row["failure_category"] != "same_gene_nonlinear_run_failure"
+            or not isinstance(campaign, Mapping)
+            or campaign.get("frozen_contract_sha256") != contract_sha
+            or campaign.get("launch_manifest_sha256")
+            != _sha256_file(parent_launch_path)
+            or campaign.get("source_manifest_sha256") != parent_source_sha
+            or campaign.get("materialized_job_config_sha256") != config_sha
+        ):
+            raise SameGeneMaterializationError(
+                f"parent pilot registry authority differs for {variant}"
+            )
+        artifact = _project_path(
+            str(row["artifact_path"]),
+            project_root=root,
+            label=f"parent {variant} failed artifact",
+            require_directory=True,
+        )
+        failed_marker = artifact / "_FAILED"
+        exception = artifact / "logs/exception.txt"
+        try:
+            verified = verify_run_bundle(artifact, require_success_contract=False)
+        except Exception as error:
+            raise SameGeneMaterializationError(
+                f"parent {variant} failure bundle is invalid"
+            ) from error
+        if (
+            verified.get("status") != "failed"
+            or not failed_marker.is_file()
+            or not exception.is_file()
+        ):
+            raise SameGeneMaterializationError(
+                f"parent {variant} attempt is not terminal failed"
+            )
+        failed_attempts[str(variant)] = {
+            "variant": str(variant),
+            "attempt": 1,
+            "model_seed": PILOT_SEED,
+            "fold": PILOT_FOLD,
+            "scientific_id": str(row["scientific_id"]),
+            "run_id": str(row["run_id"]),
+            "materialized_config_sha256": config_sha,
+            "artifact_path": _relative(artifact, project_root=root),
+            "failed_marker_sha256": _sha256_file(failed_marker),
+            "exception_sha256": _sha256_file(exception),
+            "registry_status": "failed",
+            "artifact_status": "failed",
+            "failure_category": "same_gene_nonlinear_run_failure",
+        }
+    if set(failed_attempts) != set(VARIANTS):
+        raise SameGeneMaterializationError(
+            "technical amendment requires exactly seven failed parent pilots"
+        )
+
+    payload = {
+        "schema_version": 1,
+        "amendment_id": TECHNICAL_AMENDMENT_ID,
+        "campaign_id": CAMPAIGN_ID,
+        "status": "frozen_technical_recovery",
+        "frozen_at": frozen_at,
+        "scope": "execution_only_no_scientific_change",
+        "scientific_effects_accessed": False,
+        "contract": {
+            "path": _relative(contract_path, project_root=root),
+            "sha256": contract_sha,
+        },
+        "parent_authority": {
+            "launch_path": _relative(parent_launch_path, project_root=root),
+            "launch_sha256": _sha256_file(parent_launch_path),
+            "source_manifest_sha256": parent_source_sha,
+            "pilot_plan_path": _relative(parent_plan_path, project_root=root),
+            "pilot_plan_sha256": _sha256_file(parent_plan_path),
+            "pilot_ledger_path": _relative(parent_ledger_path, project_root=root),
+            "pilot_ledger_sha256": _sha256_file(parent_ledger_path),
+            "git_commit": parent_git_commit,
+        },
+        "child_authority": {
+            "launch_path": _relative(
+                child_launch_path, project_root=root, must_exist=False
+            ),
+            "launch_core_sha256": canonical_sha256(child_core),
+            "source_list_path": _relative(source_list_path, project_root=root),
+            "source_list_sha256": _sha256_file(source_list_path),
+            "profile": "pilot",
+            "first_recovery_attempt": 2,
+            "required_variants": list(VARIANTS),
+        },
+        "authorized_corrections": list(AUTHORIZED_CORRECTIONS),
+        "scientific_invariants": {
+            "campaign_id_unchanged": True,
+            "contract_sha256_unchanged": True,
+            "prepared_data_fingerprints_unchanged": True,
+            "environment_lock_sha256_unchanged": True,
+            "scientific_payload_must_match_parent": True,
+            "seeds_folds_hyperparameters_gates_unchanged": True,
+            "all_latest_pilot_attempts_share_child_launch": True,
+            "production_blocked_until_all_seven_receipts_verify": True,
+        },
+        "failed_attempts": [failed_attempts[variant] for variant in VARIANTS],
+    }
+    _atomic_json(output_path, payload)
+    try:
+        amendment = load_technical_amendment(output_path, project_root=root)
+        verify_parent_git_sources(amendment, project_root=root)
+    except TechnicalAmendmentError as error:
+        raise SameGeneMaterializationError(
+            "materialized technical amendment failed self-verification"
+        ) from error
+    return payload
+
+
 def _verify_launch(path: str | Path, *, project_root: Path) -> LaunchIdentity:
     launch_path = _project_path(
         path, project_root=project_root, label="launch manifest", require_file=True
@@ -873,6 +1310,26 @@ def _verify_launch(path: str | Path, *, project_root: Path) -> LaunchIdentity:
         raise SameGeneMaterializationError(
             f"launch manifest omits required authorities: {sorted(missing)}"
         )
+    technical_amendment: TechnicalAmendment | None = None
+    if TECHNICAL_AMENDMENT_RELATIVE_PATH in seen:
+        try:
+            technical_amendment = load_technical_amendment(
+                project_root / TECHNICAL_AMENDMENT_RELATIVE_PATH,
+                project_root=project_root,
+            )
+            verify_child_launch_binding(
+                technical_amendment,
+                payload,
+                launch_path=launch_path,
+                project_root=project_root,
+            )
+            verify_parent_git_sources(
+                technical_amendment, project_root=project_root
+            )
+        except TechnicalAmendmentError as error:
+            raise SameGeneMaterializationError(
+                "technical recovery launch lineage is invalid"
+            ) from error
     _verify_frozen_environment(project_root)
     return LaunchIdentity(
         path=launch_path,
@@ -881,6 +1338,41 @@ def _verify_launch(path: str | Path, *, project_root: Path) -> LaunchIdentity:
         source_manifest_sha=_source_manifest_sha(normalized),
         payload=payload,
         prepared_binding=prepared_binding,
+        technical_amendment=technical_amendment,
+    )
+
+
+def _verify_historical_parent_launch(
+    amendment: TechnicalAmendment, *, project_root: Path
+) -> LaunchIdentity:
+    """Verify the superseded launch against its immutable Git source snapshot."""
+
+    try:
+        payload = verify_parent_git_sources(amendment, project_root=project_root)
+    except TechnicalAmendmentError as error:
+        raise SameGeneMaterializationError(
+            "historical parent launch source authority is invalid"
+        ) from error
+    contract_path, contract_sha, prepared_binding = _contract_identity(
+        project_root / CONTRACT_RELATIVE_PATH, project_root=project_root
+    )
+    if contract_sha != amendment.contract_sha256:
+        raise SameGeneMaterializationError(
+            "historical parent and child contract identities differ"
+        )
+    rows = normalized_source_rows(payload["sources"])
+    if recovery_source_manifest_sha256(rows) != amendment.parent_source_manifest_sha256:
+        raise SameGeneMaterializationError(
+            "historical parent source-manifest identity differs"
+        )
+    return LaunchIdentity(
+        path=amendment.parent_launch_path,
+        sha256=amendment.parent_launch_sha256,
+        contract_sha256=contract_sha,
+        source_manifest_sha=amendment.parent_source_manifest_sha256,
+        payload=payload,
+        prepared_binding=prepared_binding,
+        technical_amendment=None,
     )
 
 
@@ -1062,7 +1554,16 @@ def _validate_receipt_identity(
     payload = receipt["payload"]
     if not isinstance(payload, Mapping):
         raise SameGeneMaterializationError("pilot receipt payload is malformed")
-    _exact_keys(payload, _RECEIPT_PAYLOAD_KEYS, label="pilot receipt payload")
+    amended_receipt_keys = _RECEIPT_PAYLOAD_KEYS | {
+        "launch_manifest_sha",
+        "technical_amendment",
+    }
+    expected_payload_keys = (
+        amended_receipt_keys
+        if launch.technical_amendment is not None
+        else _RECEIPT_PAYLOAD_KEYS
+    )
+    _exact_keys(payload, expected_payload_keys, label="pilot receipt payload")
     if canonical_sha256(payload) != _sha(
         receipt["receipt_sha256"], label="pilot receipt SHA"
     ):
@@ -1078,6 +1579,21 @@ def _validate_receipt_identity(
         if payload[key] != value:
             raise SameGeneMaterializationError(
                 f"pilot receipt {key} binding mismatch"
+            )
+    amendment = launch.technical_amendment
+    if amendment is not None:
+        expected_amendment = {
+            "path": _relative(amendment.path, project_root=project_root),
+            "sha256": amendment.sha256,
+            "parent_launch_sha256": amendment.parent_launch_sha256,
+            "child_launch_sha256": launch.sha256,
+        }
+        if (
+            payload["launch_manifest_sha"] != launch.sha256
+            or payload["technical_amendment"] != expected_amendment
+        ):
+            raise SameGeneMaterializationError(
+                "pilot receipt technical-amendment binding mismatch"
             )
     selected_attempt = payload["selected_attempt"]
     history = payload["attempt_history"]
@@ -1098,6 +1614,84 @@ def _validate_receipt_identity(
         range(1, selected_attempt + 1)
     ):
         raise SameGeneMaterializationError("pilot receipt attempt history is noncontiguous")
+    if amendment is not None:
+        amended_history_keys = {
+            "attempt",
+            "job_id",
+            "plan_path",
+            "plan_sha256",
+            "config_sha256",
+            "launch_manifest_path",
+            "launch_manifest_sha256",
+            "source_manifest_sha256",
+            "retry_of",
+            "selected",
+            "registry_status",
+            "run_id",
+            "artifact_path",
+            "artifact_status",
+        }
+        if selected_attempt != 2:
+            raise SameGeneMaterializationError(
+                "technical amendment requires selected pilot attempt two"
+            )
+        previous_run_id: str | None = None
+        for index, row in enumerate(history):
+            if not isinstance(row, Mapping) or set(row) != amended_history_keys:
+                raise SameGeneMaterializationError(
+                    "amended pilot attempt history schema differs"
+                )
+            plan_path = _project_path(
+                str(row["plan_path"]),
+                project_root=project_root,
+                label="pilot attempt plan",
+                require_file=True,
+            )
+            launch_path = _project_path(
+                str(row["launch_manifest_path"]),
+                project_root=project_root,
+                label="pilot attempt launch",
+                require_file=True,
+            )
+            if (
+                _sha256_file(plan_path)
+                != _sha(row["plan_sha256"], label="pilot attempt plan SHA")
+                or _sha256_file(launch_path)
+                != _sha(
+                    row["launch_manifest_sha256"],
+                    label="pilot attempt launch SHA",
+                )
+            ):
+                raise SameGeneMaterializationError(
+                    "amended pilot plan/launch identity changed"
+                )
+            if index == 0:
+                declared = amendment.failed_attempts[variant.variant_id]
+                if (
+                    plan_path != amendment.parent_plan_path
+                    or launch_path != amendment.parent_launch_path
+                    or row["launch_manifest_sha256"]
+                    != amendment.parent_launch_sha256
+                    or row["source_manifest_sha256"]
+                    != amendment.parent_source_manifest_sha256
+                    or row["retry_of"] is not None
+                    or row["run_id"] != declared["run_id"]
+                ):
+                    raise SameGeneMaterializationError(
+                        "amended pilot parent-attempt binding mismatch"
+                    )
+            else:
+                if (
+                    launch_path != launch.path
+                    or row["launch_manifest_sha256"] != launch.sha256
+                    or row["source_manifest_sha256"]
+                    != launch.source_manifest_sha
+                    or row["retry_of"] != previous_run_id
+                ):
+                    raise SameGeneMaterializationError(
+                        "amended pilot child-attempt binding mismatch"
+                    )
+            previous_run_id = str(row["run_id"])
     bundle = payload["bundle"]
     controls = payload["controls"]
     if not isinstance(bundle, Mapping) or not isinstance(controls, Mapping):
@@ -1326,6 +1920,35 @@ def _job_id(
     return f"same-gene-robustness-{profile}-{variant}-s{seed}-f{fold}-a{attempt}"
 
 
+def _validate_amended_plan_request(
+    launch: LaunchIdentity,
+    *,
+    profile: str,
+    attempt: int,
+    retry_slots: Sequence[tuple[str, int, int]] | None,
+) -> None:
+    """Prevent an amended child launch from authorizing a selective pilot plan."""
+
+    if launch.technical_amendment is None or profile == "full":
+        return
+    required = tuple((variant, PILOT_SEED, PILOT_FOLD) for variant in VARIANTS)
+    normalized = (
+        None
+        if retry_slots is None
+        else tuple((str(variant), int(seed), int(fold)) for variant, seed, fold in retry_slots)
+    )
+    if (
+        profile != "pilot"
+        or attempt != 2
+        or normalized is None
+        or len(normalized) != len(required)
+        or set(normalized) != set(required)
+    ):
+        raise SameGeneMaterializationError(
+            "the technical amendment authorizes one all-seven pilot attempt-two plan"
+        )
+
+
 def build_job_plan(
     *,
     profile: str,
@@ -1351,6 +1974,12 @@ def build_job_plan(
             "attempt >1 requires explicit retry slots; broad implicit retry is forbidden"
         )
     launch = _verify_launch(launch_manifest, project_root=root)
+    _validate_amended_plan_request(
+        launch,
+        profile=profile,
+        attempt=attempt,
+        retry_slots=retry_slots,
+    )
     roots = _validate_mapping(variant_roots, label="variant roots")
     variants = {
         variant: _variant_identity(
@@ -1539,7 +2168,12 @@ class PilotSlot:
     plan_path: Path
 
 
-def _pilot_slots(plan_path: Path, *, project_root: Path) -> tuple[PilotSlot, ...]:
+def _pilot_slots(
+    plan_path: Path,
+    *,
+    project_root: Path,
+    historical_amendment: TechnicalAmendment | None = None,
+) -> tuple[PilotSlot, ...]:
     path = _project_path(
         plan_path, project_root=project_root, label="pilot plan", require_file=True
     )
@@ -1572,8 +2206,24 @@ def _pilot_slots(plan_path: Path, *, project_root: Path) -> tuple[PilotSlot, ...
     source = payload["source_manifest"]
     if not isinstance(source, Mapping) or set(source) != {"path", "sha256"}:
         raise SameGeneMaterializationError("pilot plan source manifest is malformed")
-    launch = _verify_launch(str(source["path"]), project_root=project_root)
-    if launch.sha256 != _sha(source["sha256"], label="plan source SHA"):
+    source_path = _project_path(
+        str(source["path"]),
+        project_root=project_root,
+        label="pilot plan launch manifest",
+        require_file=True,
+    )
+    source_sha = _sha(source["sha256"], label="plan source SHA")
+    if (
+        historical_amendment is not None
+        and source_path == historical_amendment.parent_launch_path
+        and source_sha == historical_amendment.parent_launch_sha256
+    ):
+        launch = _verify_historical_parent_launch(
+            historical_amendment, project_root=project_root
+        )
+    else:
+        launch = _verify_launch(source_path, project_root=project_root)
+    if launch.sha256 != source_sha:
         raise SameGeneMaterializationError("pilot plan launch SHA mismatch")
     environment = payload["environment_lock"]
     if (
@@ -2075,6 +2725,210 @@ def _terminal_unsuccessful_attempt(
     }
 
 
+def _registry_run(
+    run_id: str, *, project_root: Path
+) -> dict[str, Any]:
+    registry_path = project_root / "state/tracking/bagm.sqlite3"
+    if registry_path.is_symlink() or not registry_path.is_file():
+        raise SameGeneMaterializationError("pilot lineage registry is missing")
+    connection: sqlite3.Connection | None = None
+    try:
+        connection = sqlite3.connect(f"file:{registry_path}?mode=ro", uri=True)
+        connection.row_factory = sqlite3.Row
+        row = connection.execute(
+            """
+            SELECT run_id, campaign_id, scientific_id, seed, fold, attempt,
+                   status, artifact_path, failure_category, retry_of, config_json
+            FROM runs WHERE run_id = ?
+            """,
+            (run_id,),
+        ).fetchone()
+    except sqlite3.Error as error:
+        raise SameGeneMaterializationError(
+            "pilot lineage registry query failed"
+        ) from error
+    finally:
+        if connection is not None:
+            connection.close()
+    if row is None:
+        raise SameGeneMaterializationError("pilot lineage registry row is missing")
+    try:
+        configuration = json.loads(str(row["config_json"]))
+    except (TypeError, ValueError) as error:
+        raise SameGeneMaterializationError(
+            "pilot lineage registry configuration is malformed"
+        ) from error
+    if not isinstance(configuration, Mapping):
+        raise SameGeneMaterializationError(
+            "pilot lineage registry configuration is not an object"
+        )
+    return {**dict(row), "configuration": dict(configuration)}
+
+
+def _verify_amended_parent_failures(
+    amendment: TechnicalAmendment,
+    histories: Mapping[str, Sequence[PilotSlot]],
+    *,
+    project_root: Path,
+) -> dict[str, dict[str, Any]]:
+    """Bind every parent plan slot to its exact terminal failed run."""
+
+    parent_configurations: dict[str, dict[str, Any]] = {}
+    for variant in VARIANTS:
+        parent_slots = [
+            slot
+            for slot in histories[variant]
+            if slot.attempt == 1
+            and slot.launch.sha256 == amendment.parent_launch_sha256
+        ]
+        if len(parent_slots) != 1 or parent_slots[0].plan_path != amendment.parent_plan_path:
+            raise SameGeneMaterializationError(
+                f"amendment parent plan does not declare exactly one {variant} a1 slot"
+            )
+        slot = parent_slots[0]
+        declared = amendment.failed_attempts[variant]
+        if slot.config_sha256 != declared["materialized_config_sha256"]:
+            raise SameGeneMaterializationError(
+                f"amendment parent config differs for {variant}"
+            )
+        row = _registry_run(str(declared["run_id"]), project_root=project_root)
+        configuration = row["configuration"]
+        campaign = configuration.get("campaign")
+        robustness = configuration.get("robustness_variant")
+        evaluation = configuration.get("evaluation")
+        if (
+            row["campaign_id"] != CAMPAIGN_ID
+            or row["scientific_id"] != declared["scientific_id"]
+            or row["seed"] != PILOT_SEED % 1_000_000
+            or row["fold"] != PILOT_FOLD
+            or row["attempt"] != 1
+            or row["status"] != "failed"
+            or row["retry_of"] is not None
+            or row["failure_category"] != declared["failure_category"]
+            or scientific_id(configuration) != declared["scientific_id"]
+            or not isinstance(campaign, Mapping)
+            or campaign.get("frozen_contract_sha256")
+            != amendment.contract_sha256
+            or campaign.get("launch_manifest_sha256")
+            != amendment.parent_launch_sha256
+            or campaign.get("source_manifest_sha256")
+            != amendment.parent_source_manifest_sha256
+            or campaign.get("materialized_job_config_sha256")
+            != slot.config_sha256
+            or not isinstance(robustness, Mapping)
+            or robustness.get("variant_id") != variant
+            or configuration.get("profile") != "pilot"
+            or not isinstance(evaluation, Mapping)
+            or evaluation.get("protocol") != "resource_validation"
+        ):
+            raise SameGeneMaterializationError(
+                f"amendment registry authority differs for {variant}"
+            )
+        artifact = _project_path(
+            str(row["artifact_path"]),
+            project_root=project_root,
+            label=f"amendment {variant} failed artifact",
+            require_directory=True,
+        )
+        if _relative(artifact, project_root=project_root) != declared["artifact_path"]:
+            raise SameGeneMaterializationError(
+                f"amendment artifact path differs for {variant}"
+            )
+        failed_marker = artifact / "_FAILED"
+        exception = artifact / "logs/exception.txt"
+        if (
+            failed_marker.is_symlink()
+            or exception.is_symlink()
+            or not failed_marker.is_file()
+            or not exception.is_file()
+            or _sha256_file(failed_marker) != declared["failed_marker_sha256"]
+            or _sha256_file(exception) != declared["exception_sha256"]
+        ):
+            raise SameGeneMaterializationError(
+                f"amendment failed-bundle evidence differs for {variant}"
+            )
+        try:
+            verified = verify_run_bundle(artifact, require_success_contract=False)
+        except Exception as error:
+            raise SameGeneMaterializationError(
+                f"amendment failed bundle cannot be verified for {variant}"
+            ) from error
+        if verified.get("status") != "failed":
+            raise SameGeneMaterializationError(
+                f"amendment parent artifact is not failed for {variant}"
+            )
+        parent_configurations[variant] = configuration
+    return parent_configurations
+
+
+def _verify_amended_selected_run(
+    *,
+    slot: PilotSlot,
+    run_id: str,
+    artifact: Path,
+    previous_run_id: str,
+    parent_configuration: Mapping[str, Any],
+    amendment: TechnicalAmendment,
+    project_root: Path,
+) -> dict[str, Any]:
+    row = _registry_run(run_id, project_root=project_root)
+    configuration = row["configuration"]
+    campaign = configuration.get("campaign")
+    robustness = configuration.get("robustness_variant")
+    if (
+        row["campaign_id"] != CAMPAIGN_ID
+        or row["seed"] != PILOT_SEED % 1_000_000
+        or row["fold"] != PILOT_FOLD
+        or row["attempt"] != slot.attempt
+        or row["status"] != "completed"
+        or row["retry_of"] != previous_run_id
+        or Path(str(row["artifact_path"])).resolve(strict=False) != artifact
+        or row["scientific_id"] != scientific_id(configuration)
+        or scientific_payload(configuration) != scientific_payload(parent_configuration)
+        or not isinstance(campaign, Mapping)
+        or campaign.get("frozen_contract_sha256") != amendment.contract_sha256
+        or campaign.get("launch_manifest_sha256") != slot.launch.sha256
+        or campaign.get("source_manifest_sha256") != slot.launch.source_manifest_sha
+        or campaign.get("materialized_job_config_sha256") != slot.config_sha256
+        or campaign.get("technical_amendment_sha256") != amendment.sha256
+        or not isinstance(robustness, Mapping)
+        or robustness.get("variant_id") != slot.variant.variant_id
+        or configuration.get("profile") != "pilot"
+    ):
+        raise SameGeneMaterializationError(
+            f"selected amended pilot registry lineage differs for {slot.variant.variant_id}"
+        )
+    return row
+
+
+def _pilot_plan_launch_reference(
+    plan_path: str | Path, *, project_root: Path
+) -> tuple[Path, Path, str]:
+    """Read only a plan's immutable launch pointer before source validation."""
+
+    path = _project_path(
+        plan_path,
+        project_root=project_root,
+        label="pilot plan",
+        require_file=True,
+    )
+    payload = _strict_json(path, label="pilot plan")
+    _exact_keys(payload, _PLAN_KEYS, label="pilot plan")
+    source = payload.get("source_manifest")
+    if not isinstance(source, Mapping) or set(source) != {"path", "sha256"}:
+        raise SameGeneMaterializationError("pilot plan source manifest is malformed")
+    launch = _project_path(
+        str(source["path"]),
+        project_root=project_root,
+        label="pilot plan launch manifest",
+        require_file=True,
+    )
+    digest = _sha(source["sha256"], label="pilot plan launch SHA")
+    if _sha256_file(launch) != digest:
+        raise SameGeneMaterializationError("pilot plan launch manifest changed")
+    return path, launch, digest
+
+
 def build_pilot_receipts(
     *,
     pilot_plan: str | Path | Sequence[str | Path],
@@ -2095,13 +2949,48 @@ def build_pilot_receipts(
     )
     if not plan_values:
         raise SameGeneMaterializationError("at least one pilot plan is required")
+    references = tuple(
+        _pilot_plan_launch_reference(value, project_root=root)
+        for value in plan_values
+    )
+    referenced_launches = {digest: launch for _, launch, digest in references}
+    amendment: TechnicalAmendment | None = None
+    candidate_children: list[LaunchIdentity] = []
+    for launch in referenced_launches.values():
+        try:
+            candidate = _verify_launch(launch, project_root=root)
+        except SameGeneMaterializationError:
+            continue
+        if candidate.technical_amendment is not None:
+            candidate_children.append(candidate)
+    if len(referenced_launches) > 1 or candidate_children:
+        if len(candidate_children) != 1:
+            raise SameGeneMaterializationError(
+                "cross-launch pilot history requires one source-bound child amendment"
+            )
+        child_launch = candidate_children[0]
+        amendment = child_launch.technical_amendment
+        assert amendment is not None
+        if (
+            set(referenced_launches)
+            != {amendment.parent_launch_sha256, child_launch.sha256}
+            or amendment.parent_plan_path
+            not in {path for path, _, _ in references}
+        ):
+            raise SameGeneMaterializationError(
+                "pilot launch history is not the declared parent-to-child amendment"
+            )
     declared_slots = tuple(
         slot
         for value in plan_values
-        for slot in _pilot_slots(Path(value), project_root=root)
+        for slot in _pilot_slots(
+            Path(value),
+            project_root=root,
+            historical_amendment=amendment,
+        )
     )
     launch_shas = {slot.launch.sha256 for slot in declared_slots}
-    if len(launch_shas) != 1:
+    if len(launch_shas) > 1 and amendment is None:
         raise SameGeneMaterializationError(
             "pilot attempt plans do not share one launch authority"
         )
@@ -2125,6 +3014,54 @@ def build_pilot_receipts(
         max(histories[variant], key=lambda slot: slot.attempt)
         for variant in VARIANTS
     )
+    parent_configurations: dict[str, dict[str, Any]] = {}
+    if amendment is not None:
+        child_launch_shas = {
+            slot.launch.sha256
+            for slot in declared_slots
+            if slot.attempt >= 2
+        }
+        selected_launch_shas = {slot.launch.sha256 for slot in slots}
+        child_sha = next(
+            digest
+            for digest in launch_shas
+            if digest != amendment.parent_launch_sha256
+        )
+        if (
+            any(
+                [slot.attempt for slot in histories[variant]] != [1, 2]
+                for variant in VARIANTS
+            )
+            or child_launch_shas != {child_sha}
+            or selected_launch_shas != {child_sha}
+            or any(slot.attempt != 2 for slot in slots)
+            or any(slot.launch.technical_amendment != amendment for slot in slots)
+        ):
+            raise SameGeneMaterializationError(
+                "technical amendment authorizes exactly seven shared-child a2 pilots"
+            )
+        for variant in VARIANTS:
+            parent_slot, child_slot = sorted(
+                histories[variant], key=lambda value: value.attempt
+            )
+            if (
+                parent_slot.variant.manifest_sha256
+                != child_slot.variant.manifest_sha256
+                or parent_slot.variant.processed_fingerprint
+                != child_slot.variant.processed_fingerprint
+                or parent_slot.variant.split_fingerprint
+                != child_slot.variant.split_fingerprint
+                or parent_slot.launch.contract_sha256
+                != child_slot.launch.contract_sha256
+                or parent_slot.launch.prepared_binding
+                != child_slot.launch.prepared_binding
+            ):
+                raise SameGeneMaterializationError(
+                    f"technical amendment changed data/contract authority for {variant}"
+                )
+        parent_configurations = _verify_amended_parent_failures(
+            amendment, histories, project_root=root
+        )
     receipt_root = _project_path(
         output_dir, project_root=root, label="receipt output directory"
     )
@@ -2186,6 +3123,21 @@ def build_pilot_receipts(
         controls = _technical_controls(
             artifact / "results.json", run_id=run_id, project_root=root
         )
+        selected_registry: dict[str, Any] | None = None
+        if amendment is not None:
+            selected_registry = _verify_amended_selected_run(
+                slot=slot,
+                run_id=run_id,
+                artifact=artifact,
+                previous_run_id=str(
+                    amendment.failed_attempts[slot.variant.variant_id]["run_id"]
+                ),
+                parent_configuration=parent_configurations[
+                    slot.variant.variant_id
+                ],
+                amendment=amendment,
+                project_root=root,
+            )
         lineage: list[dict[str, Any]] = []
         for declared in sorted(
             histories[slot.variant.variant_id], key=lambda value: value.attempt
@@ -2196,6 +3148,28 @@ def build_pilot_receipts(
                 "plan_sha256": _sha256_file(declared.plan_path),
                 "config_sha256": declared.config_sha256,
             }
+            if amendment is not None:
+                common.update(
+                    {
+                        "plan_path": _relative(
+                            declared.plan_path, project_root=root
+                        ),
+                        "launch_manifest_path": _relative(
+                            declared.launch.path, project_root=root
+                        ),
+                        "launch_manifest_sha256": declared.launch.sha256,
+                        "source_manifest_sha256": (
+                            declared.launch.source_manifest_sha
+                        ),
+                        "retry_of": (
+                            None
+                            if declared.attempt == 1
+                            else amendment.failed_attempts[
+                                slot.variant.variant_id
+                            ]["run_id"]
+                        ),
+                    }
+                )
             if declared.attempt == slot.attempt:
                 entry = {
                     **common,
@@ -2209,6 +3183,14 @@ def build_pilot_receipts(
                 terminal = _terminal_unsuccessful_attempt(
                     declared, project_root=root
                 )
+                if (
+                    amendment is not None
+                    and terminal["run_id"]
+                    != amendment.failed_attempts[slot.variant.variant_id]["run_id"]
+                ):
+                    raise SameGeneMaterializationError(
+                        "parent failed run differs from technical amendment"
+                    )
                 entry = {**common, "selected": False, **terminal}
             lineage.append(entry)
             global_history.append(
@@ -2234,6 +3216,21 @@ def build_pilot_receipts(
             },
             "controls": controls,
         }
+        if amendment is not None:
+            assert selected_registry is not None
+            payload.update(
+                {
+                    "launch_manifest_sha": slot.launch.sha256,
+                    "technical_amendment": {
+                        "path": _relative(amendment.path, project_root=root),
+                        "sha256": amendment.sha256,
+                        "parent_launch_sha256": (
+                            amendment.parent_launch_sha256
+                        ),
+                        "child_launch_sha256": slot.launch.sha256,
+                    },
+                }
+            )
         receipt = {
             "payload": payload,
             "receipt_sha256": canonical_sha256(payload),
@@ -2301,6 +3298,16 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     launch.add_argument("--source-list", type=Path, required=True)
     launch.add_argument("--output", type=Path, required=True)
 
+    amendment = subparsers.add_parser("build-amendment")
+    amendment.add_argument("--parent-launch", type=Path, required=True)
+    amendment.add_argument("--parent-plan", type=Path, required=True)
+    amendment.add_argument("--parent-ledger", type=Path, required=True)
+    amendment.add_argument("--parent-git-commit", required=True)
+    amendment.add_argument("--child-source-list", type=Path, required=True)
+    amendment.add_argument("--child-launch", type=Path, required=True)
+    amendment.add_argument("--output", type=Path, required=True)
+    amendment.add_argument("--frozen-at", required=True)
+
     plan = subparsers.add_parser("build-plan")
     plan.add_argument("--profile", choices=("pilot", "full"), required=True)
     plan.add_argument("--variant-root", action="append", default=[], required=True)
@@ -2330,6 +3337,24 @@ def main(argv: Sequence[str] | None = None) -> int:
             project_root=root,
         )
         summary = {"command": "build-launch", "status": "materialized"}
+    elif arguments.command == "build-amendment":
+        payload = build_technical_amendment(
+            parent_launch=arguments.parent_launch,
+            parent_plan=arguments.parent_plan,
+            parent_ledger=arguments.parent_ledger,
+            parent_git_commit=arguments.parent_git_commit,
+            child_source_list=arguments.child_source_list,
+            child_launch=arguments.child_launch,
+            output=arguments.output,
+            frozen_at=arguments.frozen_at,
+            project_root=root,
+        )
+        summary = {
+            "command": "build-amendment",
+            "amendment_id": payload["amendment_id"],
+            "failed_attempt_count": len(payload["failed_attempts"]),
+            "status": "materialized",
+        }
     elif arguments.command == "build-plan":
         roots = _assignment_mapping(arguments.variant_root, label="variant root")
         receipts = _assignment_mapping(

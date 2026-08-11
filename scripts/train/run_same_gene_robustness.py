@@ -61,6 +61,15 @@ from spatial_benchmark.environment_lock import (
 from spatial_benchmark.same_gene_phase_transforms import (
     TrainOnlyPhaseTransformBuilder,
 )
+from spatial_benchmark.same_gene_recovery import (
+    TECHNICAL_AMENDMENT_RELATIVE_PATH,
+    TECHNICAL_AMENDMENT_SCHEMA_RELATIVE_PATH,
+    TechnicalAmendment,
+    TechnicalAmendmentError,
+    load_technical_amendment,
+    verify_child_launch_binding,
+    verify_parent_git_sources,
+)
 
 
 CAMPAIGN_ID = "cmp_20260810_same_gene_robustness_multiverse_v1"
@@ -85,6 +94,9 @@ PHASE_TRANSFORM_RELATIVE_PATH = (
 )
 RESIDUALIZATION_RELATIVE_PATH = (
     "src/spatial_benchmark/same_gene_residualization.py"
+)
+RECOVERY_AUTHORITY_RELATIVE_PATH = (
+    "src/spatial_benchmark/same_gene_recovery.py"
 )
 ALLOWED_MODEL_SEEDS = (20260810, 20261810, 20262810, 20263810, 20264810)
 ALLOWED_VARIANTS = frozenset(f"V{index}" for index in range(7))
@@ -164,6 +176,9 @@ _RECEIPT_PAYLOAD_KEYS = frozenset(
         "bundle",
         "controls",
     }
+)
+_AMENDED_RECEIPT_PAYLOAD_KEYS = _RECEIPT_PAYLOAD_KEYS | frozenset(
+    {"launch_manifest_sha", "technical_amendment"}
 )
 _CONTROL_KEYS = frozenset(
     {
@@ -408,6 +423,7 @@ class VerifiedLaunch:
     sources: tuple[dict[str, Any], ...]
     source_manifest_sha: str
     prepared_binding: PreparedContractBinding
+    technical_amendment: TechnicalAmendment | None
 
 
 @dataclass(frozen=True, slots=True)
@@ -613,12 +629,34 @@ def _verify_launch_manifest(path: Path, *, project_root: Path) -> VerifiedLaunch
         BASE_RUNNER_RELATIVE_PATH,
         PHASE_TRANSFORM_RELATIVE_PATH,
         RESIDUALIZATION_RELATIVE_PATH,
+        RECOVERY_AUTHORITY_RELATIVE_PATH,
+        TECHNICAL_AMENDMENT_SCHEMA_RELATIVE_PATH,
     }
     if not required.issubset(seen):
         raise RobustnessRunError(
             f"launch sources omit required runners: {sorted(required.difference(seen))}"
         )
     normalized = tuple(sorted(sources, key=lambda row: str(row["path"])))
+    technical_amendment: TechnicalAmendment | None = None
+    if TECHNICAL_AMENDMENT_RELATIVE_PATH in seen:
+        try:
+            technical_amendment = load_technical_amendment(
+                project_root / TECHNICAL_AMENDMENT_RELATIVE_PATH,
+                project_root=project_root,
+            )
+            verify_child_launch_binding(
+                technical_amendment,
+                payload,
+                launch_path=manifest_path,
+                project_root=project_root,
+            )
+            verify_parent_git_sources(
+                technical_amendment, project_root=project_root
+            )
+        except TechnicalAmendmentError as error:
+            raise RobustnessRunError(
+                "technical recovery launch lineage is invalid"
+            ) from error
     return VerifiedLaunch(
         path=manifest_path,
         sha256=_sha256_file(manifest_path),
@@ -627,6 +665,7 @@ def _verify_launch_manifest(path: Path, *, project_root: Path) -> VerifiedLaunch
         sources=normalized,
         source_manifest_sha=_source_manifest_sha(normalized),
         prepared_binding=prepared_binding,
+        technical_amendment=technical_amendment,
     )
 
 
@@ -1198,7 +1237,16 @@ def _verify_pilot_receipt(
     payload = receipt["payload"]
     if not isinstance(payload, Mapping):
         raise RobustnessRunError("pilot receipt payload must be an object")
-    _exact_keys(payload, _RECEIPT_PAYLOAD_KEYS, label="pilot receipt payload")
+    amendment = launch.technical_amendment
+    _exact_keys(
+        payload,
+        (
+            _AMENDED_RECEIPT_PAYLOAD_KEYS
+            if amendment is not None
+            else _RECEIPT_PAYLOAD_KEYS
+        ),
+        label="pilot receipt payload",
+    )
     receipt_sha = _sha(receipt["receipt_sha256"], label="pilot receipt_sha256")
     if canonical_sha256(payload) != receipt_sha:
         raise RobustnessRunError("pilot receipt canonical SHA-256 mismatch")
@@ -1212,6 +1260,20 @@ def _verify_pilot_receipt(
     for key, value in expected.items():
         if payload[key] != value:
             raise RobustnessRunError(f"pilot receipt {key} binding mismatch")
+    if amendment is not None:
+        expected_amendment = {
+            "path": _relative(amendment.path, project_root=project_root),
+            "sha256": amendment.sha256,
+            "parent_launch_sha256": amendment.parent_launch_sha256,
+            "child_launch_sha256": launch.sha256,
+        }
+        if (
+            payload["launch_manifest_sha"] != launch.sha256
+            or payload["technical_amendment"] != expected_amendment
+        ):
+            raise RobustnessRunError(
+                "pilot receipt technical-amendment binding mismatch"
+            )
     bundle = payload["bundle"]
     if not isinstance(bundle, Mapping):
         raise RobustnessRunError("pilot receipt bundle must be an object")
@@ -1292,8 +1354,19 @@ def _verify_pilot_receipt(
             "artifact_status",
         }
     )
+    if amendment is not None:
+        expected_history_keys |= frozenset(
+            {
+                "plan_path",
+                "launch_manifest_path",
+                "launch_manifest_sha256",
+                "source_manifest_sha256",
+                "retry_of",
+            }
+        )
     attempts: list[int] = []
     selected_rows: list[Mapping[str, Any]] = []
+    previous_run_id: str | None = None
     for index, entry in enumerate(history):
         if not isinstance(entry, Mapping):
             raise RobustnessRunError("pilot receipt attempt entry is malformed")
@@ -1306,6 +1379,56 @@ def _verify_pilot_receipt(
         _sha(entry["plan_sha256"], label="pilot attempt plan_sha256")
         _sha(entry["config_sha256"], label="pilot attempt config_sha256")
         _nonempty_string(entry["run_id"], label="pilot attempt run_id")
+        if amendment is not None:
+            plan_path = _project_file(
+                _nonempty_string(entry["plan_path"], label="pilot attempt plan_path"),
+                project_root=project_root,
+                label="pilot attempt plan",
+            )
+            launch_path = _project_file(
+                _nonempty_string(
+                    entry["launch_manifest_path"],
+                    label="pilot attempt launch_manifest_path",
+                ),
+                project_root=project_root,
+                label="pilot attempt launch manifest",
+            )
+            if (
+                _sha256_file(plan_path)
+                != _sha(entry["plan_sha256"], label="pilot attempt plan SHA")
+                or _sha256_file(launch_path)
+                != _sha(
+                    entry["launch_manifest_sha256"],
+                    label="pilot attempt launch SHA",
+                )
+            ):
+                raise RobustnessRunError(
+                    "amended pilot plan/launch identity changed"
+                )
+            if index == 0:
+                declared_failure = amendment.failed_attempts[variant.variant_id]
+                if (
+                    plan_path != amendment.parent_plan_path
+                    or launch_path != amendment.parent_launch_path
+                    or entry["launch_manifest_sha256"]
+                    != amendment.parent_launch_sha256
+                    or entry["source_manifest_sha256"]
+                    != amendment.parent_source_manifest_sha256
+                    or entry["retry_of"] is not None
+                    or entry["run_id"] != declared_failure["run_id"]
+                ):
+                    raise RobustnessRunError(
+                        "amended pilot parent-attempt binding mismatch"
+                    )
+            elif (
+                launch_path != launch.path
+                or entry["launch_manifest_sha256"] != launch.sha256
+                or entry["source_manifest_sha256"] != launch.source_manifest_sha
+                or entry["retry_of"] != previous_run_id
+            ):
+                raise RobustnessRunError(
+                    "amended pilot child-attempt binding mismatch"
+                )
         attempt_artifact = _project_file(
             _nonempty_string(
                 entry["artifact_path"], label="pilot attempt artifact_path"
@@ -1342,12 +1465,27 @@ def _verify_pilot_receipt(
                 raise RobustnessRunError(
                     "superseded pilot attempt bundle verification failed"
                 ) from error
+            if amendment is not None and index == 0:
+                declared_failure = amendment.failed_attempts[variant.variant_id]
+                if (
+                    _relative(attempt_artifact, project_root=project_root)
+                    != declared_failure["artifact_path"]
+                    or _sha256_file(attempt_artifact / "_FAILED")
+                    != declared_failure["failed_marker_sha256"]
+                    or _sha256_file(attempt_artifact / "logs/exception.txt")
+                    != declared_failure["exception_sha256"]
+                ):
+                    raise RobustnessRunError(
+                        "amended pilot failed-attempt evidence changed"
+                    )
         else:
             raise RobustnessRunError("pilot receipt selected flag must be boolean")
+        previous_run_id = str(entry["run_id"])
     if (
         attempts != list(range(1, selected_attempt + 1))
         or len(selected_rows) != 1
         or selected_rows[0]["attempt"] != selected_attempt
+        or (amendment is not None and selected_attempt != 2)
     ):
         raise RobustnessRunError("pilot receipt attempt lineage is noncontiguous")
 
@@ -1662,6 +1800,11 @@ def _build_configuration(
                 None
                 if verified.receipt is None
                 else verified.receipt.receipt_sha256
+            ),
+            "technical_amendment_sha256": (
+                None
+                if verified.launch.technical_amendment is None
+                else verified.launch.technical_amendment.sha256
             ),
             # Bind the immutable authority in the scientific configuration.
             # The process-local live receipt is separately archived in hardware

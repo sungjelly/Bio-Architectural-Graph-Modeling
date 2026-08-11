@@ -71,6 +71,8 @@ def _fixture(
     robustness_runner = root / wrapper.WRAPPER_RELATIVE_PATH
     phase_transform = root / wrapper.PHASE_TRANSFORM_RELATIVE_PATH
     residualization_source = root / wrapper.RESIDUALIZATION_RELATIVE_PATH
+    recovery_source = root / wrapper.RECOVERY_AUTHORITY_RELATIVE_PATH
+    amendment_schema = root / wrapper.TECHNICAL_AMENDMENT_SCHEMA_RELATIVE_PATH
     environment_lock = root / wrapper.ENVIRONMENT_LOCK_RELATIVE_PATH
     environment_verifier = root / wrapper.ENVIRONMENT_VERIFIER_RELATIVE_PATH
     base_runner.parent.mkdir(parents=True, exist_ok=True)
@@ -79,6 +81,9 @@ def _fixture(
     robustness_runner.write_text("robust wrapper\n", encoding="utf-8")
     phase_transform.write_text("phase transform\n", encoding="utf-8")
     residualization_source.write_text("residualization\n", encoding="utf-8")
+    recovery_source.write_text("recovery authority\n", encoding="utf-8")
+    amendment_schema.parent.mkdir(parents=True, exist_ok=True)
+    _write_json(amendment_schema, {"synthetic_amendment_schema": True})
     _write_json(environment_lock, {"synthetic_environment_lock": True})
     environment_verifier.write_text(
         "synthetic environment verifier\n", encoding="utf-8"
@@ -273,6 +278,8 @@ def _fixture(
         _source_row(root, wrapper.RESIDUALIZATION_RELATIVE_PATH),
         _source_row(root, wrapper.ENVIRONMENT_LOCK_RELATIVE_PATH),
         _source_row(root, wrapper.ENVIRONMENT_VERIFIER_RELATIVE_PATH),
+        _source_row(root, wrapper.RECOVERY_AUTHORITY_RELATIVE_PATH),
+        _source_row(root, wrapper.TECHNICAL_AMENDMENT_SCHEMA_RELATIVE_PATH),
     ]
     _write_json(
         launch,

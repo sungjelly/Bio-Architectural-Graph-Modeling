@@ -15,7 +15,7 @@ import pytest
 import yaml
 
 from spatial_benchmark.identifiers import canonical_sha256
-from spatial_benchmark.identifiers import create_run_id
+from spatial_benchmark.identifiers import create_run_id, scientific_id
 from spatial_benchmark.paths import ProjectPaths
 from spatial_benchmark.run_archive import RunArchive
 
@@ -831,3 +831,501 @@ def test_receipt_builder_rejects_failed_controls_without_exposing_effect(
     captured = capsys.readouterr()
     assert "987654321" not in captured.out
     assert "987654321" not in captured.err
+
+
+def _cross_launch_receipt_fixture(
+    root: Path,
+    monkeypatch: pytest.MonkeyPatch,
+    *,
+    mock_selected_run: bool = True,
+) -> dict[str, Any]:
+    parent_launch_path = root / "authority/parent-launch.json"
+    child_launch_path = root / "authority/child-launch.json"
+    parent_plan_path = root / "authority/parent-plan.json"
+    child_plan_path = root / "authority/child-plan.json"
+    amendment_path = root / _MODULE.TECHNICAL_AMENDMENT_RELATIVE_PATH
+    source_list_path = root / "authority/recovery-source-list.json"
+    parent_ledger_path = root / "authority/parent-ledger.json"
+    environment_lock_path = root / _MODULE.ENVIRONMENT_LOCK_RELATIVE_PATH
+    for path, payload in (
+        (parent_launch_path, {"launch": "parent"}),
+        (child_launch_path, {"launch": "child"}),
+        (parent_plan_path, {"plan": "attempt-one"}),
+        (child_plan_path, {"plan": "attempt-two"}),
+        (amendment_path, {"amendment": "recovery"}),
+        (source_list_path, ["synthetic"]),
+        (parent_ledger_path, {"ledger": "failed-parent"}),
+        (environment_lock_path, {"environment": "synthetic"}),
+    ):
+        _write_json(path, payload)
+    binding = _MODULE.PreparedContractBinding(
+        raw_fingerprint="1" * 64,
+        split_fingerprint="2" * 64,
+        base_prepared_manifest_sha256="3" * 64,
+        robustness_root_manifest_sha256="4" * 64,
+        robustness_root_processed_fingerprint="5" * 64,
+        variants={
+            variant: {
+                "manifest_sha256": "6" * 64,
+                "integrity_manifest_sha256": "7" * 64,
+                "processed_fingerprint": "8" * 64,
+                "variant_spec_sha256": "9" * 64,
+            }
+            for variant in _MODULE.VARIANTS
+        },
+    )
+    failed_attempts = {
+        variant: {
+            "variant": variant,
+            "attempt": 1,
+            "model_seed": _MODULE.PILOT_SEED,
+            "fold": _MODULE.PILOT_FOLD,
+            "scientific_id": f"sci_{index:016x}",
+            "run_id": f"parent-failed-{variant.lower()}",
+            "materialized_config_sha256": f"{index + 1:064x}",
+            "artifact_path": f"artifacts/parent-failed-{variant.lower()}",
+            "failed_marker_sha256": f"{index + 11:064x}",
+            "exception_sha256": f"{index + 21:064x}",
+            "registry_status": "failed",
+            "artifact_status": "failed",
+            "failure_category": "same_gene_nonlinear_run_failure",
+        }
+        for index, variant in enumerate(_MODULE.VARIANTS)
+    }
+    amendment = _MODULE.TechnicalAmendment(
+        path=amendment_path,
+        sha256=_sha(amendment_path),
+        payload={"synthetic": True},
+        contract_sha256="a" * 64,
+        parent_launch_path=parent_launch_path,
+        parent_launch_sha256=_sha(parent_launch_path),
+        parent_source_manifest_sha256="b" * 64,
+        parent_plan_path=parent_plan_path,
+        parent_plan_sha256=_sha(parent_plan_path),
+        parent_ledger_path=parent_ledger_path,
+        parent_ledger_sha256=_sha(parent_ledger_path),
+        parent_git_commit="c" * 40,
+        child_launch_path=child_launch_path,
+        child_launch_core_sha256="d" * 64,
+        child_source_list_path=source_list_path,
+        child_source_list_sha256=_sha(source_list_path),
+        failed_attempts=failed_attempts,
+    )
+    parent_launch = _MODULE.LaunchIdentity(
+        path=parent_launch_path,
+        sha256=_sha(parent_launch_path),
+        contract_sha256="a" * 64,
+        source_manifest_sha="b" * 64,
+        payload={"synthetic": "parent"},
+        prepared_binding=binding,
+        technical_amendment=None,
+    )
+    child_launch = _MODULE.LaunchIdentity(
+        path=child_launch_path,
+        sha256=_sha(child_launch_path),
+        contract_sha256="a" * 64,
+        source_manifest_sha="e" * 64,
+        payload={"synthetic": "child"},
+        prepared_binding=binding,
+        technical_amendment=amendment,
+    )
+    variants: dict[str, Any] = {}
+    parent_slots: list[Any] = []
+    child_slots: list[Any] = []
+    artifacts: dict[str, Path] = {}
+    for index, variant_id in enumerate(_MODULE.VARIANTS):
+        variant_root = root / f"prepared/{variant_id.lower()}"
+        manifest = variant_root / "manifest.json"
+        integrity = variant_root / "integrity_manifest.json"
+        _write_json(manifest, {"variant": variant_id})
+        _write_json(integrity, {"variant": variant_id})
+        variant = _MODULE.VariantIdentity(
+            variant_id=variant_id,
+            root=variant_root,
+            manifest_path=manifest,
+            manifest_sha256="6" * 64,
+            integrity_manifest_sha256="7" * 64,
+            raw_fingerprint="1" * 64,
+            processed_fingerprint="8" * 64,
+            split_fingerprint="2" * 64,
+            base_prepared_manifest_sha256="3" * 64,
+            variant_spec_sha256="9" * 64,
+            robustness_root_manifest_sha256="4" * 64,
+            robustness_root_processed_fingerprint="5" * 64,
+        )
+        variants[variant_id] = variant
+        artifact = root / f"artifacts/child-{variant_id.lower()}"
+        artifact.mkdir(parents=True)
+        manifest_path = artifact / "provenance/artifact_checksums.json"
+        _write_json(manifest_path, {"variant": variant_id})
+        artifacts[variant_id] = artifact
+        slot_values: list[Any] = []
+        for attempt, launch, plan in (
+            (1, parent_launch, parent_plan_path),
+            (2, child_launch, child_plan_path),
+        ):
+            config = root / f"authority/{variant_id.lower()}-a{attempt}.json"
+            marker = root / f"authority/{variant_id.lower()}-a{attempt}.marker.json"
+            _write_json(config, {"variant": variant_id, "attempt": attempt})
+            _write_json(marker, {"marker": True})
+            slot_values.append(
+                _MODULE.PilotSlot(
+                    variant=variant,
+                    job_id=(
+                        f"same-gene-robustness-pilot-{variant_id}-"
+                        f"s{_MODULE.PILOT_SEED}-f0-a{attempt}"
+                    ),
+                    config_path=config,
+                    config_sha256=_sha(config),
+                    marker_path=marker,
+                    verify_argv=("synthetic", variant_id, str(attempt)),
+                    launch=launch,
+                    attempt=attempt,
+                    plan_path=plan,
+                )
+            )
+        parent_slots.append(slot_values[0])
+        child_slots.append(slot_values[1])
+
+    def plan_reference(
+        value: str | Path, *, project_root: Path
+    ) -> tuple[Path, Path, str]:
+        del project_root
+        path = Path(value).resolve()
+        if path == parent_plan_path:
+            return path, parent_launch_path, parent_launch.sha256
+        assert path == child_plan_path
+        return path, child_launch_path, child_launch.sha256
+
+    def verify_launch(path: str | Path, *, project_root: Path) -> Any:
+        del project_root
+        if Path(path).resolve() == child_launch_path:
+            return child_launch
+        raise _MODULE.SameGeneMaterializationError(
+            "historical parent live sources changed"
+        )
+
+    def pilot_slots(
+        path: Path,
+        *,
+        project_root: Path,
+        historical_amendment: Any = None,
+    ) -> tuple[Any, ...]:
+        del project_root
+        assert historical_amendment == amendment
+        return tuple(parent_slots if path.resolve() == parent_plan_path else child_slots)
+
+    controls = {
+        "all_outputs_finite": True,
+        "train_validation_test_component_overlap": False,
+        "receiver_rna_or_derived_covariate_model_input": False,
+        "identity_oracle_row_top1_fraction": 1.0,
+        "identity_oracle_actually_executed": True,
+        "analytical_autograd_max_abs_error": 0.0,
+        "analytical_finite_difference_max_abs_error": 0.0,
+        "graph_specific_invariants": True,
+        "checkpoint_gpu_replay_max_abs_metric_error": 0.0,
+        "checkpoint_gpu_replay_max_abs_prediction_error": 0.0,
+        "checkpoint_replay_device_type": "cuda",
+        "canonical_production_split_label": "test",
+        "source_config_data_hashes_verified": True,
+        "outer_test_untouched": True,
+        "peak_vram_gb": 1.0,
+        "projected_full_hours_per_fold": 0.1,
+        "gate_passed": True,
+        "production_authorized": True,
+        "environment_lock_verified": True,
+        "environment_lock_sha256": _sha(environment_lock_path),
+        "environment_verification_sha256": "0" * 64,
+        "environment_visibility_mode": "job",
+    }
+    monkeypatch.setattr(_MODULE, "_pilot_plan_launch_reference", plan_reference)
+    monkeypatch.setattr(_MODULE, "_verify_launch", verify_launch)
+    monkeypatch.setattr(_MODULE, "_pilot_slots", pilot_slots)
+    monkeypatch.setattr(
+        _MODULE,
+        "_verify_amended_parent_failures",
+        lambda *_args, **_kwargs: {
+            variant: {"science": variant, "campaign": {"launch": "parent"}}
+            for variant in _MODULE.VARIANTS
+        },
+    )
+    monkeypatch.setattr(
+        _MODULE.subprocess,
+        "run",
+        lambda *_args, **_kwargs: SimpleNamespace(
+            returncode=0, stdout=b"", stderr=b""
+        ),
+    )
+    monkeypatch.setattr(
+        _MODULE,
+        "_marker_bundle",
+        lambda slot, **_kwargs: (
+            {"run_id": f"child-success-{slot.variant.variant_id.lower()}"},
+            artifacts[slot.variant.variant_id],
+            "1" * 64,
+        ),
+    )
+    monkeypatch.setattr(
+        _MODULE,
+        "_verify_checksum_manifest",
+        lambda artifact: artifact / "provenance/artifact_checksums.json",
+    )
+    monkeypatch.setattr(
+        _MODULE, "_technical_controls", lambda *_args, **_kwargs: dict(controls)
+    )
+    if mock_selected_run:
+        monkeypatch.setattr(
+            _MODULE,
+            "_verify_amended_selected_run",
+            lambda **_kwargs: {"status": "completed"},
+        )
+    monkeypatch.setattr(
+        _MODULE,
+        "_terminal_unsuccessful_attempt",
+        lambda slot, **_kwargs: {
+            "registry_status": "failed",
+            "run_id": failed_attempts[slot.variant.variant_id]["run_id"],
+            "artifact_path": failed_attempts[slot.variant.variant_id][
+                "artifact_path"
+            ],
+            "artifact_status": "failed",
+        },
+    )
+    return {
+        "parent_plan": parent_plan_path,
+        "child_plan": child_plan_path,
+        "parent_launch": parent_launch,
+        "child_launch": child_launch,
+        "amendment": amendment,
+        "variants": variants,
+        "parent_slots": parent_slots,
+        "child_slots": child_slots,
+        "controls": controls,
+    }
+
+
+def test_cross_launch_receipts_accept_exact_all_seven_a1_to_a2_chain_and_bind_child(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fixture = _cross_launch_receipt_fixture(tmp_path, monkeypatch)
+    receipts = _MODULE.build_pilot_receipts(
+        pilot_plan=(fixture["parent_plan"], fixture["child_plan"]),
+        output_dir=tmp_path / "authority/recovery-receipts",
+        project_root=tmp_path,
+    )
+
+    assert set(receipts) == set(_MODULE.VARIANTS)
+    for variant, receipt_path in receipts.items():
+        payload = json.loads(receipt_path.read_text(encoding="utf-8"))["payload"]
+        assert payload["selected_attempt"] == 2
+        assert payload["launch_manifest_sha"] == fixture["child_launch"].sha256
+        assert payload["technical_amendment"] == {
+            "path": fixture["amendment"].path.relative_to(tmp_path).as_posix(),
+            "sha256": fixture["amendment"].sha256,
+            "parent_launch_sha256": fixture["parent_launch"].sha256,
+            "child_launch_sha256": fixture["child_launch"].sha256,
+        }
+        assert [row["attempt"] for row in payload["attempt_history"]] == [1, 2]
+        assert payload["attempt_history"][1]["retry_of"] == (
+            fixture["amendment"].failed_attempts[variant]["run_id"]
+        )
+        _MODULE._validate_receipt_identity(
+            receipt_path,
+            launch=fixture["child_launch"],
+            variant=fixture["variants"][variant],
+            project_root=tmp_path,
+        )
+
+    first = receipts["V0"]
+    changed = json.loads(first.read_text(encoding="utf-8"))
+    changed["payload"]["launch_manifest_sha"] = "0" * 64
+    changed["receipt_sha256"] = canonical_sha256(changed["payload"])
+    _write_json(first, changed)
+    with pytest.raises(
+        _MODULE.SameGeneMaterializationError,
+        match="technical-amendment binding mismatch",
+    ):
+        _MODULE._validate_receipt_identity(
+            first,
+            launch=fixture["child_launch"],
+            variant=fixture["variants"]["V0"],
+            project_root=tmp_path,
+        )
+
+
+def test_cross_launch_receipts_reject_missing_amendment_before_artifact_access(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fixture = _cross_launch_receipt_fixture(
+        tmp_path, monkeypatch, mock_selected_run=False
+    )
+    child_without_amendment = replace(
+        fixture["child_launch"], technical_amendment=None
+    )
+
+    def no_amendment(path: str | Path, *, project_root: Path) -> Any:
+        del project_root
+        if Path(path).resolve() == fixture["child_launch"].path:
+            return child_without_amendment
+        return fixture["parent_launch"]
+
+    monkeypatch.setattr(_MODULE, "_verify_launch", no_amendment)
+    with pytest.raises(
+        _MODULE.SameGeneMaterializationError,
+        match="source-bound child amendment",
+    ):
+        _MODULE.build_pilot_receipts(
+            pilot_plan=(fixture["parent_plan"], fixture["child_plan"]),
+            output_dir=tmp_path / "authority/rejected-receipts",
+            project_root=tmp_path,
+        )
+
+
+def test_cross_launch_receipts_reject_partial_all_seven_attempt_two_inventory(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fixture = _cross_launch_receipt_fixture(tmp_path, monkeypatch)
+
+    def partial_slots(
+        path: Path,
+        *,
+        project_root: Path,
+        historical_amendment: Any = None,
+    ) -> tuple[Any, ...]:
+        del project_root
+        assert historical_amendment == fixture["amendment"]
+        if path.resolve() == fixture["parent_plan"]:
+            return tuple(fixture["parent_slots"])
+        return tuple(fixture["child_slots"][:-1])
+
+    monkeypatch.setattr(_MODULE, "_pilot_slots", partial_slots)
+    with pytest.raises(
+        _MODULE.SameGeneMaterializationError,
+        match="exactly seven shared-child a2 pilots",
+    ):
+        _MODULE.build_pilot_receipts(
+            pilot_plan=(fixture["parent_plan"], fixture["child_plan"]),
+            output_dir=tmp_path / "authority/partial-receipts",
+            project_root=tmp_path,
+        )
+
+
+def test_amended_child_launch_cannot_replace_the_declared_parent_attempt_plan(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fixture = _cross_launch_receipt_fixture(tmp_path, monkeypatch)
+
+    def child_only_reference(
+        value: str | Path, *, project_root: Path
+    ) -> tuple[Path, Path, str]:
+        del project_root
+        return (
+            Path(value).resolve(),
+            fixture["child_launch"].path,
+            fixture["child_launch"].sha256,
+        )
+
+    monkeypatch.setattr(
+        _MODULE, "_pilot_plan_launch_reference", child_only_reference
+    )
+    with pytest.raises(
+        _MODULE.SameGeneMaterializationError,
+        match="declared parent-to-child amendment",
+    ):
+        _MODULE.build_pilot_receipts(
+            pilot_plan=(fixture["parent_plan"], fixture["child_plan"]),
+            output_dir=tmp_path / "authority/child-only-receipts",
+            project_root=tmp_path,
+        )
+
+
+def test_amended_child_materializes_only_one_all_seven_attempt_two_pilot_plan(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fixture = _cross_launch_receipt_fixture(tmp_path, monkeypatch)
+    required = tuple(
+        (variant, _MODULE.PILOT_SEED, _MODULE.PILOT_FOLD)
+        for variant in _MODULE.VARIANTS
+    )
+
+    _MODULE._validate_amended_plan_request(
+        fixture["child_launch"],
+        profile="pilot",
+        attempt=2,
+        retry_slots=tuple(reversed(required)),
+    )
+    _MODULE._validate_amended_plan_request(
+        fixture["child_launch"],
+        profile="full",
+        attempt=1,
+        retry_slots=None,
+    )
+    for attempt, slots in ((1, None), (2, required[:-1]), (3, required)):
+        with pytest.raises(
+            _MODULE.SameGeneMaterializationError,
+            match="one all-seven pilot attempt-two plan",
+        ):
+            _MODULE._validate_amended_plan_request(
+                fixture["child_launch"],
+                profile="pilot",
+                attempt=attempt,
+                retry_slots=slots,
+            )
+
+
+@pytest.mark.parametrize("tamper", ("retry_of", "scientific_payload"))
+def test_selected_amended_registry_run_requires_exact_retry_and_scientific_payload(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, tamper: str
+) -> None:
+    fixture = _cross_launch_receipt_fixture(
+        tmp_path, monkeypatch, mock_selected_run=False
+    )
+    slot = fixture["child_slots"][0]
+    variant = slot.variant.variant_id
+    parent_configuration = {
+        "profile": "pilot",
+        "science": {"estimand": "same-gene"},
+        "robustness_variant": {"variant_id": variant},
+        "campaign": {"launch": "parent"},
+    }
+    child_configuration = deepcopy(parent_configuration)
+    child_configuration["campaign"] = {
+        "frozen_contract_sha256": fixture["amendment"].contract_sha256,
+        "launch_manifest_sha256": fixture["child_launch"].sha256,
+        "source_manifest_sha256": fixture["child_launch"].source_manifest_sha,
+        "materialized_job_config_sha256": slot.config_sha256,
+        "technical_amendment_sha256": fixture["amendment"].sha256,
+    }
+    previous_run_id = fixture["amendment"].failed_attempts[variant]["run_id"]
+    artifact = tmp_path / "artifacts/selected-registry-run"
+    row = {
+        "campaign_id": _MODULE.CAMPAIGN_ID,
+        "seed": _MODULE.PILOT_SEED % 1_000_000,
+        "fold": _MODULE.PILOT_FOLD,
+        "attempt": 2,
+        "status": "completed",
+        "retry_of": previous_run_id,
+        "artifact_path": str(artifact),
+        "scientific_id": scientific_id(child_configuration),
+        "configuration": child_configuration,
+    }
+    if tamper == "retry_of":
+        row["retry_of"] = "different-parent"
+    else:
+        child_configuration["science"]["estimand"] = "changed"
+    monkeypatch.setattr(_MODULE, "_registry_run", lambda *_args, **_kwargs: row)
+
+    with pytest.raises(
+        _MODULE.SameGeneMaterializationError,
+        match="selected amended pilot registry lineage differs",
+    ):
+        _MODULE._verify_amended_selected_run(
+            slot=slot,
+            run_id="selected-run",
+            artifact=artifact,
+            previous_run_id=previous_run_id,
+            parent_configuration=parent_configuration,
+            amendment=fixture["amendment"],
+            project_root=tmp_path,
+        )

@@ -2,18 +2,22 @@
 
 Status: `frozen_preoutcome`
 
-Phase: `planned`
+Phase: `pilot_recovery_attempt2_ready`
 
-Outcome: `pending`
+Outcome: `attempt1_technical_failure_no_scientific_interpretation; attempt2_pending`
 
 This campaign is a preregistered, post-hoc robustness study of the existing
 same-gene nonlinear result. It is not an independent replication: the two
 slides and the antecedent outer-test outcomes have already been observed. No
-run from this new campaign is authorized until `frozen_task_contract.yaml` is
-filled with every prepared-data identity, reviewed, and changed from
-`draft_preoutcome` to `frozen_preoutcome`. Its immutable SHA-256 is recorded
-in the launch manifest; the contract does not contain an impossible hash of
-itself.
+The scientific contract was frozen before the first pilot at SHA-256
+`8761098cbafa91ae81b53a1c9cd0d8dcd293476d967f74cddde9be7dc5c990e9`.
+The first seven technical pilots all terminated unsuccessfully before an
+authorized pilot receipt existed. They are retained as immutable failed
+attempts and are not interpreted scientifically. A no-effect-access technical
+amendment at
+`technical_amendments/pilot_attempt2_source_recovery_v1.json` binds those
+failures to one corrected attempt-2 source authority without changing the
+contract, data fingerprints, model, seeds, folds, schedule, or gates.
 
 This document authorizes the V0-V6 core phase (seven technical pilots followed
 by 140 production fold processes) and one zero-training post-core secondary:
@@ -289,6 +293,9 @@ scientific record.
 
 Build the source/contract launch authority:
 
+The following launch and pilot-plan commands are the historical attempt-1
+authority. Their materialized files must not be overwritten or rerun.
+
 ```bash
 PYTHONPATH=src /venv/main/bin/python scripts/train/materialize_same_gene_robustness.py \
   build-launch \
@@ -323,6 +330,40 @@ PYTHONPATH=src /venv/main/bin/python scripts/train/materialize_same_gene_robustn
   --output-dir state/materialized/same_gene_robustness_v1/pilot/receipts
 ```
 
+Attempt 1 produced seven terminal technical failures: V0/V1/V3 encountered a
+pilot-cap prevalence check on 16 frozen genes, V2/V5 encountered the same
+check on 7 frozen genes, and V4/V6 could not serialize the mathematically
+infinite diagonal/off-diagonal ratio of the identity oracle in strict JSON.
+No valid receipt was produced. The failures exposed implementation conflicts,
+not scientific gate outcomes; failed result payloads are excluded from all
+analysis.
+
+The exact attempt-2 recovery authority is:
+
+```text
+technical amendment SHA-256: cfb085ed104e9ca2cf272a06cbded7f0e7804a3ff72f06e573ae3bfe80a3fc75
+child launch SHA-256:         38fd482c1343f10efc8ec18507b05f5110f226898f236815a97b9671f7269223
+attempt-2 pilot plan SHA-256: 69515be03ae513e39680e12cd8f00d908b24eb4de7c142b32830c86d748de758
+```
+
+Run the seven attempt-2 pilots and then bind both attempt histories into the
+seven immutable receipts:
+
+```bash
+PYTHONPATH=src /venv/main/bin/python scripts/train/launch_same_gene_robustness.py \
+  --project-root . \
+  --plan state/materialized/same_gene_robustness_v1/recovery_r1/pilot/attempt2/plan.json \
+  --ledger state/materialized/same_gene_robustness_v1/recovery_r1/pilot/attempt2/ledger.json \
+  --lock state/materialized/same_gene_robustness_v1/recovery_r1/pilot/attempt2/launcher.lock \
+  --poll-seconds 1
+
+PYTHONPATH=src /venv/main/bin/python scripts/train/materialize_same_gene_robustness.py \
+  --project-root . build-receipts \
+  --pilot-plan state/materialized/same_gene_robustness_v1/pilot/plan.json \
+  --pilot-plan state/materialized/same_gene_robustness_v1/recovery_r1/pilot/attempt2/plan.json \
+  --output-dir state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts
+```
+
 Only after all seven receipts verify, materialize and run attempt 1 for the
 140 production slots:
 
@@ -336,20 +377,20 @@ PYTHONPATH=src /venv/main/bin/python scripts/train/materialize_same_gene_robustn
   --variant-root V4=data/processed/same_gene_robustness_v1/variants/v4_train_only_library_residual \
   --variant-root V5=data/processed/same_gene_robustness_v1/variants/v5_component_cp10k_qc_induced \
   --variant-root V6=data/processed/same_gene_robustness_v1/variants/v6_train_only_cell_type_library_residual \
-  --variant-receipt V0=state/materialized/same_gene_robustness_v1/pilot/receipts/V0.pilot-receipt.json \
-  --variant-receipt V1=state/materialized/same_gene_robustness_v1/pilot/receipts/V1.pilot-receipt.json \
-  --variant-receipt V2=state/materialized/same_gene_robustness_v1/pilot/receipts/V2.pilot-receipt.json \
-  --variant-receipt V3=state/materialized/same_gene_robustness_v1/pilot/receipts/V3.pilot-receipt.json \
-  --variant-receipt V4=state/materialized/same_gene_robustness_v1/pilot/receipts/V4.pilot-receipt.json \
-  --variant-receipt V5=state/materialized/same_gene_robustness_v1/pilot/receipts/V5.pilot-receipt.json \
-  --variant-receipt V6=state/materialized/same_gene_robustness_v1/pilot/receipts/V6.pilot-receipt.json \
-  --launch-manifest state/materialized/same_gene_robustness_v1/launch_manifest.json \
-  --output-dir state/materialized/same_gene_robustness_v1/full/attempt1/jobs \
-  --plan state/materialized/same_gene_robustness_v1/full/attempt1/plan.json
+  --variant-receipt V0=state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V0.pilot-receipt.json \
+  --variant-receipt V1=state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V1.pilot-receipt.json \
+  --variant-receipt V2=state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V2.pilot-receipt.json \
+  --variant-receipt V3=state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V3.pilot-receipt.json \
+  --variant-receipt V4=state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V4.pilot-receipt.json \
+  --variant-receipt V5=state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V5.pilot-receipt.json \
+  --variant-receipt V6=state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V6.pilot-receipt.json \
+  --launch-manifest state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json \
+  --output-dir state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs \
+  --plan state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json
 
 PYTHONPATH=src /venv/main/bin/python scripts/train/launch_same_gene_robustness.py \
-  --plan state/materialized/same_gene_robustness_v1/full/attempt1/plan.json \
-  --ledger state/materialized/same_gene_robustness_v1/full/attempt1/ledger.json
+  --plan state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json \
+  --ledger state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/ledger.json
 ```
 
 Any recovery plan must name only failed slots with `--retry-slot`, use the next
@@ -359,14 +400,14 @@ After all 140 slots succeed, publish and independently verify the aggregate:
 ```bash
 PYTHONPATH=src /venv/main/bin/python scripts/analysis/analyze_same_gene_robustness.py \
   --contract experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml \
-  --launch-manifest state/materialized/same_gene_robustness_v1/launch_manifest.json \
-  --plan state/materialized/same_gene_robustness_v1/full/attempt1/plan.json \
+  --launch-manifest state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json \
+  --plan state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json \
   --output reports/analyses/same_gene_robustness_20260811
 
 PYTHONPATH=src /venv/main/bin/python scripts/analysis/analyze_same_gene_robustness.py \
   --contract experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml \
-  --launch-manifest state/materialized/same_gene_robustness_v1/launch_manifest.json \
-  --plan state/materialized/same_gene_robustness_v1/full/attempt1/plan.json \
+  --launch-manifest state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json \
+  --plan state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json \
   --output reports/analyses/same_gene_robustness_20260811 \
   --verify-only
 ```

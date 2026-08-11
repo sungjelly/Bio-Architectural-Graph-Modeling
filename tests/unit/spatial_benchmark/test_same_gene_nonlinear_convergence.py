@@ -3,9 +3,10 @@ from __future__ import annotations
 import copy
 import hashlib
 import importlib.util
+import json
 from pathlib import Path
 import sys
-from typing import Any
+from typing import Any, Mapping
 
 import numpy as np
 import pytest
@@ -27,6 +28,263 @@ assert _SPEC is not None and _SPEC.loader is not None
 runner = importlib.util.module_from_spec(_SPEC)
 sys.modules[_SPEC.name] = runner
 _SPEC.loader.exec_module(runner)
+
+
+def test_pilot_frozen_axis_treats_cap_prevalence_as_diagnostic() -> None:
+    frozen = np.asarray([True, True, False, True], dtype=bool)
+    eligible, raw, mode, audit = runner._resolve_gene_eligibility(
+        prevalence=np.asarray([0.049, 0.80, 0.0, 0.051], dtype=np.float64),
+        target_std=np.asarray([0.2, 0.3, 0.4, 0.5], dtype=np.float64),
+        frozen_gene_eligibility=frozen,
+        profile="pilot",
+    )
+
+    assert np.array_equal(eligible, frozen)
+    assert raw.tolist() == [False, True, False, True]
+    assert mode == "frozen_common_mask"
+    assert audit["frozen_below_prevalence_threshold_count"] == 1
+    assert audit["frozen_numerically_invalid_count"] == 0
+    assert audit["prevalence_gate_enforced_for_frozen_mask"] is False
+    assert audit["pilot_cap_prevalence_is_diagnostic_only"] is True
+
+
+def test_pilot_frozen_axis_still_fails_on_zero_variance() -> None:
+    with pytest.raises(runner.NonlinearRunError, match="numerical eligibility"):
+        runner._resolve_gene_eligibility(
+            prevalence=np.asarray([0.049, 0.80], dtype=np.float64),
+            target_std=np.asarray([1e-6, 0.3], dtype=np.float64),
+            frozen_gene_eligibility=np.asarray([True, True], dtype=bool),
+            profile="pilot",
+        )
+
+
+def test_full_frozen_axis_retains_five_percent_prevalence_gate() -> None:
+    with pytest.raises(runner.NonlinearRunError, match="numerical eligibility"):
+        runner._resolve_gene_eligibility(
+            prevalence=np.asarray([0.049, 0.80], dtype=np.float64),
+            target_std=np.asarray([0.2, 0.3], dtype=np.float64),
+            frozen_gene_eligibility=np.asarray([True, True], dtype=bool),
+            profile="full",
+        )
+
+
+def test_full_frozen_axis_passes_when_production_eligibility_is_valid() -> None:
+    frozen = np.asarray([True, False, True], dtype=bool)
+    eligible, raw, mode, audit = runner._resolve_gene_eligibility(
+        prevalence=np.asarray([0.05, 0.01, 0.75], dtype=np.float64),
+        target_std=np.asarray([0.2, 0.3, 0.4], dtype=np.float64),
+        frozen_gene_eligibility=frozen,
+        profile="full",
+    )
+
+    assert np.array_equal(eligible, frozen)
+    assert raw.tolist() == [True, False, True]
+    assert mode == "frozen_common_mask"
+    assert audit["prevalence_gate_enforced_for_frozen_mask"] is True
+    assert audit["pilot_cap_prevalence_is_diagnostic_only"] is False
+
+
+def test_residual_phase_eligibility_uses_pretransform_reference_target() -> None:
+    target = torch.zeros((40, 2), dtype=torch.float32)
+    target[0, 0] = 1.0
+    target[:, 1] = torch.arange(40, dtype=torch.float32)
+    transformed_target = torch.ones_like(target)
+    fit_mask = np.ones(40, dtype=bool)
+    device = torch.device("cpu")
+    model_stats = runner._target_statistics(transformed_target, fit_mask, device)
+
+    eligibility_stats, semantics = runner._eligibility_reference_statistics(
+        target=target,
+        final_target_stats=model_stats,
+        fit_mask=fit_mask,
+        fit_mask_name="final_train",
+        phase_inputs_present=True,
+        device=device,
+    )
+
+    assert eligibility_stats[2][0] == pytest.approx(0.025)
+    assert model_stats[2][0] == 1.0
+    assert eligibility_stats[1][0].item() > 1e-6
+    assert semantics == {
+        "reference_target": "prepared_expression_before_phase_transform",
+        "reference_fit_mask": "final_train",
+        "reference_statistics_reused_model_normalization_statistics": False,
+        "model_normalization_target": "phase_transformed_target",
+    }
+
+
+def test_fit_arm_separates_phase_normalization_from_frozen_axis_policy(
+    monkeypatch: Any,
+) -> None:
+    rows = 160
+    positions = torch.arange(rows, dtype=torch.float32)
+    target = torch.zeros((rows, 4), dtype=torch.float32)
+    target[0, 0] = 1.0
+    target[80, 0] = 1.0
+    target[:, 1] = 1.0 + positions / rows
+    target[:, 2] = (positions.remainder(2) == 0).float()
+    target[:, 3] = positions.remainder(5)
+    tuning_target = torch.stack(
+        [50.0 + positions / (index + 2) for index in range(4)], dim=1
+    )
+    final_target = torch.stack(
+        [100.0 + positions / (index + 3) for index in range(4)], dim=1
+    )
+    morphology = torch.stack(
+        [positions / rows, positions.remainder(7), positions.remainder(11)], dim=1
+    )
+    groups = np.repeat(np.asarray([10, 20, 30, 40], dtype=np.int16), 40)
+    masks = {
+        "tuning_train": groups < 30,
+        "validation": groups == 30,
+        "final_train": groups < 40,
+        "test": groups == 40,
+    }
+    frozen = np.ones(4, dtype=bool)
+    phase_inputs = {
+        "tuning_target": tuning_target,
+        "final_target": final_target,
+        "tuning_feature": None,
+        "final_feature": None,
+    }
+    captured: dict[str, Any] = {}
+
+    def new_model(
+        *, use_neighbor: bool, seed: int, device: torch.device
+    ) -> AdditiveNeighborMLP:
+        del seed
+        return AdditiveNeighborMLP(
+            gene_count=4,
+            morphology_count=3,
+            hidden_count=2,
+            use_neighbor=use_neighbor,
+        ).to(device)
+
+    def train_epochs(*_: Any, **__: Any) -> list[dict[str, float]]:
+        return []
+
+    def evaluate(*_: Any, **__: Any) -> dict[str, float]:
+        return {"component_equal_mse": 1.0}
+
+    def evaluate_with_jacobian(
+        model: AdditiveNeighborMLP,
+        *,
+        target: torch.Tensor,
+        target_stats: tuple[torch.Tensor, torch.Tensor, np.ndarray],
+        eligible_genes: np.ndarray,
+        **__: Any,
+    ) -> tuple[
+        dict[str, Any],
+        np.ndarray,
+        np.ndarray,
+        list[dict[str, Any]],
+        None,
+        None,
+    ]:
+        del model
+        captured["evaluation_target"] = target
+        captured["evaluation_target_stats"] = target_stats
+        return (
+            {"component_equal_mse": 1.0},
+            np.zeros(len(eligible_genes), dtype=np.float64),
+            np.zeros(len(eligible_genes), dtype=np.float64),
+            [],
+            None,
+            None,
+        )
+
+    def checkpoint_replay(*_: Any, **kwargs: Any) -> dict[str, Any]:
+        captured["replay_target"] = kwargs["target"]
+        captured["replay_target_stats"] = kwargs["target_stats"]
+        return {"passed": True}
+
+    monkeypatch.setattr(runner, "_new_model", new_model)
+    monkeypatch.setattr(runner, "_train_epochs", train_epochs)
+    monkeypatch.setattr(runner, "_evaluate", evaluate)
+    monkeypatch.setattr(runner, "_evaluate_with_jacobian", evaluate_with_jacobian)
+    monkeypatch.setattr(runner, "_checkpoint_replay_control", checkpoint_replay)
+    monkeypatch.setattr(runner, "EPOCH_CANDIDATES", (1,))
+    monkeypatch.setattr(runner, "PILOT_EPOCH_CANDIDATES", (1,))
+    monkeypatch.setattr(runner, "PILOT_REFIT_EPOCH_OVERRIDE", 1)
+    monkeypatch.setattr(runner, "ANCHOR_EPOCH", None)
+
+    result, state, _ = runner._fit_arm(
+        "morphology_only",
+        target=target,
+        morphology=morphology,
+        feature=None,
+        masks=masks,
+        groups=groups,
+        profile="pilot",
+        fold=0,
+        device=torch.device("cpu"),
+        phase_inputs=phase_inputs,
+        frozen_gene_eligibility=frozen,
+    )
+
+    expected_stats = runner._target_statistics(
+        final_target, masks["tuning_train"], torch.device("cpu")
+    )
+    assert result["eligible_genes"].tolist() == [True, True, True, True]
+    assert result["raw_eligible_genes"][0] == np.bool_(False)
+    assert result["eligibility_audit"]["frozen_below_prevalence_threshold_count"] == 1
+    assert result["eligibility_audit"]["frozen_numerically_invalid_count"] == 0
+    assert result["eligibility_audit"]["pilot_cap_prevalence_is_diagnostic_only"]
+    assert result["eligibility_audit"]["reference_fit_mask"] == "tuning_train"
+    assert result["eligibility_audit"]["reference_target"] == (
+        "prepared_expression_before_phase_transform"
+    )
+    assert result["eligibility_audit"]["model_normalization_target"] == (
+        "phase_transformed_target"
+    )
+    assert captured["evaluation_target"] is final_target
+    assert captured["replay_target"] is final_target
+    assert torch.equal(state["target_mean"], expected_stats[0])
+    assert torch.equal(state["target_std"], expected_stats[1])
+    assert torch.equal(captured["evaluation_target_stats"][0], expected_stats[0])
+    assert torch.equal(captured["evaluation_target_stats"][1], expected_stats[1])
+    assert torch.equal(captured["replay_target_stats"][0], expected_stats[0])
+    assert torch.equal(captured["replay_target_stats"][1], expected_stats[1])
+
+    with pytest.raises(runner.NonlinearRunError, match="numerical eligibility"):
+        runner._fit_arm(
+            "morphology_only",
+            target=target,
+            morphology=morphology,
+            feature=None,
+            masks=masks,
+            groups=groups,
+            profile="full",
+            fold=0,
+            device=torch.device("cpu"),
+            phase_inputs=phase_inputs,
+            frozen_gene_eligibility=frozen,
+        )
+
+
+def test_identity_oracle_summary_is_strict_json_finite() -> None:
+    oracle = runner._identity_oracle_summary(4)
+
+    assert oracle["diagonal_offdiagonal_ratio"] is None
+    assert oracle["diagonal_offdiagonal_ratio_positive_infinity"] is True
+    assert oracle["row_top1_fraction"] == 1.0
+    assert runner._all_numeric_values_finite(oracle) is True
+    json.dumps(oracle, allow_nan=False)
+
+
+def test_finite_output_control_covers_serialized_controls() -> None:
+    oracle = runner._identity_oracle_summary(3)
+    common = {
+        "results": {"metric": 1.0},
+        "matrices": {"jacobian": np.eye(3, dtype=np.float64)},
+    }
+
+    assert runner._finite_output_control(
+        **common, controls={"identity_oracle": oracle}
+    ) is True
+    assert runner._finite_output_control(
+        **common, controls={"identity_oracle": oracle, "bad": float("inf")}
+    ) is False
 
 
 def _lifecycle_fixture(root: Path) -> tuple[Any, Registry, RunArchive, dict[str, Any]]:
@@ -443,6 +701,78 @@ def _model_from_state(state: dict[str, torch.Tensor]) -> AdditiveNeighborMLP:
     return model
 
 
+def _small_checkpoint_state(
+    model: AdditiveNeighborMLP,
+    problem: dict[str, Any],
+    *,
+    state_dict: dict[str, torch.Tensor] | None = None,
+) -> dict[str, Any]:
+    target_mean, target_std, _ = problem["target_stats"]
+    morphology_median, morphology_mean, morphology_std = problem[
+        "morphology_stats"
+    ]
+    return {
+        "model_kwargs": {
+            "gene_count": 4,
+            "morphology_count": 3,
+            "hidden_count": 3,
+            "use_neighbor": True,
+        },
+        "state_dict": (
+            copy.deepcopy(model.state_dict())
+            if state_dict is None
+            else copy.deepcopy(state_dict)
+        ),
+        "target_mean": target_mean.detach().cpu().clone(),
+        "target_std": target_std.detach().cpu().clone(),
+        "morphology_median": morphology_median.detach().cpu().clone(),
+        "morphology_mean": morphology_mean.detach().cpu().clone(),
+        "morphology_std": morphology_std.detach().cpu().clone(),
+    }
+
+
+def _small_recorded_component_equal_mse(
+    model: AdditiveNeighborMLP, problem: dict[str, Any]
+) -> float:
+    evaluation = runner._evaluate(
+        model,
+        target=problem["target"],
+        morphology=problem["morphology"],
+        feature=problem["feature"],
+        mask=problem["train_mask"],
+        groups=problem["groups"],
+        target_stats=problem["target_stats"],
+        morphology_stats=problem["morphology_stats"],
+        device=problem["device"],
+        detailed=False,
+    )
+    return float(evaluation["component_equal_mse"])
+
+
+def _run_small_checkpoint_replay(
+    model: AdditiveNeighborMLP,
+    problem: dict[str, Any],
+    *,
+    state: Mapping[str, Any],
+    recorded_component_equal_mse: float,
+    residual_phase: bool = False,
+) -> dict[str, Any]:
+    return runner._checkpoint_replay_control(
+        model,
+        state=state,
+        target=problem["target"],
+        morphology=problem["morphology"],
+        feature=problem["feature"],
+        mask=problem["train_mask"],
+        groups=problem["groups"],
+        target_stats=problem["target_stats"],
+        morphology_stats=problem["morphology_stats"],
+        recorded_component_equal_mse=recorded_component_equal_mse,
+        phase_inputs_are_train_fitted_transforms=residual_phase,
+        device=problem["device"],
+    )
+
+
 def _run_training_segments(
     initial_state: dict[str, torch.Tensor],
     segments: list[int],
@@ -522,6 +852,27 @@ def test_pilot_masks_keep_resource_validation_distinct_from_outer_test() -> None
     assert np.all(masks["validation"] <= masks["final_train"])
 
 
+def test_pilot_final_train_remains_the_uncapped_non_test_population() -> None:
+    cells_per_fold = 20_000
+    folds = np.repeat(np.arange(4, dtype=np.int8), cells_per_fold)
+    groups = np.repeat(
+        np.asarray([101, 202, 303, 404], dtype=np.int16), cells_per_fold
+    )
+    eligible = np.ones(len(folds), dtype=bool)
+
+    masks = runner._split_masks(
+        folds, groups, eligible, outer_fold=0, profile="pilot"
+    )
+
+    assert int(masks["tuning_train"].sum()) == 24_000
+    assert int(masks["validation"].sum()) == 12_000
+    assert int(masks["test"].sum()) == 12_000
+    assert int(masks["final_train"].sum()) == 60_000
+    assert np.array_equal(masks["final_train"], (folds != 0) & eligible)
+    assert np.all(masks["tuning_train"] <= masks["final_train"])
+    assert np.all(masks["validation"] <= masks["final_train"])
+
+
 def test_pilot_refit_uses_validation_and_serializes_anchor_jacobians(
     monkeypatch: Any, tmp_path: Path
 ) -> None:
@@ -540,6 +891,7 @@ def test_pilot_refit_uses_validation_and_serializes_anchor_jacobians(
     observed_masks: list[np.ndarray] = []
     detailed_masks: list[np.ndarray] = []
     tuning_evaluations = 0
+    evaluate_for_replay = runner._evaluate
 
     def new_model(
         *, use_neighbor: bool, seed: int, device: torch.device
@@ -564,9 +916,15 @@ def test_pilot_refit_uses_validation_and_serializes_anchor_jacobians(
     def evaluate_with_jacobian(
         model: AdditiveNeighborMLP,
         *,
+        target: torch.Tensor,
+        morphology: torch.Tensor,
+        feature: torch.Tensor | None,
         mask: np.ndarray,
+        groups: np.ndarray,
+        target_stats: tuple[torch.Tensor, torch.Tensor, np.ndarray],
+        morphology_stats: tuple[torch.Tensor, torch.Tensor, torch.Tensor],
         eligible_genes: np.ndarray,
-        **_: Any,
+        device: torch.device,
     ) -> tuple[
         dict[str, Any],
         np.ndarray,
@@ -579,20 +937,18 @@ def test_pilot_refit_uses_validation_and_serializes_anchor_jacobians(
         gene_count = int(eligible_genes.shape[0])
         marker = float(next(model.parameters()).detach().sum().item())
         component = int(groups[np.flatnonzero(mask)[0]])
-        evaluation = {
-            "cell_count": int(np.sum(mask)),
-            "component_count": 1,
-            "component_equal_mse": abs(marker),
-            "component_equal_mae": abs(marker),
-            "per_component": [
-                {
-                    "geometry_group": component,
-                    "cell_count": int(np.sum(mask)),
-                    "mse": abs(marker),
-                    "mae": abs(marker),
-                }
-            ],
-        }
+        evaluation = evaluate_for_replay(
+            model,
+            target=target,
+            morphology=morphology,
+            feature=feature,
+            mask=mask,
+            groups=groups,
+            target_stats=target_stats,
+            morphology_stats=morphology_stats,
+            device=device,
+            detailed=False,
+        )
         component_predictions = [
             {
                 "geometry_group": component,
@@ -701,28 +1057,131 @@ def test_checkpoint_replay_fails_on_serialized_weight_drift() -> None:
     live = _model_from_state(_initial_small_model_state())
     changed_state = copy.deepcopy(live.state_dict())
     changed_state["morphology.weight"][0, 0] += 1.0
-    state = {
-        "model_kwargs": {
-            "gene_count": 4,
-            "morphology_count": 3,
-            "hidden_count": 3,
-            "use_neighbor": True,
-        },
-        "state_dict": changed_state,
-    }
+    state = _small_checkpoint_state(live, problem, state_dict=changed_state)
+    recorded_mse = _small_recorded_component_equal_mse(live, problem)
 
     with pytest.raises(runner.NonlinearRunError, match="checkpoint GPU replay"):
-        runner._checkpoint_replay_control(
+        _run_small_checkpoint_replay(
             live,
+            problem,
             state=state,
-            target=problem["target"],
-            morphology=problem["morphology"],
-            feature=problem["feature"],
-            mask=problem["train_mask"],
-            groups=problem["groups"],
-            target_stats=problem["target_stats"],
-            morphology_stats=problem["morphology_stats"],
-            device=problem["device"],
+            recorded_component_equal_mse=recorded_mse,
+        )
+
+
+def test_checkpoint_replay_matches_serialized_stats_and_recorded_mse() -> None:
+    problem = _small_training_problem()
+    live = _model_from_state(_initial_small_model_state())
+    state = _small_checkpoint_state(live, problem)
+    recorded_mse = _small_recorded_component_equal_mse(live, problem)
+
+    replay = _run_small_checkpoint_replay(
+        live,
+        problem,
+        state=state,
+        recorded_component_equal_mse=recorded_mse,
+        residual_phase=True,
+    )
+
+    assert replay["passed"] is True
+    assert replay["normalization_source"] == "torch_serialized_checkpoint_payload"
+    assert replay["recorded_component_equal_mse"] == recorded_mse
+    assert replay["live_component_equal_mse"] == recorded_mse
+    assert replay["replay_component_equal_mse"] == recorded_mse
+    assert replay["live_vs_recorded_component_equal_mse_abs_error"] == 0.0
+    assert replay["replay_vs_recorded_component_equal_mse_abs_error"] == 0.0
+    assert replay["maximum_metric_abs_error"] == 0.0
+    assert replay["input_tensor_scope"] == (
+        "already_train_fitted_transformed_target_and_feature_tensors"
+    )
+    assert replay["raw_preprocessing_reconstruction_claimed"] is False
+
+
+def test_checkpoint_replay_fails_on_serialized_normalization_drift() -> None:
+    problem = _small_training_problem()
+    live = _model_from_state(_initial_small_model_state())
+    state = _small_checkpoint_state(live, problem)
+    state["target_mean"][0] += 0.25
+    recorded_mse = _small_recorded_component_equal_mse(live, problem)
+
+    with pytest.raises(runner.NonlinearRunError, match="checkpoint GPU replay"):
+        _run_small_checkpoint_replay(
+            live,
+            problem,
+            state=state,
+            recorded_component_equal_mse=recorded_mse,
+        )
+
+
+def test_checkpoint_replay_consumes_post_load_normalization_payload(
+    monkeypatch: Any,
+) -> None:
+    problem = _small_training_problem()
+    live = _model_from_state(_initial_small_model_state())
+    state = _small_checkpoint_state(live, problem)
+    recorded_mse = _small_recorded_component_equal_mse(live, problem)
+    original_load = runner.torch.load
+
+    def corrupt_loaded_normalization(*args: Any, **kwargs: Any) -> Any:
+        payload = original_load(*args, **kwargs)
+        payload["normalization"]["morphology_mean"][0] += 0.5
+        return payload
+
+    monkeypatch.setattr(runner.torch, "load", corrupt_loaded_normalization)
+    with pytest.raises(runner.NonlinearRunError, match="checkpoint GPU replay"):
+        _run_small_checkpoint_replay(
+            live,
+            problem,
+            state=state,
+            recorded_component_equal_mse=recorded_mse,
+        )
+
+
+def test_checkpoint_replay_rejects_missing_or_invalid_normalization() -> None:
+    problem = _small_training_problem()
+    live = _model_from_state(_initial_small_model_state())
+    recorded_mse = _small_recorded_component_equal_mse(live, problem)
+    missing = _small_checkpoint_state(live, problem)
+    del missing["morphology_mean"]
+    with pytest.raises(
+        runner.NonlinearRunError,
+        match="normalization statistic morphology_mean is malformed",
+    ):
+        _run_small_checkpoint_replay(
+            live,
+            problem,
+            state=missing,
+            recorded_component_equal_mse=recorded_mse,
+        )
+
+    invalid = _small_checkpoint_state(live, problem)
+    invalid["target_std"][1] = 0.0
+    with pytest.raises(
+        runner.NonlinearRunError,
+        match="normalization statistic target_std is not positive",
+    ):
+        _run_small_checkpoint_replay(
+            live,
+            problem,
+            state=invalid,
+            recorded_component_equal_mse=recorded_mse,
+        )
+
+
+def test_checkpoint_replay_fails_when_recorded_evaluation_mse_is_mismatched() -> None:
+    problem = _small_training_problem()
+    live = _model_from_state(_initial_small_model_state())
+    state = _small_checkpoint_state(live, problem)
+    recorded_mse = _small_recorded_component_equal_mse(live, problem)
+
+    with pytest.raises(runner.NonlinearRunError, match="checkpoint GPU replay"):
+        _run_small_checkpoint_replay(
+            live,
+            problem,
+            state=state,
+            recorded_component_equal_mse=(
+                recorded_mse + 2 * runner.MAXIMUM_CHECKPOINT_REPLAY_ABS_ERROR
+            ),
         )
 
 

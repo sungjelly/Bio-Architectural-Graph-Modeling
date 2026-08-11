@@ -6,6 +6,7 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+from types import SimpleNamespace
 
 import numpy as np
 import pytest
@@ -342,6 +343,53 @@ def test_seed_classification_uses_frozen_four_of_five_rule() -> None:
     assert analysis._three_way_classification(False, 2) == "seed_sensitive"
 
 
+def test_budget_fold_support_compares_selected_near_with_anchor_near(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(analysis, "MODEL_SEEDS", (10, 11, 12, 13, 14))
+    monkeypatch.setattr(analysis, "FOLDS", (0, 1, 2, 3))
+    monkeypatch.setattr(analysis, "EXPECTED_COMPONENTS", 4)
+
+    def rows(
+        *, anchor_mse: float
+    ) -> tuple[list[dict[str, object]], list[dict[str, object]]]:
+        selected: list[dict[str, object]] = []
+        anchor: list[dict[str, object]] = []
+        for seed_index, seed in enumerate(analysis.MODEL_SEEDS):
+            passing_folds = 3 if seed_index < 4 else 2
+            for fold in analysis.FOLDS:
+                common = {
+                    "variant_id": "V0",
+                    "model_seed": seed,
+                    "fold": fold,
+                    "arm": "observed_near",
+                    "geometry_group": 101 + fold,
+                    "cell_count": 10,
+                }
+                selected.append(
+                    {
+                        **common,
+                        "mse": 0.9 if fold < passing_folds else 1.1,
+                    }
+                )
+                anchor.append({**common, "mse": anchor_mse})
+        return selected, anchor
+
+    selected, anchor = rows(anchor_mse=1.0)
+    counts, passed = analysis._selected_near_anchor_fold_support(selected, anchor)
+    assert counts == {"10": 3, "11": 3, "12": 3, "13": 3, "14": 2}
+    assert passed is True
+
+    # Moving only the anchor below the selected loss must reverse the support;
+    # morphology is intentionally absent so it cannot satisfy this predicate.
+    _, lower_anchor = rows(anchor_mse=0.8)
+    counts, passed = analysis._selected_near_anchor_fold_support(
+        selected, lower_anchor
+    )
+    assert counts == {str(seed): 0 for seed in analysis.MODEL_SEEDS}
+    assert passed is False
+
+
 def test_cross_variant_classification_distinguishes_agreement_from_direction() -> None:
     variants = {
         variant: {
@@ -364,6 +412,93 @@ def test_csv_writer_emits_each_declared_row_once(tmp_path: Path) -> None:
     path = tmp_path / "rows.csv"
     analysis._write_csv(path, [{"value": 1}, {"value": 2}], ("value",))
     assert path.read_text(encoding="utf-8").splitlines() == ["value", "1", "2"]
+    with pytest.raises(analysis.RobustnessAnalysisError, match="CSV row schema"):
+        analysis._csv_text([{}], ("value",))
+    with pytest.raises(analysis.RobustnessAnalysisError, match="CSV row schema"):
+        analysis._csv_text([{"value": 1, "extra": 2}], ("value",))
+
+
+def test_verify_only_rebuilds_publication_from_current_cli_authority(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    launch = SimpleNamespace(
+        contract_sha256="a" * 64,
+        sha256="b" * 64,
+    )
+    payload = {
+        "contract_sha256": launch.contract_sha256,
+        "launch_manifest_sha256": launch.sha256,
+    }
+    arrays = {"array": np.asarray([1.0], dtype=np.float64)}
+    checks = [{"check": True}]
+    component_rows = [{"component": True}]
+    gene_rows = [{"gene": True}]
+    provenance = {"authority": True}
+    declared = [object()]
+    planned = [object()]
+    verified_run = object()
+
+    monkeypatch.setattr(
+        analysis,
+        "_verify_campaign_inputs",
+        lambda *_args, **_kwargs: ({"contract": True}, launch, {"environment": True}),
+    )
+    monkeypatch.setattr(
+        analysis, "_collect_plan_entries", lambda *_args, **_kwargs: declared
+    )
+    monkeypatch.setattr(analysis, "_validate_coverage", lambda value: planned)
+    monkeypatch.setattr(
+        analysis, "current_paths", lambda: SimpleNamespace(state_root=tmp_path)
+    )
+    monkeypatch.setattr(analysis, "Registry", lambda _path: object())
+    monkeypatch.setattr(
+        analysis, "_verify_registry_attempt_inventory", lambda *_args, **_kwargs: None
+    )
+    monkeypatch.setattr(
+        analysis, "_verify_superseded_attempts", lambda *_args, **_kwargs: []
+    )
+    monkeypatch.setattr(
+        analysis, "_verify_one_run", lambda *_args, **_kwargs: verified_run
+    )
+    monkeypatch.setattr(
+        analysis, "_verify_common_scientific_id", lambda _runs: {"V0": "scientific"}
+    )
+    monkeypatch.setattr(
+        analysis,
+        "_build_payload",
+        lambda *_args, **_kwargs: (
+            payload,
+            arrays,
+            checks,
+            component_rows,
+            gene_rows,
+        ),
+    )
+    monkeypatch.setattr(
+        analysis, "_source_provenance", lambda **_kwargs: provenance
+    )
+    monkeypatch.setattr(analysis, "_report_markdown", lambda _payload: "report\n")
+
+    def verify(root: Path, *, expected: analysis.PublicationExpectation) -> dict[str, object]:
+        assert root == tmp_path / "published"
+        assert expected.payload is payload
+        assert expected.arrays is arrays
+        assert expected.checks is checks
+        assert expected.component_rows is component_rows
+        assert expected.gene_rows is gene_rows
+        assert expected.provenance is provenance
+        assert expected.report_markdown == "report\n"
+        return {"verified": True}
+
+    monkeypatch.setattr(analysis, "_verify_analysis_output", verify)
+    arguments = SimpleNamespace(
+        contract=tmp_path / "contract.yaml",
+        launch_manifest=tmp_path / "launch.json",
+        plan=[tmp_path / "plan.json"],
+        output=tmp_path / "published",
+        verify_only=True,
+    )
+    assert analysis.run(arguments, project_root=tmp_path) == {"verified": True}
 
 
 def test_published_bundle_recomputes_json_npz_and_detects_tamper(
@@ -412,6 +547,8 @@ def test_published_bundle_recomputes_json_npz_and_detects_tamper(
     arrays["V0_budget_selected_minus_anchor12_bootstrap"] = budget_draws
     payload = {
         "campaign_id": analysis.CAMPAIGN_ID,
+        "contract_sha256": "a" * 64,
+        "launch_manifest_sha256": "b" * 64,
         "coverage": {
             "verified_jobs": 140,
             "expected_jobs": 140,
@@ -421,15 +558,18 @@ def test_published_bundle_recomputes_json_npz_and_detects_tamper(
         },
         "attempt_history": [
             {
-                "variant_id": "V0",
-                "model_seed": index,
-                "fold": 0,
+                "variant_id": variant,
+                "model_seed": seed,
+                "fold": fold,
                 "attempt": 1,
                 "selected": True,
                 "registry_status": "completed",
                 "artifact_status": "success",
+                "run_id": f"{variant}-{seed}-{fold}-a1",
             }
-            for index in range(140)
+            for variant in tuple(f"V{index}" for index in range(7))
+            for seed in analysis.MODEL_SEEDS
+            for fold in analysis.FOLDS
         ],
         "exact_row_counts": {
             "run_verification_csv": 1,
@@ -489,19 +629,125 @@ def test_published_bundle_recomputes_json_npz_and_detects_tamper(
             }
         ],
     }
+    check = {field: None for field in analysis.RUN_VERIFICATION_FIELDS}
+    check["run_id"] = "x"
+    checks = [check]
+    component_row = {field: None for field in analysis.COMPONENT_METRIC_FIELDS}
+    component_row.update({"arm": "near", "mse": 1.0})
+    component_rows = [component_row]
+    gene_rows = analysis._eligible_gene_rows(
+        ("A", "B", "C"), matrix, np.ones(3, dtype=bool)
+    )
+    report_markdown = "synthetic\n"
+    expectation = analysis.PublicationExpectation(
+        payload=payload,
+        arrays=arrays,
+        checks=checks,
+        component_rows=component_rows,
+        gene_rows=gene_rows,
+        provenance=provenance,
+        report_markdown=report_markdown,
+    )
     output = tmp_path / "analysis"
     output.mkdir()
     analysis._write_json(output / "aggregate_results.json", payload)
     np.savez_compressed(output / "aggregate_jacobians.npz", **arrays)
-    (output / "run_verification.csv").write_text("run_id\nx\n", encoding="utf-8")
-    (output / "component_metrics.csv").write_text("arm\nnear\n", encoding="utf-8")
-    (output / "eligible_gene_summary.csv").write_text(
-        "gene_index,gene\n0,A\n1,B\n2,C\n", encoding="utf-8"
+    analysis._write_csv(
+        output / "run_verification.csv",
+        checks,
+        analysis.RUN_VERIFICATION_FIELDS,
+    )
+    analysis._write_csv(
+        output / "component_metrics.csv",
+        component_rows,
+        analysis.COMPONENT_METRIC_FIELDS,
+    )
+    analysis._write_csv(
+        output / "eligible_gene_summary.csv",
+        gene_rows,
+        analysis.ELIGIBLE_GENE_FIELDS,
     )
     analysis._write_json(output / "analysis_provenance.json", provenance)
-    (output / "report.md").write_text("synthetic\n", encoding="utf-8")
+    (output / "report.md").write_text(report_markdown, encoding="utf-8")
     analysis._write_analysis_manifest(output)
-    assert analysis._verify_analysis_output(output)["verified"] is True
+    assert analysis._verify_analysis_output(output, expected=expectation)["verified"] is True
+
+    # A self-consistent manifest cannot make another contract/launch, a changed
+    # selected run ID, an attempt gap, or a changed scientific value pass the
+    # independently rebuilt current-CLI authority.
+    for mutate in (
+        lambda value: value.update(contract_sha256="c" * 64),
+        lambda value: value.update(launch_manifest_sha256="c" * 64),
+        lambda value: value["attempt_history"][0].update(run_id="different"),
+        lambda value: value["attempt_history"][0].update(attempt=2),
+        lambda value: value["variants"]["V0"]["consensus_gates"]
+        ["same_name_diagonal_enrichment"].update(observed=999.0),
+        lambda value: value["gene_label_null"][analysis.GENE_NULL_FAMILIES[0]]
+        ["statistics"][analysis.GENE_NULL_STATISTICS[0]].update(observed=999.0),
+        lambda value: value["budget_attribution"]
+        ["selected_minus_anchor12_gain_bootstrap"].update(lower_95=999.0),
+    ):
+        drifted_payload = copy.deepcopy(payload)
+        mutate(drifted_payload)
+        analysis._write_json(output / "aggregate_results.json", drifted_payload)
+        analysis._write_analysis_manifest(output)
+        with pytest.raises(analysis.RobustnessAnalysisError, match="aggregate JSON"):
+            analysis._verify_analysis_output(output, expected=expectation)
+    analysis._write_json(output / "aggregate_results.json", payload)
+
+    # Every NPZ array is checked, including arrays not used by a headline gate.
+    drifted_arrays = {name: value.copy() for name, value in arrays.items()}
+    drifted_arrays["V0_observed_near_anchor12_linear"][0, 0] += 1e-9
+    np.savez_compressed(output / "aggregate_jacobians.npz", **drifted_arrays)
+    analysis._write_analysis_manifest(output)
+    with pytest.raises(analysis.RobustnessAnalysisError, match="aggregate NPZ"):
+        analysis._verify_analysis_output(output, expected=expectation)
+    np.savez_compressed(output / "aggregate_jacobians.npz", **arrays)
+
+    csv_tamper_cases = (
+        (
+            "run_verification.csv",
+            [{**check, "run_id": "different"}],
+            analysis.RUN_VERIFICATION_FIELDS,
+        ),
+        (
+            "component_metrics.csv",
+            [{**component_row, "mse": 2.0}],
+            analysis.COMPONENT_METRIC_FIELDS,
+        ),
+        (
+            "eligible_gene_summary.csv",
+            [{**row, "signed_diagonal": 2.0} for row in gene_rows],
+            analysis.ELIGIBLE_GENE_FIELDS,
+        ),
+    )
+    expected_csv_rows = (checks, component_rows, gene_rows)
+    for (filename, drifted_rows, fields), original_rows in zip(
+        csv_tamper_cases, expected_csv_rows, strict=True
+    ):
+        analysis._write_csv(output / filename, drifted_rows, fields)
+        analysis._write_analysis_manifest(output)
+        with pytest.raises(analysis.RobustnessAnalysisError, match=filename):
+            analysis._verify_analysis_output(output, expected=expectation)
+        analysis._write_csv(output / filename, original_rows, fields)
+
+    component_csv = output / "component_metrics.csv"
+    component_text = component_csv.read_text(encoding="utf-8")
+    component_csv.write_text(
+        component_text.replace("variant_id", "variant", 1), encoding="utf-8"
+    )
+    analysis._write_analysis_manifest(output)
+    with pytest.raises(
+        analysis.RobustnessAnalysisError, match="component_metrics.csv"
+    ):
+        analysis._verify_analysis_output(output, expected=expectation)
+    analysis._write_csv(
+        component_csv, component_rows, analysis.COMPONENT_METRIC_FIELDS
+    )
+
+    analysis._write_analysis_manifest(output)
+    assert analysis._verify_analysis_output(output, expected=expectation)["verified"] is True
     (output / "report.md").write_text("tampered\n", encoding="utf-8")
-    with pytest.raises(analysis.RobustnessAnalysisError, match="payload hash differs"):
-        analysis._verify_analysis_output(output)
+    analysis._write_analysis_manifest(output)
+    with pytest.raises(analysis.RobustnessAnalysisError, match="report differs"):
+        analysis._verify_analysis_output(output, expected=expectation)

@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bagm:same-gene-robustness:technical-amendment:v1",
+  "title": "Same-gene robustness immutable technical recovery amendment",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "amendment_id",
+    "campaign_id",
+    "status",
+    "frozen_at",
+    "scope",
+    "scientific_effects_accessed",
+    "contract",
+    "parent_authority",
+    "child_authority",
+    "authorized_corrections",
+    "scientific_invariants",
+    "failed_attempts"
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "amendment_id": {
+      "const": "ta_cmp_20260810_same_gene_robustness_pilot_a2_source_recovery_v1"
+    },
+    "campaign_id": {
+      "const": "cmp_20260810_same_gene_robustness_multiverse_v1"
+    },
+    "status": {"const": "frozen_technical_recovery"},
+    "frozen_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "scope": {"const": "execution_only_no_scientific_change"},
+    "scientific_effects_accessed": {"const": false},
+    "contract": {"$ref": "#/$defs/contract"},
+    "parent_authority": {"$ref": "#/$defs/parent"},
+    "child_authority": {"$ref": "#/$defs/child"},
+    "authorized_corrections": {
+      "const": [
+        "honor_the_frozen_932_gene_mask_without_fold_local_reselection",
+        "encode_the_identity_oracle_without_nonfinite_json_numbers",
+        "reject_any_nonfinite_value_in_the_complete_result_payload_before_publish",
+        "serialize_checkpoint_normalization_statistics_and_validate_recorded_live_and_replay_mse",
+        "define_residual_gene_eligibility_from_pretransform_prepared_expression",
+        "restore_pilot_final_train_to_the_uncapped_eligible_non_test_split_while_refit_remains_tuning_train_capped",
+        "evaluate_the_budget_fold_support_gate_against_the_prespecified_selected_near_vs_anchor_near_comparison",
+        "require_exact_recomputed_csv_schema_and_content_coherence",
+        "make_analysis_verify_only_recompute_and_bind_json_npz_csv_provenance_report_and_run_lineage_to_current_authorities",
+        "support_hash_bound_cross_launch_failed_attempt_lineage"
+      ]
+    },
+    "scientific_invariants": {"$ref": "#/$defs/invariants"},
+    "failed_attempts": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "items": {"$ref": "#/$defs/failed_attempt"}
+    }
+  },
+  "$defs": {
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "project_path": {
+      "type": "string",
+      "minLength": 1,
+      "not": {"pattern": "(^/|(^|/)\\.\\.(/|$)|\\\\)"}
+    },
+    "contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {
+          "const": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml"
+        },
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "parent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "launch_path",
+        "launch_sha256",
+        "source_manifest_sha256",
+        "pilot_plan_path",
+        "pilot_plan_sha256",
+        "pilot_ledger_path",
+        "pilot_ledger_sha256",
+        "git_commit"
+      ],
+      "properties": {
+        "launch_path": {"$ref": "#/$defs/project_path"},
+        "launch_sha256": {"$ref": "#/$defs/sha256"},
+        "source_manifest_sha256": {"$ref": "#/$defs/sha256"},
+        "pilot_plan_path": {"$ref": "#/$defs/project_path"},
+        "pilot_plan_sha256": {"$ref": "#/$defs/sha256"},
+        "pilot_ledger_path": {"$ref": "#/$defs/project_path"},
+        "pilot_ledger_sha256": {"$ref": "#/$defs/sha256"},
+        "git_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "child": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "launch_path",
+        "launch_core_sha256",
+        "source_list_path",
+        "source_list_sha256",
+        "profile",
+        "first_recovery_attempt",
+        "required_variants"
+      ],
+      "properties": {
+        "launch_path": {"$ref": "#/$defs/project_path"},
+        "launch_core_sha256": {"$ref": "#/$defs/sha256"},
+        "source_list_path": {"$ref": "#/$defs/project_path"},
+        "source_list_sha256": {"$ref": "#/$defs/sha256"},
+        "profile": {"const": "pilot"},
+        "first_recovery_attempt": {"const": 2},
+        "required_variants": {
+          "const": ["V0", "V1", "V2", "V3", "V4", "V5", "V6"]
+        }
+      }
+    },
+    "invariants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "campaign_id_unchanged",
+        "contract_sha256_unchanged",
+        "prepared_data_fingerprints_unchanged",
+        "environment_lock_sha256_unchanged",
+        "scientific_payload_must_match_parent",
+        "seeds_folds_hyperparameters_gates_unchanged",
+        "all_latest_pilot_attempts_share_child_launch",
+        "production_blocked_until_all_seven_receipts_verify"
+      ],
+      "properties": {
+        "campaign_id_unchanged": {"const": true},
+        "contract_sha256_unchanged": {"const": true},
+        "prepared_data_fingerprints_unchanged": {"const": true},
+        "environment_lock_sha256_unchanged": {"const": true},
+        "scientific_payload_must_match_parent": {"const": true},
+        "seeds_folds_hyperparameters_gates_unchanged": {"const": true},
+        "all_latest_pilot_attempts_share_child_launch": {"const": true},
+        "production_blocked_until_all_seven_receipts_verify": {"const": true}
+      }
+    },
+    "failed_attempt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "variant",
+        "attempt",
+        "model_seed",
+        "fold",
+        "scientific_id",
+        "run_id",
+        "materialized_config_sha256",
+        "artifact_path",
+        "failed_marker_sha256",
+        "exception_sha256",
+        "registry_status",
+        "artifact_status",
+        "failure_category"
+      ],
+      "properties": {
+        "variant": {"pattern": "^V[0-6]$"},
+        "attempt": {"const": 1},
+        "model_seed": {"const": 20260810},
+        "fold": {"const": 0},
+        "scientific_id": {"type": "string", "pattern": "^sci_[0-9a-f]{16}$"},
+        "run_id": {"type": "string", "minLength": 1},
+        "materialized_config_sha256": {"$ref": "#/$defs/sha256"},
+        "artifact_path": {"$ref": "#/$defs/project_path"},
+        "failed_marker_sha256": {"$ref": "#/$defs/sha256"},
+        "exception_sha256": {"$ref": "#/$defs/sha256"},
+        "registry_status": {"const": "failed"},
+        "artifact_status": {"const": "failed"},
+        "failure_category": {"const": "same_gene_nonlinear_run_failure"}
+      }
+    }
+  }
+}

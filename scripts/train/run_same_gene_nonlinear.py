@@ -164,6 +164,55 @@ def _all_numeric_values_finite(value: Any) -> bool:
     return True
 
 
+def _finite_diagonal_summary(
+    summary: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Make a diagonal summary strict-JSON-safe without hiding +infinity.
+
+    An identity matrix has a positive diagonal and an exactly zero
+    off-diagonal median, so its diagonal/off-diagonal ratio is mathematically
+    positive infinity.  JSON has no portable infinity literal.  Preserve that
+    meaning explicitly instead of emitting a non-standard numeric token.
+    """
+
+    result = dict(summary)
+    ratio = result.get("diagonal_offdiagonal_ratio")
+    positive_infinity = isinstance(ratio, (float, np.floating)) and bool(
+        np.isposinf(ratio)
+    )
+    if positive_infinity:
+        result["diagonal_offdiagonal_ratio"] = None
+    result["diagonal_offdiagonal_ratio_positive_infinity"] = positive_infinity
+    if not _all_numeric_values_finite(result):
+        raise NonlinearRunError("diagonal summary contains a nonfinite value")
+    return result
+
+
+def _identity_oracle_summary(gene_count: int) -> dict[str, Any]:
+    if gene_count < 1:
+        raise NonlinearRunError("identity-oracle gene count must be positive")
+    summary = diagonal_summary(
+        np.eye(gene_count, dtype=np.float64),
+        np.ones(gene_count, dtype=bool),
+    ).as_dict()
+    return _finite_diagonal_summary(summary)
+
+
+def _finite_output_control(
+    *,
+    results: Mapping[str, Any],
+    matrices: Mapping[str, np.ndarray],
+    controls: Mapping[str, Any],
+) -> bool:
+    """Cover result arrays and the controls that are serialized beside them."""
+
+    return (
+        _all_numeric_values_finite(results)
+        and all(bool(np.isfinite(value).all()) for value in matrices.values())
+        and _all_numeric_values_finite(controls)
+    )
+
+
 def _git_output(root: Path, *arguments: str) -> str:
     result = subprocess.run(
         ["git", *arguments],
@@ -374,7 +423,10 @@ def _split_masks(
         {
             "tuning_train": 24000,
             "validation": 12000,
-            "final_train": 36000,
+            # The pilot refit uses capped tuning_train, not final_train.  Keep
+            # the canonical final-train mask equal to every eligible non-test
+            # cell so its split semantics do not depend on an unused cap.
+            "final_train": None,
             "test": 12000,
         }
         if profile == "pilot"
@@ -466,6 +518,39 @@ def _target_statistics(
     return mean, std, prevalence
 
 
+def _eligibility_reference_statistics(
+    *,
+    target: torch.Tensor,
+    final_target_stats: tuple[torch.Tensor, torch.Tensor, np.ndarray],
+    fit_mask: np.ndarray,
+    fit_mask_name: str,
+    phase_inputs_present: bool,
+    device: torch.device,
+) -> tuple[tuple[torch.Tensor, torch.Tensor, np.ndarray], dict[str, Any]]:
+    """Use prepared, pre-residual expression to define gene eligibility."""
+
+    if fit_mask_name not in {"tuning_train", "final_train"}:
+        raise NonlinearRunError("eligibility reference fit mask is invalid")
+    statistics = (
+        _target_statistics(target, fit_mask, device)
+        if phase_inputs_present
+        else final_target_stats
+    )
+    semantics = {
+        "reference_target": "prepared_expression_before_phase_transform",
+        "reference_fit_mask": fit_mask_name,
+        "reference_statistics_reused_model_normalization_statistics": bool(
+            not phase_inputs_present
+        ),
+        "model_normalization_target": (
+            "phase_transformed_target"
+            if phase_inputs_present
+            else "prepared_expression"
+        ),
+    }
+    return statistics, semantics
+
+
 def _morphology_statistics(
     morphology: torch.Tensor, mask: np.ndarray, device: torch.device
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
@@ -481,6 +566,79 @@ def _morphology_statistics(
     mean = torch.from_numpy(mean_array).to(device)
     std = torch.from_numpy(np.maximum(std_array, 1e-6)).to(device)
     return median, mean, std
+
+
+def _resolve_gene_eligibility(
+    *,
+    prevalence: np.ndarray,
+    target_std: np.ndarray,
+    frozen_gene_eligibility: np.ndarray | None,
+    profile: str,
+) -> tuple[np.ndarray, np.ndarray, str, dict[str, Any]]:
+    """Resolve the reporting axis without reselecting it on a pilot cap.
+
+    The five-percent prevalence rule defines production eligibility on the
+    complete final-train population.  A technical pilot instead uses a
+    component-stratified, capped tuning population; applying the same hard
+    threshold there can randomly add or remove near-threshold genes and is not
+    a scientific estimand.  Pilots therefore retain the frozen axis while
+    still failing on a numerically degenerate target standard deviation.
+    """
+
+    prevalence_array = np.asarray(prevalence)
+    target_std_array = np.asarray(target_std)
+    if (
+        prevalence_array.ndim != 1
+        or target_std_array.shape != prevalence_array.shape
+        or not bool(np.isfinite(prevalence_array).all())
+        or not bool(np.isfinite(target_std_array).all())
+    ):
+        raise NonlinearRunError("gene-eligibility statistics are malformed")
+    if profile not in {"pilot", "full"}:
+        raise NonlinearRunError("gene-eligibility profile must be pilot or full")
+
+    numerically_valid = target_std_array > 1e-6
+    raw_eligible_genes = (prevalence_array >= 0.05) & numerically_valid
+    if frozen_gene_eligibility is None:
+        eligible_genes = raw_eligible_genes.copy()
+        eligibility_mode = "fit_population_derived"
+        frozen = None
+    else:
+        frozen = np.asarray(frozen_gene_eligibility)
+        if frozen.shape != raw_eligible_genes.shape or frozen.dtype != np.bool_:
+            raise NonlinearRunError("frozen gene-eligibility mask is malformed")
+        required = raw_eligible_genes if profile == "full" else numerically_valid
+        if np.any(frozen & ~required):
+            missing = np.flatnonzero(frozen & ~required)
+            raise NonlinearRunError(
+                "frozen genes fail this fit population's numerical eligibility: "
+                f"{missing[:20].tolist()}"
+            )
+        eligible_genes = frozen.copy()
+        eligibility_mode = "frozen_common_mask"
+
+    audit = {
+        "profile": profile,
+        "fit_population_prevalence_threshold": 0.05,
+        "fit_population_std_threshold": 1e-6,
+        "raw_eligible_gene_count": int(raw_eligible_genes.sum()),
+        "frozen_gene_count": None if frozen is None else int(frozen.sum()),
+        "frozen_below_prevalence_threshold_count": (
+            None
+            if frozen is None
+            else int(np.sum(frozen & (prevalence_array < 0.05)))
+        ),
+        "frozen_numerically_invalid_count": (
+            None if frozen is None else int(np.sum(frozen & ~numerically_valid))
+        ),
+        "prevalence_gate_enforced_for_frozen_mask": bool(
+            frozen is not None and profile == "full"
+        ),
+        "pilot_cap_prevalence_is_diagnostic_only": bool(
+            frozen is not None and profile == "pilot"
+        ),
+    }
+    return eligible_genes, raw_eligible_genes, eligibility_mode, audit
 
 
 def _normalized_batch(
@@ -696,6 +854,47 @@ def _cpu_state_dict(model: torch.nn.Module) -> dict[str, torch.Tensor]:
     return {name: value.detach().cpu().clone() for name, value in model.state_dict().items()}
 
 
+_CHECKPOINT_NORMALIZATION_KEYS = (
+    "target_mean",
+    "target_std",
+    "morphology_median",
+    "morphology_mean",
+    "morphology_std",
+)
+
+
+def _checkpoint_normalization_payload(
+    state: Mapping[str, Any], *, gene_count: int, morphology_count: int
+) -> dict[str, torch.Tensor]:
+    """Copy and validate every fitted statistic required by ``_normalized_batch``."""
+
+    expected_shapes = {
+        "target_mean": (gene_count,),
+        "target_std": (gene_count,),
+        "morphology_median": (morphology_count,),
+        "morphology_mean": (morphology_count,),
+        "morphology_std": (morphology_count,),
+    }
+    result: dict[str, torch.Tensor] = {}
+    for name in _CHECKPOINT_NORMALIZATION_KEYS:
+        value = state.get(name)
+        if (
+            not isinstance(value, torch.Tensor)
+            or tuple(value.shape) != expected_shapes[name]
+            or not value.is_floating_point()
+            or not bool(torch.isfinite(value).all().item())
+        ):
+            raise NonlinearRunError(
+                f"checkpoint replay normalization statistic {name} is malformed"
+            )
+        if name.endswith("_std") and not bool(torch.all(value > 0).item()):
+            raise NonlinearRunError(
+                f"checkpoint replay normalization statistic {name} is not positive"
+            )
+        result[name] = value.detach().cpu().clone()
+    return result
+
+
 @torch.no_grad()
 def _checkpoint_replay_control(
     model: AdditiveNeighborMLP,
@@ -708,32 +907,91 @@ def _checkpoint_replay_control(
     groups: np.ndarray,
     target_stats: tuple[torch.Tensor, torch.Tensor, np.ndarray],
     morphology_stats: tuple[torch.Tensor, torch.Tensor, torch.Tensor],
+    recorded_component_equal_mse: float,
+    phase_inputs_are_train_fitted_transforms: bool,
     device: torch.device,
 ) -> dict[str, Any]:
     """Round-trip a checkpoint and replay its GPU forward path.
 
-    The control compares both raw predictions and the component-equal MSE
-    computed from the live model against a model reconstructed solely from a
-    ``torch.save``/``torch.load`` byte stream.  It intentionally does not touch
-    any mask other than the arm's already-authorized evaluation mask.
+    The replay model *and fitted normalization statistics* come solely from a
+    ``torch.save``/``torch.load`` byte stream.  Live and replay
+    component-equal MSE are each compared directly with the metric already
+    recorded by the arm evaluation, as well as with each other.  It
+    intentionally does not touch any mask other than the arm's already
+    authorized evaluation mask.
+
+    A residual-phase replay consumes the already train-fitted transformed
+    target/feature tensors supplied to this function.  This is a checkpoint
+    forward-path control; it does not claim to reconstruct raw preprocessing or
+    refit the residual transform from raw inputs.
     """
 
     model_kwargs = state.get("model_kwargs")
     state_dict = state.get("state_dict")
     if not isinstance(model_kwargs, Mapping) or not isinstance(state_dict, Mapping):
         raise NonlinearRunError("checkpoint replay state is malformed")
+    if not isinstance(phase_inputs_are_train_fitted_transforms, bool):
+        raise NonlinearRunError("checkpoint replay phase-input scope is malformed")
+    try:
+        recorded_mse = float(recorded_component_equal_mse)
+    except (TypeError, ValueError) as error:
+        raise NonlinearRunError(
+            "recorded evaluation component-equal MSE is malformed"
+        ) from error
+    if not np.isfinite(recorded_mse):
+        raise NonlinearRunError(
+            "recorded evaluation component-equal MSE is nonfinite"
+        )
+    try:
+        gene_count = int(model_kwargs["gene_count"])
+        morphology_count = int(model_kwargs["morphology_count"])
+    except (KeyError, TypeError, ValueError) as error:
+        raise NonlinearRunError(
+            "checkpoint replay model construction is malformed"
+        ) from error
+    normalization = _checkpoint_normalization_payload(
+        state,
+        gene_count=gene_count,
+        morphology_count=morphology_count,
+    )
     buffer = io.BytesIO()
     torch.save(
-        {"model_kwargs": dict(model_kwargs), "state_dict": dict(state_dict)},
+        {
+            "schema_version": 1,
+            "model_kwargs": dict(model_kwargs),
+            "state_dict": dict(state_dict),
+            "normalization": normalization,
+        },
         buffer,
     )
     buffer.seek(0)
     serialized = torch.load(buffer, map_location="cpu", weights_only=False)
     if not isinstance(serialized, Mapping) or set(serialized) != {
+        "schema_version",
         "model_kwargs",
         "state_dict",
+        "normalization",
     }:
         raise NonlinearRunError("checkpoint replay serialization is malformed")
+    if serialized["schema_version"] != 1 or not isinstance(
+        serialized["normalization"], Mapping
+    ):
+        raise NonlinearRunError("checkpoint replay serialization is malformed")
+    serialized_normalization = _checkpoint_normalization_payload(
+        serialized["normalization"],
+        gene_count=gene_count,
+        morphology_count=morphology_count,
+    )
+    replay_target_stats = (
+        serialized_normalization["target_mean"].to(device),
+        serialized_normalization["target_std"].to(device),
+        np.empty(gene_count, dtype=np.float64),
+    )
+    replay_morphology_stats = (
+        serialized_normalization["morphology_median"].to(device),
+        serialized_normalization["morphology_mean"].to(device),
+        serialized_normalization["morphology_std"].to(device),
+    )
     replay = AdditiveNeighborMLP(**dict(serialized["model_kwargs"])).to(device)
     replay.load_state_dict(serialized["state_dict"], strict=True)
     model.eval()
@@ -757,8 +1015,17 @@ def _checkpoint_replay_control(
             morphology_stats=morphology_stats,
             device=device,
         )
+        replay_response, replay_morph, replay_neighbor = _normalized_batch(
+            cpu_index,
+            target=target,
+            morphology=morphology,
+            feature=feature,
+            target_stats=replay_target_stats,
+            morphology_stats=replay_morphology_stats,
+            device=device,
+        )
         live_prediction = model(morph, neighbor)
-        replay_prediction = replay(morph, neighbor)
+        replay_prediction = replay(replay_morph, replay_neighbor)
         maximum_prediction_error = max(
             maximum_prediction_error,
             float(
@@ -769,7 +1036,7 @@ def _checkpoint_replay_control(
             (live_prediction - response).square().mean(dim=1).double().cpu().numpy()
         )
         replay_row_mse = (
-            (replay_prediction - response)
+            (replay_prediction - replay_response)
             .square()
             .mean(dim=1)
             .double()
@@ -786,12 +1053,15 @@ def _checkpoint_replay_control(
         raise NonlinearRunError("checkpoint replay component has zero cells")
     live_component_mse = live_squared_error / counts
     replay_component_mse = replay_squared_error / counts
+    live_component_equal_mse = float(np.mean(live_component_mse))
+    replay_component_equal_mse = float(np.mean(replay_component_mse))
+    live_recorded_error = abs(live_component_equal_mse - recorded_mse)
+    replay_recorded_error = abs(replay_component_equal_mse - recorded_mse)
     maximum_metric_error = max(
         float(np.max(np.abs(live_component_mse - replay_component_mse))),
-        abs(
-            float(np.mean(live_component_mse))
-            - float(np.mean(replay_component_mse))
-        ),
+        abs(live_component_equal_mse - replay_component_equal_mse),
+        live_recorded_error,
+        replay_recorded_error,
     )
     passed = (
         np.isfinite(maximum_prediction_error)
@@ -801,7 +1071,19 @@ def _checkpoint_replay_control(
     )
     result = {
         "serialization": "torch_save_load_bytes",
+        "normalization_source": "torch_serialized_checkpoint_payload",
         "replay_device_type": device.type,
+        "input_tensor_scope": (
+            "already_train_fitted_transformed_target_and_feature_tensors"
+            if phase_inputs_are_train_fitted_transforms
+            else "already_materialized_arm_target_and_feature_tensors"
+        ),
+        "raw_preprocessing_reconstruction_claimed": False,
+        "recorded_component_equal_mse": recorded_mse,
+        "live_component_equal_mse": live_component_equal_mse,
+        "replay_component_equal_mse": replay_component_equal_mse,
+        "live_vs_recorded_component_equal_mse_abs_error": live_recorded_error,
+        "replay_vs_recorded_component_equal_mse_abs_error": replay_recorded_error,
         "maximum_prediction_abs_error": maximum_prediction_error,
         "maximum_metric_abs_error": maximum_metric_error,
         "tolerance": MAXIMUM_CHECKPOINT_REPLAY_ABS_ERROR,
@@ -1021,6 +1303,17 @@ def _fit_arm(
     final_target_stats = _target_statistics(
         final_target, masks[fit_mask_name], device
     )
+    (
+        eligibility_target_stats,
+        eligibility_reference,
+    ) = _eligibility_reference_statistics(
+        target=target,
+        final_target_stats=final_target_stats,
+        fit_mask=masks[fit_mask_name],
+        fit_mask_name=fit_mask_name,
+        phase_inputs_present=phase_inputs is not None,
+        device=device,
+    )
     final_morph_stats = _morphology_statistics(
         morphology, masks[fit_mask_name], device
     )
@@ -1095,25 +1388,20 @@ def _fit_arm(
                 device=device,
             )
         )
-    target_mean, target_std, prevalence = final_target_stats
-    raw_eligible_genes = (prevalence >= 0.05) & (
-        target_std.cpu().numpy() > 1e-6
+    target_mean, target_std, _ = final_target_stats
+    _, eligibility_target_std, eligibility_prevalence = eligibility_target_stats
+    (
+        eligible_genes,
+        raw_eligible_genes,
+        eligibility_mode,
+        eligibility_audit,
+    ) = _resolve_gene_eligibility(
+        prevalence=eligibility_prevalence,
+        target_std=eligibility_target_std.cpu().numpy(),
+        frozen_gene_eligibility=frozen_gene_eligibility,
+        profile=profile,
     )
-    if frozen_gene_eligibility is None:
-        eligible_genes = raw_eligible_genes
-        eligibility_mode = "fit_population_derived"
-    else:
-        frozen = np.asarray(frozen_gene_eligibility)
-        if frozen.shape != raw_eligible_genes.shape or frozen.dtype != np.bool_:
-            raise NonlinearRunError("frozen gene-eligibility mask is malformed")
-        if np.any(frozen & ~raw_eligible_genes):
-            missing = np.flatnonzero(frozen & ~raw_eligible_genes)
-            raise NonlinearRunError(
-                "frozen genes fail this fit population's numerical eligibility: "
-                f"{missing[:20].tolist()}"
-            )
-        eligible_genes = frozen.copy()
-        eligibility_mode = "frozen_common_mask"
+    eligibility_audit.update(eligibility_reference)
     (
         evaluation,
         gene_mse,
@@ -1198,6 +1486,7 @@ def _fit_arm(
         "fit_mask": fit_mask_name,
         "evaluation_mask": evaluation_mask_name,
         "eligibility_mode": eligibility_mode,
+        "eligibility_audit": eligibility_audit,
         "raw_eligible_genes": torch.from_numpy(raw_eligible_genes.copy()),
         "eligible_genes": torch.from_numpy(eligible_genes.copy()),
     }
@@ -1211,6 +1500,8 @@ def _fit_arm(
         groups=groups,
         target_stats=final_target_stats,
         morphology_stats=final_morph_stats,
+        recorded_component_equal_mse=float(evaluation["component_equal_mse"]),
+        phase_inputs_are_train_fitted_transforms=phase_inputs is not None,
         device=device,
     )
     state["checkpoint_replay"] = checkpoint_replay
@@ -1232,6 +1523,7 @@ def _fit_arm(
         "eligible_genes": eligible_genes,
         "raw_eligible_genes": raw_eligible_genes,
         "eligibility_mode": eligibility_mode,
+        "eligibility_audit": eligibility_audit,
         "checkpoint_replay": checkpoint_replay,
         "anchor": anchor_result,
     }
@@ -2448,12 +2740,7 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
             projected_hours = duration * full_work / max(1, pilot_work) / 3600
         else:
             projected_hours = duration / 3600
-        oracle = diagonal_summary(
-            np.eye(1000, dtype=np.float64), np.ones(1000, dtype=bool)
-        ).as_dict()
-        all_outputs_finite = _all_numeric_values_finite(results) and all(
-            bool(np.isfinite(value).all()) for value in matrices.values()
-        )
+        oracle = _identity_oracle_summary(1000)
         checkpoint_replay_metric_error = max(
             float(result["checkpoint_replay"]["maximum_metric_abs_error"])
             for result in results.values()
@@ -2496,7 +2783,6 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
             "identity_oracle": oracle,
             "identity_oracle_actually_executed": True,
             "identity_oracle_row_top1_fraction": oracle["row_top1_fraction"],
-            "all_outputs_finite": all_outputs_finite,
             "train_validation_test_component_overlap": not split_control["passed"],
             "split_overlap_control": split_control,
             "graph_specific_invariants": bool(GRAPH_SPECIFIC_INVARIANTS_VERIFIED),
@@ -2538,6 +2824,11 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
                     ],
                 }
             )
+        controls["all_outputs_finite"] = _finite_output_control(
+            results=results,
+            matrices=matrices,
+            controls=controls,
+        )
         if not controls["peak_vram_gate_passed"]:
             raise NonlinearRunError(f"resource gate failed: {controls}")
         if not controls["all_outputs_finite"]:

@@ -15,6 +15,7 @@ import csv
 from dataclasses import dataclass
 from hashlib import sha256
 import importlib.util
+import io
 import json
 import math
 import os
@@ -87,6 +88,22 @@ EXPECTED_GENES = 1000
 EXPECTED_ELIGIBLE = 932
 JACOBIAN_TOLERANCE = 1e-6
 METRIC_TOLERANCE = 1e-12
+RUN_VERIFICATION_FIELDS = (
+    "variant_id", "model_seed", "fold", "attempt", "run_id",
+    "scientific_id", "artifact_path", "config_sha256",
+    "checkpoint_sha256", "jacobian_npz_sha256",
+    "maximum_jacobian_reconstruction_error", "prediction_rows",
+    "bundle_verified", "native_manifest_verified",
+    "registry_hashes_verified", "marker_verified",
+)
+COMPONENT_METRIC_FIELDS = (
+    "variant_id", "model_seed", "fold", "arm", "anchor",
+    "geometry_group", "slide", "cell_count", "mse", "mae",
+)
+ELIGIBLE_GENE_FIELDS = (
+    "gene_index", "gene", "signed_diagonal", "absolute_diagonal",
+    "absolute_row_rank", "row_top1", "row_top1_percent",
+)
 
 
 class RobustnessAnalysisError(RuntimeError):
@@ -151,6 +168,17 @@ class VerifiedRun:
     component_matrices: dict[str, dict[int, np.ndarray]]
     target_std: np.ndarray
     check: dict[str, Any]
+
+
+@dataclass(slots=True)
+class PublicationExpectation:
+    payload: Mapping[str, Any]
+    arrays: Mapping[str, np.ndarray]
+    checks: Sequence[Mapping[str, Any]]
+    component_rows: Sequence[Mapping[str, Any]]
+    gene_rows: Sequence[Mapping[str, Any]]
+    provenance: Mapping[str, Any]
+    report_markdown: str
 
 
 def _strict_json(path: Path, *, label: str) -> dict[str, Any]:
@@ -2662,6 +2690,45 @@ def _budget_difference_bootstrap(
     return result
 
 
+def _selected_near_anchor_fold_support(
+    selected_rows: Sequence[Mapping[str, Any]],
+    anchor_rows: Sequence[Mapping[str, Any]],
+    *,
+    variant: str = "V0",
+) -> tuple[dict[str, int], bool]:
+    """Apply the frozen 4/5-seed by 3/4-fold near-versus-anchor rule."""
+
+    fold_counts: dict[str, int] = {}
+    for seed in MODEL_SEEDS:
+        selected_groups, selected_near, _, selected_folds = _prediction_array(
+            selected_rows,
+            variant=variant,
+            arm="observed_near",
+            seed=seed,
+        )
+        anchor_groups, anchor_near, _, anchor_folds = _prediction_array(
+            anchor_rows,
+            variant=variant,
+            arm="observed_near",
+            seed=seed,
+        )
+        if not np.array_equal(selected_groups, anchor_groups) or not np.array_equal(
+            selected_folds, anchor_folds
+        ):
+            raise RobustnessAnalysisError(
+                f"selected/anchor component assignment differs: {variant}/{seed}"
+            )
+        fold_counts[str(seed)] = int(
+            sum(
+                float(np.mean(selected_near[selected_folds == fold]))
+                < float(np.mean(anchor_near[anchor_folds == fold]))
+                for fold in FOLDS
+            )
+        )
+    passed = sum(value >= 3 for value in fold_counts.values()) >= 4
+    return fold_counts, bool(passed)
+
+
 def _budget_attribution(
     runs: Sequence[VerifiedRun],
     selected_rows: Sequence[Mapping[str, Any]],
@@ -2709,24 +2776,14 @@ def _budget_attribution(
         return_draws=True,
     )
     samples = bootstrap.pop("samples")
-    selected_seed_fold_success: dict[str, int] = {}
-    for seed in MODEL_SEEDS:
-        _, morph, _, seed_folds = _prediction_array(
-            selected_rows, variant="V0", arm="morphology_only", seed=seed
-        )
-        near = _prediction_array(
-            selected_rows, variant="V0", arm="observed_near", seed=seed
-        )[1]
-        selected_seed_fold_success[str(seed)] = int(sum(
-            float(np.mean(near[seed_folds == fold]))
-            < float(np.mean(morph[seed_folds == fold]))
-            for fold in FOLDS
-        ))
+    selected_seed_fold_success, selected_seed_fold_support = (
+        _selected_near_anchor_fold_support(selected_rows, anchor_rows)
+    )
     selected_near_gates = variant_payload["consensus_gates"]
     prediction_explained = bool(
         selected_near_gates["near_vs_morphology_prediction"]["passed"]
         and bootstrap["lower_95"] > 0
-        and sum(value >= 3 for value in selected_seed_fold_success.values()) >= 4
+        and selected_seed_fold_support
     )
 
     eligible = v0[0].eligible
@@ -3170,12 +3227,31 @@ def _build_payload(
     return payload, aggregate_arrays, checks, selected_rows + anchor_rows, gene_rows
 
 
-def _write_csv(path: Path, rows: Sequence[Mapping[str, Any]], fields: Sequence[str]) -> None:
+def _csv_text(
+    rows: Sequence[Mapping[str, Any]], fields: Sequence[str]
+) -> str:
+    field_set = set(fields)
+    if len(field_set) != len(fields):
+        raise RobustnessAnalysisError("CSV schema contains duplicate fields")
+    handle = io.StringIO(newline="")
+    writer = csv.DictWriter(handle, fieldnames=list(fields), extrasaction="raise")
+    writer.writeheader()
+    for index, row in enumerate(rows):
+        if set(row) != field_set:
+            raise RobustnessAnalysisError(
+                f"CSV row schema differs at row {index}: "
+                f"missing={sorted(field_set.difference(row))}, "
+                f"extra={sorted(set(row).difference(field_set))}"
+            )
+        writer.writerow(dict(row))
+    return handle.getvalue()
+
+
+def _write_csv(
+    path: Path, rows: Sequence[Mapping[str, Any]], fields: Sequence[str]
+) -> None:
     with path.open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=list(fields), extrasaction="ignore")
-        writer.writeheader()
-        for row in rows:
-            writer.writerow({field: row.get(field) for field in fields})
+        handle.write(_csv_text(rows, fields))
 
 
 def _report_markdown(payload: Mapping[str, Any]) -> str:
@@ -3369,7 +3445,9 @@ def _assert_scalar_close(observed: Any, expected: float, *, label: str) -> None:
         )
 
 
-def _verify_analysis_output(root: Path) -> dict[str, Any]:
+def _verify_analysis_output(
+    root: Path, *, expected: PublicationExpectation
+) -> dict[str, Any]:
     try:
         output = root.resolve(strict=True)
     except OSError as error:
@@ -3434,6 +3512,11 @@ def _verify_analysis_output(root: Path) -> dict[str, Any]:
         raise RobustnessAnalysisError("analysis success marker binding differs")
 
     payload = _strict_json(output / "aggregate_results.json", label="aggregate results")
+    if canonical_json(payload) != canonical_json(expected.payload):
+        raise RobustnessAnalysisError(
+            "aggregate JSON differs from the independently recomputed current "
+            "contract/launch/plan/run authority"
+        )
     if (
         payload.get("campaign_id") != CAMPAIGN_ID
         or payload.get("coverage", {}).get("verified_jobs") != 140
@@ -3477,8 +3560,62 @@ def _verify_analysis_output(root: Path) -> dict[str, Any]:
         for values in grouped_attempts.values()
     ):
         raise RobustnessAnalysisError("aggregate attempt histories are noncontiguous")
+    csv_expectations = {
+        "run_verification.csv": _csv_text(
+            expected.checks, RUN_VERIFICATION_FIELDS
+        ),
+        "component_metrics.csv": _csv_text(
+            expected.component_rows, COMPONENT_METRIC_FIELDS
+        ),
+        "eligible_gene_summary.csv": _csv_text(
+            expected.gene_rows, ELIGIBLE_GENE_FIELDS
+        ),
+    }
+    for filename, recomputed in csv_expectations.items():
+        try:
+            with (output / filename).open(
+                "r", encoding="utf-8", newline=""
+            ) as handle:
+                published = handle.read()
+        except (OSError, UnicodeError) as error:
+            raise RobustnessAnalysisError(
+                f"published CSV is unreadable: {filename}"
+            ) from error
+        if published != recomputed:
+            raise RobustnessAnalysisError(
+                f"{filename} differs from independently recomputed rows"
+            )
+    expected_counts = payload["exact_row_counts"]
+    for name, filename in (
+        ("run_verification_csv", "run_verification.csv"),
+        ("component_metrics_csv", "component_metrics.csv"),
+        ("eligible_gene_summary_csv", "eligible_gene_summary.csv"),
+    ):
+        if _csv_row_count(output / filename) != int(expected_counts[name]):
+            raise RobustnessAnalysisError(f"published CSV row count differs: {filename}")
     with np.load(output / "aggregate_jacobians.npz", allow_pickle=False) as archive:
         keys = set(archive.files)
+        expected_arrays = {
+            str(name): np.asarray(value, dtype=np.float64)
+            for name, value in expected.arrays.items()
+        }
+        if keys != set(expected_arrays):
+            raise RobustnessAnalysisError(
+                "aggregate NPZ key inventory differs from independent recomputation"
+            )
+        for key, recomputed in expected_arrays.items():
+            published = np.asarray(archive[key])
+            if (
+                published.dtype != np.float64
+                or recomputed.dtype != np.float64
+                or published.shape != recomputed.shape
+                or not np.isfinite(published).all()
+                or not np.isfinite(recomputed).all()
+                or published.tobytes(order="C") != recomputed.tobytes(order="C")
+            ):
+                raise RobustnessAnalysisError(
+                    f"aggregate NPZ differs from independent recomputation: {key}"
+                )
         required = {
             f"{variant}_{arm}_{label}_{part}"
             for variant in CORE_VARIANTS
@@ -3613,23 +3750,19 @@ def _verify_analysis_output(root: Path) -> dict[str, Any]:
             budget_bootstrap, Mapping
         ):
             raise RobustnessAnalysisError("published budget bootstrap differs")
-        for name, expected in (
+        for name, recomputed in (
             ("lower_95", float(np.quantile(budget_draws, 0.025))),
             ("upper_95", float(np.quantile(budget_draws, 0.975))),
             ("positive_draw_fraction", float(np.mean(budget_draws > 0))),
         ):
             _assert_scalar_close(
-                budget_bootstrap.get(name), expected, label=f"budget/{name}"
+                budget_bootstrap.get(name), recomputed, label=f"budget/{name}"
             )
-    expected_counts = payload["exact_row_counts"]
-    for name, filename in (
-        ("run_verification_csv", "run_verification.csv"),
-        ("component_metrics_csv", "component_metrics.csv"),
-        ("eligible_gene_summary_csv", "eligible_gene_summary.csv"),
-    ):
-        if _csv_row_count(output / filename) != int(expected_counts[name]):
-            raise RobustnessAnalysisError(f"published CSV row count differs: {filename}")
     provenance = _strict_json(output / "analysis_provenance.json", label="analysis provenance")
+    if canonical_json(provenance) != canonical_json(expected.provenance):
+        raise RobustnessAnalysisError(
+            "analysis provenance differs from the current CLI authority"
+        )
     if provenance.get("float_policy") != {
         "aggregate_dtype": "float64",
         "storage_dtype": "float64",
@@ -3672,6 +3805,14 @@ def _verify_analysis_output(root: Path) -> dict[str, Any]:
             or sha256_file(path) != source["sha256"]
         ):
             raise RobustnessAnalysisError(f"analysis source changed: {source['path']}")
+    try:
+        report = (output / "report.md").read_text(encoding="utf-8")
+    except (OSError, UnicodeError) as error:
+        raise RobustnessAnalysisError("analysis report is unreadable") from error
+    if report != expected.report_markdown:
+        raise RobustnessAnalysisError(
+            "analysis report differs from the independently recomputed aggregate"
+        )
     return {
         "verified": True,
         "output": str(output),
@@ -3692,6 +3833,16 @@ def _publish(
     provenance: Mapping[str, Any],
 ) -> dict[str, Any]:
     destination = output.absolute()
+    report_markdown = _report_markdown(payload)
+    expectation = PublicationExpectation(
+        payload=payload,
+        arrays=arrays,
+        checks=checks,
+        component_rows=component_rows,
+        gene_rows=gene_rows,
+        provenance=provenance,
+        report_markdown=report_markdown,
+    )
     destination.parent.mkdir(parents=True, exist_ok=True)
     if destination.exists() or destination.is_symlink():
         raise RobustnessAnalysisError(f"analysis output already exists: {destination}")
@@ -3707,35 +3858,22 @@ def _publish(
         _write_csv(
             staging / "run_verification.csv",
             checks,
-            (
-                "variant_id", "model_seed", "fold", "attempt", "run_id",
-                "scientific_id", "artifact_path", "config_sha256",
-                "checkpoint_sha256", "jacobian_npz_sha256",
-                "maximum_jacobian_reconstruction_error", "prediction_rows",
-                "bundle_verified", "native_manifest_verified",
-                "registry_hashes_verified", "marker_verified",
-            ),
+            RUN_VERIFICATION_FIELDS,
         )
         _write_csv(
             staging / "component_metrics.csv",
             component_rows,
-            (
-                "variant_id", "model_seed", "fold", "arm", "anchor",
-                "geometry_group", "slide", "cell_count", "mse", "mae",
-            ),
+            COMPONENT_METRIC_FIELDS,
         )
         _write_csv(
             staging / "eligible_gene_summary.csv",
             gene_rows,
-            (
-                "gene_index", "gene", "signed_diagonal", "absolute_diagonal",
-                "absolute_row_rank", "row_top1", "row_top1_percent",
-            ),
+            ELIGIBLE_GENE_FIELDS,
         )
         _write_json(staging / "analysis_provenance.json", provenance)
-        (staging / "report.md").write_text(_report_markdown(payload), encoding="utf-8")
+        (staging / "report.md").write_text(report_markdown, encoding="utf-8")
         _write_analysis_manifest(staging)
-        _verify_analysis_output(staging)
+        _verify_analysis_output(staging, expected=expectation)
         os.rename(staging, destination)
         directory_fd = os.open(destination.parent, os.O_RDONLY)
         try:
@@ -3745,7 +3883,7 @@ def _publish(
     except Exception:
         shutil.rmtree(staging, ignore_errors=True)
         raise
-    return _verify_analysis_output(destination)
+    return _verify_analysis_output(destination, expected=expectation)
 
 
 def _default_output() -> Path:
@@ -3795,8 +3933,6 @@ def run(arguments: argparse.Namespace, *, project_root: Path = PROJECT_ROOT) -> 
     ]
     scientific_ids = _verify_common_scientific_id(runs)
     output = _default_output() if arguments.output is None else arguments.output
-    if arguments.verify_only:
-        return _verify_analysis_output(output)
     payload, arrays, checks, component_rows, gene_rows = _build_payload(
         runs,
         planned,
@@ -3813,6 +3949,17 @@ def run(arguments: argparse.Namespace, *, project_root: Path = PROJECT_ROOT) -> 
         planned=declared,
         environment_verification=environment_verification,
     )
+    expectation = PublicationExpectation(
+        payload=payload,
+        arrays=arrays,
+        checks=checks,
+        component_rows=component_rows,
+        gene_rows=gene_rows,
+        provenance=provenance,
+        report_markdown=_report_markdown(payload),
+    )
+    if arguments.verify_only:
+        return _verify_analysis_output(output, expected=expectation)
     return _publish(
         output,
         payload=payload,
