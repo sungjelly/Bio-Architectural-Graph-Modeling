@@ -1,0 +1,28 @@
+{
+  "cuda_runtime": "13.0",
+  "hardware": {
+    "compute_capability": [
+      8,
+      6
+    ],
+    "homogeneous_device_name": "NVIDIA GeForce RTX 3090",
+    "job_cuda_smoke_test_required": true,
+    "job_visible_device_count": 1,
+    "launcher_visible_device_count": 4,
+    "minimum_total_memory_bytes_per_device": 25000000000
+  },
+  "packages": {
+    "PyYAML": "6.0.3",
+    "matplotlib": "3.11.1",
+    "numpy": "2.4.6",
+    "openpyxl": "3.1.5",
+    "pandas": "3.0.5",
+    "pytest": "9.1.1",
+    "scipy": "1.18.0",
+    "torch": "2.12.0+cu130",
+    "torch-geometric": "2.8.0.post1"
+  },
+  "python": "3.12.13",
+  "python_implementation": "CPython",
+  "schema_version": 1
+}

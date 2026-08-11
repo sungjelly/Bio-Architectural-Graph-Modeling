@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -18,6 +19,11 @@ from typing import Any, Mapping
 
 import numpy as np
 import torch
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+_SOURCE_ROOT = str(PROJECT_ROOT / "src")
+if not sys.path or sys.path[0] != _SOURCE_ROOT:
+    sys.path.insert(0, _SOURCE_ROOT)
 
 from spatial_benchmark.fingerprints import sha256_file
 from spatial_benchmark.identifiers import (
@@ -77,11 +83,28 @@ FEATURE_FILE = {
     "observed_annular": "neighbor_annular_mean.npy",
     "within_fov_permuted_near": "neighbor_permuted_near_mean.npy",
 }
+ELIGIBILITY_FILE = "matched_eligible.npy"
+FROZEN_GENE_ELIGIBILITY_FILE: str | None = None
+FROZEN_GENE_ELIGIBILITY_SHA256: str | None = None
 EPOCH_CANDIDATES = (1, 2, 4, 8, 12)
 PILOT_EPOCH_CANDIDATES = (1, 2)
 PILOT_ARMS = ("observed_near",)
 PILOT_REFIT_EPOCH_OVERRIDE: int | None = None
 ANCHOR_EPOCH: int | None = None
+MAXIMUM_PROJECTED_HOURS_PER_FOLD = 2.0
+MAXIMUM_CHECKPOINT_REPLAY_ABS_ERROR = 1e-7
+CANONICAL_PRODUCTION_SPLIT_LABEL = "test"
+# These authorities are set by wrappers only after their source/config/data and
+# prepared-graph verification has completed.  A pilot refuses to authorize
+# production while either remains false.
+SOURCE_CONFIG_DATA_HASHES_VERIFIED = False
+GRAPH_SPECIFIC_INVARIANTS_VERIFIED = False
+ENVIRONMENT_LOCK_REQUIRED = False
+ENVIRONMENT_LOCK_REPORT: Mapping[str, Any] | None = None
+# Optional campaign wrapper hook.  It may construct train-population-fitted
+# target/source transforms, but must return both tuning and final phase tensors
+# explicitly so validation preprocessing cannot borrow final-train outcomes.
+PHASE_INPUT_BUILDER: Any = None
 HIDDEN_COUNT = 64
 BATCH_SIZE = 4096
 LEARNING_RATE = 1e-3
@@ -103,6 +126,19 @@ PROVENANCE_SOURCE_PATHS = (
 
 class NonlinearRunError(RuntimeError):
     """Raised when a frozen nonlinear run violates its execution contract."""
+
+
+class AttemptConsumedError(NonlinearRunError):
+    """Raised when an immutable attempt exists but is not recoverable success."""
+
+
+def _process_start_ticks(pid: int) -> int | None:
+    try:
+        content = Path(f"/proc/{int(pid)}/stat").read_text(encoding="utf-8")
+        tail = content[content.rindex(")") + 2 :].split()
+        return int(tail[19])
+    except (OSError, ValueError, IndexError):
+        return None
 
 
 def _json_write(path: Path, value: Any) -> None:
@@ -218,6 +254,10 @@ def _provenance(root: Path, configuration: dict[str, Any]) -> dict[str, Any]:
         ),
         "numpy": np.__version__,
     }
+    if ENVIRONMENT_LOCK_REPORT is not None:
+        hardware["frozen_environment_verification"] = dict(
+            ENVIRONMENT_LOCK_REPORT
+        )
     return {
         "git_commit": commit,
         "dirty_fingerprint": dirty,
@@ -238,6 +278,33 @@ def _load_cpu_vector(prepared: Path, filename: str) -> np.ndarray:
     return np.concatenate(
         [np.load(prepared / slide / filename, allow_pickle=False) for slide in SLIDES]
     )
+
+
+def _load_frozen_gene_eligibility(prepared: Path) -> np.ndarray | None:
+    if FROZEN_GENE_ELIGIBILITY_FILE is None:
+        if FROZEN_GENE_ELIGIBILITY_SHA256 is not None:
+            raise NonlinearRunError(
+                "frozen gene-eligibility SHA requires a configured file"
+            )
+        return None
+    filename = str(FROZEN_GENE_ELIGIBILITY_FILE)
+    if Path(filename).name != filename or filename in {".", ".."}:
+        raise NonlinearRunError("frozen gene-eligibility filename is unsafe")
+    path = prepared / filename
+    value = np.load(path, allow_pickle=False)
+    if value.shape != (1000,) or value.dtype != np.bool_:
+        raise NonlinearRunError(
+            "frozen gene eligibility must be a boolean vector of length 1000"
+        )
+    contiguous = np.ascontiguousarray(value, dtype=np.uint8)
+    observed = hashlib.sha256(contiguous.tobytes(order="C")).hexdigest()
+    if FROZEN_GENE_ELIGIBILITY_SHA256 is None or (
+        observed != FROZEN_GENE_ELIGIBILITY_SHA256
+    ):
+        raise NonlinearRunError("frozen gene-eligibility SHA-256 mismatch")
+    if int(value.sum()) < 1:
+        raise NonlinearRunError("frozen gene eligibility is empty")
+    return value.copy()
 
 
 def _load_gpu_matrix(
@@ -348,6 +415,44 @@ def _split_masks(
                 f"{sorted(overlap)}"
             )
     return masks
+
+
+def _split_component_overlap_control(
+    masks: Mapping[str, np.ndarray], groups: np.ndarray
+) -> dict[str, Any]:
+    """Report the disjoint scientific partitions without conflating refit nesting."""
+
+    required = {"tuning_train", "validation", "final_train", "test"}
+    if set(masks) != required:
+        raise NonlinearRunError("split control received an unexpected mask inventory")
+    component_sets = {
+        name: set(int(value) for value in np.unique(groups[mask]))
+        for name, mask in masks.items()
+    }
+    checked_pairs = (
+        ("tuning_train", "validation"),
+        ("tuning_train", "test"),
+        ("validation", "test"),
+        ("final_train", "test"),
+    )
+    cell_overlap = {
+        f"{first}__{second}": int(np.sum(masks[first] & masks[second]))
+        for first, second in checked_pairs
+    }
+    component_overlap = {
+        f"{first}__{second}": sorted(component_sets[first] & component_sets[second])
+        for first, second in checked_pairs
+    }
+    passed = not any(cell_overlap.values()) and not any(component_overlap.values())
+    result = {
+        "checked_pairs": [list(pair) for pair in checked_pairs],
+        "cell_overlap_counts": cell_overlap,
+        "component_overlap_ids": component_overlap,
+        "passed": bool(passed),
+    }
+    if not passed:
+        raise NonlinearRunError(f"split overlap control failed: {result}")
+    return result
 
 
 def _target_statistics(
@@ -591,6 +696,123 @@ def _cpu_state_dict(model: torch.nn.Module) -> dict[str, torch.Tensor]:
     return {name: value.detach().cpu().clone() for name, value in model.state_dict().items()}
 
 
+@torch.no_grad()
+def _checkpoint_replay_control(
+    model: AdditiveNeighborMLP,
+    *,
+    state: Mapping[str, Any],
+    target: torch.Tensor,
+    morphology: torch.Tensor,
+    feature: torch.Tensor | None,
+    mask: np.ndarray,
+    groups: np.ndarray,
+    target_stats: tuple[torch.Tensor, torch.Tensor, np.ndarray],
+    morphology_stats: tuple[torch.Tensor, torch.Tensor, torch.Tensor],
+    device: torch.device,
+) -> dict[str, Any]:
+    """Round-trip a checkpoint and replay its GPU forward path.
+
+    The control compares both raw predictions and the component-equal MSE
+    computed from the live model against a model reconstructed solely from a
+    ``torch.save``/``torch.load`` byte stream.  It intentionally does not touch
+    any mask other than the arm's already-authorized evaluation mask.
+    """
+
+    model_kwargs = state.get("model_kwargs")
+    state_dict = state.get("state_dict")
+    if not isinstance(model_kwargs, Mapping) or not isinstance(state_dict, Mapping):
+        raise NonlinearRunError("checkpoint replay state is malformed")
+    buffer = io.BytesIO()
+    torch.save(
+        {"model_kwargs": dict(model_kwargs), "state_dict": dict(state_dict)},
+        buffer,
+    )
+    buffer.seek(0)
+    serialized = torch.load(buffer, map_location="cpu", weights_only=False)
+    if not isinstance(serialized, Mapping) or set(serialized) != {
+        "model_kwargs",
+        "state_dict",
+    }:
+        raise NonlinearRunError("checkpoint replay serialization is malformed")
+    replay = AdditiveNeighborMLP(**dict(serialized["model_kwargs"])).to(device)
+    replay.load_state_dict(serialized["state_dict"], strict=True)
+    model.eval()
+    replay.eval()
+
+    positions = np.flatnonzero(mask)
+    component_values = sorted(int(value) for value in np.unique(groups[mask]))
+    lookup = {value: index for index, value in enumerate(component_values)}
+    counts = np.zeros(len(component_values), dtype=np.int64)
+    live_squared_error = np.zeros(len(component_values), dtype=np.float64)
+    replay_squared_error = np.zeros(len(component_values), dtype=np.float64)
+    maximum_prediction_error = 0.0
+    for start in range(0, len(positions), BATCH_SIZE):
+        cpu_index = positions[start : start + BATCH_SIZE]
+        response, morph, neighbor = _normalized_batch(
+            cpu_index,
+            target=target,
+            morphology=morphology,
+            feature=feature,
+            target_stats=target_stats,
+            morphology_stats=morphology_stats,
+            device=device,
+        )
+        live_prediction = model(morph, neighbor)
+        replay_prediction = replay(morph, neighbor)
+        maximum_prediction_error = max(
+            maximum_prediction_error,
+            float(
+                torch.max(torch.abs(live_prediction - replay_prediction)).item()
+            ),
+        )
+        live_row_mse = (
+            (live_prediction - response).square().mean(dim=1).double().cpu().numpy()
+        )
+        replay_row_mse = (
+            (replay_prediction - response)
+            .square()
+            .mean(dim=1)
+            .double()
+            .cpu()
+            .numpy()
+        )
+        for group in np.unique(groups[cpu_index]):
+            local = groups[cpu_index] == group
+            slot = lookup[int(group)]
+            counts[slot] += int(np.sum(local))
+            live_squared_error[slot] += float(np.sum(live_row_mse[local]))
+            replay_squared_error[slot] += float(np.sum(replay_row_mse[local]))
+    if np.any(counts == 0):
+        raise NonlinearRunError("checkpoint replay component has zero cells")
+    live_component_mse = live_squared_error / counts
+    replay_component_mse = replay_squared_error / counts
+    maximum_metric_error = max(
+        float(np.max(np.abs(live_component_mse - replay_component_mse))),
+        abs(
+            float(np.mean(live_component_mse))
+            - float(np.mean(replay_component_mse))
+        ),
+    )
+    passed = (
+        np.isfinite(maximum_prediction_error)
+        and np.isfinite(maximum_metric_error)
+        and maximum_prediction_error <= MAXIMUM_CHECKPOINT_REPLAY_ABS_ERROR
+        and maximum_metric_error <= MAXIMUM_CHECKPOINT_REPLAY_ABS_ERROR
+    )
+    result = {
+        "serialization": "torch_save_load_bytes",
+        "replay_device_type": device.type,
+        "maximum_prediction_abs_error": maximum_prediction_error,
+        "maximum_metric_abs_error": maximum_metric_error,
+        "tolerance": MAXIMUM_CHECKPOINT_REPLAY_ABS_ERROR,
+        "passed": bool(passed),
+    }
+    del replay, serialized, buffer
+    if not passed:
+        raise NonlinearRunError(f"checkpoint GPU replay control failed: {result}")
+    return result
+
+
 def _evaluate_with_jacobian(
     model: AdditiveNeighborMLP,
     *,
@@ -643,6 +865,27 @@ def _evaluate_with_jacobian(
             weights=torch.from_numpy(jacobian_weights).to(device),
             chunk_size=BATCH_SIZE,
         )
+        component_groups = np.asarray(
+            sorted(int(value) for value in np.unique(groups[mask])), dtype=np.int16
+        )
+        component_hidden_derivatives = np.stack(
+            [
+                model.mean_hidden_derivative(
+                    normalized_feature[
+                        torch.from_numpy(
+                            np.flatnonzero(groups[eval_positions] == group)
+                        ).to(device)
+                    ],
+                    chunk_size=BATCH_SIZE,
+                )
+                for group in component_groups
+            ],
+            axis=0,
+        )
+        jacobian_parts["component_geometry_groups"] = component_groups
+        jacobian_parts[
+            "component_mean_hidden_derivative"
+        ] = component_hidden_derivatives
         jacobian_summary = diagonal_summary(
             jacobian_parts["total"], eligible_genes
         ).as_dict()
@@ -668,10 +911,52 @@ def _fit_arm(
     profile: str,
     fold: int,
     device: torch.device,
+    phase_inputs: Mapping[str, torch.Tensor | None] | None = None,
+    frozen_gene_eligibility: np.ndarray | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any], dict[str, np.ndarray] | None]:
-    use_neighbor = feature is not None
+    if phase_inputs is None:
+        tuning_target = target
+        final_target = target
+        tuning_feature = feature
+        final_feature = feature
+    else:
+        expected = {
+            "tuning_target",
+            "final_target",
+            "tuning_feature",
+            "final_feature",
+        }
+        if set(phase_inputs) != expected:
+            raise NonlinearRunError(
+                f"phase inputs require exactly {sorted(expected)}"
+            )
+        tuning_target = phase_inputs["tuning_target"]
+        final_target = phase_inputs["final_target"]
+        tuning_feature = phase_inputs["tuning_feature"]
+        final_feature = phase_inputs["final_feature"]
+        if not isinstance(tuning_target, torch.Tensor) or not isinstance(
+            final_target, torch.Tensor
+        ):
+            raise NonlinearRunError("phase targets must be tensors")
+    use_neighbor = tuning_feature is not None
+    if (final_feature is not None) != use_neighbor:
+        raise NonlinearRunError(
+            "tuning and final phase neighbor-feature presence must agree"
+        )
+    if tuning_target.shape != target.shape or final_target.shape != target.shape:
+        raise NonlinearRunError("phase targets must preserve the target shape")
+    for name, value in (
+        ("tuning_target", tuning_target),
+        ("final_target", final_target),
+        ("tuning_feature", tuning_feature),
+        ("final_feature", final_feature),
+    ):
+        if value is not None and not bool(torch.isfinite(value).all().item()):
+            raise NonlinearRunError(f"{name} contains nonfinite values")
     seed = SEED_BASE + fold
-    tuning_target_stats = _target_statistics(target, masks["tuning_train"], device)
+    tuning_target_stats = _target_statistics(
+        tuning_target, masks["tuning_train"], device
+    )
     tuning_morph_stats = _morphology_statistics(
         morphology, masks["tuning_train"], device
     )
@@ -690,9 +975,9 @@ def _fit_arm(
             _train_epochs(
                 tuning_model,
                 optimizer=tuning_optimizer,
-                target=target,
+                target=tuning_target,
                 morphology=morphology,
-                feature=feature,
+                feature=tuning_feature,
                 train_mask=masks["tuning_train"],
                 groups=groups,
                 target_stats=tuning_target_stats,
@@ -706,9 +991,9 @@ def _fit_arm(
         completed_epochs = candidate
         validation = _evaluate(
             tuning_model,
-            target=target,
+            target=tuning_target,
             morphology=morphology,
-            feature=feature,
+            feature=tuning_feature,
             mask=masks["validation"],
             groups=groups,
             target_stats=tuning_target_stats,
@@ -733,7 +1018,9 @@ def _fit_arm(
 
     fit_mask_name = "tuning_train" if profile == "pilot" else "final_train"
     evaluation_mask_name = "validation" if profile == "pilot" else "test"
-    final_target_stats = _target_statistics(target, masks[fit_mask_name], device)
+    final_target_stats = _target_statistics(
+        final_target, masks[fit_mask_name], device
+    )
     final_morph_stats = _morphology_statistics(
         morphology, masks[fit_mask_name], device
     )
@@ -758,9 +1045,9 @@ def _fit_arm(
             _train_epochs(
                 final_model,
                 optimizer=final_optimizer,
-                target=target,
+                target=final_target,
                 morphology=morphology,
-                feature=feature,
+                feature=final_feature,
                 train_mask=masks[fit_mask_name],
                 groups=groups,
                 target_stats=final_target_stats,
@@ -777,9 +1064,9 @@ def _fit_arm(
                 _train_epochs(
                     final_model,
                     optimizer=final_optimizer,
-                    target=target,
+                    target=final_target,
                     morphology=morphology,
-                    feature=feature,
+                    feature=final_feature,
                     train_mask=masks[fit_mask_name],
                     groups=groups,
                     target_stats=final_target_stats,
@@ -795,9 +1082,9 @@ def _fit_arm(
             _train_epochs(
                 final_model,
                 optimizer=final_optimizer,
-                target=target,
+                target=final_target,
                 morphology=morphology,
-                feature=feature,
+                feature=final_feature,
                 train_mask=masks[fit_mask_name],
                 groups=groups,
                 target_stats=final_target_stats,
@@ -809,7 +1096,24 @@ def _fit_arm(
             )
         )
     target_mean, target_std, prevalence = final_target_stats
-    eligible_genes = (prevalence >= 0.05) & (target_std.cpu().numpy() > 1e-6)
+    raw_eligible_genes = (prevalence >= 0.05) & (
+        target_std.cpu().numpy() > 1e-6
+    )
+    if frozen_gene_eligibility is None:
+        eligible_genes = raw_eligible_genes
+        eligibility_mode = "fit_population_derived"
+    else:
+        frozen = np.asarray(frozen_gene_eligibility)
+        if frozen.shape != raw_eligible_genes.shape or frozen.dtype != np.bool_:
+            raise NonlinearRunError("frozen gene-eligibility mask is malformed")
+        if np.any(frozen & ~raw_eligible_genes):
+            missing = np.flatnonzero(frozen & ~raw_eligible_genes)
+            raise NonlinearRunError(
+                "frozen genes fail this fit population's numerical eligibility: "
+                f"{missing[:20].tolist()}"
+            )
+        eligible_genes = frozen.copy()
+        eligibility_mode = "frozen_common_mask"
     (
         evaluation,
         gene_mse,
@@ -819,9 +1123,9 @@ def _fit_arm(
         jacobian_summary,
     ) = _evaluate_with_jacobian(
         final_model,
-        target=target,
+        target=final_target,
         morphology=morphology,
-        feature=feature,
+        feature=final_feature,
         mask=masks[evaluation_mask_name],
         groups=groups,
         target_stats=final_target_stats,
@@ -846,9 +1150,9 @@ def _fit_arm(
             anchor_jacobian_summary,
         ) = _evaluate_with_jacobian(
             anchor_model,
-            target=target,
+            target=final_target,
             morphology=morphology,
-            feature=feature,
+            feature=final_feature,
             mask=masks[evaluation_mask_name],
             groups=groups,
             target_stats=final_target_stats,
@@ -876,10 +1180,10 @@ def _fit_arm(
         del anchor_model
     state = {
         "model_kwargs": {
-            "gene_count": 1000,
-            "morphology_count": 22,
-            "hidden_count": HIDDEN_COUNT,
-            "use_neighbor": use_neighbor,
+            "gene_count": int(final_model.gene_count),
+            "morphology_count": int(final_model.morphology_count),
+            "hidden_count": int(final_model.hidden_count),
+            "use_neighbor": bool(final_model.use_neighbor),
         },
         "state_dict": _cpu_state_dict(final_model),
         "anchor_state_dict": anchor_state_dict,
@@ -893,7 +1197,23 @@ def _fit_arm(
         "morphology_std": final_morph_stats[2].detach().cpu(),
         "fit_mask": fit_mask_name,
         "evaluation_mask": evaluation_mask_name,
+        "eligibility_mode": eligibility_mode,
+        "raw_eligible_genes": torch.from_numpy(raw_eligible_genes.copy()),
+        "eligible_genes": torch.from_numpy(eligible_genes.copy()),
     }
+    checkpoint_replay = _checkpoint_replay_control(
+        final_model,
+        state=state,
+        target=final_target,
+        morphology=morphology,
+        feature=final_feature,
+        mask=masks[evaluation_mask_name],
+        groups=groups,
+        target_stats=final_target_stats,
+        morphology_stats=final_morph_stats,
+        device=device,
+    )
+    state["checkpoint_replay"] = checkpoint_replay
     result = {
         "arm": arm,
         "selected_epoch": selected_epoch,
@@ -910,6 +1230,9 @@ def _fit_arm(
         "gene_mse": gene_mse,
         "gene_pearson": gene_pearson,
         "eligible_genes": eligible_genes,
+        "raw_eligible_genes": raw_eligible_genes,
+        "eligibility_mode": eligibility_mode,
+        "checkpoint_replay": checkpoint_replay,
         "anchor": anchor_result,
     }
     del final_model, final_optimizer
@@ -1116,6 +1439,9 @@ def _configuration(*, profile: str, fold: int, attempt: int) -> dict[str, Any]:
     if profile not in {"pilot", "full"}:
         raise ValueError(f"unsupported profile: {profile}")
     return {
+        "seed": TRACKING_SEED,
+        "fold": fold,
+        "attempt": attempt,
         "campaign": {
             "campaign_id": CAMPAIGN_ID,
             "frozen_contract_sha256": FROZEN_CONTRACT_SHA256,
@@ -1165,11 +1491,13 @@ def _configuration(*, profile: str, fold: int, attempt: int) -> dict[str, Any]:
             "pilot_refit_epoch_override": (
                 PILOT_REFIT_EPOCH_OVERRIDE if profile == "pilot" else None
             ),
+            "maximum_projected_hours_per_fold": (
+                MAXIMUM_PROJECTED_HOURS_PER_FOLD
+            ),
             "effective_arms": list(PILOT_ARMS if profile == "pilot" else FULL_ARMS),
             "primary_checkpoint_role": "last",
             "restore_best": False,
             "selection": "validation_epoch_count_then_fresh_final_refit",
-            "seed_base": SEED_BASE,
             "model_seed": SEED_BASE + fold,
         },
         "evaluation": {
@@ -1206,6 +1534,531 @@ def _configuration(*, profile: str, fold: int, attempt: int) -> dict[str, Any]:
     }
 
 
+def _attempt_rows(
+    registry: Registry,
+    *,
+    configuration: Mapping[str, Any],
+    fold: int,
+    attempt: int,
+) -> list[dict[str, Any]]:
+    """Return the complete registry history for one declared execution slot."""
+
+    identifier = scientific_id(configuration)
+    with registry.connect() as connection:
+        rows = connection.execute(
+            """
+            SELECT run_id FROM runs
+            WHERE campaign_id = ? AND scientific_id = ?
+              AND seed = ? AND fold = ? AND attempt = ?
+            ORDER BY created_at, run_id
+            """,
+            (CAMPAIGN_ID, identifier, TRACKING_SEED, int(fold), int(attempt)),
+        ).fetchall()
+    result: list[dict[str, Any]] = []
+    for raw in rows:
+        row = registry.get_run(str(raw["run_id"]))
+        if row is None:
+            raise NonlinearRunError("attempt registry row disappeared during lookup")
+        if canonical_json(row.get("config")) != canonical_json(configuration):
+            raise NonlinearRunError(
+                "registry attempt has the same slot identity but different config"
+            )
+        result.append(row)
+    return result
+
+
+def _result_from_bundle(
+    artifact: Path,
+    *,
+    run_id: str,
+    configuration: Mapping[str, Any],
+    profile: str,
+    fold: int,
+) -> dict[str, Any]:
+    try:
+        payload = json.loads((artifact / "results.json").read_text(encoding="utf-8"))
+        resolved = json.loads(
+            (artifact / "resolved_configuration.json").read_text(encoding="utf-8")
+        )
+    except (OSError, ValueError) as error:
+        raise NonlinearRunError("published attempt metadata is unreadable") from error
+    if not isinstance(payload, Mapping) or not isinstance(resolved, Mapping):
+        raise NonlinearRunError("published attempt metadata is malformed")
+    if canonical_json(resolved) != canonical_json(configuration):
+        raise NonlinearRunError("published attempt configuration does not match the slot")
+    if (
+        payload.get("run_id") != run_id
+        or payload.get("campaign_id") != CAMPAIGN_ID
+        or payload.get("profile") != profile
+        or payload.get("outer_fold") != fold
+        or payload.get("status") != "completed"
+    ):
+        raise NonlinearRunError("published attempt result identity is inconsistent")
+    return dict(payload)
+
+
+def _artifact_kind(relative: str) -> str:
+    top_level = relative.split("/", 1)[0]
+    return (
+        top_level
+        if top_level
+        in {
+            "checkpoints",
+            "predictions",
+            "metrics",
+            "diagnostics",
+            "interpretation",
+            "provenance",
+            "logs",
+        }
+        else "run_metadata"
+    )
+
+
+def _finish_published_success(
+    *,
+    registry: Registry,
+    archive: RunArchive,
+    configuration: Mapping[str, Any],
+    profile: str,
+    fold: int,
+    failpoint: Any = None,
+) -> dict[str, Any]:
+    """Idempotently reconcile publish -> registry -> marker -> completed.
+
+    ``failpoint`` is a test-only callback invoked at durable boundaries.  A
+    replay after any callback failure must either complete the exact immutable
+    bundle or reject it; it never creates another run for the same attempt.
+    """
+
+    def hit(name: str) -> None:
+        if failpoint is not None:
+            failpoint(name)
+
+    final = archive.artifact_path
+    run_id = archive.run_id
+    row = registry.get_run(run_id)
+    if row is None:
+        raise NonlinearRunError("published attempt has no registry authority")
+    if row.get("status") not in {"running", "finalizing", "completed"}:
+        raise AttemptConsumedError(
+            f"attempt registry status {row.get('status')!r} is not recoverable"
+        )
+    markers = [
+        name
+        for name in ("_SUCCESS", "_FAILED", "_PRUNED")
+        if (final / name).exists() or (final / name).is_symlink()
+    ]
+    if markers == ["_SUCCESS"]:
+        verify_run_bundle(final)
+    elif not markers:
+        verify_unmarked_run_bundle(final)
+    else:
+        raise AttemptConsumedError(
+            f"published attempt has non-success completion markers: {markers}"
+        )
+    result = _result_from_bundle(
+        final,
+        run_id=run_id,
+        configuration=configuration,
+        profile=profile,
+        fold=fold,
+    )
+    arms = result.get("arms")
+    if not isinstance(arms, Mapping) or "observed_near" not in arms:
+        raise NonlinearRunError("published attempt has no observed-near result")
+    try:
+        near_mse = float(arms["observed_near"]["evaluation"]["component_equal_mse"])
+        duration = float(result["duration_seconds"])
+        peak_vram_gb = float(result["peak_vram_gb"])
+        parameter_count = int(result["parameter_count"])
+    except (KeyError, TypeError, ValueError) as error:
+        raise NonlinearRunError("published attempt lifecycle metrics are malformed") from error
+    if not all(np.isfinite(value) for value in (near_mse, duration, peak_vram_gb)):
+        raise NonlinearRunError("published attempt lifecycle metrics are nonfinite")
+    primary_metric = str(configuration["evaluation"]["primary_metric"])
+    split = str(configuration["evaluation"]["canonical_prediction_split"])
+    expected_updates = {
+        "duration_seconds": duration,
+        "peak_vram_gb": peak_vram_gb,
+        "parameter_count": parameter_count,
+        "primary_metric_name": primary_metric,
+        "primary_metric_value": near_mse,
+        "artifact_path": str(final),
+    }
+    row = registry.get_run(run_id)
+    assert row is not None
+    for key, expected in expected_updates.items():
+        observed = row.get(key)
+        if observed is not None and (
+            (isinstance(expected, float) and float(observed) != expected)
+            or (not isinstance(expected, float) and str(observed) != str(expected))
+        ):
+            raise NonlinearRunError(
+                f"registry {key} conflicts with immutable published metadata"
+            )
+    if row["status"] == "running":
+        registry.transition_run(
+            run_id,
+            "finalizing",
+            end_time=utc_now(),
+            **expected_updates,
+        )
+    elif row["status"] == "finalizing":
+        registry.transition_run(run_id, "finalizing", **expected_updates)
+    hit("registry_finalizing")
+
+    files = {
+        path.relative_to(final).as_posix(): path
+        for path in sorted(final.rglob("*"))
+        if path.is_file() and path.name not in {"_SUCCESS", "_FAILED", "_PRUNED"}
+    }
+    with registry.connect() as connection:
+        existing_rows = connection.execute(
+            """
+            SELECT artifact_id, kind, path, sha256, size_bytes, status
+            FROM artifacts WHERE run_id = ?
+            """,
+            (run_id,),
+        ).fetchall()
+    existing_by_relative: dict[str, Any] = {}
+    for existing in existing_rows:
+        path = Path(str(existing["path"]))
+        try:
+            relative = path.resolve(strict=False).relative_to(
+                final.resolve(strict=True)
+            ).as_posix()
+        except ValueError as error:
+            raise NonlinearRunError(
+                "registry artifact path escapes the immutable run bundle"
+            ) from error
+        if relative in existing_by_relative:
+            raise NonlinearRunError("registry contains duplicate artifact authorities")
+        existing_by_relative[relative] = existing
+    extra = set(existing_by_relative).difference(files)
+    if extra:
+        raise NonlinearRunError(f"registry contains undeclared artifacts: {sorted(extra)}")
+    artifact_ids: dict[str, int] = {}
+    for relative, path in files.items():
+        expected_sha = sha256_file(path)
+        expected_size = path.stat().st_size
+        expected_kind = _artifact_kind(relative)
+        existing = existing_by_relative.get(relative)
+        if existing is None:
+            artifact_ids[relative] = registry.record_artifact(
+                run_id,
+                kind=expected_kind,
+                path=path,
+                sha256=expected_sha,
+                size_bytes=expected_size,
+            )
+        else:
+            if (
+                str(existing["kind"]) != expected_kind
+                or str(existing["path"]) != str(path)
+                or str(existing["sha256"]) != expected_sha
+                or int(existing["size_bytes"]) != expected_size
+                or str(existing["status"]) != "present"
+            ):
+                raise NonlinearRunError(
+                    f"registry artifact conflicts with immutable file {relative}"
+                )
+            artifact_ids[relative] = int(existing["artifact_id"])
+    hit("artifacts_recorded")
+
+    checkpoint_relative = "checkpoints/last.ckpt"
+    if checkpoint_relative not in artifact_ids:
+        raise NonlinearRunError("published attempt has no canonical last checkpoint")
+    registry.register_checkpoint_metadata(
+        artifact_ids[checkpoint_relative],
+        run_id=run_id,
+        role="last",
+        retention_class=("diagnostic" if profile == "pilot" else "exploratory_screen"),
+        verification_status="verified",
+        monitored_metric=primary_metric,
+        monitored_mode="min",
+        monitored_value=near_mse,
+        metadata={
+            "prediction_replayable": True,
+            "selected_epoch_then_fresh_refit": profile == "full",
+            "forced_resource_refit_epoch": (
+                PILOT_REFIT_EPOCH_OVERRIDE if profile == "pilot" else None
+            ),
+            "arms": list(arms),
+        },
+    )
+    hit("checkpoint_recorded")
+
+    expected_metrics = {
+        f"{split}/{arm}_component_equal_mse": float(
+            value["evaluation"]["component_equal_mse"]
+        )
+        for arm, value in arms.items()
+    }
+    with registry.connect() as connection:
+        metric_rows = connection.execute(
+            "SELECT name, value, split FROM metrics WHERE run_id = ?",
+            (run_id,),
+        ).fetchall()
+    observed_metrics: dict[str, Any] = {}
+    for metric in metric_rows:
+        name = str(metric["name"])
+        if name in observed_metrics:
+            raise NonlinearRunError("registry contains duplicate lifecycle metrics")
+        observed_metrics[name] = metric
+    if set(observed_metrics).difference(expected_metrics):
+        raise NonlinearRunError("registry contains unexpected lifecycle metrics")
+    for name, value in expected_metrics.items():
+        existing = observed_metrics.get(name)
+        if existing is None:
+            registry.record_metric(run_id, name, value, split=split)
+        elif str(existing["split"]) != split or float(existing["value"]) != value:
+            raise NonlinearRunError(f"registry metric conflicts for {name}")
+    hit("metrics_recorded")
+
+    archive.ensure_success()
+    hit("success_marked")
+    row = registry.get_run(run_id)
+    assert row is not None
+    if row["status"] == "finalizing":
+        registry.transition_run(run_id, "completed")
+    elif row["status"] != "completed":
+        raise NonlinearRunError("registry left finalizing state unexpectedly")
+    hit("registry_completed")
+    issues = registry.verify_artifacts(run_id=run_id)
+    if issues:
+        raise NonlinearRunError(f"registered artifact verification failed: {issues}")
+    return {
+        "run_id": run_id,
+        "profile": profile,
+        "fold": fold,
+        "artifact_path": str(final),
+        "duration_seconds": duration,
+        "peak_vram_gb": peak_vram_gb,
+        "projected_full_hours_per_fold": float(
+            result["controls"]["projected_full_hours_per_fold"]
+        ),
+        "observed_near_mse": near_mse,
+        "observed_near_jacobian_summary": arms["observed_near"]["jacobian_summary"],
+        "lifecycle_reconciled": True,
+    }
+
+
+def reconcile_existing_attempt(arguments: argparse.Namespace) -> dict[str, Any] | None:
+    """Recover the one exact successful attempt, or declare it consumed.
+
+    The function performs no numerical data load. The wrapper invokes it only
+    after its source/data and one-GPU live-environment gates have passed.
+    """
+
+    paths = current_paths()
+    configuration = _configuration(
+        profile=arguments.profile,
+        fold=arguments.fold,
+        attempt=arguments.attempt,
+    )
+    registry = Registry(paths.state_root / "tracking" / "bagm.sqlite3")
+    rows = _attempt_rows(
+        registry,
+        configuration=configuration,
+        fold=arguments.fold,
+        attempt=arguments.attempt,
+    )
+    if not rows:
+        return None
+    if len(rows) != 1:
+        raise NonlinearRunError(
+            "multiple registry runs claim one variant/seed/fold/attempt slot"
+        )
+    row = rows[0]
+    artifact = RunArchive.artifact_path_for(str(row["run_id"]), paths)
+    if not artifact.is_dir() or artifact.is_symlink():
+        raise AttemptConsumedError(
+            "declared attempt has no recoverable immutable published bundle"
+        )
+    archive = RunArchive.from_published(str(row["run_id"]), paths=paths)
+    return _finish_published_success(
+        registry=registry,
+        archive=archive,
+        configuration=configuration,
+        profile=arguments.profile,
+        fold=arguments.fold,
+    )
+
+
+def abandon_incomplete_attempt(arguments: argparse.Namespace) -> dict[str, Any]:
+    """Explicitly seal one dead partial attempt as immutable failure.
+
+    This operation is intentionally separate from reconciliation and retry
+    materialization.  It refuses a live local owner and never changes a
+    successful or success-ready published bundle.
+    """
+
+    paths = current_paths()
+    configuration = _configuration(
+        profile=arguments.profile,
+        fold=arguments.fold,
+        attempt=arguments.attempt,
+    )
+    registry = Registry(paths.state_root / "tracking" / "bagm.sqlite3")
+    rows = _attempt_rows(
+        registry,
+        configuration=configuration,
+        fold=arguments.fold,
+        attempt=arguments.attempt,
+    )
+    if len(rows) != 1:
+        raise NonlinearRunError(
+            "explicit abandonment requires exactly one declared registry attempt"
+        )
+    row = rows[0]
+    run_id = str(row["run_id"])
+    initial_status = str(row.get("status"))
+    if initial_status == "completed":
+        return {
+            "run_id": run_id,
+            "status": initial_status,
+            "already_terminal": True,
+        }
+    if initial_status not in {
+        "pending",
+        "running",
+        "finalizing",
+        "failed",
+        "cancelled",
+        "pruned",
+    }:
+        raise NonlinearRunError("attempt status cannot be explicitly abandoned")
+    artifact = RunArchive.artifact_path_for(run_id, paths)
+    scratch = paths.scratch_root / "active_runs" / run_id
+    if artifact.is_symlink():
+        raise NonlinearRunError("attempt artifact path may not be a symlink")
+    if artifact.is_dir():
+        if (artifact / "_SUCCESS").exists() or not any(
+            (artifact / marker).exists() for marker in ("_FAILED", "_PRUNED")
+        ):
+            raise NonlinearRunError(
+                "published attempt may be recoverable success; reconcile it instead"
+            )
+        verify_run_bundle(artifact, require_success_contract=False)
+    else:
+        if artifact.exists() or artifact.is_symlink():
+            raise NonlinearRunError("attempt artifact path is unsafe")
+        if scratch.is_dir():
+            process_path = scratch / "diagnostics/attempt_process.json"
+            if process_path.is_file() and not process_path.is_symlink():
+                try:
+                    process = json.loads(process_path.read_text(encoding="utf-8"))
+                except (OSError, ValueError) as error:
+                    raise NonlinearRunError(
+                        "attempt process authority is unreadable"
+                    ) from error
+                if not isinstance(process, Mapping):
+                    raise NonlinearRunError("attempt process authority is malformed")
+                pid = process.get("pid")
+                ticks = process.get("proc_start_ticks")
+                host = process.get("host")
+                if host != socket.gethostname():
+                    raise NonlinearRunError(
+                        "cannot prove a partial attempt on another host is dead"
+                    )
+                if isinstance(pid, int) and isinstance(ticks, int):
+                    if _process_start_ticks(pid) == ticks:
+                        raise NonlinearRunError(
+                            f"attempt owner is still live as PID {pid}"
+                        )
+            archive = RunArchive.attach_active(run_id, paths=paths)
+        elif not scratch.exists() and not scratch.is_symlink():
+            archive = RunArchive.create(run_id, paths=paths)
+        else:
+            raise NonlinearRunError("attempt scratch path is unsafe")
+        archive.finalize_failure(
+            "explicitly abandoned after a dead/incomplete execution",
+            failure_category="explicit_dead_attempt_abandonment",
+        )
+        verify_run_bundle(artifact, require_success_contract=False)
+    if initial_status in {"pending", "running", "finalizing"}:
+        registry.record_failure(
+            run_id=run_id,
+            category="explicit_dead_attempt_abandonment",
+            message="dead/incomplete attempt sealed before retry materialization",
+            details={"profile": arguments.profile, "attempt": arguments.attempt},
+        )
+        registry.transition_run(
+            run_id,
+            "failed",
+            end_time=utc_now(),
+            failure_category="explicit_dead_attempt_abandonment",
+        )
+    return {
+        "run_id": run_id,
+        "status": (
+            "failed" if initial_status in {"pending", "running", "finalizing"}
+            else initial_status
+        ),
+        "artifact_path": str(artifact),
+        "already_terminal": initial_status in {"failed", "cancelled", "pruned"},
+    }
+
+
+def _retry_parent(
+    registry: Registry,
+    *,
+    configuration: Mapping[str, Any],
+    fold: int,
+    attempt: int,
+) -> str | None:
+    if attempt == 1:
+        return None
+    identifier = scientific_id(configuration)
+    # Attempt-specific immutable authorities (materialized config SHA, marker
+    # path, launch job ID) may legitimately differ between a1 and a2 while the
+    # scientific payload remains identical. Query the predecessor by that
+    # stable scientific identity and exact execution coordinates; the analyzer
+    # later binds each full configuration to its separately declared plan.
+    with registry.connect() as connection:
+        identities = connection.execute(
+            """
+            SELECT run_id FROM runs
+            WHERE campaign_id = ? AND scientific_id = ?
+              AND seed = ? AND fold = ? AND attempt = ?
+            ORDER BY created_at, run_id
+            """,
+            (
+                CAMPAIGN_ID,
+                identifier,
+                TRACKING_SEED,
+                int(fold),
+                int(attempt - 1),
+            ),
+        ).fetchall()
+    previous: list[dict[str, Any]] = []
+    for identity in identities:
+        row = registry.get_run(str(identity["run_id"]))
+        if row is None:
+            raise NonlinearRunError(
+                "preceding retry attempt disappeared during lookup"
+            )
+        row_configuration = row.get("config")
+        if (
+            not isinstance(row_configuration, Mapping)
+            or scientific_id(row_configuration) != identifier
+        ):
+            raise NonlinearRunError(
+                "preceding retry attempt has a different scientific payload"
+            )
+        previous.append(row)
+    if len(previous) != 1 or previous[0].get("status") not in {
+        "failed",
+        "cancelled",
+        "pruned",
+    }:
+        raise NonlinearRunError(
+            "attempt >1 requires exactly one terminal unsuccessful preceding attempt"
+        )
+    return str(previous[0]["run_id"])
+
+
 def run(arguments: argparse.Namespace) -> dict[str, Any]:
     if not torch.cuda.is_available() or torch.cuda.device_count() != 1:
         raise NonlinearRunError(
@@ -1213,6 +2066,20 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
         )
     if arguments.fold not in range(4):
         raise ValueError("fold must be 0, 1, 2, or 3")
+    if ENVIRONMENT_LOCK_REQUIRED and (
+        not isinstance(ENVIRONMENT_LOCK_REPORT, Mapping)
+        or ENVIRONMENT_LOCK_REPORT.get("verified") is not True
+        or ENVIRONMENT_LOCK_REPORT.get("visibility_mode") != "job"
+        or not isinstance(
+            ENVIRONMENT_LOCK_REPORT.get("environment_lock_sha256"), str
+        )
+        or len(ENVIRONMENT_LOCK_REPORT["environment_lock_sha256"]) != 64
+        or not isinstance(
+            ENVIRONMENT_LOCK_REPORT.get("verification_sha256"), str
+        )
+        or len(ENVIRONMENT_LOCK_REPORT["verification_sha256"]) != 64
+    ):
+        raise NonlinearRunError("frozen live-environment verification is missing")
     paths = current_paths()
     contract = (
         paths.project_root
@@ -1250,6 +2117,28 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
         fold=arguments.fold,
         attempt=arguments.attempt,
     )
+    if (
+        not np.isfinite(MAXIMUM_PROJECTED_HOURS_PER_FOLD)
+        or MAXIMUM_PROJECTED_HOURS_PER_FOLD <= 0
+    ):
+        raise NonlinearRunError("projected-runtime threshold must be finite and positive")
+    expected_evaluation_split = (
+        "validation" if arguments.profile == "pilot" else CANONICAL_PRODUCTION_SPLIT_LABEL
+    )
+    if configuration["evaluation"]["canonical_prediction_split"] != expected_evaluation_split:
+        raise NonlinearRunError("canonical evaluation split changed")
+    if configuration["masking"].get("receiver_expression_input") is not False:
+        raise NonlinearRunError("receiver RNA input must remain disabled")
+    if arguments.profile == "pilot" and (
+        not SOURCE_CONFIG_DATA_HASHES_VERIFIED
+        or not GRAPH_SPECIFIC_INVARIANTS_VERIFIED
+    ):
+        raise NonlinearRunError(
+            "pilot source/config/data/graph authorities were not verified"
+        )
+    recovered = reconcile_existing_attempt(arguments)
+    if recovered is not None:
+        return recovered
     primary_metric = str(configuration["evaluation"]["primary_metric"])
     provenance = _provenance(paths.project_root, configuration)
     scientific_identifier = scientific_id(configuration)
@@ -1279,9 +2168,6 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
         },
         status="pilot",
     )
-    archive = RunArchive.create(run_id, paths=paths)
-    scratch = archive.scratch_path
-    final = archive.artifact_path
     registry.register_variant(
         scientific_identifier,
         campaign_id=CAMPAIGN_ID,
@@ -1297,6 +2183,13 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
         learning_rate=LEARNING_RATE,
         batch_size=BATCH_SIZE,
     )
+    retry_of = _retry_parent(
+        registry,
+        configuration=configuration,
+        fold=arguments.fold,
+        attempt=arguments.attempt,
+    )
+    final = RunArchive.artifact_path_for(run_id, paths)
     registry.create_run(
         run_id,
         campaign_id=CAMPAIGN_ID,
@@ -1308,6 +2201,8 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
         configuration=configuration,
         status="pending",
         artifact_path=final,
+        retry_of=retry_of,
+        enforce_unique_attempt=True,
         git_commit=provenance["git_commit"],
         dirty_status=provenance["dirty_fingerprint"] is not None,
         preprocessing_version=PREPROCESSING_VERSION,
@@ -1315,6 +2210,24 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
         split_fingerprint=SPLIT_FINGERPRINT,
         host=socket.gethostname(),
         gpu_model=provenance["hardware"]["gpu_name"],
+    )
+    # The registry intent precedes scratch creation.  A crash at either side of
+    # this boundary consumes the declared attempt instead of allowing a second
+    # immutable bundle to be created for the same slot.
+    archive = RunArchive.create(run_id, paths=paths)
+    scratch = archive.scratch_path
+    process_ticks = _process_start_ticks(os.getpid())
+    if process_ticks is None:
+        raise NonlinearRunError("could not bind run to a stable local process identity")
+    archive.write_json(
+        "diagnostics/attempt_process.json",
+        {
+            "run_id": run_id,
+            "host": socket.gethostname(),
+            "pid": os.getpid(),
+            "proc_start_ticks": process_ticks,
+            "recorded_at": utc_now(),
+        },
     )
     categories = {
         "lifecycle_stage": (
@@ -1374,14 +2287,16 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
         groups = _load_cpu_vector(prepared, "geometry_group.npy").astype(
             np.int16, copy=False
         )
-        eligible = _load_cpu_vector(prepared, "matched_eligible.npy").astype(
+        eligible = _load_cpu_vector(prepared, ELIGIBILITY_FILE).astype(
             bool, copy=False
         )
         masks = _split_masks(
             folds, groups, eligible, arguments.fold, profile=arguments.profile
         )
+        split_control = _split_component_overlap_control(masks, groups)
         target = _load_gpu_matrix(prepared, "expression_log1p.npy", device)
         morphology = _load_gpu_matrix(prepared, "metadata.npy", device)
+        frozen_gene_eligibility = _load_frozen_gene_eligibility(prepared)
         arms = PILOT_ARMS if arguments.profile == "pilot" else FULL_ARMS
         results: dict[str, Any] = {}
         checkpoint_arms: dict[str, Any] = {}
@@ -1392,6 +2307,30 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
                 if arm == "morphology_only"
                 else _load_gpu_matrix(prepared, FEATURE_FILE[arm], device)
             )
+            phase_inputs = None
+            phase_metadata = None
+            if PHASE_INPUT_BUILDER is not None:
+                built = PHASE_INPUT_BUILDER(
+                    arm=arm,
+                    target=target,
+                    feature=feature,
+                    prepared=prepared,
+                    masks=masks,
+                    groups=groups,
+                    profile=arguments.profile,
+                    fold=arguments.fold,
+                    device=device,
+                )
+                if (
+                    not isinstance(built, tuple)
+                    or len(built) != 2
+                    or not isinstance(built[0], Mapping)
+                    or not isinstance(built[1], Mapping)
+                ):
+                    raise NonlinearRunError(
+                        "phase input builder must return (tensor mapping, metadata mapping)"
+                    )
+                phase_inputs, phase_metadata = built
             result, state, jacobian_parts = _fit_arm(
                 arm,
                 target=target,
@@ -1402,7 +2341,12 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
                 profile=arguments.profile,
                 fold=arguments.fold,
                 device=device,
+                phase_inputs=phase_inputs,
+                frozen_gene_eligibility=frozen_gene_eligibility,
             )
+            if phase_metadata is not None:
+                state["phase_transform"] = dict(phase_metadata)
+                result["phase_transform"] = dict(phase_metadata)
             checkpoint_arms[arm] = state
             if jacobian_parts is not None:
                 for name, value in jacobian_parts.items():
@@ -1410,6 +2354,9 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
             result["gene_mse"] = result["gene_mse"].tolist()
             result["gene_pearson"] = result["gene_pearson"].tolist()
             result["eligible_genes"] = result["eligible_genes"].tolist()
+            result["raw_eligible_genes"] = result[
+                "raw_eligible_genes"
+            ].tolist()
             if result["anchor"] is not None:
                 result["anchor"]["gene_mse"] = result["anchor"][
                     "gene_mse"
@@ -1420,6 +2367,8 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
             results[arm] = result
             if feature is not None:
                 del feature
+            if phase_inputs is not None:
+                del phase_inputs
             torch.cuda.empty_cache()
 
         if arguments.profile == "full":
@@ -1505,28 +2454,133 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
         all_outputs_finite = _all_numeric_values_finite(results) and all(
             bool(np.isfinite(value).all()) for value in matrices.values()
         )
+        checkpoint_replay_metric_error = max(
+            float(result["checkpoint_replay"]["maximum_metric_abs_error"])
+            for result in results.values()
+        )
+        checkpoint_replay_prediction_error = max(
+            float(result["checkpoint_replay"]["maximum_prediction_abs_error"])
+            for result in results.values()
+        )
+        checkpoint_replay_device_types = {
+            str(result["checkpoint_replay"]["replay_device_type"])
+            for result in results.values()
+        }
+        checkpoint_replay_device_type = (
+            next(iter(checkpoint_replay_device_types))
+            if len(checkpoint_replay_device_types) == 1
+            else "mixed"
+        )
+        runtime_gate_passed = (
+            projected_hours <= MAXIMUM_PROJECTED_HOURS_PER_FOLD
+        )
+        outer_test_untouched = (
+            arguments.profile != "pilot"
+            or (
+                configuration["evaluation"]["canonical_prediction_split"]
+                == "validation"
+                and all(
+                    result["evaluation_role"] == "validation"
+                    for result in results.values()
+                )
+                and all(
+                    state["evaluation_mask"] == "validation"
+                    for state in checkpoint_arms.values()
+                )
+            )
+        )
         controls = {
             "analytical_nonlinear_jacobian": control,
             "receiver_expression_input": False,
+            "receiver_rna_or_derived_covariate_model_input": False,
             "identity_oracle": oracle,
+            "identity_oracle_actually_executed": True,
             "identity_oracle_row_top1_fraction": oracle["row_top1_fraction"],
             "all_outputs_finite": all_outputs_finite,
+            "train_validation_test_component_overlap": not split_control["passed"],
+            "split_overlap_control": split_control,
+            "graph_specific_invariants": bool(GRAPH_SPECIFIC_INVARIANTS_VERIFIED),
+            "source_config_data_hashes_verified": bool(
+                SOURCE_CONFIG_DATA_HASHES_VERIFIED
+            ),
+            "checkpoint_gpu_replay_max_abs_metric_error": (
+                checkpoint_replay_metric_error
+            ),
+            "checkpoint_gpu_replay_max_abs_prediction_error": (
+                checkpoint_replay_prediction_error
+            ),
+            "checkpoint_replay_device_type": checkpoint_replay_device_type,
+            "canonical_production_split_label": (
+                CANONICAL_PRODUCTION_SPLIT_LABEL
+            ),
+            "outer_test_untouched": outer_test_untouched,
             "peak_vram_gb": peak_vram_gb,
             "peak_vram_gate_passed": peak_vram_gb <= 20.5,
             "projected_full_hours_per_fold": projected_hours,
-            "runtime_advisory_under_two_hours": projected_hours <= 2.0,
+            "maximum_projected_hours_per_fold": (
+                MAXIMUM_PROJECTED_HOURS_PER_FOLD
+            ),
+            "projected_runtime_gate_passed": runtime_gate_passed,
         }
+        if ENVIRONMENT_LOCK_REQUIRED:
+            assert ENVIRONMENT_LOCK_REPORT is not None
+            controls.update(
+                {
+                    "environment_lock_verified": True,
+                    "environment_lock_sha256": ENVIRONMENT_LOCK_REPORT[
+                        "environment_lock_sha256"
+                    ],
+                    "environment_verification_sha256": ENVIRONMENT_LOCK_REPORT[
+                        "verification_sha256"
+                    ],
+                    "environment_visibility_mode": ENVIRONMENT_LOCK_REPORT[
+                        "visibility_mode"
+                    ],
+                }
+            )
         if not controls["peak_vram_gate_passed"]:
             raise NonlinearRunError(f"resource gate failed: {controls}")
         if not controls["all_outputs_finite"]:
             raise NonlinearRunError("result finite-value control failed")
         if controls["identity_oracle_row_top1_fraction"] != 1.0:
             raise NonlinearRunError(f"identity-oracle control failed: {oracle}")
-        if (
-            arguments.profile == "pilot"
-            and not controls["runtime_advisory_under_two_hours"]
-        ):
-            raise NonlinearRunError(f"pilot projected-runtime gate failed: {controls}")
+        if arguments.profile == "pilot":
+            required_pilot_controls = {
+                "train_validation_test_component_overlap": False,
+                "receiver_rna_or_derived_covariate_model_input": False,
+                "identity_oracle_actually_executed": True,
+                "graph_specific_invariants": True,
+                "source_config_data_hashes_verified": True,
+                "checkpoint_replay_device_type": "cuda",
+                "canonical_production_split_label": "test",
+                "outer_test_untouched": True,
+                "projected_runtime_gate_passed": True,
+            }
+            if ENVIRONMENT_LOCK_REQUIRED:
+                required_pilot_controls.update(
+                    {
+                        "environment_lock_verified": True,
+                        "environment_visibility_mode": "job",
+                    }
+                )
+            failed = {
+                name: controls[name]
+                for name, expected in required_pilot_controls.items()
+                if controls[name] != expected
+            }
+            if failed:
+                raise NonlinearRunError(
+                    f"pilot technical gate failed: {failed}"
+                )
+            if (
+                checkpoint_replay_metric_error
+                > MAXIMUM_CHECKPOINT_REPLAY_ABS_ERROR
+                or checkpoint_replay_prediction_error
+                > MAXIMUM_CHECKPOINT_REPLAY_ABS_ERROR
+            ):
+                raise NonlinearRunError(
+                    f"pilot checkpoint replay gate failed: {controls}"
+                )
         result_payload = {
             "run_id": run_id,
             "semantic_alias": alias,
@@ -1540,7 +2594,11 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
             "statistical_evaluation_role": (
                 "resource_validation" if arguments.profile == "pilot" else "outer_geometry_test"
             ),
-            "sample_counts": {name: int(np.sum(mask)) for name, mask in masks.items()},
+            "sample_counts": {
+                name: int(np.sum(mask))
+                for name, mask in masks.items()
+                if not (arguments.profile == "pilot" and name == "test")
+            },
             "controls": controls,
             "arms": results,
             "dataset_fingerprints": {
@@ -1596,92 +2654,13 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
             result_payload=result_payload,
         )
         archive.publish_success_pending()
-        verify_unmarked_run_bundle(final)
-        registry.transition_run(
-            run_id,
-            "finalizing",
-            end_time=utc_now(),
-            duration_seconds=duration,
-            peak_vram_gb=peak_vram_gb,
-            parameter_count=parameter_count,
-            primary_metric_name=primary_metric,
-            primary_metric_value=near_mse,
-            artifact_path=final,
+        return _finish_published_success(
+            registry=registry,
+            archive=archive,
+            configuration=configuration,
+            profile=arguments.profile,
+            fold=arguments.fold,
         )
-        artifact_ids: dict[str, int] = {}
-        for path in sorted(value for value in final.rglob("*") if value.is_file()):
-            relative = path.relative_to(final).as_posix()
-            top_level = relative.split("/", 1)[0]
-            kind = (
-                top_level
-                if top_level
-                in {
-                    "checkpoints",
-                    "predictions",
-                    "metrics",
-                    "diagnostics",
-                    "interpretation",
-                    "provenance",
-                    "logs",
-                }
-                else "run_metadata"
-            )
-            artifact_ids[relative] = registry.record_artifact(
-                run_id,
-                kind=kind,
-                path=path,
-                sha256=sha256_file(path),
-                size_bytes=path.stat().st_size,
-            )
-        registry.register_checkpoint_metadata(
-            artifact_ids["checkpoints/last.ckpt"],
-            run_id=run_id,
-            role="last",
-            retention_class=(
-                "diagnostic" if arguments.profile == "pilot" else "exploratory_screen"
-            ),
-            verification_status="verified",
-            monitored_metric=primary_metric,
-            monitored_mode="min",
-            monitored_value=near_mse,
-            metadata={
-                "prediction_replayable": True,
-                "selected_epoch_then_fresh_refit": arguments.profile == "full",
-                "forced_resource_refit_epoch": (
-                    PILOT_REFIT_EPOCH_OVERRIDE
-                    if arguments.profile == "pilot"
-                    else None
-                ),
-                "arms": list(arms),
-            },
-        )
-        for arm, result in results.items():
-            registry.record_metric(
-                run_id,
-                f"{configuration['evaluation']['canonical_prediction_split']}/"
-                f"{arm}_component_equal_mse",
-                result["evaluation"]["component_equal_mse"],
-                split=configuration["evaluation"]["canonical_prediction_split"],
-            )
-        archive.mark_success()
-        verify_run_bundle(final)
-        registry.transition_run(run_id, "completed")
-        issues = registry.verify_artifacts(run_id=run_id)
-        if issues:
-            raise NonlinearRunError(f"registered artifact verification failed: {issues}")
-        return {
-            "run_id": run_id,
-            "profile": arguments.profile,
-            "fold": arguments.fold,
-            "artifact_path": str(final),
-            "duration_seconds": duration,
-            "peak_vram_gb": peak_vram_gb,
-            "projected_full_hours_per_fold": projected_hours,
-            "observed_near_mse": near_mse,
-            "observed_near_jacobian_summary": results["observed_near"][
-                "jacobian_summary"
-            ],
-        }
     except BaseException as error:
         registry.record_failure(
             run_id=run_id,
@@ -1696,23 +2675,34 @@ def run(arguments: argparse.Namespace) -> dict[str, Any]:
             and current["status"] in {"pending", "running", "finalizing"}
             and not success_marker.is_file()
         ):
-            registry.transition_run(
-                run_id,
-                "failed",
-                end_time=utc_now(),
-                duration_seconds=time.perf_counter() - started,
-                failure_category="same_gene_nonlinear_run_failure",
-            )
             try:
                 if final.is_dir() and not any(
                     (final / marker).exists()
                     for marker in ("_SUCCESS", "_FAILED", "_PRUNED")
                 ):
-                    RunArchive.from_published(run_id, paths=paths).mark_published_failure()
+                    # A publish-success-pending bundle is already immutable and
+                    # scientifically complete. A transient registry/finalizer
+                    # error must leave it recoverable, not relabel it failed.
+                    try:
+                        verify_unmarked_run_bundle(final)
+                    except BaseException:
+                        RunArchive.from_published(
+                            run_id, paths=paths
+                        ).mark_published_failure()
+                    else:
+                        raise
                 elif archive.scratch_path.is_dir():
                     archive.finalize_failure(
                         error, failure_category="same_gene_nonlinear_run_failure"
                     )
+                verify_run_bundle(final, require_success_contract=False)
+                registry.transition_run(
+                    run_id,
+                    "failed",
+                    end_time=utc_now(),
+                    duration_seconds=time.perf_counter() - started,
+                    failure_category="same_gene_nonlinear_run_failure",
+                )
             except BaseException as compensation_error:
                 registry.record_failure(
                     run_id=run_id,

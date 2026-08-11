@@ -29,6 +29,7 @@ import os
 from pathlib import Path
 import re
 import shutil
+import tempfile
 import traceback
 from typing import Any, Collection, Iterable, Mapping, Sequence
 
@@ -352,14 +353,37 @@ def _bundle_checksums(root: Path) -> dict[str, dict[str, Any]]:
 
 
 def _write_exclusive(path: Path, content: bytes) -> None:
+    _publish_exclusive_atomic(path, content)
+
+
+def _publish_exclusive_atomic(path: Path, content: bytes) -> None:
+    """Durably publish one small authority without exposing partial bytes."""
+
     path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() or path.is_symlink():
+        raise RunArchiveError(f"Refusing to overwrite run file: {path}")
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.writing-", dir=path.parent
+    )
+    temporary = Path(temporary_name)
     try:
-        with path.open("xb") as handle:
+        with os.fdopen(descriptor, "wb") as handle:
             handle.write(content)
             handle.flush()
             os.fsync(handle.fileno())
-    except FileExistsError as error:
-        raise RunArchiveError(f"Refusing to overwrite run file: {path}") from error
+        try:
+            os.link(temporary, path)
+        except FileExistsError as error:
+            raise RunArchiveError(
+                f"Refusing to overwrite run file: {path}"
+            ) from error
+        directory_descriptor = os.open(path.parent, os.O_RDONLY)
+        try:
+            os.fsync(directory_descriptor)
+        finally:
+            os.close(directory_descriptor)
+    finally:
+        temporary.unlink(missing_ok=True)
 
 
 def _canonical_prediction_split(root: Path) -> str:
@@ -586,21 +610,56 @@ def _validate_success_contract_at(
             "summary primary_metric_name does not match the resolved "
             "evaluation.primary_metric."
         )
-    if prediction_split == "fit" and configured_primary is not None:
+    if prediction_split == "test":
+        if not isinstance(configured_primary, str) or not configured_primary.startswith(
+            "test/"
+        ):
+            raise RunValidationError(
+                "Held-out test runs require a test/* configured primary metric."
+            )
+        statistical_partition = str(
+            evaluation.get("statistical_partition", "")
+        ).strip().lower()
+        if statistical_partition not in {"outer_geometry_test", "outer_slide_test"}:
+            raise RunValidationError(
+                "Held-out test runs require an explicit outer test statistical partition."
+            )
+        forbidden_validation_files = sorted(
+            path.relative_to(root).as_posix()
+            for path in (root / "predictions").glob("validation.*")
+        )
+        if forbidden_validation_files:
+            raise RunValidationError(
+                "Held-out test bundles may not publish canonical validation predictions: "
+                + ", ".join(forbidden_validation_files)
+            )
+    if prediction_split == "validation":
+        protocol = str(evaluation.get("protocol", "")).strip().lower()
+        if protocol == "resource_validation":
+            forbidden_test_files = sorted(
+                path.relative_to(root).as_posix()
+                for path in (root / "predictions").glob("test.*")
+            )
+            if forbidden_test_files:
+                raise RunValidationError(
+                    "Resource-validation bundles may not contain test predictions: "
+                    + ", ".join(forbidden_test_files)
+                )
+    if prediction_split in {"fit", "test"} and configured_primary is not None:
         if declared_primary != configured_primary:
             raise RunValidationError(
-                "Held-in summary must declare the configured primary metric."
+                "Summary must declare the configured canonical primary metric."
             )
         if configured_primary not in final_metrics:
             raise RunValidationError(
-                "Held-in final metrics omit the configured primary metric."
+                "Final metrics omit the configured canonical primary metric."
             )
         declared_value = summary.get("primary_metric_value")
         if isinstance(declared_value, bool) or not isinstance(
             declared_value, (int, float)
         ):
             raise RunValidationError(
-                "Held-in summary must declare a numeric primary_metric_value."
+                "Summary must declare a numeric canonical primary_metric_value."
             )
         _finite_numeric(declared_value, "summary primary metric")
         if not math.isclose(
@@ -610,7 +669,7 @@ def _validate_success_contract_at(
             abs_tol=0.0,
         ):
             raise RunValidationError(
-                "Held-in summary primary metric value does not match "
+                "Summary canonical primary metric value does not match "
                 "metrics/final.json."
             )
     event_lines = [
@@ -1193,7 +1252,7 @@ class RunArchive:
         expected_digest = hashlib.sha256(
             canonical_json(checksums).encode("utf-8")
         ).hexdigest()
-        _write_exclusive(
+        _publish_exclusive_atomic(
             self.artifact_path / marker,
             (
                 json.dumps(
@@ -1221,6 +1280,40 @@ class RunArchive:
         """Write ``_SUCCESS`` after the registry transaction has committed."""
 
         return self._mark_published("_SUCCESS")
+
+    def ensure_success(self) -> Path:
+        """Idempotently finish a verified published-success bundle.
+
+        This is deliberately narrower than :meth:`mark_success`: it only
+        accepts either an unmarked bundle that satisfies the complete success
+        contract or an already valid ``_SUCCESS`` bundle.  A failed/pruned,
+        malformed, or checksum-drifted bundle is never changed.  The method is
+        used by crash reconciliation after the immutable directory publish and
+        registry writes have been independently revalidated.
+        """
+
+        if not self.artifact_path.is_dir() or self.artifact_path.is_symlink():
+            raise RunArchiveError(
+                f"Published artifact run does not exist safely: {self.artifact_path}"
+            )
+        markers = [
+            name
+            for name in COMPLETION_MARKERS
+            if (self.artifact_path / name).exists()
+            or (self.artifact_path / name).is_symlink()
+        ]
+        if markers == ["_SUCCESS"]:
+            verify_run_bundle(self.artifact_path)
+            return self.artifact_path
+        if markers:
+            raise RunArchiveError(
+                "Cannot reconcile published success with completion markers: "
+                f"{markers}"
+            )
+        verify_unmarked_run_bundle(self.artifact_path)
+        self._mark_published("_SUCCESS")
+        verify_run_bundle(self.artifact_path)
+        return self.artifact_path
 
     def mark_published_failure(self) -> Path:
         """Mark an unmarked published bundle failed after commit/finalization error."""

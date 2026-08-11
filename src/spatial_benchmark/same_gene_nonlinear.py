@@ -116,14 +116,14 @@ class AdditiveNeighborMLP(nn.Module):
         )["total"]
 
     @torch.no_grad()
-    def mean_neighbor_jacobian_parts(
+    def mean_hidden_derivative(
         self,
         neighbor: torch.Tensor,
         *,
         weights: torch.Tensor | None = None,
         chunk_size: int = 8192,
-    ) -> dict[str, np.ndarray]:
-        """Return total, linear, and nonlinear mean Jacobian components."""
+    ) -> np.ndarray:
+        """Return the weighted population mean of the 64 GELU derivatives."""
 
         if (
             not self.use_neighbor
@@ -178,19 +178,41 @@ class AdditiveNeighborMLP(nn.Module):
                 * batch_weights.unsqueeze(1)
             ).sum(dim=0)
         mean_derivative = derivative_sum
+        result = mean_derivative.cpu().numpy()
+        if result.shape != (self.hidden_count,) or not np.isfinite(result).all():
+            raise SameGeneNonlinearError("mean hidden derivative is invalid")
+        result.setflags(write=False)
+        return result
+
+    @torch.no_grad()
+    def mean_neighbor_jacobian_parts(
+        self,
+        neighbor: torch.Tensor,
+        *,
+        weights: torch.Tensor | None = None,
+        chunk_size: int = 8192,
+    ) -> dict[str, np.ndarray]:
+        """Return total, linear, and nonlinear mean Jacobian components."""
+
+        mean_derivative_result = self.mean_hidden_derivative(
+            neighbor, weights=weights, chunk_size=chunk_size
+        )
         output_weight = self.neighbor_out.weight.detach().cpu().double()
         input_weight = self.neighbor_in.weight.detach().cpu().double()
         linear_weight = self.neighbor_linear.weight.detach().cpu().double()
         linear = linear_weight.numpy()
         nonlinear = (
-            (output_weight * mean_derivative.cpu().unsqueeze(0)) @ input_weight
+            (
+                output_weight
+                * torch.tensor(mean_derivative_result, dtype=torch.float64).unsqueeze(0)
+            )
+            @ input_weight
         ).numpy()
         result = linear + nonlinear
         if result.shape != (self.gene_count, self.gene_count):
             raise SameGeneNonlinearError("mean Jacobian has the wrong shape")
         if not np.isfinite(result).all():
             raise SameGeneNonlinearError("mean Jacobian is nonfinite")
-        mean_derivative_result = mean_derivative.cpu().numpy()
         for value in (result, linear, nonlinear, mean_derivative_result):
             value.setflags(write=False)
         return {

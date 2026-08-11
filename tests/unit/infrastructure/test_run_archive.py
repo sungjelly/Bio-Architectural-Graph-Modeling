@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pytest
 
+import spatial_benchmark.run_archive as run_archive_module
+
 from spatial_benchmark.identifiers import create_run_id
 from spatial_benchmark.paths import ProjectPaths
 from spatial_benchmark.run_archive import (
@@ -222,6 +224,41 @@ def test_successful_run_is_published_after_required_contract(
         archive.write_text("logs/late.log", "not allowed")
 
 
+def test_success_marker_publish_is_atomic_and_replayable_after_link_failpoint(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    run_id = _run_id("markfail")
+    archive = RunArchive.create(
+        run_id,
+        paths=_paths(tmp_path),
+        manifest={"lifecycle_status_source": "registry_and_completion_marker"},
+        resolved_config={"model": {"name": "g1"}, "seed": 3},
+    )
+    archive.write_summary(
+        {"status": "completed", "primary_metric": "val/loss", "primary_value": 0.2}
+    )
+    archive.write_bytes("checkpoints/best.ckpt", b"checkpoint")
+    _write_success_support(archive)
+    archive.write_predictions("validation", [_prediction(run_id)])
+    final = archive.publish_success_pending()
+
+    real_link = run_archive_module.os.link
+
+    def fail_link(*_args: object, **_kwargs: object) -> None:
+        raise OSError("synthetic hard-crash boundary")
+
+    monkeypatch.setattr(run_archive_module.os, "link", fail_link)
+    with pytest.raises(OSError, match="synthetic"):
+        archive.mark_success()
+    assert not (final / "_SUCCESS").exists()
+    assert not list(final.glob("._SUCCESS.writing-*"))
+
+    monkeypatch.setattr(run_archive_module.os, "link", real_link)
+    assert archive.ensure_success() == final
+    assert archive.ensure_success() == final
+    assert verify_run_bundle(final)["status"] == "success"
+
+
 def test_retention_tombstones_must_match_immutable_bundle_manifest(
     tmp_path: Path,
 ) -> None:
@@ -362,6 +399,54 @@ def test_held_in_protocol_requires_and_accepts_fit_predictions(
     )
     assert final_metrics["fit/whole_node/detection_precision"] is None
     assert final_metrics["resource/projected_200_epoch_runtime_hours"] is None
+
+
+def test_held_out_protocol_requires_and_accepts_canonical_test_predictions(
+    tmp_path: Path,
+) -> None:
+    run_id = _run_id("testrole")
+    metric = "test/observed_near_component_equal_mse"
+    archive = RunArchive.create(
+        run_id,
+        paths=_paths(tmp_path),
+        manifest={"lifecycle_status_source": "registry_and_completion_marker"},
+        resolved_config={
+            "trainer": {"primary_checkpoint_role": "last", "restore_best": False},
+            "evaluation": {
+                "protocol": "held_out_geometry_masked_reconstruction",
+                "canonical_prediction_split": "test",
+                "statistical_partition": "outer_geometry_test",
+                "primary_metric": metric,
+            },
+        },
+    )
+    archive.write_summary(
+        {
+            "status": "completed",
+            "primary_metric_name": metric,
+            "primary_metric_value": 0.2,
+        }
+    )
+    archive.write_bytes("checkpoints/last.ckpt", b"held-out-test")
+    archive.append_metric_event(
+        {"name": metric, "value": 0.2, "step": 0, "split": "test"}
+    )
+    archive.write_json("metrics/final.json", {metric: 0.2})
+    archive.write_table("metrics/history", [{"epoch": 1, "train/loss": 0.3}])
+    archive.prepare_log_files()
+    archive.write_json("provenance/git.json", {"commit": "test", "dirty": False})
+    archive.write_text("provenance/uncommitted_changes.patch", "")
+    archive.write_text("provenance/environment.txt", "python=test\n")
+    archive.write_json("provenance/hardware.json", {"device": "cpu"})
+    archive.write_json("provenance/data_fingerprints.json", {"dataset": "test"})
+    archive.write_json("provenance/split_fingerprint.json", {"split": "test"})
+    archive.write_text("provenance/command.txt", '{"argv":["test"],"cwd":"/tmp"}\n')
+    archive.write_predictions("test", [{**_prediction(run_id), "split": "test"}])
+
+    final_path = archive.finalize_success()
+
+    assert verify_run_bundle(final_path)["status"] == "success"
+    assert not any((final_path / "predictions").glob("validation.*"))
 
 
 def test_success_rejects_null_configured_primary_metric(tmp_path: Path) -> None:

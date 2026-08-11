@@ -1,0 +1,670 @@
+schema_version: 1
+campaign_id: cmp_20260810_same_gene_robustness_multiverse_v1
+display_name: Same-gene robustness multiverse v1
+status: frozen_preoutcome
+frozen_at: '2026-08-11T00:15:19Z'
+launch_authorized: true
+exploratory: true
+post_hoc_robustness: true
+independent_replication: false
+
+authorization:
+  authorized_phase: core_V0_through_V6_plus_post_core_deterministic_gene_label_null
+  required_status_to_launch: frozen_preoutcome
+  contract_sha256_authority: launch_manifest.contract.sha
+  draft_must_not_launch: true
+  core_production_forbidden_until_all_7_core_pilots_pass: true
+  followup_phases_other_than_the_declared_post_core_gene_label_null_not_authorized: true
+  result_dependent_contract_changes_forbidden: true
+  outcome_peeking_before_core_completion_forbidden: true
+
+questions:
+  magnitude: Is same-name Jacobian-magnitude enrichment robust?
+  exclusivity: Is failure of the frozen strict row-exclusivity gate robust?
+  budget: Is evidence against the 12-epoch-budget explanation seed-robust?
+
+antecedent_scope:
+  outer_test_already_observed: true
+  slides_already_observed: [SO_1, SO_2]
+  interpretation: post_hoc_robustness_not_independent_confirmation
+  forbidden:
+    - select_best_variant_after_outcome
+    - select_best_seed_after_outcome
+    - change_gate_after_outcome
+    - omit_failed_or_unfavorable_prespecified_variant
+
+dataset:
+  dataset_id: gastric_cosmx_drive_public
+  dataset_version: drive_snapshot_20260810
+  cells: 407999
+  genes: 1000
+  slides: [SO_1, SO_2]
+  frozen_common_eligible_gene_count: 932
+  eligible_mask_sha256_uint8_c_order: 2420a9d160894a78e6a1db1cc4ff2c52757211cf31dec859856f7c3cf231712d
+  gene_order_sha256_canonical_json_utf8: 046eb86c7ea8f1fe6977598a0190132340400fc61802fcde63ab5ac0e9502b03
+  raw_fingerprint: e1513d598d4ea910386842cdf4a6d9bd58e21318d484bdb34dfb3962f1490ea5
+  antecedent_processed_fingerprint: 6304132b4a57699c81b8616324dbeb2faee24b58ce70490be552595d84af34ce
+  base_prepared_manifest_sha256: a22bb492acc589f45811401b329bdd054267de923d1e2742ca292d9f7e466ae2
+  split_id: opaque_geometry_components_075mm_4fold_v1
+  split_fingerprint: 12c0d46244ed443a482586fc85422672f9f04132c7def49a741c40ba48bf4264
+  cell_type_field: RNA_Gastric_testrun_Cell.Typing.InSituType.1_1_clusters
+  qc_pass_field: qcCellsPassed
+  prepared_variant_fingerprints:
+    status: complete_preoutcome_identity_binding
+    robustness_root_manifest_sha256: c01e44e3542c4acc5e5c8c5053711756b3d53ac7536c2242896665b65624c715
+    robustness_root_processed_fingerprint: 0b28d5c37ef9ae1ae3fbc646065d3d253d14d27b5b616ca0d8e0b80d6353eab5
+    variants:
+      V0:
+        manifest_sha256: e59546beeed2e8e2523248e89ac6738bf90aa65f28248a42a7091c54255d0f32
+        integrity_manifest_sha256: 65a6dde8e9aa7f733bb1f06075c3a0dedd2084a89c55eaa575c91276a45aff18
+        processed_fingerprint: 01c525695883784befc1b9ebbe37a6d96b248d5b18450f46a1255e571bd3819e
+        variant_spec_sha256: a9137e8b061a93d80a03f90a085da20e1f3a6765fba9276902ef63896f159708
+      V1:
+        manifest_sha256: 4f80c65329569393e3855fe15363732776fc52c88f46b5447b3a8e925025a86a
+        integrity_manifest_sha256: ae265a2d720c63c7d1ff935b14f6f5362effcd8583016075c293b354c2ef7af1
+        processed_fingerprint: 8e940a8d814ad7cab1325165e26b08644df5a23ee379a5499b63fce189203417
+        variant_spec_sha256: d46ae93b269238269229d3154c43bbb266be743dcb860a96e563a6dd7e83e6e2
+      V2:
+        manifest_sha256: a0c8d442ccefad521dcf123570df0f11f64e7341c204bf719efcb7473dd0c085
+        integrity_manifest_sha256: deed4e4d8280f8b1342b74cc1baf5f4ac885e0e3a3ed740396514cc4d972b762
+        processed_fingerprint: fddd8498dda5588a7b885d85da22863664abb78589e4a10ea9876fa0c7ae56e6
+        variant_spec_sha256: 6f87091a6aa21f50166239eca771f84e102710d050945b71f0cc95f53d4870c7
+      V3:
+        manifest_sha256: 7882bb4a2777481b64c2c83fbc03bac9fdb84e8aa429b64ad13d0f7fa67c38df
+        integrity_manifest_sha256: ccb876e62382dcd2fd4ce6d158fcc77cbe3fdba7365375c4dae82644f4c0fbf7
+        processed_fingerprint: 21f77c3c5e947e8ba724ba0edc5d684ee0288a89fab6c066135902830594230c
+        variant_spec_sha256: 379359b826a529543a96121f2becd9a45d15f999b7ca0df472a524c73188cb9a
+      V4:
+        manifest_sha256: f9f9d97eb90d46aa8eeab47a3bfc6e0e82e23069690c656ed9bd0d63da1a4362
+        integrity_manifest_sha256: 11383b835e5a1a3c79df36d78d66c79c5770817c8737112b9e3dfb66d4f88ab9
+        processed_fingerprint: 63023bedba27363466f82c9beac09a4442f8846364234e8b036d383c6a5293fe
+        variant_spec_sha256: bc09cf5ab1d66d7b6e84bb9f837b49fae2db2381f8acfb5dfc9a217faf8cbca1
+      V5:
+        manifest_sha256: 726a836d20f903611cbf2c62e24213554822fcece0eb51483d37883269939245
+        integrity_manifest_sha256: 48a49e0aa6c52e913a7655c73ca547fd987085a57b59949a8014601c3d553d81
+        processed_fingerprint: 87a2007ab884975e857094dd971ad6bbf84eb196dc950717b60484960f0a8769
+        variant_spec_sha256: 11bb7de6e2fc0ddd36bdc02790b14307795e8b4478b992c9114a24b47c3caec6
+      V6:
+        manifest_sha256: b28dfea2fc1b639121867a39927562ec704a865c0b77a01ad586d3363cf22bb5
+        integrity_manifest_sha256: 71b2c5bb78b057501278fd49457a0262b3bdcd504af312894aec89f7f3e44ece
+        processed_fingerprint: aab42e701bb8284d59bee8368dcc65805f5a0a31033bbc81ba894a0a7c587148
+        variant_spec_sha256: 5b593956dbf84ce9307be69d9b1e6f4a18a13efde758b6db709c149776988e32
+  prepared_root_inventory:
+    stored_variant_count: 8
+    authorized_training_variant_ids: [V0, V1, V2, V3, V4, V5, V6]
+    preparation_only_variant_ids: [A0]
+    A0_semantics: component_graph_cp10k_all_cells_not_authorized_for_core_training_or_analysis
+    root_manifest_and_processed_fingerprint_bind_A0_bytes: true
+  prepared_identity_freeze_transition_requires:
+    - all_preoutcome_identity_placeholders_replaced_with_observed_hashes
+    - status_is_complete_preoutcome_identity_binding
+    - verify_manifest_integrity_processed_spec_raw_split_and_base_bindings
+    - no_scientific_outcome_access_during_preparation
+
+shared_split:
+  outer_fold_count: 4
+  outer_folds: [0, 1, 2, 3]
+  unit: opaque_spatial_geometry_component
+  component_count: 27
+  validation_fold_expression: (outer_fold + 1) mod 4
+  tuning_train: eligible_non_test_non_validation_components
+  validation: eligible_validation_components
+  final_train: eligible_non_test_components
+  test: eligible_outer_test_components
+  canonical_production_prediction_split: test
+  forbidden:
+    - canonicalize_outer_test_as_validation
+    - fit_scaler_on_test
+    - fit_residualization_on_test
+    - cross_geometry_component_graph_edge
+    - receiver_rna_input
+
+model:
+  family: additive_neighbor_mlp
+  morphology_branch: linear_22_to_1000
+  neighbor_branch: full_linear_1000_to_1000_plus_1000_to_64_exact_gelu_64_to_1000_residual
+  hidden_units: 64
+  optimizer: AdamW
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  schedule: constant
+  batch_size: 4096
+  epoch_candidates: [12, 24, 48, 96, 192]
+  candidate_trajectory: continuous_optimizer_state
+  selection_metric: validation_component_equal_mse
+  tie_break: earliest_epoch
+  final_refit: reinitialize_and_fit_all_non_test_components
+  anchor_epoch: 12
+  anchor_definition: same_final_refit_trajectory
+  predicts_all_1000_genes: true
+
+model_seeds:
+  values: [20260810, 20261810, 20262810, 20263810, 20264810]
+  count: 5
+  fold_seed_expression: seed_base + outer_fold
+  globally_unique_execution_seed_count: 20
+  exact_execution_seed_reuse_forbidden: true
+  final_refit_minibatch_seed_offset: 1000000
+  replacement_or_addition_after_outcome_forbidden: true
+
+graph_defaults:
+  k: 12
+  near_um: [0.0, 25.0]
+  annular_um: [25.0, 50.0]
+  lower_bound_open_for_zero: true
+  self_edges: false
+  zero_distance_edges: false
+  minimum_degree_each_required_arm: 4
+  tie_break: [distance, source_row]
+  coordinates: global_um
+  matched_permutation:
+    mapping: fov_stratified_receiver_collision_free_source_state_bijection
+    source_fov_preserved: true
+    primary_objective: minimize_fixed_source_states_via_exact_matching
+    perfect_derangement_used_whenever_feasible: true
+    unavoidable_fixed_source_states_allowed: true
+    fixed_source_count_and_fovs_must_be_reported: true
+    effective_source_must_not_equal_receiver: true
+    observed_edge_slots_preserved_exactly: true
+    receiver_degree_preserved_exactly: true
+    collision_edge_deletion_forbidden: true
+    preoutcome_feasibility_audit:
+      qc_SO2_FOV_245_active_source_states: 11
+      qc_SO2_FOV_245_minimum_fixed_source_states: 1
+      qc_SO2_overall_changed_source_states: 237945
+      qc_SO2_overall_source_states: 237946
+
+primary_receiver_cohort:
+  purpose: separate_feature_or_topology_effect_from_degree_eligibility_expansion
+  V0: antecedent_v1_matched_eligible
+  V1: antecedent_v1_matched_eligible
+  V2: antecedent_v1_matched_eligible_and_qc_passed
+  V3: antecedent_v1_matched_eligible
+  V4: antecedent_v1_matched_eligible
+  V5: antecedent_v1_matched_eligible_and_qc_passed
+  V6: antecedent_v1_matched_eligible
+  native_recomputed_eligibility: separately_authorized_followup_not_core
+
+estimands:
+  prediction_primary:
+    response_genes: all_1000
+    loss: mean_gene_squared_error_on_standardized_response
+    population_weighting: equal_geometry_component
+  jacobian_primary:
+    genes: frozen_common_932
+    definition: exact_derivative_of_standardized_target_with_respect_to_standardized_neighbor_mean
+    orientation: target_rows_source_columns
+    component_weighting_within_fold: equal_component
+    fold_aggregation: equal_fold_signed_mean_before_absolute_value
+    seed_consensus: equal_seed_signed_mean_before_absolute_value
+  bootstrap:
+    draws: 20000
+    seed: 20260821
+    unit: geometry_component
+    seed_handling: average_seed_values_before_resampling
+    slide_stratified: true
+    confidence_interval: [0.025, 0.975]
+    limitation: conditional_on_two_observed_slides_not_patient_level_inference
+  required_component_outputs:
+    - component_prediction_mse
+    - component_prediction_mae
+    - component_mean_hidden_derivative_64_vector
+    - component_cell_count
+
+arms_core:
+  - morphology_only
+  - observed_near
+  - observed_annular
+  - within_fov_permuted_near
+
+variants:
+  - id: V0
+    name: antecedent_observed_arms_with_corrected_permutation_control
+    tier: primary
+    graph_scope: within_fov
+    cell_policy: all_matched_degree_eligible
+    expression: log1p_raw_count
+    residualization: none
+    antecedent_data_only_equivalence:
+      exact_arrays:
+        - expression
+        - morphology
+        - fov
+        - geometry_group
+        - fold
+        - qc_pass
+        - near_degree_and_mean
+        - annular_degree_and_mean
+        - primary_eligible_receiver_mask
+      observed_near_and_annular_arms: exact_antecedent_inputs
+      permutation_control: corrected_degree_preserving_receiver_collision_free_rebuild
+      not_full_exact_replication_due_to_corrected_permutation_control: true
+      antecedent_permuted_degree_mismatch_node_count:
+        SO_1: 1779
+        SO_2: 2407
+      corrected_permuted_degree_equals_observed_near_degree: true
+      graph_native_eligibility_additional_receivers_not_used_by_primary:
+        SO_1: 36
+        SO_2: 17
+      primary_receiver_cohort_remains_exact_antecedent: true
+    seeds: 5
+    folds: 4
+    process_jobs: 20
+  - id: V1
+    name: cross_fov_within_component
+    tier: primary
+    graph_scope: within_geometry_component_across_fov
+    permutation_mapping_scope: original_source_fov
+    cell_policy: all_matched_degree_eligible
+    expression: log1p_raw_count
+    residualization: none
+    invariants:
+      cross_component_edge_count: 0
+      cross_fov_edge_count_must_be_positive: true
+      permuted_degree_equals_observed_near_degree: true
+    seeds: 5
+    folds: 4
+    process_jobs: 20
+  - id: V2
+    name: full_qc_pass_retrain
+    tier: primary
+    graph_scope: within_fov
+    cell_policy: qc_pass_receiver_and_source_before_graph_build
+    qc_field: qcCellsPassed
+    expression: log1p_raw_count
+    residualization: none
+    geometry_component_and_fold_assignment_unchanged: true
+    permuted_degree_equals_observed_near_degree: true
+    seeds: 5
+    folds: 4
+    process_jobs: 20
+  - id: V3
+    name: log_cp10k
+    tier: primary
+    graph_scope: within_fov
+    cell_policy: all_matched_degree_eligible
+    expression:
+      formula: log1p(10000 * count_gene / max(sum_1000_panel_counts, 1))
+      denominator_gene_axis: frozen_ordered_1000_probe_panel
+      apply_before_neighbor_aggregation: true
+      zero_library_denominator_floor: 1
+    residualization: none
+    seeds: 5
+    folds: 4
+    process_jobs: 20
+  - id: V4
+    name: train_only_library_size_residual
+    tier: primary
+    graph_scope: within_fov
+    cell_policy: all_matched_degree_eligible
+    expression: log1p_raw_count
+    residualization:
+      covariate: log1p(sum_1000_panel_counts)
+      fit: per_gene_component_equal_weighted_least_squares
+      tuning_fit_population: tuning_train_only
+      final_fit_population: final_train_only
+      apply_to: [receiver_target, source_profile_before_neighbor_mean]
+      receiver_covariate_is_model_input: false
+      claim: conditional_expression_deviation
+    seeds: 5
+    folds: 4
+    process_jobs: 20
+  - id: V5
+    name: conservative_combined
+    tier: primary
+    graph_scope: within_geometry_component_across_fov
+    permutation_mapping_scope: original_source_fov
+    cell_policy: qc_pass_receiver_and_source_before_graph_build
+    expression:
+      formula: log1p(10000 * count_gene / max(sum_1000_panel_counts, 1))
+      apply_before_neighbor_aggregation: true
+    residualization: none
+    invariants:
+      cross_component_edge_count: 0
+      permuted_degree_equals_observed_near_degree: true
+    seeds: 5
+    folds: 4
+    process_jobs: 20
+  - id: V6
+    name: train_only_cell_state_and_library_residual
+    tier: mechanistic_secondary
+    graph_scope: within_fov
+    cell_policy: all_matched_degree_eligible
+    expression: log1p_raw_count
+    residualization:
+      design: vendor_cell_type_fixed_effects_plus_log1p_panel_total
+      cell_type_levels_expected: 12
+      fit: per_gene_component_equal_weighted_least_squares
+      tuning_fit_population: tuning_train_only
+      final_fit_population: final_train_only
+      apply_to: [receiver_target, source_profile_before_neighbor_mean]
+      receiver_cell_type_or_library_is_model_input: false
+      training_coverage_rule: every_frozen_cell_type_level_must_occur_in_training
+      missing_training_level_action: fail_closed
+      observed_preparation_all_splits_contain_all_12_levels: true
+      claim: within_vendor_type_library_adjusted_expression_deviation
+    seeds: 5
+    folds: 4
+    process_jobs: 20
+
+production_matrix:
+  authorized_phase: core_V0_through_V6_plus_post_core_deterministic_gene_label_null
+  core:
+    variant_count: 7
+    primary_variant_ids: [V0, V1, V2, V3, V4, V5]
+    mechanistic_variant_ids: [V6]
+    seeds_per_variant: 5
+    folds_per_seed: 4
+    arms_per_process: 4
+    process_jobs: 140
+    scientific_coverage_slots: 140
+    selected_successful_runs: 140
+    process_job_semantics: planned_attempt_one_slots_not_total_retry_invocations
+    model_arm_fits: 560
+    four_gpu_waves: 35
+  totals:
+    process_jobs: 140
+    scientific_coverage_slots: 140
+    selected_successful_runs: 140
+    model_arm_fits: 560
+    four_gpu_waves: 35
+  excludes:
+    - native_recomputed_eligibility
+    - permutation_null_banks
+    - leave_one_slide_out
+    - distance_diagnostic
+
+post_core_secondary_analyses:
+  gene_label_null:
+    authorized: true
+    tier: deterministic_secondary
+    execution_gate: all_140_core_jobs_verified_before_any_null_outcome_access
+    additional_training_jobs: 0
+    phase_specific_gpu_pilot_required: false
+    pilot_exemption_reason: deterministic_relabeling_of_verified_frozen_core_aggregate_only
+    source_variant: V0
+    source_arm: observed_near
+    source_checkpoint_label: selected
+    source_jacobian_part: total
+    source_matrix_aggregation: equal_signed_mean_over_5_seeds_and_4_folds
+    gene_population: frozen_common_932_target_rows_and_source_columns
+    label_unit: indivisible_frozen_probe_label
+    draws_per_family: 10000
+    base_seed: 20261019
+    derangement_seed_expression: base_seed + family_index*10000019 + draw_index*100003 + stratum_index
+    mapping: source_column_labels_deranged_relative_to_fixed_target_rows
+    self_label_mapping_forbidden: true
+    families:
+      full:
+        strata: one_stratum_containing_all_932_genes
+      prevalence_sd_decile_matched:
+        covariates:
+          - V0_final_train_nonzero_prevalence_equal_mean_over_4_outer_folds
+          - V0_final_train_target_standard_deviation_equal_mean_over_5_seeds_and_4_outer_folds
+        initial_strata: cross_of_stable_marginal_rank_deciles
+        singleton_rule: attach_to_nearest_nonsingleton_stratum_by_unscaled_absolute_covariate_distance
+        derangement_scope: within_final_stratum
+    statistics:
+      - median_absolute_diagonal
+      - row_top1_fraction
+      - row_top1_percent_fraction
+    row_rank_ties: competition_rank_using_stable_descending_absolute_value_order
+    row_top1_percent_threshold: ceil_0.01_times_932_equals_10
+    upper_tail_p: add_one_count_null_at_or_above_observed_divided_by_10001
+    publication: same_immutable_core_aggregate_report
+    interpretation:
+      - secondary_name_alignment_enrichment_only
+      - cannot_change_or_rescue_any_frozen_strict_gate
+      - no_gene_level_inference
+
+frozen_gate_vector:
+  near_vs_morphology_prediction:
+    minimum_relative_component_equal_mse_gain: 0.02
+    minimum_folds_favoring_near: 3
+  near_vs_permutation_prediction:
+    minimum_relative_component_equal_mse_gain: 0.01
+    minimum_folds_favoring_near: 3
+  same_name_diagonal_enrichment:
+    statistic: median_abs_diagonal_divided_by_median_abs_off_diagonal
+    minimum_ratio: 2.0
+  strict_row_selectivity:
+    minimum_row_top1_fraction: 0.25
+    minimum_row_top1_percent_fraction: 0.50
+    conjunction: true
+  near_vs_permutation_diagonal:
+    statistic: observed_median_abs_diagonal_divided_by_permuted_median_abs_diagonal
+    minimum_ratio: 1.25
+    minimum_folds_at_or_above: 3
+  fold_stability:
+    minimum_median_pairwise_signed_diagonal_spearman: 0.70
+    minimum_fraction_genes_same_sign_in_at_least_3_of_4_folds: 0.75
+  technical_validity:
+    all_outputs_finite: true
+    receiver_expression_input: false
+    exact_nonlinear_control: true
+    identity_oracle_executed_row_top1_fraction: 1.0
+    split_and_graph_invariants: true
+    maximum_peak_vram_gb: 20.5
+
+seed_robustness_classification:
+  robust_pass:
+    - consensus_passes
+    - minimum_seed_specific_passes: 4
+    - seed_count: 5
+  robust_gate_failure:
+    - consensus_fails
+    - minimum_seed_specific_failures: 4
+    - seed_count: 5
+  otherwise: seed_sensitive
+  consensus_prediction: average_per_component_loss_over_seeds_before_ratio
+  consensus_jacobian: equal_signed_mean_over_5_seeds_and_4_folds_before_absolute_value
+
+cross_variant_classification:
+  applies_to: [V0, V1, V2, V3, V4, V5]
+  robust_across_preprocessing_requires: identical_three_way_classification_in_all_six_variants
+  majority_vote_forbidden: true
+  best_variant_selection_forbidden: true
+  mixed_result_label: preprocessing_sensitive
+  V6_use: mechanistic_secondary_only
+
+budget_attribution:
+  primary_variant: V0
+  evaluated_arms: [morphology_only, observed_near]
+  trajectory_count: 40
+  saturated_if_either:
+    selected_epoch_below: 192
+    literal_relative_gain_96_to_192_at_most: 0.001
+  all_trajectories_must_be_saturated: true
+  unsaturated_action:
+    verdict: optimization_inconclusive
+    next_campaign: separately_freeze_384_epoch_extension_for_affected_trajectories_only
+  prediction_explained_requires:
+    - selected_consensus_passes_frozen_2_percent_gate
+    - bootstrap_lower_bound_gain_selected_minus_anchor12_above_zero
+    - at_least_4_of_5_seeds_have_selected_near_better_in_at_least_3_of_4_folds
+  row_explained_requires:
+    - selected_consensus_passes_both_strict_row_thresholds
+    - selected_both_row_metrics_exceed_anchor12
+    - at_least_4_of_5_seeds_improve_both_metrics_in_at_least_3_of_4_fold_matrices
+  strong_budget_explanation_requires:
+    - all_trajectories_saturated
+    - prediction_explained
+    - row_explained
+
+followup_phase_registry:
+  authorization: not_authorized_by_this_core_contract_except_declared_post_core_gene_label_null
+  common_requirements:
+    - separate_phase_contract_with_immutable_launch_manifest_hash
+    - exact_prepared_data_and_mapping_identity_binding_before_phase_launch
+    - phase_specific_fail_closed_pilots_before_phase_production
+    - separate_attempt_registry_and_complete_reporting
+  phases:
+    native_recomputed_eligibility:
+      purpose: graph_native_receiver_cohort_sensitivity
+      status: requires_separate_freeze_and_pilot
+    permutation_null_banks:
+      proposed_families: [N0, N1]
+      proposed_members_per_family: 99
+      status: requires_separate_freeze_mapping_hashes_and_family_pilots
+    leave_one_slide_out:
+      proposed_directions: [SO_1_to_SO_2, SO_2_to_SO_1]
+      proposed_graph_modes: [within_fov, within_geometry_component]
+      status: requires_separate_freeze_and_four_matching_pilots
+    distance_diagnostic:
+      proposed_bands_um: [[0.0, 10.0], [10.0, 25.0], [25.0, 50.0]]
+      status: requires_separate_freeze_and_distance_pilot
+    optimization_extension:
+      proposed_epoch: 384
+      status: contingent_followup_requires_separate_freeze_for_affected_trajectories
+
+pilots:
+  authorized_phase: core_V0_through_V6
+  count: 7
+  inventory:
+    core_variants:
+      ids: [V0, V1, V2, V3, V4, V5, V6]
+      count: 7
+  common_profile:
+    seed_base: 20260810
+    fold: 0
+    tuning_train_cap: 24000
+    validation_cap: 12000
+    generated_but_never_evaluated_test_cap: 12000
+    forced_refit_epochs_for_resource_measurement: 192
+    scientific_effects_must_not_be_interpreted: true
+    outer_test_must_not_be_evaluated_serialized_printed_or_registered: true
+  fail_closed_gates:
+    all_outputs_finite: true
+    train_validation_test_component_overlap: false
+    receiver_rna_or_derived_covariate_model_input: false
+    analytical_autograd_max_abs_error: 1.0e-10
+    analytical_finite_difference_max_abs_error: 1.0e-8
+    identity_oracle_must_be_actually_executed: true
+    identity_oracle_row_top1_fraction: 1.0
+    graph_specific_invariants: true
+    checkpoint_gpu_replay_max_abs_metric_error: 1.0e-7
+    checkpoint_gpu_replay_max_abs_prediction_error: 1.0e-7
+    checkpoint_replay_device_type: cuda
+    canonical_production_split_label: test
+    source_config_data_hashes_verified: true
+    outer_test_untouched: true
+    frozen_live_environment_lock_verified: true
+    maximum_peak_vram_gb: 20.5
+    maximum_projected_hours_per_full_fold: 0.25
+  production_gate:
+    all_7_core_pilots_completed: true
+    all_7_core_immutable_receipts_hash_verified: true
+    any_failed_or_missing_core_pilot_blocks_all_core_production: true
+    authorizes_exactly: 140_core_scientific_coverage_slots_and_140_selected_successful_runs
+    recovery_attempts: additional_immutable_invocations_only_when_explicitly_declared
+    recovery_attempt_history: contiguous_and_fully_reported
+    does_not_authorize_any_followup_phase: true
+
+verification_and_publication:
+  source_binding:
+    bind_all_imported_scientific_modules: true
+    bind_environment_lock: true
+    missing_declared_source_is_fatal: true
+  live_environment:
+    lock_path: experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/environment_lock.json
+    verifier_source: src/spatial_benchmark/environment_lock.py
+    exact_python_implementation_and_version_required: true
+    every_declared_package_version_must_match_exactly: true
+    exact_cuda_runtime_required: true
+    launcher_and_analysis_visibility:
+      mode_values: [launcher, analysis]
+      visible_gpu_count: 4
+    job_visibility:
+      mode: job
+      visible_gpu_count: 1
+      cuda_smoke_test_required: true
+    compatible_hardware:
+      homogeneous_device_name: NVIDIA GeForce RTX 3090
+      compute_capability: [8, 6]
+      minimum_total_memory_bytes_per_device: 25000000000
+    fail_closed_timing:
+      before_launch_materialization: true
+      before_coordinator_launch_and_each_job: true
+      before_each_pilot_or_full_training_process: true
+      before_analysis: true
+    archived_job_receipt:
+      bind_full_observation_in_hardware_provenance: true
+      bind_receipt_sha_and_lock_sha_in_results_controls: true
+      offline_analysis_revalidates_archived_observation_against_lock: true
+      offline_analysis_must_not_impersonate_one_gpu_job_visibility: true
+    scientific_configuration_binding:
+      bind_environment_lock_sha256: true
+      exclude_process_local_receipt_sha_from_scientific_identity: true
+  required_recomputation:
+    - verify_source_bound_checkpoint_gpu_replay_controls_for_every_core_run
+    - verify_archived_outer_test_prediction_component_records_against_results_metrics_and_registry
+    - checkpoint_to_exact_jacobian
+    - component_records_to_aggregate_metrics
+    - deterministic_post_core_gene_label_null_from_verified_V0_consensus
+    - npz_json_csv_cross_format_consistency
+    - manifest_and_registry_hashes
+  float_policy:
+    aggregate_dtype: float64
+    storage_dtype: float64
+    tolerance_must_be_explicit: true
+  retries:
+    all_attempts_reported: true
+    completed_attempt_selected_by_explicit_identity: true
+    attempt_number_above_one_must_not_poison_discovery: true
+    exactly_140_selected_successful_scientific_slots: true
+    additional_recovery_attempts_are_not_additional_scientific_slots: true
+    every_attempt_must_be_declared_in_an_immutable_plan: true
+    declared_plan_attempts_must_equal_registry_attempts: true
+  crash_recovery:
+    reconcile_final_directory_registry_and_success_marker: true
+    standalone_runs_supported: true
+  publication:
+    wait_for_all_core_variants_before_comparison: true
+    one_immutable_aggregate_report: true
+    include_every_prespecified_variant_and_attempt: true
+
+execution_order:
+  - fix_canonical_outer_test_metadata_and_crash_recovery
+  - build_and_hash_all_core_prepared_variants_using_only_shape_graph_and_data_audits
+  - fill_every_prepared_identity_placeholder_and_verify_exact_bindings
+  - review_and_freeze_contract_then_record_its_sha_in_the_launch_manifest
+  - run_all_7_core_technical_pilots_without_outer_test_effect_access
+  - verify_all_7_core_pilot_receipts
+  - fill_exactly_140_V0_through_V6_scientific_slots_with_verified_successes_and_report_every_declared_recovery_attempt
+  - verify_all_140_selected_successful_runs_and_every_attempt_then_compute_the_authorized_deterministic_gene_label_null
+  - recompute_and_publish_one_complete_core_plus_secondary_report
+  - separately_freeze_pilot_and_authorize_each_desired_followup_phase
+
+resources:
+  gpu_count: 4
+  gpu_class_observed: NVIDIA_GeForce_RTX_3090_24GB
+  scheduling: one_fold_process_per_gpu
+  expected_core_wall_hours: [1.5, 2.0]
+  expected_preprocessing_verification_analysis_hours: [1.0, 2.0]
+  expected_core_total_hours: [2.5, 4.0]
+  expected_core_additional_durable_storage_gb: [35, 50]
+  minimum_free_space_reserve_gb: 40
+  full_plan_output_projection:
+    authority: verified_pilot_artifact_checksum_inventory_scaled_by_planned_variant_slots
+    safety_margin: max_5GiB_or_20_percent_of_raw_projection
+    projected_ending_free_space_must_be_at_least_gb: 40
+    checked_at_plan_materialization_and_launcher_start: true
+  workspace_persistence_assumed: false
+  off_instance_sync_required_before_recycle_or_destroy: true
+
+claim_limits:
+  - post_hoc_robustness_not_independent_replication
+  - geometry_components_are_not_patients_or_biological_replicates
+  - two_slides_do_not_support_patient_level_generalization
+  - transductive_contextual_reconstruction_not_fully_inductive_prediction
+  - no_cell_cell_communication_causality_or_signaling_claim
+  - standardized_neighbor_mean_jacobian_not_individual_sender_effect
+  - cp10k_and_residual_variants_change_response_estimand
+  - vendor_cell_type_is_rna_derived_not_independent_annotation
+  - strict_gate_failure_does_not_mean_zero_name_alignment
+  - V0_observed_arms_are_antecedent_exact_but_its_permutation_control_is_corrected_not_exact_antecedent
+  - gene_label_null_is_secondary_and_cannot_rescue_strict_gate
+  - slash_combined_probe_names_are_indivisible_labels
+  - no_independent_assay_round_annotation_is_available
+  - no_gene_level_inferential_claim_without_separate_multiplicity_contract
+  - independent_confirmation_requires_new_preoutcome_frozen_slides_or_patients

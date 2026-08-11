@@ -449,7 +449,6 @@ _MIGRATION_3 = (
     """,
 )
 
-
 class Registry:
     """Versioned SQLite registry with WAL concurrency and transactional states."""
 
@@ -714,6 +713,7 @@ class Registry:
         status: str = "pending",
         artifact_path: str | Path | None = None,
         retry_of: str | None = None,
+        enforce_unique_attempt: bool = False,
         **fields: Any,
     ) -> dict[str, Any]:
         if status not in RUN_STATUSES:
@@ -743,6 +743,27 @@ class Registry:
                     f"Variant {scientific_id!r} is not registered with "
                     f"campaign {campaign_id!r}."
                 )
+            if enforce_unique_attempt:
+                collision = connection.execute(
+                    """
+                    SELECT run_id FROM runs
+                    WHERE campaign_id = ? AND scientific_id = ?
+                      AND seed = ? AND fold = ? AND attempt = ?
+                    LIMIT 1
+                    """,
+                    (
+                        campaign_id,
+                        scientific_id,
+                        int(seed),
+                        int(fold),
+                        int(attempt),
+                    ),
+                ).fetchone()
+                if collision is not None:
+                    raise RegistryConflictError(
+                        "Execution attempt is already claimed by "
+                        f"{collision['run_id']!r}."
+                    )
             connection.execute(
                 """
                 INSERT INTO runs(
