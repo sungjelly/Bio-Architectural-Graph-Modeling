@@ -1,0 +1,318 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "bagm:same-gene-robustness:analysis-registry-config-adapter:v1",
+  "title": "Same-gene robustness analysis-only registry API recovery",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "amendment_id",
+    "campaign_id",
+    "status",
+    "frozen_at",
+    "scope",
+    "diagnosis",
+    "outcome_access_record",
+    "correction",
+    "authorities",
+    "recovery_sources",
+    "scientific_invariants"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "amendment_id": {
+      "const": "ta_cmp_20260810_same_gene_robustness_analysis_registry_config_adapter_v1"
+    },
+    "campaign_id": {
+      "const": "cmp_20260810_same_gene_robustness_multiverse_v1"
+    },
+    "status": {
+      "const": "frozen_analysis_technical_recovery"
+    },
+    "frozen_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "scope": {
+      "const": "analysis_adapter_only_no_scientific_change"
+    },
+    "diagnosis": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "failure_message",
+        "failure_stage",
+        "campaign_registry_rows",
+        "full_registry_rows",
+        "full_rows_with_nonnull_raw_config_json",
+        "registry_query_projection",
+        "registry_public_key",
+        "registry_public_value_type",
+        "root_cause"
+      ],
+      "properties": {
+        "failure_message": {
+          "const": "registry row omits config_json"
+        },
+        "failure_stage": {
+          "const": "first_selected_run_registry_configuration_reconciliation"
+        },
+        "campaign_registry_rows": {
+          "const": 154
+        },
+        "full_registry_rows": {
+          "const": 140
+        },
+        "full_rows_with_nonnull_raw_config_json": {
+          "const": 140
+        },
+        "registry_query_projection": {
+          "const": "SELECT_ALL"
+        },
+        "registry_public_key": {
+          "const": "config"
+        },
+        "registry_public_value_type": {
+          "const": "mapping"
+        },
+        "root_cause": {
+          "const": "analyzer_expected_raw_json_after_registry_api_decoded_and_renamed_it"
+        }
+      }
+    },
+    "outcome_access_record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "automated_failed_analyzer_loaded_first_run_payload",
+        "aggregate_computed",
+        "analysis_output_published",
+        "staging_output_retained",
+        "scientific_effect_values_printed",
+        "scientific_effect_values_human_inspected"
+      ],
+      "properties": {
+        "automated_failed_analyzer_loaded_first_run_payload": {
+          "const": true
+        },
+        "aggregate_computed": {
+          "const": false
+        },
+        "analysis_output_published": {
+          "const": false
+        },
+        "staging_output_retained": {
+          "const": false
+        },
+        "scientific_effect_values_printed": {
+          "const": false
+        },
+        "scientific_effect_values_human_inspected": {
+          "const": false
+        }
+      }
+    },
+    "correction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "registry_configuration_contract",
+        "patched_symbols",
+        "raw_json_fallback_allowed",
+        "model_or_training_changed",
+        "scientific_computation_changed",
+        "gate_or_threshold_changed",
+        "randomization_changed",
+        "scientific_payload_schema_changed",
+        "provenance_extended"
+      ],
+      "properties": {
+        "kind": {
+          "const": "registry_api_decoded_config_adapter"
+        },
+        "registry_configuration_contract": {
+          "const": "decoded_config_mapping_only"
+        },
+        "patched_symbols": {
+          "const": [
+            "_registry_configuration",
+            "_source_provenance"
+          ]
+        },
+        "raw_json_fallback_allowed": {
+          "const": false
+        },
+        "model_or_training_changed": {
+          "const": false
+        },
+        "scientific_computation_changed": {
+          "const": false
+        },
+        "gate_or_threshold_changed": {
+          "const": false
+        },
+        "randomization_changed": {
+          "const": false
+        },
+        "scientific_payload_schema_changed": {
+          "const": false
+        },
+        "provenance_extended": {
+          "const": true
+        }
+      }
+    },
+    "authorities": {
+      "type": "array",
+      "minItems": 7,
+      "maxItems": 7,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/authority"
+      }
+    },
+    "recovery_sources": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/recovery_source"
+      }
+    },
+    "scientific_invariants": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_unchanged",
+        "launch_unchanged",
+        "full_plan_unchanged",
+        "final_ledger_unchanged",
+        "canonical_analyzer_unchanged",
+        "registry_implementation_unchanged",
+        "run_bundles_unchanged",
+        "prepared_data_unchanged",
+        "seeds_folds_models_hyperparameters_unchanged",
+        "gates_statistics_and_nulls_unchanged",
+        "same_wrapper_required_for_publish_and_verify_only",
+        "no_retraining_authorized"
+      ],
+      "properties": {
+        "contract_unchanged": {
+          "const": true
+        },
+        "launch_unchanged": {
+          "const": true
+        },
+        "full_plan_unchanged": {
+          "const": true
+        },
+        "final_ledger_unchanged": {
+          "const": true
+        },
+        "canonical_analyzer_unchanged": {
+          "const": true
+        },
+        "registry_implementation_unchanged": {
+          "const": true
+        },
+        "run_bundles_unchanged": {
+          "const": true
+        },
+        "prepared_data_unchanged": {
+          "const": true
+        },
+        "seeds_folds_models_hyperparameters_unchanged": {
+          "const": true
+        },
+        "gates_statistics_and_nulls_unchanged": {
+          "const": true
+        },
+        "same_wrapper_required_for_publish_and_verify_only": {
+          "const": true
+        },
+        "no_retraining_authorized": {
+          "const": true
+        }
+      }
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "project_path": {
+      "type": "string",
+      "minLength": 1,
+      "not": {
+        "pattern": "(^/|(^|/)\\.\\.(/|$)|\\\\)"
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "path",
+        "size_bytes",
+        "sha256"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "contract",
+            "launch_manifest",
+            "full_plan",
+            "final_ledger",
+                "canonical_analyzer",
+                "registry_implementation",
+                "registry_database"
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/project_path"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "recovery_source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "role",
+        "path",
+        "size_bytes",
+        "sha256"
+      ],
+      "properties": {
+        "role": {
+          "enum": [
+            "recovery_wrapper",
+            "amendment_schema",
+            "dedicated_tests"
+          ]
+        },
+        "path": {
+          "$ref": "#/$defs/project_path"
+        },
+        "size_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

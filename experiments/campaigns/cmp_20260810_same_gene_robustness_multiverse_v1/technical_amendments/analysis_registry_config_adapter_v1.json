@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "amendment_id": "ta_cmp_20260810_same_gene_robustness_analysis_registry_config_adapter_v1",
+  "campaign_id": "cmp_20260810_same_gene_robustness_multiverse_v1",
+  "status": "frozen_analysis_technical_recovery",
+  "frozen_at": "2026-08-11T04:03:16Z",
+  "scope": "analysis_adapter_only_no_scientific_change",
+  "diagnosis": {
+    "failure_message": "registry row omits config_json",
+    "failure_stage": "first_selected_run_registry_configuration_reconciliation",
+    "campaign_registry_rows": 154,
+    "full_registry_rows": 140,
+    "full_rows_with_nonnull_raw_config_json": 140,
+    "registry_query_projection": "SELECT_ALL",
+    "registry_public_key": "config",
+    "registry_public_value_type": "mapping",
+    "root_cause": "analyzer_expected_raw_json_after_registry_api_decoded_and_renamed_it"
+  },
+  "outcome_access_record": {
+    "automated_failed_analyzer_loaded_first_run_payload": true,
+    "aggregate_computed": false,
+    "analysis_output_published": false,
+    "staging_output_retained": false,
+    "scientific_effect_values_printed": false,
+    "scientific_effect_values_human_inspected": false
+  },
+  "correction": {
+    "kind": "registry_api_decoded_config_adapter",
+    "registry_configuration_contract": "decoded_config_mapping_only",
+    "patched_symbols": [
+      "_registry_configuration",
+      "_source_provenance"
+    ],
+    "raw_json_fallback_allowed": false,
+    "model_or_training_changed": false,
+    "scientific_computation_changed": false,
+    "gate_or_threshold_changed": false,
+    "randomization_changed": false,
+    "scientific_payload_schema_changed": false,
+    "provenance_extended": true
+  },
+  "authorities": [
+    {
+      "role": "contract",
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml",
+      "size_bytes": 28442,
+      "sha256": "8761098cbafa91ae81b53a1c9cd0d8dcd293476d967f74cddde9be7dc5c990e9"
+    },
+    {
+      "role": "launch_manifest",
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json",
+      "size_bytes": 7537,
+      "sha256": "38fd482c1343f10efc8ec18507b05f5110f226898f236815a97b9671f7269223"
+    },
+    {
+      "role": "full_plan",
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json",
+      "size_bytes": 139836,
+      "sha256": "2c8b08c37ec6997c45417adbb4e74e0f394cb133845129e7a2c3fece66a0d0a1"
+    },
+    {
+      "role": "final_ledger",
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/ledger.json",
+      "size_bytes": 109014,
+      "sha256": "9e2a27d989e3e26e02af1bc667b999e6fced905c8575383aed94aff4ec77ef9e"
+    },
+    {
+      "role": "canonical_analyzer",
+      "path": "scripts/analysis/analyze_same_gene_robustness.py",
+      "size_bytes": 169429,
+      "sha256": "0f77667e4e805b2d0b62a6ec75204c366badefb8b62d6bd1f4f1aea3ad11db85"
+    },
+    {
+      "role": "registry_implementation",
+      "path": "src/spatial_benchmark/registry.py",
+      "size_bytes": 119334,
+      "sha256": "cdcedd6c9d6866576bdb3ad4b11c5a2edc020a588a4cbe2e35babe581b1a4bc3"
+    },
+    {
+      "role": "registry_database",
+      "path": "state/tracking/bagm.sqlite3",
+      "size_bytes": 12029952,
+      "sha256": "3a5e5b895e74852fee79699345d3df7de4ada3799b806c670a6b641df0db6443"
+    }
+  ],
+  "recovery_sources": [
+    {
+      "role": "recovery_wrapper",
+      "path": "scripts/analysis/run_same_gene_robustness_registry_recovery.py",
+      "size_bytes": 25742,
+      "sha256": "e095f084ac29a70d8d689b5518223394982e53b363e41d7a931f56f3ddf279e5"
+    },
+    {
+      "role": "amendment_schema",
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_registry_config_adapter_v1.schema.json",
+      "size_bytes": 8070,
+      "sha256": "27ff6935a6ab9fe63b156edb4d623f72d569e99a5f8fe0ae6c1f7be764e47b20"
+    },
+    {
+      "role": "dedicated_tests",
+      "path": "tests/unit/spatial_benchmark/test_same_gene_robustness_analysis_registry_recovery.py",
+      "size_bytes": 8452,
+      "sha256": "ea87a12f495da5f54ca45c51eb7c9fcf057a7c20e87e0a23a40e3938443d42fb"
+    }
+  ],
+  "scientific_invariants": {
+    "contract_unchanged": true,
+    "launch_unchanged": true,
+    "full_plan_unchanged": true,
+    "final_ledger_unchanged": true,
+    "canonical_analyzer_unchanged": true,
+    "registry_implementation_unchanged": true,
+    "run_bundles_unchanged": true,
+    "prepared_data_unchanged": true,
+    "seeds_folds_models_hyperparameters_unchanged": true,
+    "gates_statistics_and_nulls_unchanged": true,
+    "same_wrapper_required_for_publish_and_verify_only": true,
+    "no_retraining_authorized": true
+  }
+}
