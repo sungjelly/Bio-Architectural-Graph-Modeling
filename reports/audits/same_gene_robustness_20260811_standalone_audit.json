@@ -1,0 +1,477 @@
+{
+  "audit": {
+    "checks": 42140,
+    "failed": 0,
+    "failures": [],
+    "passed": 42140,
+    "sections": {
+      "bootstrap": {
+        "checks": 98,
+        "failed": 0,
+        "passed": 98
+      },
+      "budget": {
+        "checks": 55,
+        "failed": 0,
+        "passed": 55
+      },
+      "budget_internal": {
+        "checks": 168,
+        "failed": 0,
+        "passed": 168
+      },
+      "classification": {
+        "checks": 196,
+        "failed": 0,
+        "passed": 196
+      },
+      "component_coverage": {
+        "checks": 751,
+        "failed": 0,
+        "passed": 751
+      },
+      "component_schema": {
+        "checks": 30241,
+        "failed": 0,
+        "passed": 30241
+      },
+      "cross_variant": {
+        "checks": 42,
+        "failed": 0,
+        "passed": 42
+      },
+      "eligible_cross_format": {
+        "checks": 4660,
+        "failed": 0,
+        "passed": 4660
+      },
+      "gene_schema": {
+        "checks": 1871,
+        "failed": 0,
+        "passed": 1871
+      },
+      "graph_contract": {
+        "checks": 6,
+        "failed": 0,
+        "passed": 6
+      },
+      "graph_internal": {
+        "checks": 106,
+        "failed": 0,
+        "passed": 106
+      },
+      "identity": {
+        "checks": 162,
+        "failed": 0,
+        "passed": 162
+      },
+      "jacobian_decomposition": {
+        "checks": 42,
+        "failed": 0,
+        "passed": 42
+      },
+      "jacobian_gate_internal": {
+        "checks": 49,
+        "failed": 0,
+        "passed": 49
+      },
+      "jacobian_gates": {
+        "checks": 56,
+        "failed": 0,
+        "passed": 56
+      },
+      "jacobian_summaries": {
+        "checks": 2646,
+        "failed": 0,
+        "passed": 2646
+      },
+      "npz_schema": {
+        "checks": 400,
+        "failed": 0,
+        "passed": 400
+      },
+      "null_full_regeneration": {
+        "checks": 5,
+        "failed": 0,
+        "passed": 5
+      },
+      "null_summary": {
+        "checks": 40,
+        "failed": 0,
+        "passed": 40
+      },
+      "prediction": {
+        "checks": 231,
+        "failed": 0,
+        "passed": 231
+      },
+      "prediction_gates": {
+        "checks": 315,
+        "failed": 0,
+        "passed": 315
+      }
+    },
+    "status": "pass"
+  },
+  "audit_kind": "standalone_four_file_numerical_audit",
+  "budget": {
+    "all_trajectories_saturated": true,
+    "anchor12_prediction_gain": 0.016008481004080956,
+    "bootstrap_draw_max_abs_error": 0.0,
+    "prediction_explained": false,
+    "row_explained": false,
+    "row_seed_support_source": "JSON internal only; seed/fold matrices are not in the four-file aggregate",
+    "saturated_trajectories": 40,
+    "selected_minus_anchor12_bootstrap_95": [
+      -0.0009456695251334476,
+      -0.0003276097687957694
+    ],
+    "selected_minus_anchor12_gain": -0.0006161239383523209,
+    "selected_prediction_gain": 0.015392357065728635,
+    "selected_seed_folds_near_better": {
+      "20260810": 3,
+      "20261810": 3,
+      "20262810": 3,
+      "20263810": 3,
+      "20264810": 3
+    },
+    "verdict": "budget_explanation_not_supported"
+  },
+  "campaign_id": "cmp_20260810_same_gene_robustness_multiverse_v1",
+  "decomposition": {
+    "decomposition_errors": {
+      "V0/observed_annular/anchor12": 1.6653345369377348e-16,
+      "V0/observed_annular/selected": 9.020562075079397e-17,
+      "V0/observed_near/anchor12": 1.1102230246251565e-16,
+      "V0/observed_near/selected": 1.3877787807814457e-16,
+      "V0/within_fov_permuted_near/anchor12": 5.551115123125783e-17,
+      "V0/within_fov_permuted_near/selected": 5.551115123125783e-17,
+      "V1/observed_annular/anchor12": 1.1102230246251565e-16,
+      "V1/observed_annular/selected": 1.6653345369377348e-16,
+      "V1/observed_near/anchor12": 1.3877787807814457e-16,
+      "V1/observed_near/selected": 1.6653345369377348e-16,
+      "V1/within_fov_permuted_near/anchor12": 6.938893903907228e-17,
+      "V1/within_fov_permuted_near/selected": 5.551115123125783e-17,
+      "V2/observed_annular/anchor12": 1.1102230246251565e-16,
+      "V2/observed_annular/selected": 1.3877787807814457e-16,
+      "V2/observed_near/anchor12": 1.6653345369377348e-16,
+      "V2/observed_near/selected": 1.1102230246251565e-16,
+      "V2/within_fov_permuted_near/anchor12": 8.326672684688674e-17,
+      "V2/within_fov_permuted_near/selected": 5.551115123125783e-17,
+      "V3/observed_annular/anchor12": 1.6653345369377348e-16,
+      "V3/observed_annular/selected": 1.1102230246251565e-16,
+      "V3/observed_near/anchor12": 1.1102230246251565e-16,
+      "V3/observed_near/selected": 1.1102230246251565e-16,
+      "V3/within_fov_permuted_near/anchor12": 3.8163916471489756e-17,
+      "V3/within_fov_permuted_near/selected": 5.551115123125783e-17,
+      "V4/observed_annular/anchor12": 1.6653345369377348e-16,
+      "V4/observed_annular/selected": 1.1102230246251565e-16,
+      "V4/observed_near/anchor12": 1.1102230246251565e-16,
+      "V4/observed_near/selected": 1.1102230246251565e-16,
+      "V4/within_fov_permuted_near/anchor12": 1.6653345369377348e-16,
+      "V4/within_fov_permuted_near/selected": 8.326672684688674e-17,
+      "V5/observed_annular/anchor12": 1.1102230246251565e-16,
+      "V5/observed_annular/selected": 1.1102230246251565e-16,
+      "V5/observed_near/anchor12": 1.1102230246251565e-16,
+      "V5/observed_near/selected": 1.1102230246251565e-16,
+      "V5/within_fov_permuted_near/anchor12": 8.326672684688674e-17,
+      "V5/within_fov_permuted_near/selected": 7.632783294297951e-17,
+      "V6/observed_annular/anchor12": 1.1102230246251565e-16,
+      "V6/observed_annular/selected": 1.1102230246251565e-16,
+      "V6/observed_near/anchor12": 1.249000902703301e-16,
+      "V6/observed_near/selected": 1.3877787807814457e-16,
+      "V6/within_fov_permuted_near/anchor12": 5.551115123125783e-17,
+      "V6/within_fov_permuted_near/selected": 5.551115123125783e-17
+    },
+    "maximum_total_minus_linear_minus_nonlinear_abs_error": 1.6653345369377348e-16
+  },
+  "gene_label_null": {
+    "families": {
+      "full": {
+        "median_absolute_diagonal": {
+          "null_95": [
+            0.004544978304965916,
+            0.0052783302831768035
+          ],
+          "null_mean": 0.004903220158085407,
+          "observed": 0.01673066263225377,
+          "upper_tail_p": 9.999000099990002e-05
+        },
+        "row_top1_fraction": {
+          "null_95": [
+            0.0,
+            0.003218884120171674
+          ],
+          "null_mean": 0.0008151287553648068,
+          "observed": 0.2478540772532189,
+          "upper_tail_p": 9.999000099990002e-05
+        },
+        "row_top1_percent_fraction": {
+          "null_95": [
+            0.004291845493562232,
+            0.017167381974248927
+          ],
+          "null_mean": 0.01028530042918455,
+          "observed": 0.4302575107296137,
+          "upper_tail_p": 9.999000099990002e-05
+        }
+      },
+      "prevalence_sd_decile_matched": {
+        "median_absolute_diagonal": {
+          "null_95": [
+            0.004838263406353974,
+            0.005580781952288795
+          ],
+          "null_mean": 0.005205237066757438,
+          "observed": 0.01673066263225377,
+          "upper_tail_p": 9.999000099990002e-05
+        },
+        "row_top1_fraction": {
+          "null_95": [
+            0.0,
+            0.003218884120171674
+          ],
+          "null_mean": 0.0009081545064377683,
+          "observed": 0.2478540772532189,
+          "upper_tail_p": 9.999000099990002e-05
+        },
+        "row_top1_percent_fraction": {
+          "null_95": [
+            0.009656652360515022,
+            0.02575107296137339
+          ],
+          "null_mean": 0.017402253218884122,
+          "observed": 0.4302575107296137,
+          "upper_tail_p": 9.999000099990002e-05
+        }
+      }
+    },
+    "full_family_distribution_max_abs_error": 0.0,
+    "matched_family_exact_regeneration": "not identifiable from the four files: prevalence, target_std, and stratum membership are not published",
+    "null_95_semantics": "2.5% and 97.5% quantiles of the null distribution, not a confidence interval"
+  },
+  "independence": {
+    "campaign_analyzer_imported": false,
+    "inputs": [
+      "aggregate_results.json",
+      "component_metrics.csv",
+      "eligible_gene_summary.csv",
+      "aggregate_jacobians.npz"
+    ],
+    "numeric_tolerance": {
+      "atol": 1e-15,
+      "rtol": 1e-12
+    },
+    "spatial_benchmark_imported": false
+  },
+  "jacobian": {
+    "V0": {
+      "diagonal_offdiagonal_ratio": 3.412528703619176,
+      "gate_classification": {
+        "fold_stability": "robust_pass",
+        "near_vs_morphology_prediction": "robust_gate_failure",
+        "near_vs_permutation_diagonal": "robust_pass",
+        "near_vs_permutation_prediction": "robust_pass",
+        "same_name_diagonal_enrichment": "robust_pass",
+        "strict_row_selectivity": "robust_gate_failure",
+        "technical_validity": "robust_pass"
+      },
+      "near_permuted_diagonal_ratio": 2.4906658965336446,
+      "positive_diagonal_count": 389,
+      "positive_diagonal_fraction": 0.41738197424892703,
+      "row_top1_count": 231,
+      "row_top1_fraction": 0.2478540772532189,
+      "row_top1_percent_count": 401,
+      "row_top1_percent_fraction": 0.4302575107296137
+    },
+    "V1": {
+      "diagonal_offdiagonal_ratio": 3.4675580825484587,
+      "gate_classification": {
+        "fold_stability": "robust_pass",
+        "near_vs_morphology_prediction": "robust_gate_failure",
+        "near_vs_permutation_diagonal": "robust_pass",
+        "near_vs_permutation_prediction": "robust_pass",
+        "same_name_diagonal_enrichment": "robust_pass",
+        "strict_row_selectivity": "robust_gate_failure",
+        "technical_validity": "robust_pass"
+      },
+      "near_permuted_diagonal_ratio": 2.510055671074626,
+      "positive_diagonal_count": 391,
+      "positive_diagonal_fraction": 0.41952789699570814,
+      "row_top1_count": 242,
+      "row_top1_fraction": 0.259656652360515,
+      "row_top1_percent_count": 406,
+      "row_top1_percent_fraction": 0.4356223175965665
+    },
+    "V2": {
+      "diagonal_offdiagonal_ratio": 3.474299755470551,
+      "gate_classification": {
+        "fold_stability": "robust_pass",
+        "near_vs_morphology_prediction": "robust_gate_failure",
+        "near_vs_permutation_diagonal": "robust_pass",
+        "near_vs_permutation_prediction": "robust_pass",
+        "same_name_diagonal_enrichment": "robust_pass",
+        "strict_row_selectivity": "robust_gate_failure",
+        "technical_validity": "robust_pass"
+      },
+      "near_permuted_diagonal_ratio": 2.397870059194016,
+      "positive_diagonal_count": 384,
+      "positive_diagonal_fraction": 0.41201716738197425,
+      "row_top1_count": 239,
+      "row_top1_fraction": 0.25643776824034337,
+      "row_top1_percent_count": 408,
+      "row_top1_percent_fraction": 0.43776824034334766
+    },
+    "V3": {
+      "diagonal_offdiagonal_ratio": 2.9581362787498273,
+      "gate_classification": {
+        "fold_stability": "robust_pass",
+        "near_vs_morphology_prediction": "robust_gate_failure",
+        "near_vs_permutation_diagonal": "robust_pass",
+        "near_vs_permutation_prediction": "robust_gate_failure",
+        "same_name_diagonal_enrichment": "robust_pass",
+        "strict_row_selectivity": "robust_gate_failure",
+        "technical_validity": "robust_pass"
+      },
+      "near_permuted_diagonal_ratio": 2.1281705458794917,
+      "positive_diagonal_count": 487,
+      "positive_diagonal_fraction": 0.5225321888412017,
+      "row_top1_count": 241,
+      "row_top1_fraction": 0.25858369098712447,
+      "row_top1_percent_count": 374,
+      "row_top1_percent_fraction": 0.4012875536480687
+    },
+    "V4": {
+      "diagonal_offdiagonal_ratio": 3.413260802987626,
+      "gate_classification": {
+        "fold_stability": "robust_pass",
+        "near_vs_morphology_prediction": "robust_gate_failure",
+        "near_vs_permutation_diagonal": "robust_pass",
+        "near_vs_permutation_prediction": "robust_pass",
+        "same_name_diagonal_enrichment": "robust_pass",
+        "strict_row_selectivity": "robust_gate_failure",
+        "technical_validity": "robust_pass"
+      },
+      "near_permuted_diagonal_ratio": 2.4327968261106667,
+      "positive_diagonal_count": 399,
+      "positive_diagonal_fraction": 0.4281115879828326,
+      "row_top1_count": 247,
+      "row_top1_fraction": 0.26502145922746784,
+      "row_top1_percent_count": 406,
+      "row_top1_percent_fraction": 0.4356223175965665
+    },
+    "V5": {
+      "diagonal_offdiagonal_ratio": 3.1345433768918753,
+      "gate_classification": {
+        "fold_stability": "robust_pass",
+        "near_vs_morphology_prediction": "robust_gate_failure",
+        "near_vs_permutation_diagonal": "robust_pass",
+        "near_vs_permutation_prediction": "robust_gate_failure",
+        "same_name_diagonal_enrichment": "robust_pass",
+        "strict_row_selectivity": "robust_gate_failure",
+        "technical_validity": "robust_pass"
+      },
+      "near_permuted_diagonal_ratio": 2.2371265737048303,
+      "positive_diagonal_count": 463,
+      "positive_diagonal_fraction": 0.4967811158798283,
+      "row_top1_count": 249,
+      "row_top1_fraction": 0.26716738197424894,
+      "row_top1_percent_count": 368,
+      "row_top1_percent_fraction": 0.3948497854077253
+    },
+    "V6": {
+      "diagonal_offdiagonal_ratio": 3.469645089929931,
+      "gate_classification": {
+        "fold_stability": "robust_pass",
+        "near_vs_morphology_prediction": "robust_gate_failure",
+        "near_vs_permutation_diagonal": "robust_pass",
+        "near_vs_permutation_prediction": "robust_gate_failure",
+        "same_name_diagonal_enrichment": "robust_pass",
+        "strict_row_selectivity": "robust_gate_failure",
+        "technical_validity": "robust_pass"
+      },
+      "near_permuted_diagonal_ratio": 2.5476651311913336,
+      "positive_diagonal_count": 400,
+      "positive_diagonal_fraction": 0.4291845493562232,
+      "row_top1_count": 261,
+      "row_top1_fraction": 0.2800429184549356,
+      "row_top1_percent_count": 419,
+      "row_top1_percent_fraction": 0.44957081545064376
+    }
+  },
+  "limitations": [
+    "Seed/fold Jacobian matrices are not published, so seed-specific Jacobian gates, fold-ratio support, and fold stability cannot be reconstructed from these four files; only their encoded arithmetic and classification logic can be checked.",
+    "Per-slide Jacobian matrices are not published, so the two per-slide summaries cannot be independently reconstructed here; the published slide-equal matrix is checked.",
+    "The matched-null prevalence, target-standard-deviation covariates, and stratum memberships are not published, so its stored draw summaries are checked but its draw vector needs upstream prepared arrays/checkpoints for exact regeneration.",
+    "Validation histories are not published, so each trajectory's 96-to-192 gain is checked for internal saturation logic but not recomputed from validation records.",
+    "Seed/fold row matrices are not published, so the budget row-support counts are checked only for downstream logical consistency.",
+    "The CSV has only the 932 eligible labels, so its index mask hash is verified but the complete frozen 1000-label gene-order hash requires an upstream checkpoint/prepared axis.",
+    "Technical-control truth and component MAE source values require run bundles; this four-file audit checks only their published logical state, schemas, and finiteness."
+  ],
+  "prediction": {
+    "V0": {
+      "morphology_bootstrap_95": [
+        0.007110784544124926,
+        0.024571920282241488
+      ],
+      "near_vs_morphology_cell_gain": 0.021314817736610186,
+      "near_vs_morphology_component_gain": 0.015392357065728635,
+      "near_vs_permutation_component_gain": 0.015201121095888687
+    },
+    "V1": {
+      "morphology_bootstrap_95": [
+        0.0071264144521538675,
+        0.02461249173907699
+      ],
+      "near_vs_morphology_cell_gain": 0.02137175831135794,
+      "near_vs_morphology_component_gain": 0.015428541792844447,
+      "near_vs_permutation_component_gain": 0.01506305881893912
+    },
+    "V2": {
+      "morphology_bootstrap_95": [
+        0.005833963040180776,
+        0.023226674265998355
+      ],
+      "near_vs_morphology_cell_gain": 0.020511754036629394,
+      "near_vs_morphology_component_gain": 0.014100499006357714,
+      "near_vs_permutation_component_gain": 0.014300434186769916
+    },
+    "V3": {
+      "morphology_bootstrap_95": [
+        0.001936944814844363,
+        0.012192093397287886
+      ],
+      "near_vs_morphology_cell_gain": 0.009363358515906445,
+      "near_vs_morphology_component_gain": 0.0065129673035892325,
+      "near_vs_permutation_component_gain": 0.008926170422060715
+    },
+    "V4": {
+      "morphology_bootstrap_95": [
+        0.006420857643281528,
+        0.020475293040299675
+      ],
+      "near_vs_morphology_cell_gain": 0.018708261704511696,
+      "near_vs_morphology_component_gain": 0.013244146102885155,
+      "near_vs_permutation_component_gain": 0.014384518304685102
+    },
+    "V5": {
+      "morphology_bootstrap_95": [
+        0.0006665428412476319,
+        0.010855209197791376
+      ],
+      "near_vs_morphology_cell_gain": 0.00843779864312279,
+      "near_vs_morphology_component_gain": 0.005254587517665776,
+      "near_vs_permutation_component_gain": 0.008620572545078309
+    },
+    "V6": {
+      "morphology_bootstrap_95": [
+        -0.0008627535560828739,
+        0.007101257744482286
+      ],
+      "near_vs_morphology_cell_gain": 0.006738511701342454,
+      "near_vs_morphology_component_gain": 0.0030475885789975217,
+      "near_vs_permutation_component_gain": 0.008903113635743653
+    }
+  },
+  "schema_version": 1
+}

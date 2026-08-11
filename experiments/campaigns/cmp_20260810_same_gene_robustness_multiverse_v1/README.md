@@ -1,15 +1,16 @@
 # Same-gene robustness multiverse v1
 
-Status: `frozen_preoutcome`
+Status: `completed_verified`
 
-Phase: `pilot_recovery_attempt2_ready`
+Phase: `core_and_authorized_postcore_complete`
 
-Outcome: `attempt1_technical_failure_no_scientific_interpretation; attempt2_pending`
+Outcome: `same_name_magnitude_robust; strict_row_selectivity_robust_failure; near_morphology_2pct_robust_failure; budget_explanation_not_supported`
 
 This campaign is a preregistered, post-hoc robustness study of the existing
 same-gene nonlinear result. It is not an independent replication: the two
 slides and the antecedent outer-test outcomes have already been observed. No
-The scientific contract was frozen before the first pilot at SHA-256
+scientific result in this campaign is an independent replication. The
+scientific contract was frozen before the first pilot at SHA-256
 `8761098cbafa91ae81b53a1c9cd0d8dcd293476d967f74cddde9be7dc5c990e9`.
 The first seven technical pilots all terminated unsuccessfully before an
 authorized pilot receipt existed. They are retained as immutable failed
@@ -18,6 +19,35 @@ amendment at
 `technical_amendments/pilot_attempt2_source_recovery_v1.json` binds those
 failures to one corrected attempt-2 source authority without changing the
 contract, data fingerprints, model, seeds, folds, schedule, or gates.
+
+## Completed outcome
+
+The seven attempt-2 pilots passed, followed by 140/140 successful production
+jobs (seven variants, five base model seeds, four folds) and 560 selected
+fresh-final-refit model-arm outputs. The resolved trainer seed was base seed plus
+fold, giving 20 distinct execution seeds per variant.
+The immutable aggregate and a separate verify-only pass both succeeded.
+
+The primary conclusions are:
+
+- absolute same-name diagonal enrichment was a robust pass across V0--V5;
+- strict row selectivity was a robust gate failure across V0--V5;
+- the two-percent near-versus-morphology prediction gate was a robust gate
+  failure across V0--V5;
+- near-versus-permutation prediction was preprocessing-sensitive;
+- all 40 V0 optimization trajectories were saturated, but neither prediction
+  nor row failure was explained by the 12-epoch budget;
+- V6 was reported as mechanistic-secondary and did not alter the primary
+  classification.
+
+The canonical machine report is
+`reports/analyses/same_gene_robustness_20260811/report.md`; the detailed Korean
+report is
+`reports/analyses/same_gene_robustness_20260811_detailed_ko.md`. Independent
+standalone and run-authority audits passed 42,140/42,140 and 67,768/67,768
+checks, respectively, with no numerical mismatch. A separate
+technical/provenance/resource audit also passed and is stored at
+`reports/audits/same_gene_robustness_technical_provenance_resource_audit_20260811.md`.
 
 This document authorizes the V0-V6 core phase (seven technical pilots followed
 by 140 production fold processes) and one zero-training post-core secondary:
@@ -395,16 +425,25 @@ PYTHONPATH=src /venv/main/bin/python scripts/train/launch_same_gene_robustness.p
 
 Any recovery plan must name only failed slots with `--retry-slot`, use the next
 contiguous `--attempt`, and be supplied as an additional `--plan` to analysis.
-After all 140 slots succeed, publish and independently verify the aggregate:
+
+The canonical analyzer encountered two analysis-only API-shape defects after
+all 140 bundles had already verified. No aggregate or staging output was
+published by either failed analysis attempt. The exact v1/v2 recovery
+amendments preserve the original analyzer and registry bytes and patch only
+the decoded registry-config adapter, component-coverage equality view, and
+their provenance hooks. The completed publication and verify-only commands
+were:
 
 ```bash
-PYTHONPATH=src /venv/main/bin/python scripts/analysis/analyze_same_gene_robustness.py \
+PYTHONPATH=src /venv/main/bin/python scripts/analysis/run_same_gene_robustness_analysis_recovery_v2.py \
+  --recovery-v2-amendment experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_component_coverage_adapter_v2.json \
   --contract experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml \
   --launch-manifest state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json \
   --plan state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json \
   --output reports/analyses/same_gene_robustness_20260811
 
-PYTHONPATH=src /venv/main/bin/python scripts/analysis/analyze_same_gene_robustness.py \
+PYTHONPATH=src /venv/main/bin/python scripts/analysis/run_same_gene_robustness_analysis_recovery_v2.py \
+  --recovery-v2-amendment experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_component_coverage_adapter_v2.json \
   --contract experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml \
   --launch-manifest state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json \
   --plan state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json \

@@ -1,0 +1,274 @@
+{
+  "audit": {
+    "checks": 67768,
+    "failed": 0,
+    "failures": [],
+    "passed": 67768,
+    "sections": {
+      "component_schema": {
+        "checks": 30241,
+        "failed": 0,
+        "passed": 30241
+      },
+      "gene_schema": {
+        "checks": 1865,
+        "failed": 0,
+        "passed": 1865
+      },
+      "matched_null": {
+        "checks": 5,
+        "failed": 0,
+        "passed": 5
+      },
+      "run_budget_rows": {
+        "checks": 1,
+        "failed": 0,
+        "passed": 1
+      },
+      "run_components": {
+        "checks": 31361,
+        "failed": 0,
+        "passed": 31361
+      },
+      "run_gene_axis": {
+        "checks": 1634,
+        "failed": 0,
+        "passed": 1634
+      },
+      "run_identity": {
+        "checks": 701,
+        "failed": 0,
+        "passed": 701
+      },
+      "run_jacobian_gates": {
+        "checks": 1085,
+        "failed": 0,
+        "passed": 1085
+      },
+      "run_matrix_aggregation": {
+        "checks": 14,
+        "failed": 0,
+        "passed": 14
+      },
+      "run_technical": {
+        "checks": 140,
+        "failed": 0,
+        "passed": 140
+      },
+      "run_trajectories": {
+        "checks": 721,
+        "failed": 0,
+        "passed": 721
+      }
+    },
+    "status": "pass"
+  },
+  "audit_kind": "standalone_run_bundle_numerical_authority_audit",
+  "campaign_id": "cmp_20260810_same_gene_robustness_multiverse_v1",
+  "independence": {
+    "campaign_analyzer_imported": false,
+    "numeric_tolerance": {
+      "atol": 1e-15,
+      "rtol": 1e-12
+    },
+    "prepared_v0_root": "/workspace/Bio-Architectural-Graph-Modeling/data/processed/same_gene_robustness_v1/variants/v0_within_fov_log1p_all",
+    "selected_run_bundles": 140,
+    "spatial_benchmark_imported": false
+  },
+  "matched_null_authority": {
+    "distribution_abs_errors": {
+      "median_absolute_diagonal": 0.0,
+      "row_top1_fraction": 0.0,
+      "row_top1_percent_fraction": 0.0
+    },
+    "maximum_distribution_abs_error": 0.0,
+    "minimum_stratum_size": 3,
+    "prevalence_maximum": 0.7633942249337834,
+    "prevalence_minimum": 0.05194381750980313,
+    "stratum_count": 29,
+    "target_std_maximum": 1.304519385099411,
+    "target_std_minimum": 0.19465026631951332
+  },
+  "run_matrix_authority": {
+    "budget_row_fold_support": {
+      "20260810": 0,
+      "20261810": 0,
+      "20262810": 2,
+      "20263810": 2,
+      "20264810": 3
+    },
+    "complete_gene_axis_sha256": "046eb86c7ea8f1fe6977598a0190132340400fc61802fcde63ab5ac0e9502b03",
+    "maximum_published_consensus_matrix_abs_error": 0.0,
+    "variants": {
+      "V0": {
+        "aggregate_near_matrix_max_abs_error": 0.0,
+        "aggregate_permuted_matrix_max_abs_error": 0.0,
+        "fold_ratios": [
+          1.9572629915151805,
+          2.345217513196866,
+          2.658608387266901,
+          2.6241645542453838
+        ],
+        "fold_stability": {
+          "genes_same_sign_in_at_least_3_folds": 881,
+          "median_pairwise_signed_diagonal_spearman": 0.8744182760302889,
+          "pairwise_signed_diagonal_spearman": [
+            0.8482168009799379,
+            0.8415404502965498,
+            0.8448305474701835,
+            0.9107008246424899,
+            0.9178339438625763,
+            0.9006197510806399
+          ],
+          "sign_consistent_gene_fraction": 0.9452789699570815
+        }
+      },
+      "V1": {
+        "aggregate_near_matrix_max_abs_error": 0.0,
+        "aggregate_permuted_matrix_max_abs_error": 0.0,
+        "fold_ratios": [
+          1.9936842620372264,
+          2.405425504587366,
+          2.588435116345334,
+          2.633119473904197
+        ],
+        "fold_stability": {
+          "genes_same_sign_in_at_least_3_folds": 880,
+          "median_pairwise_signed_diagonal_spearman": 0.8745296481023472,
+          "pairwise_signed_diagonal_spearman": [
+            0.8474302815794595,
+            0.8399518622437677,
+            0.8435579546036852,
+            0.9106520423853335,
+            0.9192964036181407,
+            0.901629014625235
+          ],
+          "sign_consistent_gene_fraction": 0.944206008583691
+        }
+      },
+      "V2": {
+        "aggregate_near_matrix_max_abs_error": 0.0,
+        "aggregate_permuted_matrix_max_abs_error": 0.0,
+        "fold_ratios": [
+          1.8520196942917264,
+          2.5431864376423086,
+          2.4118378638657676,
+          2.70239890668558
+        ],
+        "fold_stability": {
+          "genes_same_sign_in_at_least_3_folds": 881,
+          "median_pairwise_signed_diagonal_spearman": 0.8728501954988608,
+          "pairwise_signed_diagonal_spearman": [
+            0.8423537547285327,
+            0.823937704094121,
+            0.8383711155200759,
+            0.9089970772594596,
+            0.9191854539995397,
+            0.9033466362691888
+          ],
+          "sign_consistent_gene_fraction": 0.9452789699570815
+        }
+      },
+      "V3": {
+        "aggregate_near_matrix_max_abs_error": 0.0,
+        "aggregate_permuted_matrix_max_abs_error": 0.0,
+        "fold_ratios": [
+          2.162985489827906,
+          2.0946157374153955,
+          2.2900959668344405,
+          2.296863662205479
+        ],
+        "fold_stability": {
+          "genes_same_sign_in_at_least_3_folds": 857,
+          "median_pairwise_signed_diagonal_spearman": 0.8862024151204662,
+          "pairwise_signed_diagonal_spearman": [
+            0.8634184403128036,
+            0.8595962148348075,
+            0.8538641143323296,
+            0.9221431173593642,
+            0.9199328705150657,
+            0.9089863899281286
+          ],
+          "sign_consistent_gene_fraction": 0.9195278969957081
+        }
+      },
+      "V4": {
+        "aggregate_near_matrix_max_abs_error": 0.0,
+        "aggregate_permuted_matrix_max_abs_error": 0.0,
+        "fold_ratios": [
+          1.9747302786156624,
+          2.4301153895692886,
+          2.5468505684357274,
+          2.553722529252097
+        ],
+        "fold_stability": {
+          "genes_same_sign_in_at_least_3_folds": 876,
+          "median_pairwise_signed_diagonal_spearman": 0.8756859328616511,
+          "pairwise_signed_diagonal_spearman": [
+            0.8524599086851289,
+            0.8420475574978797,
+            0.8465668460038417,
+            0.9102066726805265,
+            0.9182605922088941,
+            0.8989119570381733
+          ],
+          "sign_consistent_gene_fraction": 0.9399141630901288
+        }
+      },
+      "V5": {
+        "aggregate_near_matrix_max_abs_error": 0.0,
+        "aggregate_permuted_matrix_max_abs_error": 0.0,
+        "fold_ratios": [
+          2.055927504187204,
+          2.2034533196660604,
+          2.1578025353824586,
+          2.3537260018068618
+        ],
+        "fold_stability": {
+          "genes_same_sign_in_at_least_3_folds": 855,
+          "median_pairwise_signed_diagonal_spearman": 0.8833982728294256,
+          "pairwise_signed_diagonal_spearman": [
+            0.8567291640359058,
+            0.8359917687093112,
+            0.8448293912817733,
+            0.9185044293800341,
+            0.920316102504285,
+            0.9100673816229455
+          ],
+          "sign_consistent_gene_fraction": 0.9173819742489271
+        }
+      },
+      "V6": {
+        "aggregate_near_matrix_max_abs_error": 0.0,
+        "aggregate_permuted_matrix_max_abs_error": 0.0,
+        "fold_ratios": [
+          1.9455947914932432,
+          2.431575923770308,
+          2.608824803577481,
+          2.741757776464187
+        ],
+        "fold_stability": {
+          "genes_same_sign_in_at_least_3_folds": 876,
+          "median_pairwise_signed_diagonal_spearman": 0.8755109037238502,
+          "pairwise_signed_diagonal_spearman": [
+            0.8529465305994973,
+            0.8391093566429615,
+            0.849565613343944,
+            0.9096274964016231,
+            0.9161209914410485,
+            0.8980752768482032
+          ],
+          "sign_consistent_gene_fraction": 0.9399141630901288
+        }
+      }
+    }
+  },
+  "schema_version": 1,
+  "technical_maxima": {
+    "analytical_autograd_error": 5.551115123125783e-17,
+    "analytical_finite_difference_error": 4.968164768470729e-12,
+    "checkpoint_replay_metric_error": 0.0,
+    "checkpoint_replay_prediction_error": 0.0,
+    "peak_vram_gb": 16.789803504943848
+  }
+}
