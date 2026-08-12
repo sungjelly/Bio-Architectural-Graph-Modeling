@@ -107,6 +107,12 @@ metrics:
   bootstrap_resamples: 10000
   bootstrap_seed: 20260812
 faithfulness_substitutions: [zero, permuted_near, observed_annular, observed_near_10_25]
+target_programs:
+  tls_immune: [CXCL13, CCL19, CCL21, LTB, MS4A1, CD79A, CD74, HLA-DRA, CD3D, CD3E, CXCR5, CCR7]
+  myeloid: [LYZ, FCER1G, TYROBP, C1QA, C1QB, C1QC, APOE, SPP1, IL1B, CXCL8]
+  stromal_ecm: [COL1A1, COL1A2, COL3A1, COL6A1, COL6A2, DCN, LUM, COL4A1, COL4A2, FN1, FAP, PDGFRA]
+  epithelial: [EPCAM, KRT8, KRT18, KRT19, KRT7, KRT17, CEACAM6, KRT20, TACSTD2]
+  endothelial: [PECAM1, VWF, KDR, ENG, RAMP2, ESAM, RGCC]
 decision:
   graph_vs_no_graph_relative_gain_minimum: 0.02
   graph_vs_permutation_relative_gain_minimum: 0.01

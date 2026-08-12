@@ -214,6 +214,19 @@ dimensions and cannot rescue the primary gate.
 - interpretation: locked mean Jacobians are model sensitivities only and are
   reported separately from predictive gain and null calibration.
 
+The fixed target-program labels are panel-constrained descriptive families,
+not independent validation or directional cell-cell mechanisms:
+
+- TLS/immune: `CXCL13, CCL19, CCL21, LTB, MS4A1, CD79A, CD74, HLA-DRA,
+  CD3D, CD3E, CXCR5, CCR7`;
+- myeloid: `LYZ, FCER1G, TYROBP, C1QA, C1QB, C1QC, APOE, SPP1, IL1B,
+  CXCL8`;
+- stromal/ECM: `COL1A1, COL1A2, COL3A1, COL6A1, COL6A2, DCN, LUM,
+  COL4A1, COL4A2, FN1, FAP, PDGFRA`;
+- epithelial: `EPCAM, KRT8, KRT18, KRT19, KRT7, KRT17, CEACAM6, KRT20,
+  TACSTD2`;
+- endothelial: `PECAM1, VWF, KDR, ENG, RAMP2, ESAM, RGCC`.
+
 ### Compute, artifacts, and stop criteria
 
 Four safely available RTX 3090 GPUs run independent fold/config/seed jobs. Each
