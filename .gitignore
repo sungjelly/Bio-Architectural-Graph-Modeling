@@ -35,6 +35,7 @@ state/tracking/backups/
 state/queue/
 state/optimization/
 state/pids/
+state/matched_graph_context/
 
 # Shared data inputs and generated outputs
 data/**
