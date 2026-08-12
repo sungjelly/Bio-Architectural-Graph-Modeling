@@ -116,7 +116,10 @@ Arms:
 - `observed_annular`: observed 25--50 um within-FOV source-cell mean.
 
 The true-near model is also evaluated after replacing its context by zeros,
-permuted-near context, and annular context without refitting. These are
+permuted-near context, annular context, and a 10--25 um context without
+refitting. The last is reconstructed by filtering only the frozen near-CSR
+edge endpoints using their stored coordinates; no new edge is introduced, and
+a receiver with no retained edge receives a zero context. These are
 feature-deletion/substitution faithfulness diagnostics, not new fitted arms.
 
 ### Hyperparameter selection
@@ -200,7 +203,7 @@ dimensions and cannot rescue the primary gate.
 ### Additional scientific analyses
 
 - locality: observed near versus annular and a 10--25 um short-edge-removal
-  sensitivity;
+  sensitivity reconstructed only from frozen near-graph endpoints;
 - topology: observed near versus matched permutation;
 - faithfulness: zero, permuted, and annular substitution in the locked true
   model;

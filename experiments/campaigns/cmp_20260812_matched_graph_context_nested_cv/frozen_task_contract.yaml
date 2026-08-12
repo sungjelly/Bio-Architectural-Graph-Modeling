@@ -43,6 +43,7 @@ graph:
   annular_um: [25.0, 50.0]
   permutation: frozen_receiver_collision_free_degree_preserving_source_state_mapping
   short_edge_sensitivity_um: [10.0, 25.0]
+  short_edge_sensitivity_rule: filter_frozen_near_csr_endpoints_by_euclidean_distance_no_new_edges_zero_context_if_empty
 model:
   family: matched_additive_context_mlp
   gene_count: 1000
@@ -105,6 +106,7 @@ metrics:
   secondary: [component_equal_mae, per_gene_mse, per_gene_pearson, slide_specific_effect, faithfulness_substitution]
   bootstrap_resamples: 10000
   bootstrap_seed: 20260812
+faithfulness_substitutions: [zero, permuted_near, observed_annular, observed_near_10_25]
 decision:
   graph_vs_no_graph_relative_gain_minimum: 0.02
   graph_vs_permutation_relative_gain_minimum: 0.01
