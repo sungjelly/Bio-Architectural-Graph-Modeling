@@ -1,0 +1,2069 @@
+{
+  "analysis_recovery": {
+    "amendment_id": "ta_cmp_20260810_same_gene_robustness_analysis_registry_config_adapter_v1",
+    "amendment_path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_registry_config_adapter_v1.json",
+    "amendment_sha256": "7e4053886d402e50d6a417242cfa62edaa6a180f7fc0e3b0b5e56da96311e684",
+    "amendment_size_bytes": 5261,
+    "bound_authorities": [
+      {
+        "path": "scripts/analysis/analyze_same_gene_robustness.py",
+        "role": "canonical_analyzer",
+        "sha256": "0f77667e4e805b2d0b62a6ec75204c366badefb8b62d6bd1f4f1aea3ad11db85",
+        "size_bytes": 169429
+      },
+      {
+        "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml",
+        "role": "contract",
+        "sha256": "8761098cbafa91ae81b53a1c9cd0d8dcd293476d967f74cddde9be7dc5c990e9",
+        "size_bytes": 28442
+      },
+      {
+        "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/ledger.json",
+        "role": "final_ledger",
+        "sha256": "9e2a27d989e3e26e02af1bc667b999e6fced905c8575383aed94aff4ec77ef9e",
+        "size_bytes": 109014
+      },
+      {
+        "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json",
+        "role": "full_plan",
+        "sha256": "2c8b08c37ec6997c45417adbb4e74e0f394cb133845129e7a2c3fece66a0d0a1",
+        "size_bytes": 139836
+      },
+      {
+        "path": "state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json",
+        "role": "launch_manifest",
+        "sha256": "38fd482c1343f10efc8ec18507b05f5110f226898f236815a97b9671f7269223",
+        "size_bytes": 7537
+      },
+      {
+        "path": "state/tracking/bagm.sqlite3",
+        "role": "registry_database",
+        "sha256": "3a5e5b895e74852fee79699345d3df7de4ada3799b806c670a6b641df0db6443",
+        "size_bytes": 12029952
+      },
+      {
+        "path": "src/spatial_benchmark/registry.py",
+        "role": "registry_implementation",
+        "sha256": "cdcedd6c9d6866576bdb3ad4b11c5a2edc020a588a4cbe2e35babe581b1a4bc3",
+        "size_bytes": 119334
+      }
+    ],
+    "diagnosis": {
+      "campaign_registry_rows": 154,
+      "failure_message": "registry row omits config_json",
+      "failure_stage": "first_selected_run_registry_configuration_reconciliation",
+      "full_registry_rows": 140,
+      "full_rows_with_nonnull_raw_config_json": 140,
+      "registry_public_key": "config",
+      "registry_public_value_type": "mapping",
+      "registry_query_projection": "SELECT_ALL",
+      "root_cause": "analyzer_expected_raw_json_after_registry_api_decoded_and_renamed_it"
+    },
+    "entrypoint_path": "scripts/analysis/run_same_gene_robustness_registry_recovery.py",
+    "entrypoint_sha256": "1bd72017bb94ac7e372822b1f23e35de871b26c544921f45d295557d2ae2b569",
+    "execution_contract": {
+      "contract_path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml",
+      "full_plan_path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json",
+      "launch_manifest_path": "state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json",
+      "output_path": "reports/analyses/same_gene_robustness_20260811",
+      "registry_database_path": "state/tracking/bagm.sqlite3",
+      "required_plan_count": 1,
+      "verify_only_supported": true
+    },
+    "outcome_access_record": {
+      "aggregate_computed": false,
+      "analysis_output_published": false,
+      "automated_failed_analyzer_loaded_first_run_payload": true,
+      "scientific_effect_values_human_inspected": false,
+      "scientific_effect_values_printed": false,
+      "staging_output_retained": false
+    },
+    "patched_symbols": [
+      "_registry_configuration",
+      "_source_provenance"
+    ],
+    "registry_configuration_contract": "decoded_config_mapping_only",
+    "schema_path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_registry_config_adapter_v1.schema.json",
+    "schema_sha256": "a0694d74664298c6d8a9ddeac6c0461f0e1b70a236c577294ec5195e93c35321",
+    "schema_version": 1
+  },
+  "analysis_recovery_v2": {
+    "amendment_id": "ta_cmp_20260810_same_gene_robustness_analysis_component_coverage_adapter_v2",
+    "amendment_path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_component_coverage_adapter_v2.json",
+    "amendment_sha256": "6f4bdcd1eed3fdd7138e956cada2849dd2ef12f19a4527b968b5314fbabf0b50",
+    "amendment_size_bytes": 6049,
+    "arm_count_equality": "tuple_sorted_integer_items",
+    "arm_fold_equality": "tuple_sorted_integer_items",
+    "bound_recovery_sources": [
+      {
+        "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/evidence/analysis_attempt2_component_coverage.stderr.txt",
+        "role": "attempt_two_stderr_evidence",
+        "sha256": "6e17a70269444a009bfb495ed79cafa02df13326427821a6814c3ad05546d2a5",
+        "size_bytes": 1896
+      },
+      {
+        "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_component_coverage_adapter_v2.schema.json",
+        "role": "v2_amendment_schema",
+        "sha256": "628ff60d103597e1f45091e4790755450a47d24fa365b1c504e224510b59682f",
+        "size_bytes": 11399
+      },
+      {
+        "path": "tests/unit/spatial_benchmark/test_same_gene_robustness_analysis_recovery_v2.py",
+        "role": "v2_tests",
+        "sha256": "01372f6056a6105524ad25ee5d501a8d99009406ef8d35ba2f7eb9ab31119c36",
+        "size_bytes": 19894
+      },
+      {
+        "path": "scripts/analysis/run_same_gene_robustness_analysis_recovery_v2.py",
+        "role": "v2_wrapper",
+        "sha256": "e8a2a1c3459d0dd9d89d4e432259ec5a5c9681cde8983ce31109ae30e18cc45a",
+        "size_bytes": 42690
+      }
+    ],
+    "entrypoint_path": "scripts/analysis/run_same_gene_robustness_analysis_recovery_v2.py",
+    "entrypoint_sha256": "e8a2a1c3459d0dd9d89d4e432259ec5a5c9681cde8983ce31109ae30e18cc45a",
+    "execution_contract": {
+      "contract_path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml",
+      "full_plan_path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json",
+      "launch_manifest_path": "state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json",
+      "output_path": "reports/analyses/same_gene_robustness_20260811",
+      "registry_database_path": "state/tracking/bagm.sqlite3",
+      "required_plan_count": 1,
+      "verify_only_supported": true
+    },
+    "failed_analysis_attempts": [
+      {
+        "aggregate_computed": false,
+        "attempt": 1,
+        "automated_first_run_payload_loaded": true,
+        "evidence_path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_registry_config_adapter_v1.json",
+        "evidence_sha256": "7e4053886d402e50d6a417242cfa62edaa6a180f7fc0e3b0b5e56da96311e684",
+        "exit_code": 2,
+        "failure_message": "registry row omits config_json",
+        "failure_stage": "first_selected_run_registry_configuration_reconciliation",
+        "output_published": false,
+        "recovery_layer": "pre_v1",
+        "staging_retained": false
+      },
+      {
+        "attempt": 2,
+        "bootstrap_computed": false,
+        "build_payload_reached": true,
+        "component_coverage_reached": true,
+        "ended_at": "2026-08-11T05:29:31Z",
+        "exit_code": 1,
+        "gates_computed": false,
+        "gene_label_null_computed": false,
+        "output_published": false,
+        "publication_started": false,
+        "recovery_layer": "v1",
+        "scientific_effect_values_human_inspected": false,
+        "scientific_effect_values_printed": false,
+        "staging_retained": false,
+        "started_at": "2026-08-11T04:33:27Z",
+        "stderr_path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/evidence/analysis_attempt2_component_coverage.stderr.txt",
+        "stderr_sha256": "6e17a70269444a009bfb495ed79cafa02df13326427821a6814c3ad05546d2a5",
+        "stderr_size_bytes": 1896,
+        "verified_run_count": 140
+      }
+    ],
+    "newly_patched_symbols": [
+      "_verify_component_coverage",
+      "_source_provenance"
+    ],
+    "parent_amendment_id": "ta_cmp_20260810_same_gene_robustness_analysis_registry_config_adapter_v1",
+    "parent_amendment_sha256": "7e4053886d402e50d6a417242cfa62edaa6a180f7fc0e3b0b5e56da96311e684",
+    "parent_layer": {
+      "amendment_id": "ta_cmp_20260810_same_gene_robustness_analysis_registry_config_adapter_v1",
+      "files": [
+        {
+          "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_registry_config_adapter_v1.json",
+          "role": "v1_amendment",
+          "sha256": "7e4053886d402e50d6a417242cfa62edaa6a180f7fc0e3b0b5e56da96311e684",
+          "size_bytes": 5261
+        },
+        {
+          "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_registry_config_adapter_v1.schema.json",
+          "role": "v1_schema",
+          "sha256": "a0694d74664298c6d8a9ddeac6c0461f0e1b70a236c577294ec5195e93c35321",
+          "size_bytes": 9224
+        },
+        {
+          "path": "scripts/analysis/run_same_gene_robustness_registry_recovery.py",
+          "role": "v1_wrapper",
+          "sha256": "1bd72017bb94ac7e372822b1f23e35de871b26c544921f45d295557d2ae2b569",
+          "size_bytes": 39505
+        },
+        {
+          "path": "tests/unit/spatial_benchmark/test_same_gene_robustness_analysis_registry_recovery.py",
+          "role": "v1_tests",
+          "sha256": "b4ee73649d9622e00e4a8df9c75e41c0bfb6f73beff0af4bdc7ff565090c54e9",
+          "size_bytes": 16852
+        }
+      ],
+      "git_commit": "5508e7b1e67e04b1987ad18cb13c6fcecf87d1ff"
+    },
+    "schema_path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_component_coverage_adapter_v2.schema.json",
+    "schema_sha256": "628ff60d103597e1f45091e4790755450a47d24fa365b1c504e224510b59682f",
+    "schema_version": 2
+  },
+  "analyzer_path": "scripts/analysis/analyze_same_gene_robustness.py",
+  "analyzer_sha256": "0f77667e4e805b2d0b62a6ec75204c366badefb8b62d6bd1f4f1aea3ad11db85",
+  "campaign_id": "cmp_20260810_same_gene_robustness_multiverse_v1",
+  "environment_verification": {
+    "environment_lock_sha256": "0620ce9ba9914d1626ba1e27a4f2370f6752d52e91eecdec447da9ffa2075fac",
+    "observation": {
+      "cuda_available": true,
+      "cuda_runtime": "13.0",
+      "cuda_smoke_test_passed": null,
+      "gpus": [
+        {
+          "compute_capability": [
+            8,
+            6
+          ],
+          "logical_index": 0,
+          "name": "NVIDIA GeForce RTX 3090",
+          "total_memory_bytes": 25298141184
+        },
+        {
+          "compute_capability": [
+            8,
+            6
+          ],
+          "logical_index": 1,
+          "name": "NVIDIA GeForce RTX 3090",
+          "total_memory_bytes": 25298141184
+        },
+        {
+          "compute_capability": [
+            8,
+            6
+          ],
+          "logical_index": 2,
+          "name": "NVIDIA GeForce RTX 3090",
+          "total_memory_bytes": 25298141184
+        },
+        {
+          "compute_capability": [
+            8,
+            6
+          ],
+          "logical_index": 3,
+          "name": "NVIDIA GeForce RTX 3090",
+          "total_memory_bytes": 25298141184
+        }
+      ],
+      "packages": {
+        "PyYAML": "6.0.3",
+        "matplotlib": "3.11.1",
+        "numpy": "2.4.6",
+        "openpyxl": "3.1.5",
+        "pandas": "3.0.5",
+        "pytest": "9.1.1",
+        "scipy": "1.18.0",
+        "torch": "2.12.0+cu130",
+        "torch-geometric": "2.8.0.post1"
+      },
+      "python": "3.12.13",
+      "python_implementation": "CPython",
+      "torch_version": "2.12.0+cu130",
+      "visible_device_count": 4
+    },
+    "schema_version": 1,
+    "verification_sha256": "8dd16ef3923f74da2f17908ba70c80dc28f5ab881758dad462862b49d21e29af",
+    "verified": true,
+    "visibility_mode": "analysis"
+  },
+  "float_policy": {
+    "aggregate_dtype": "float64",
+    "storage_dtype": "float64"
+  },
+  "schema_version": 1,
+  "sources": [
+    {
+      "path": "data/processed/same_gene_robustness_v1/shared/eligible_genes.npy",
+      "sha256": "16e17d28b24e95d96fd818a5400dfc2e44d2aefcf5eebbbef3de6df6417a6a4a",
+      "size_bytes": 1128
+    },
+    {
+      "path": "data/processed/same_gene_robustness_v1/variants/v0_within_fov_log1p_all/manifest.json",
+      "sha256": "e59546beeed2e8e2523248e89ac6738bf90aa65f28248a42a7091c54255d0f32",
+      "size_bytes": 1339
+    },
+    {
+      "path": "data/processed/same_gene_robustness_v1/variants/v1_component_log1p_all/manifest.json",
+      "sha256": "4f80c65329569393e3855fe15363732776fc52c88f46b5447b3a8e925025a86a",
+      "size_bytes": 1354
+    },
+    {
+      "path": "data/processed/same_gene_robustness_v1/variants/v2_within_fov_log1p_qc_induced/manifest.json",
+      "sha256": "a0c8d442ccefad521dcf123570df0f11f64e7341c204bf719efcb7473dd0c085",
+      "size_bytes": 1346
+    },
+    {
+      "path": "data/processed/same_gene_robustness_v1/variants/v3_within_fov_cp10k_all/manifest.json",
+      "sha256": "7882bb4a2777481b64c2c83fbc03bac9fdb84e8aa429b64ad13d0f7fa67c38df",
+      "size_bytes": 1339
+    },
+    {
+      "path": "data/processed/same_gene_robustness_v1/variants/v4_train_only_library_residual/manifest.json",
+      "sha256": "f9f9d97eb90d46aa8eeab47a3bfc6e0e82e23069690c656ed9bd0d63da1a4362",
+      "size_bytes": 1693
+    },
+    {
+      "path": "data/processed/same_gene_robustness_v1/variants/v5_component_cp10k_qc_induced/manifest.json",
+      "sha256": "726a836d20f903611cbf2c62e24213554822fcece0eb51483d37883269939245",
+      "size_bytes": 1361
+    },
+    {
+      "path": "data/processed/same_gene_robustness_v1/variants/v6_train_only_cell_type_library_residual/manifest.json",
+      "sha256": "b28dfea2fc1b639121867a39927562ec704a865c0b77a01ad586d3363cf22bb5",
+      "size_bytes": 2095
+    },
+    {
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/environment_lock.json",
+      "sha256": "0620ce9ba9914d1626ba1e27a4f2370f6752d52e91eecdec447da9ffa2075fac",
+      "size_bytes": 672
+    },
+    {
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/frozen_task_contract.yaml",
+      "sha256": "8761098cbafa91ae81b53a1c9cd0d8dcd293476d967f74cddde9be7dc5c990e9",
+      "size_bytes": 28442
+    },
+    {
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/source_authorities.json",
+      "sha256": "44e07d7ab12c0b2964171c53f2c2fe60f9826aad4c6f23ceff9f7351fadfa82e",
+      "size_bytes": 2382
+    },
+    {
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/source_authorities_recovery_r1.json",
+      "sha256": "eb101b1e8cc99fd6766c0f5761f1929c436eaf7729d66a50bf05bf15ea3590ce",
+      "size_bytes": 2866
+    },
+    {
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_component_coverage_adapter_v2.json",
+      "sha256": "6f4bdcd1eed3fdd7138e956cada2849dd2ef12f19a4527b968b5314fbabf0b50",
+      "size_bytes": 6049
+    },
+    {
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_component_coverage_adapter_v2.schema.json",
+      "sha256": "628ff60d103597e1f45091e4790755450a47d24fa365b1c504e224510b59682f",
+      "size_bytes": 11399
+    },
+    {
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_registry_config_adapter_v1.json",
+      "sha256": "7e4053886d402e50d6a417242cfa62edaa6a180f7fc0e3b0b5e56da96311e684",
+      "size_bytes": 5261
+    },
+    {
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/analysis_registry_config_adapter_v1.schema.json",
+      "sha256": "a0694d74664298c6d8a9ddeac6c0461f0e1b70a236c577294ec5195e93c35321",
+      "size_bytes": 9224
+    },
+    {
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/evidence/analysis_attempt2_component_coverage.stderr.txt",
+      "sha256": "6e17a70269444a009bfb495ed79cafa02df13326427821a6814c3ad05546d2a5",
+      "size_bytes": 1896
+    },
+    {
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/pilot_attempt2_source_recovery_v1.json",
+      "sha256": "cfb085ed104e9ca2cf272a06cbded7f0e7804a3ff72f06e573ae3bfe80a3fc75",
+      "size_bytes": 7388
+    },
+    {
+      "path": "experiments/campaigns/cmp_20260810_same_gene_robustness_multiverse_v1/technical_amendments/technical_amendment.schema.json",
+      "sha256": "59c567dfe424e7caec791199951a89da9d582a75f4ccbb0b53a0ca9399d5d127",
+      "size_bytes": 6806
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "7f4f6df4b32212daac72e6070cf4e8b9572cb60aa05a18caeae894815c0ad7a5",
+      "size_bytes": 766
+    },
+    {
+      "path": "scripts/analysis/analyze_same_gene_nonlinear.py",
+      "sha256": "40f44fe67c88660a9cc262e975693cbfcc1654dd28fc79bef1f4c68298e00a81",
+      "size_bytes": 53692
+    },
+    {
+      "path": "scripts/analysis/analyze_same_gene_robustness.py",
+      "sha256": "0f77667e4e805b2d0b62a6ec75204c366badefb8b62d6bd1f4f1aea3ad11db85",
+      "size_bytes": 169429
+    },
+    {
+      "path": "scripts/analysis/run_same_gene_robustness_analysis_recovery_v2.py",
+      "sha256": "e8a2a1c3459d0dd9d89d4e432259ec5a5c9681cde8983ce31109ae30e18cc45a",
+      "size_bytes": 42690
+    },
+    {
+      "path": "scripts/analysis/run_same_gene_robustness_registry_recovery.py",
+      "sha256": "1bd72017bb94ac7e372822b1f23e35de871b26c544921f45d295557d2ae2b569",
+      "size_bytes": 39505
+    },
+    {
+      "path": "scripts/data/prepare_same_gene_jacobian.py",
+      "sha256": "ab82e0356712d6de18cb5b32d5eb392ba4f8bc14a2c1c485a1e79cb6b670f207",
+      "size_bytes": 17008
+    },
+    {
+      "path": "scripts/data/prepare_same_gene_robustness_variants.py",
+      "sha256": "2bc0ab7c8b6780f4100eebb95da080c4d2f4a265634280f8e5efa84cfb87850b",
+      "size_bytes": 60360
+    },
+    {
+      "path": "scripts/train/launch_same_gene_robustness.py",
+      "sha256": "55fa6438872d05e98fd7c064ed3359257e3b475f124339e1b22615d95e92f0d7",
+      "size_bytes": 46788
+    },
+    {
+      "path": "scripts/train/materialize_same_gene_robustness.py",
+      "sha256": "50d4fb7a03fc3462cb61c3c587ccde38b51a95684bcc8537b8e591a1e0ff603a",
+      "size_bytes": 133902
+    },
+    {
+      "path": "scripts/train/run_same_gene_nonlinear.py",
+      "sha256": "ae76c523e094a7141badf81c227a39d24b7d794a63c1b0e441324104bfeb585d",
+      "size_bytes": 117013
+    },
+    {
+      "path": "scripts/train/run_same_gene_robustness.py",
+      "sha256": "b59589f6fac0cf2c4dc0cbefb1dcd36acdcd7a38a05b7e2d7a62e0938d74e8e6",
+      "size_bytes": 90475
+    },
+    {
+      "path": "src/spatial_benchmark/__init__.py",
+      "sha256": "df9a09be4fe88d7ee97bcd89dc8e539f97235f5cf1b3ed02bb7f743896ec4f69",
+      "size_bytes": 2339
+    },
+    {
+      "path": "src/spatial_benchmark/data.py",
+      "sha256": "85f4ac46e89fbb5823d9d30c758aa8fd831d56a160fa6b9e15ace29a68f2fd74",
+      "size_bytes": 21068
+    },
+    {
+      "path": "src/spatial_benchmark/environment_lock.py",
+      "sha256": "89748a23ab2277d3be5807e373c79de7f4b3f19532c4c6fbff8d307b1a1a9147",
+      "size_bytes": 13491
+    },
+    {
+      "path": "src/spatial_benchmark/fingerprints.py",
+      "sha256": "361ecd492c46b705b8bbaf488c5d5f23167ced07b8353172a1d914ef6acf2df8",
+      "size_bytes": 11040
+    },
+    {
+      "path": "src/spatial_benchmark/graphs.py",
+      "sha256": "18f918878e91155c40a2a068aa1ac2b354d2107a2b2a7bb140dd144fb597ee3b",
+      "size_bytes": 27547
+    },
+    {
+      "path": "src/spatial_benchmark/identifiers.py",
+      "sha256": "1d85b4f4a6a3ae1e532a24d781e46fea318af0e49b561ff48f00841ed594702c",
+      "size_bytes": 17164
+    },
+    {
+      "path": "src/spatial_benchmark/masking.py",
+      "sha256": "a86d7f16397a84da6fe3db71bfed0337e94d15c57169d8cae6f5ce8cdedb52da",
+      "size_bytes": 34267
+    },
+    {
+      "path": "src/spatial_benchmark/metrics.py",
+      "sha256": "fdc884e7e75d9c3a86f61be8d4d3259345ea4d76eec2601ed3829de3f919e6ae",
+      "size_bytes": 37855
+    },
+    {
+      "path": "src/spatial_benchmark/paths.py",
+      "sha256": "8d82a10a682a51ec5fa1bc2cc241fdb93bc6ddeb7b23863c6ba3fee78ff9ea37",
+      "size_bytes": 6355
+    },
+    {
+      "path": "src/spatial_benchmark/registry.py",
+      "sha256": "cdcedd6c9d6866576bdb3ad4b11c5a2edc020a588a4cbe2e35babe581b1a4bc3",
+      "size_bytes": 119334
+    },
+    {
+      "path": "src/spatial_benchmark/run_archive.py",
+      "sha256": "74bb76c311cf3b714fb91d20c1f1a6c0dc802d4c159c840ec76f4ef82a96ce28",
+      "size_bytes": 62502
+    },
+    {
+      "path": "src/spatial_benchmark/same_gene_jacobian.py",
+      "sha256": "bb95c1acd8dc081c4691c40ea3624b3d79d6b00e05aa3193dde620a36b577065",
+      "size_bytes": 23291
+    },
+    {
+      "path": "src/spatial_benchmark/same_gene_nonlinear.py",
+      "sha256": "daa42a3700028c88253c8c13f8e1bec374406e245fab026822e3bbb971cc8ee3",
+      "size_bytes": 10696
+    },
+    {
+      "path": "src/spatial_benchmark/same_gene_phase_transforms.py",
+      "sha256": "15d443cf72c1b729cceababc23468820b0f823aea73169be3295cb6f3839bf17",
+      "size_bytes": 16437
+    },
+    {
+      "path": "src/spatial_benchmark/same_gene_recovery.py",
+      "sha256": "96c4bbdc8ccb473c8dd16c06fbe8307731cdff0a3434adcff0280d065a59b75d",
+      "size_bytes": 25075
+    },
+    {
+      "path": "src/spatial_benchmark/same_gene_residualization.py",
+      "sha256": "883be214e68bc54292a4a70e8011ba37cde8e1cbf05e215b175bb52f70fe8af2",
+      "size_bytes": 27482
+    },
+    {
+      "path": "src/spatial_benchmark/same_gene_robustness.py",
+      "sha256": "b6f970cf86b3ed8aef39ecbeff39b61d439ff72b1f074d905c2c542ddb0fba4d",
+      "size_bytes": 20469
+    },
+    {
+      "path": "src/spatial_benchmark/spatial_field.py",
+      "sha256": "9566680f4123d01c70e1477e7a886e4adbf959baf9f431ababc28926721efb6c",
+      "size_bytes": 5771
+    },
+    {
+      "path": "src/spatial_benchmark/splits.py",
+      "sha256": "a4dfe8cfa712261b72ca53cf11b4570528f50456a0f21dfb36626a3177dbc696",
+      "size_bytes": 16699
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20260810-f0-a1.json",
+      "sha256": "3ce2314f9ca4821e6176b524c8998ab5115ae8c303ef50b12a50be831f20ec8c",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20260810-f1-a1.json",
+      "sha256": "9520b0c8015fbd0f49f9bd887489d036d31c5e74e900ec05c71a08e739c242bd",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20260810-f2-a1.json",
+      "sha256": "5c9a3999d4516e55a67c85f7f1753f4ff7d9c6b540ad2d8f50cf45dee40f5c27",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20260810-f3-a1.json",
+      "sha256": "055623ed759e12f2a53d94aa1df18063faf1695048628a0cf51fbcbc1d689f91",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20261810-f0-a1.json",
+      "sha256": "844d793ac2d32fef2de5c057abaf9248c0766554393f7d4898d8979451a60be7",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20261810-f1-a1.json",
+      "sha256": "b5bd5a6e7858c538a952d5b6d7770e0bed5d7ef8808e0228559ae204f96e69c1",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20261810-f2-a1.json",
+      "sha256": "9ca9c60bb78aa16435356eac89e1b4ea3cf0be7b5c40a7922a2fd85be3e1df23",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20261810-f3-a1.json",
+      "sha256": "c5ee85fddba9c555310ea527f80112b165b23fe28ecab5d2ea63ee81eb1cf3fe",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20262810-f0-a1.json",
+      "sha256": "bca6f9bccda240f5025855a2f6ebdfe0c7bf304f2708885c2f3b66a0aef77e68",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20262810-f1-a1.json",
+      "sha256": "d49aea20dc463a958c80c0ee462513d30e2f1a450c13974fef475bea3a3839a8",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20262810-f2-a1.json",
+      "sha256": "08f217c2af80f6618e3d251c280ff34e69b78f2e3761e128fc20da55a5c77151",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20262810-f3-a1.json",
+      "sha256": "c46027c2b6a3dd433d16e79cd62a7744681aecd03f7bbc39d257699abb8206a9",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20263810-f0-a1.json",
+      "sha256": "3229628a49d964a18a01cda79b2775890ee6d93f8a362f6ba6c6ffd7f469d156",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20263810-f1-a1.json",
+      "sha256": "c57b3d161d8d00522ae33480346423e0913e0f71dc5ea8d17931e892854d476c",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20263810-f2-a1.json",
+      "sha256": "7fcb1eaf04e3e6474c293dfafcc6a28323000840472190beaa35eacddd12b3c7",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20263810-f3-a1.json",
+      "sha256": "08687e60f5f9e75558bac4811289f8d77da738d8c88ee1fa71720e6862563a32",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20264810-f0-a1.json",
+      "sha256": "9ca4457dacec0ff9486bf1ad6a601c435197d5f0afb658bb3921f05b5ea0c371",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20264810-f1-a1.json",
+      "sha256": "431a39605d42236f76162d9c62a3a7a77bac9f103edb60458788e51d4ee14e95",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20264810-f2-a1.json",
+      "sha256": "956372c95e650c24a79e136a41f0b08b1553fadae22b65d860234ffde5615c64",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v0-s20264810-f3-a1.json",
+      "sha256": "1667660409632345e29a54cac28ff4066f3531038b6f01f4367e7ea3a24a254d",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20260810-f0-a1.json",
+      "sha256": "346db3a7f508cebbd1c499bc23eb6b4fcb0d07995f8194971557911aa7de1a53",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20260810-f1-a1.json",
+      "sha256": "b01c8c872cbef900109eebb5fbcf42c29de38febeb3ed47b76a836fb51d5edef",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20260810-f2-a1.json",
+      "sha256": "ca34aa59187890122cc6de540cfb75000192a98bf773c267378de74b9c4637b6",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20260810-f3-a1.json",
+      "sha256": "ccaffcf1df6e3deeff4fb9631ed9a9ae3974ef781188599613383f8b86f57014",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20261810-f0-a1.json",
+      "sha256": "5765f17c406616c0108d9f57732c5465988650a9b0ea2056450c5d7238672706",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20261810-f1-a1.json",
+      "sha256": "647794c1ca59aef636639126fc660354547c7057fa90b541f4ba59a06b3c3385",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20261810-f2-a1.json",
+      "sha256": "08c6a963be9c26efd422b457b134913ad6dd7f8969d6ac496c96be4a30397495",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20261810-f3-a1.json",
+      "sha256": "04c06aa1dc915c5619b8ac4b23e87e705238f03b422c91ce00c04bb63310cbd0",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20262810-f0-a1.json",
+      "sha256": "c4c2116cf724b7052bae83bfe0dd0defdebfa83de7ecec71394d06a385465ad3",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20262810-f1-a1.json",
+      "sha256": "171a25199c67b2e43fa7e8b09bb08475b1215847c5d28ac9ccbf3f0668bd8ba3",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20262810-f2-a1.json",
+      "sha256": "fa728231130a32d3fa3f315b13720df1e7b8a4266d4380b67d5149d82803a433",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20262810-f3-a1.json",
+      "sha256": "1c2d88ed368f10ef719c3d0f6a36fc279c262f88dd7c1c6a46f6d7e31a42ea16",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20263810-f0-a1.json",
+      "sha256": "b06815ab6f35f0aab2da58d6c136dd18435becddef8e084d5a997d80776873c3",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20263810-f1-a1.json",
+      "sha256": "af35060a4ad0f66aac12954db5553968756f4697892606a9499ac522290f83aa",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20263810-f2-a1.json",
+      "sha256": "ea6cd5daccb0b6a69e3dffc1d6c19e6e9a2bf032a79332fded19bc602f350a33",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20263810-f3-a1.json",
+      "sha256": "2ecfc5e9480977ac3936c22a56a8f966cf4f0ba7084bd6161e7182c47e6716ca",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20264810-f0-a1.json",
+      "sha256": "f377624fa3c91958a6f6b4f5d56217054ea830572e2fd531a4bdef7e77c3fc36",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20264810-f1-a1.json",
+      "sha256": "81f53e28ebbee46472c9f2980e28fb3e3e6a893805cb892d364a3e15d656a291",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20264810-f2-a1.json",
+      "sha256": "dc11142329cae97b1254465bd490c299c96db7bfa9b43a1d585a2bf109d80bbf",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v1-s20264810-f3-a1.json",
+      "sha256": "d9dd7ab29ca73a4663ed78595294f9c1c1a87d2e7ca7a34a97a8722e7af52fa2",
+      "size_bytes": 509
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20260810-f0-a1.json",
+      "sha256": "a02f01c2fceb4de5d200dd4262f43ccf0ef96af57f3588defe036824a299081a",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20260810-f1-a1.json",
+      "sha256": "a659f2e0a1c70e3e1a32d9c3b2ca51e0285606575aa038a6cdc8cd447b2104aa",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20260810-f2-a1.json",
+      "sha256": "2c5f7bed2627f960ff31bc3eef68a88acabb6548d9ca02ae2f0afef9be73268b",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20260810-f3-a1.json",
+      "sha256": "679bca78482485e16c3a0a4ecc120fe859ca57d81c97ce3bc0dc67a01b2c555d",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20261810-f0-a1.json",
+      "sha256": "13b9c4b2121223c7442f6a41ecdd25a59ba3f56a8bb7a3fac24032d93c0b4f85",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20261810-f1-a1.json",
+      "sha256": "ad0f3d8eecd54ab2bf11a92736578728038ae9043830cfb093c2a22bf8502788",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20261810-f2-a1.json",
+      "sha256": "d76ea04544ccf5f43dd83e8355b867f68a165b3b32fb0f2b7310001898bbbedf",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20261810-f3-a1.json",
+      "sha256": "9add550538be5d8dd4ccffb9d325af8a4152460a330170ea17d86b0031425412",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20262810-f0-a1.json",
+      "sha256": "0726039784e3f353987f1d7782c32a9983ffb6710c9110e66826e97787b1d97f",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20262810-f1-a1.json",
+      "sha256": "4aea18cd1bcc267082020cdc9197c0b57fdec11d51081252cf8bfc0c43e6f4e6",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20262810-f2-a1.json",
+      "sha256": "3762feba2542958da0b9f5bfffd8a663d4005a208e0f724493006612a120e7cd",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20262810-f3-a1.json",
+      "sha256": "f222ae24c3fc804d51b13583116eba619e14b5ff5529f872eda3e874d3f9c569",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20263810-f0-a1.json",
+      "sha256": "bcefcc92baf2a7d8cdb7a65603f42fc6c4d3205c66d857f9e7fdd079bdd915e2",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20263810-f1-a1.json",
+      "sha256": "d52b8231bdc02c1bbb1ca365692fcd453da363a54e937fc68fbdb71553a6a99c",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20263810-f2-a1.json",
+      "sha256": "6182dcfb67c8ead1916735fb0727dad90ccaf858daa46c328b5e75d2ca90e21f",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20263810-f3-a1.json",
+      "sha256": "2f16eb6c1b211c50b531c0ac76d2edda40da4874abdb858d22a3616e1d168b64",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20264810-f0-a1.json",
+      "sha256": "4ffb409506dd9b532d2ab8d661c2a333b1eb7cd3e293511a966708dc44440c5c",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20264810-f1-a1.json",
+      "sha256": "ddbbef2b22344af849707f0f49f552a4a361633ce1a6fa9665e0042a1bbe2746",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20264810-f2-a1.json",
+      "sha256": "258296cf2612a1407f5d044a20a44c96bcfd3916b9c29572047619a99b583c1b",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v2-s20264810-f3-a1.json",
+      "sha256": "1f36a8f2ed0b95944e7da3f32770a0f10c2063dc6c5fb1c2287ab63dbb788111",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20260810-f0-a1.json",
+      "sha256": "e3752968818652b7f02d5269df7fc4e420d6f723bb31777be060ce9512909c15",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20260810-f1-a1.json",
+      "sha256": "ef85d881a4ed28186988dbbe591fdc582854b9f2e799711d0c81f508514f685b",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20260810-f2-a1.json",
+      "sha256": "be446f5e41d5adf09461bd3c0fe3589cc9540fde5c31a17100242a3e4ca06060",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20260810-f3-a1.json",
+      "sha256": "4483b453a41631c812303b48c61912415c6012fd35eb64c81e627079d672b716",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20261810-f0-a1.json",
+      "sha256": "3b93add4d5814f395dc8ff2111e963d5fcda3d91e437a8fc0bf8a3c58ab1f0ff",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20261810-f1-a1.json",
+      "sha256": "4a4883b7c5c84d9b7e23c28bc5c34de6bf35efb31c73759ffb59f0d0cb4aa360",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20261810-f2-a1.json",
+      "sha256": "a82efc56355c1414a59ea1e4d3f152feb0ecc4df979430c3791861f9dc3c0de1",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20261810-f3-a1.json",
+      "sha256": "5cbde852dfdcd6971292fb0cc3787e4cb6aee82e895e45046f2570584316f661",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20262810-f0-a1.json",
+      "sha256": "729135df25c7cd07430586fe1667115e9457a297511b1b9d501810263ae05c66",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20262810-f1-a1.json",
+      "sha256": "669e0d0b8b1245cfaf813d0b2b6f028ef54afe785dfb3c2d2e3708e12bbfeacb",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20262810-f2-a1.json",
+      "sha256": "2d1d2d59067b9eb5b617d57338cb9711d7599a12d4f0a92a5cb15b3980caff77",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20262810-f3-a1.json",
+      "sha256": "0357485937762116f2502eb2e4cb6ed8c186f6fdbb0a246d0d3a50a8ca2d4ea2",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20263810-f0-a1.json",
+      "sha256": "dfc3220f686b5a4dbc25a51571703091eeb0db07a385b18d16efc256c2a1db61",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20263810-f1-a1.json",
+      "sha256": "4c835c6b94b60f31339c1137f8f0cff4da98c9e5613dbac4a70248385a3a1844",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20263810-f2-a1.json",
+      "sha256": "557a0288ef1c7353451fdad9110da9bb1705f400a546a933cd750aa47f1e5997",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20263810-f3-a1.json",
+      "sha256": "504b798ff2684d05da273d7375961f4e104f127d4c73d3559eac083b4f6a5bb1",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20264810-f0-a1.json",
+      "sha256": "dd6188024624bc38a2c425e4e868a06a7f65058c47403f162216faab3ef245a1",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20264810-f1-a1.json",
+      "sha256": "b898f4f8f645a25710af7166c221eee60aa78c773c602aa37f69b2fbc6f2a908",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20264810-f2-a1.json",
+      "sha256": "a1bbd043518c3918254ba881016b7e6edc194a97b70aa7d3648e6fb9286a0153",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v3-s20264810-f3-a1.json",
+      "sha256": "dfb548c35e3a6ed704f0bb77e65ccb2b85c3904ec0d547c175f493260651db82",
+      "size_bytes": 510
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20260810-f0-a1.json",
+      "sha256": "2566ec4e122a559df792e33bf452a965c678c1599a04467758b4e9e578f6de17",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20260810-f1-a1.json",
+      "sha256": "00bf1504dda44adb9ba149fa56c5426619e030a0cb2b05dc9b3c7ae05123918f",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20260810-f2-a1.json",
+      "sha256": "cdbe6753351b3acc1b60d26c9d7e2a019d15a392ef9ff84c47fcda014b9a98ad",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20260810-f3-a1.json",
+      "sha256": "d0ddacd89d7e030eded1cbb48a6a30363e3e166af8120e5be9a280bda1ff4189",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20261810-f0-a1.json",
+      "sha256": "aac0e173bf6a79960e1d38458d9427bf871d536f7876dd974f37d45af56265ab",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20261810-f1-a1.json",
+      "sha256": "b55ae1c1384fd1976c16147bd3d1ed439f3a84e466c82cd7beebeb528e9a0c9a",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20261810-f2-a1.json",
+      "sha256": "ce9fbe8e01a741237d4e4368feccf0e490c056de38be004aa7b39af41cb88136",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20261810-f3-a1.json",
+      "sha256": "e3ba3a4781bfd4c30b38c25dd2d6819361bb1814257ffd5aad9cfe7c575258e2",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20262810-f0-a1.json",
+      "sha256": "4d441a2fdc692e7cafb39abaa7dd790e54277e39ae1bb11d76564074a1114569",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20262810-f1-a1.json",
+      "sha256": "53d6ad100883dc0072c43a3aed69d0ef0af1900b42b7dae8c66cce90fa189ca1",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20262810-f2-a1.json",
+      "sha256": "d9baf23c07e23f1c4d96b2b6b243cd55a54a69a5c2bedb44ea256926c8c64cb5",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20262810-f3-a1.json",
+      "sha256": "cd71e65a095e81b76126c2992125c4eadeacd10489653fd8d9b9f6ac91b3df37",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20263810-f0-a1.json",
+      "sha256": "8cf900d0e6c79e39f1097c8c215e309f7f0ebbd6774739346f10fde8fb5bf5a7",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20263810-f1-a1.json",
+      "sha256": "4fac11c4d18f8fa8df03637159414bab7a3d8a0a0acfef774a907fc5d1673eaf",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20263810-f2-a1.json",
+      "sha256": "9275308f3ef2248693e9fb710d87645175e5e39fa54a8949b8ea8790e8433a91",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20263810-f3-a1.json",
+      "sha256": "979659caf340278a1fd292f4eba794ea8fce53358a7260b47d31dd7d4a045d05",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20264810-f0-a1.json",
+      "sha256": "aa74e012c466bbadd5a4991752ccaae30138624b0babe864f0b8633b72d50f08",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20264810-f1-a1.json",
+      "sha256": "773b8e55d94a21fa3ed375615911efa48b7b15a3312915007284eced5a8e9e32",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20264810-f2-a1.json",
+      "sha256": "e8d482051dbe98598f810e4545dfa054f38a6e16f76e53829e9237a4539f1a2e",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v4-s20264810-f3-a1.json",
+      "sha256": "f3ccfc0c7b904149435dce57daace9461eda19975b6f86ebe8efc9172a2a5a85",
+      "size_bytes": 517
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20260810-f0-a1.json",
+      "sha256": "00dddf364f260bc942837440e934cc265d98f96a23731774f6f3d5b9d68553cc",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20260810-f1-a1.json",
+      "sha256": "81c60a95ba5f6b5a7eb878e207502380f741d2707a6567b211e284eedb08fef4",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20260810-f2-a1.json",
+      "sha256": "05d4563ca92bc8bf6bef736e07764937da58876665ac67257584a2b4c1c2eee8",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20260810-f3-a1.json",
+      "sha256": "262c04441174ef1c04663222bf87811493ca2f7c5daae556940eed4ed594499e",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20261810-f0-a1.json",
+      "sha256": "0a10ca6f425000cdb6be4cf7f03da66e19a37169f8d9b35c2b88388c90d42866",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20261810-f1-a1.json",
+      "sha256": "466ef0d53ca643c9f4b85241a84ffe161109d1f7a90dc9cf1c6fb76d7a429cb5",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20261810-f2-a1.json",
+      "sha256": "9c19549eb4c44c645471e069da54f18da6747008c6fef0b09814a5df3a0eb804",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20261810-f3-a1.json",
+      "sha256": "d78f44833b14f54433203ab584aa24b30adecfe9c264749d9ca285c08d1aa5de",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20262810-f0-a1.json",
+      "sha256": "8141bc4859af22a3c6f5f46271a646fcea9fa8a57325108bbe7e204141471a2b",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20262810-f1-a1.json",
+      "sha256": "9a74466db6d3a79758dcabcb82f8343e13678cded9549a26a7858ca08c5166a5",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20262810-f2-a1.json",
+      "sha256": "bba2c0f98bd4a66a7f3250852d7abad75fe57fe1ebad6b63662372f2db8a9a88",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20262810-f3-a1.json",
+      "sha256": "40c37abd6933117c80340117f6c591d824347f631e6ce2509a60932d7b88a041",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20263810-f0-a1.json",
+      "sha256": "7a31ba7406e9176e0372e46b1640554ab65a6c219c4233d83d1963a2d8a1ef69",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20263810-f1-a1.json",
+      "sha256": "75c3a1c95a777282b76ca48c25bc83633bf3bf979d1c3f738374152bfd3ef817",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20263810-f2-a1.json",
+      "sha256": "2701d4ed4faea45dd307ec7bd31eed701cffd0995f5d0e728dc041611a75c2ef",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20263810-f3-a1.json",
+      "sha256": "bc6d1d7e52b3124052664788eb9bc335229feefa714b1983d942ba4f72c94f3d",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20264810-f0-a1.json",
+      "sha256": "fe30fba764237fa4267e7983beb24c9d1b0b6604b6ce44f0aa5844d70d168959",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20264810-f1-a1.json",
+      "sha256": "448479b6cc717e09a4e644e402eacdddebe7ee76764c585aa28364347a096b82",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20264810-f2-a1.json",
+      "sha256": "42ad4efe26a56f343a4c75d477423d978e5a90dc97766ed44bbcc1b0449ad8d4",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v5-s20264810-f3-a1.json",
+      "sha256": "84639237150d77fd7ff050042188171dfe6910a935a673d6e4c5fdbdcc6040cc",
+      "size_bytes": 516
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20260810-f0-a1.json",
+      "sha256": "446a72600f3365c8b1a9f33aa6a4d14e1922bd31c6d75d5475fb92c1b05f48ed",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20260810-f1-a1.json",
+      "sha256": "c1b1e44c3574710c071e973c3886fbea2ead4e6664766c800321014e55b3b62a",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20260810-f2-a1.json",
+      "sha256": "8e3eaaaa22e70fe5b52a0ab085b236517beb5caf4b5e1a5bac821b094fbf651c",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20260810-f3-a1.json",
+      "sha256": "4e0005b7a85dd83e742c75b4f647fb083d79fc73e8279a95ad094412f3a40cc2",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20261810-f0-a1.json",
+      "sha256": "55a98236918846d9319044729de1a027e84347a2f426885437a8044a3c5f3b9b",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20261810-f1-a1.json",
+      "sha256": "a7723ab1d87a0356fe7b0f35b26bd052ebeca031cd24b95ef940782b870f4525",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20261810-f2-a1.json",
+      "sha256": "3d1b4ebe590cd6afa4deb23704f5ad6e6ae8ec87994a31e90e6eed33bea6e17b",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20261810-f3-a1.json",
+      "sha256": "5318f2bdd938ffd6e540cc27741d1fbedfc1a9b1491e4bf7934fc1b470acbb8f",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20262810-f0-a1.json",
+      "sha256": "867a434daaa2abafccdb9db324b07bd612fddb337534a033bbd01dffffa48dee",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20262810-f1-a1.json",
+      "sha256": "d858023a156b7def9e7d2621f76c5108fd680f80c4c4daa7422158518bad244e",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20262810-f2-a1.json",
+      "sha256": "3d5c0c5f6efcf5165bbd4ce655cdf8bcbb078fbace34bc69602a68e1ebfde7d7",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20262810-f3-a1.json",
+      "sha256": "55dae3c39105eaccdd51683e166aa8a71a483ae61a659c1592f904d9efc25f63",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20263810-f0-a1.json",
+      "sha256": "7cb552b73fe6cedc5b00025abf39dd14b8bb92d89ab073198c9f81817a18a38d",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20263810-f1-a1.json",
+      "sha256": "474bc0a89ce36a31f960bbdedb13373d3ba7ca77fc78914bddf1d7a15a1ed895",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20263810-f2-a1.json",
+      "sha256": "c7321812fd4aef585f636219794156abae75879db07d424f0fa4c65905d49f98",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20263810-f3-a1.json",
+      "sha256": "f438a1ad0431e3a0c9ac9118d9b68f8442ad39834b93d92547f3efaa7ae3d2f0",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20264810-f0-a1.json",
+      "sha256": "452f44033cfbd4d306daffd60b5ab9b7322acc94a2beffbb1945a9e3bd418e62",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20264810-f1-a1.json",
+      "sha256": "df87879a373eded8fa0330935a2cf34c28d783d90170bd36536fb96c6dd7c5d6",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20264810-f2-a1.json",
+      "sha256": "1595bce4a2d961094464c506e0593e715d43f446d5469362f57161bfe50cfdfb",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/configs/full/v6-s20264810-f3-a1.json",
+      "sha256": "4bd686373430af584c7335a36fee41cc8d1350d5c76220c6fab09b03b9433aa6",
+      "size_bytes": 527
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20260810-f0-a1.json",
+      "sha256": "7a97cd8a0dd92826d67dc3817bf2cb2f2f2f9b7df56680da54eca86c03129221",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20260810-f1-a1.json",
+      "sha256": "1d14057a91ac112d0611e4a7716e38c472d1394323b6af647882d5a453558fb7",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20260810-f2-a1.json",
+      "sha256": "da952c7017386e913bb998c810f755cf6e564e8b0d56f24a528b41c5ee0b3cae",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20260810-f3-a1.json",
+      "sha256": "bdd1d33323319b216556d3291838ad3591df7282c614712fc4a91962dcc3a822",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20261810-f0-a1.json",
+      "sha256": "2481ec1aeec2c55dd32ecdb8efe091bf4ba66e9b32d9fc3fad3065e0ac446afa",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20261810-f1-a1.json",
+      "sha256": "02119e21a14afb84528138f50f47489f9528ed6fc7df6dd8c710bd342fd0f93f",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20261810-f2-a1.json",
+      "sha256": "6417f18ac26b54848740bab8fde48afd34d30e5b7d8af96f526fc36648cb8f50",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20261810-f3-a1.json",
+      "sha256": "011b5f168f6569cbbef460aeef46c95c51a62080a56b2c1efa9f46b2e064db5f",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20262810-f0-a1.json",
+      "sha256": "640f05f62beffad410094c3cff3eaf65fac5bc802957c72095c601ed977b004f",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20262810-f1-a1.json",
+      "sha256": "bb6ad00b3b16a25a2c7287b5657733a7dc1d99a0b1603e54b2b564727be93c66",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20262810-f2-a1.json",
+      "sha256": "65689a9f4320808e803cd7a508123fc7ff64e0b1933e258044d8f1a448db5de3",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20262810-f3-a1.json",
+      "sha256": "b08d7e640af90fce4c90c4912c9e7fe60e30f4e73ee27be5ffc2ad190a85efb4",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20263810-f0-a1.json",
+      "sha256": "008ba187897720debd9d3eda0b76676a6566cee13118951873e53d4d92161b1c",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20263810-f1-a1.json",
+      "sha256": "2e921463083fb9266a101ecefd7a18f532d95d89365844ac720856b91de86775",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20263810-f2-a1.json",
+      "sha256": "7957ce3e9896179a25aaf8cf4f4c4c0cc793e4fecbec3da1e98cb039525c51e0",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20263810-f3-a1.json",
+      "sha256": "d46cd16b48dc8389610941b375b6b7b4d96afbb058c6bbb0fd956d851256373a",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20264810-f0-a1.json",
+      "sha256": "62c49a9195690ea539d99a6daabd80b45a05851eff4422b37650c88660513db5",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20264810-f1-a1.json",
+      "sha256": "c4e3780b92b5ce04f6d64a0c43cd402cffd83ae71bfaf9a5dc9823e9cf8006e1",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20264810-f2-a1.json",
+      "sha256": "3ae97b8d8f5418001075432df75b9ae2a10f327016a1750b8227c220dc1fad62",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v0-s20264810-f3-a1.json",
+      "sha256": "3208f4fe172404d63fb73a130377686d90b0c6ff1b890f1437ada255484bb542",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20260810-f0-a1.json",
+      "sha256": "4bcd864607ed4f834dcf7315d69a8f60e05fc654e549261ac2c7469cab048583",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20260810-f1-a1.json",
+      "sha256": "b9d6ad1f3254f8db79dfe5919410628c0e5b3dfc671a0b770867ee462674f566",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20260810-f2-a1.json",
+      "sha256": "e2349192c2d5bcbde38a636d5f352fd280228430d9ed3bb4c752075f2c71489c",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20260810-f3-a1.json",
+      "sha256": "3109c2658dc95b6fbf4e69740d945567299faebf9e35dabf4aa72fd0257c5ed2",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20261810-f0-a1.json",
+      "sha256": "dccc66b785967620171913b96c4ed2ce1215ebc97ecb1c7e4dcab993fece4918",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20261810-f1-a1.json",
+      "sha256": "8668e6b276d24520651f868df658e01ab989ffe563968f5c2efd8212c51cb5bf",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20261810-f2-a1.json",
+      "sha256": "bbdb0e2a7d839a29265496914e892dd857b4cc6b072250317ccd9e48755763b3",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20261810-f3-a1.json",
+      "sha256": "63ce638095909de8a008634db3c70c185288dcad80ce37f6dd3d47c621294cee",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20262810-f0-a1.json",
+      "sha256": "ccd02369e26615bea900e2f0d62615256df1c3eba6932054f5ebb42b04751c65",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20262810-f1-a1.json",
+      "sha256": "ec3ca4d5fa43a522370279e6a77974a1e1f254e29f4b431378bc3b3a00b660ea",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20262810-f2-a1.json",
+      "sha256": "74dc199352f1dbb0188364d0d912633769e11150809e5f0c43e30d173155defb",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20262810-f3-a1.json",
+      "sha256": "86dca8da0944d9ae15a7c94614c7c6ed620aa80b3f13540df97cce35173d37a6",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20263810-f0-a1.json",
+      "sha256": "60ecfbbc22bdc9898e3f9531fd2035f53ca68389482d3f61d9c97a4043ebb926",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20263810-f1-a1.json",
+      "sha256": "bfc9c2e2617e30996c8c14e80c93f2676112607ef2f8b5f74ec42098d73e9cb2",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20263810-f2-a1.json",
+      "sha256": "d503d78e114e174418de912279161e807282abf400210f3a42a1ff84821579cd",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20263810-f3-a1.json",
+      "sha256": "916aa5477ef7351568e1876cb994df10f762d56aefa6c20812fcee8c3cc625fd",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20264810-f0-a1.json",
+      "sha256": "0da0625b49de9cd08bec87cc3b3d939726a4950a8953b73100d5fb5a5690464c",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20264810-f1-a1.json",
+      "sha256": "c0b433a898091718437b69ffd502de258828c0a216c580f7ee020d28708aaed3",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20264810-f2-a1.json",
+      "sha256": "31fe4ad84b8717b4f6fba320f393c2fab5e4aa2e5d244f14ba3d0865a77b7d04",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v1-s20264810-f3-a1.json",
+      "sha256": "24c6b413288123bfbf1d20db8d3eb06fa57b8f1468d9261488d28c9ee89e8fd6",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20260810-f0-a1.json",
+      "sha256": "5754e1aed9105947b0b77219bf4c7b5a5a65f04ecd012cb57ccee207b92bb435",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20260810-f1-a1.json",
+      "sha256": "8fc8838388839847d5fd71e23a075db8cc3d299b1807b8506e02e08801c41bf0",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20260810-f2-a1.json",
+      "sha256": "c09fbfbab79f19d5175a0aff14c2e326712c0a888d31b98765648a486bc76f0e",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20260810-f3-a1.json",
+      "sha256": "d442da2bed7af46c8156fcd058aa7d593273912a44bca7c5dd407f14cba905ab",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20261810-f0-a1.json",
+      "sha256": "c2c4bd4119ed6423bd96f2edb7ac6b99a4d7d58b42f9e43ff55dbb68b7815e28",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20261810-f1-a1.json",
+      "sha256": "6a1563f88f5ca8a3ad675e932cb37fa4f076985f2f3d0339c488440bc67262f1",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20261810-f2-a1.json",
+      "sha256": "592584c901460d0509d7a780043b732908c38f98c555873a77fb585bf2d22924",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20261810-f3-a1.json",
+      "sha256": "aa627a8e126ffa2d84350ac83b7a0446a2aae923d9a7ca79d2c8f08dcaaf0e6a",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20262810-f0-a1.json",
+      "sha256": "81238776052b074e0b5e70651dc569287e2ff0ad75978e0a1510f079a954eac0",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20262810-f1-a1.json",
+      "sha256": "0c1deca7e69f8629a898e88f03ba479935d20166fb72f73119d2d6780a7027dc",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20262810-f2-a1.json",
+      "sha256": "eaf4c948733ff3819c1432b9663e3985f145e2992223efa113e04efb0c0577a9",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20262810-f3-a1.json",
+      "sha256": "768fb39326fda5cd3806fe687461bef372a5c4fffffe0c1dd82372ea3de2e1ec",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20263810-f0-a1.json",
+      "sha256": "2a0ace3428c24dbc08e2333def5324e921e984b8beecc31bf8f3b67d08440ff2",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20263810-f1-a1.json",
+      "sha256": "992f724517b449da3407703697768cc461f21e2f0005eb25dd9196d4e4d63199",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20263810-f2-a1.json",
+      "sha256": "72851e125ba10bf51377d7b59d79ff373a6ca9ca6f8c139051ac3033349aaec4",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20263810-f3-a1.json",
+      "sha256": "b95021478eefb074f88f077e0b1a7a163c4ac57696cc554635febae05d9d0a25",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20264810-f0-a1.json",
+      "sha256": "6773461e45aa36fd46d78ba8fdbd099b29b68c64c6a3cf9172466202545eb52c",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20264810-f1-a1.json",
+      "sha256": "2b005df6b871231162d5e69840ad8d0391b5c24fa30b6813029ac58a4f09807c",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20264810-f2-a1.json",
+      "sha256": "781216425ed5d8bff03799208daf5db979e5caf6207f772309c66b690cca22b8",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v2-s20264810-f3-a1.json",
+      "sha256": "4b74580c9ebe00928993bc524982f1ae6b1a706ef59eaed46a12d1e6477d1a12",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20260810-f0-a1.json",
+      "sha256": "02fb846d50528a2093893ba79ee1560825cc2aba080fe830dea117274f3088fb",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20260810-f1-a1.json",
+      "sha256": "9976e530cf96e5d4d3f648c4eaa51ed6c5b3a6a38fdead3d9577f16e38147fac",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20260810-f2-a1.json",
+      "sha256": "0c70c90fc77e35fd17439f31e8b415bbd206750a60519086ba89fba2ea92c8be",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20260810-f3-a1.json",
+      "sha256": "b5a5c26e509d1a39410c45fac25d902b2b466775043ac6123a52431a855ab69e",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20261810-f0-a1.json",
+      "sha256": "6b53cc1103c838641903c49d9dedab97a418ac5d0201af0ba0f635da8f0009a1",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20261810-f1-a1.json",
+      "sha256": "296c699d857aa4a875f6dee33cac85dee18ca92ffb9ab7fda5af3e126b936a30",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20261810-f2-a1.json",
+      "sha256": "c7b41789a0b85ff776df2ae33cf3e7851fae158b2ca84dd2f99b546bddbfbe27",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20261810-f3-a1.json",
+      "sha256": "bdec5d10002bce3cfe9ff85b184b6e774c40aab70887c3529eaecbf4ec4219c0",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20262810-f0-a1.json",
+      "sha256": "de83852cbd5204144a979821dcd7ec1425d8b4a800c04ccc71e41bd01636786b",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20262810-f1-a1.json",
+      "sha256": "f142447de4368e17e67fc0607665b91f40993bab149f194a12330704e57af226",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20262810-f2-a1.json",
+      "sha256": "76ee6e1d66abc1eea47a04d89418ef7744357bc062ad922ff12d44ba7eb6746c",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20262810-f3-a1.json",
+      "sha256": "5b84739019d108632f29c61009ac352e387eb90fce324001c515e8feafbe1132",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20263810-f0-a1.json",
+      "sha256": "973cca2b2caa843f7f71c5f6a0687e642d4e0df868f95eb19d46ddde9af9780c",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20263810-f1-a1.json",
+      "sha256": "423a7a4a791a2485df317e0c8f773defe5ea24d31f8ba8ea6d9fedfe575fac9a",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20263810-f2-a1.json",
+      "sha256": "6f49c60a45fb894fe962eaead3b63c2459be570e394935b3c133b42d27c4b711",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20263810-f3-a1.json",
+      "sha256": "c1d7ef8b162b7cbd7a313cc561b9033d1cc10ac79e2e73f091b130c4272df192",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20264810-f0-a1.json",
+      "sha256": "4fcf9b1201b1e680808ef91f2e6c9fc0b16c41d8d95c77ac2e61f45204acd336",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20264810-f1-a1.json",
+      "sha256": "1be599d2b9cb4f3432d49e362569f594e004cd97dcd79ef9407c0a4d00276f53",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20264810-f2-a1.json",
+      "sha256": "f877bfacbad2581cccab4d642e8a47ebeedb3a816c23036d088f2c48b1beead1",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v3-s20264810-f3-a1.json",
+      "sha256": "e1fef6a55279a64675159b8a57975d1bfe1b69345e14e7fed00d478f00a77218",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20260810-f0-a1.json",
+      "sha256": "51d5806808c7bd311c18a02bd6b8e48344c982c18bc22d93c8a7e69f6149de48",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20260810-f1-a1.json",
+      "sha256": "9b59910ae56dcf38d29e1a5ab6d9f2f3fe293ab81b011195e8342f256124d656",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20260810-f2-a1.json",
+      "sha256": "d526c29998fc7b9ed2439d9d070e09e9b994a278666492808c0c9bef584e5fbf",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20260810-f3-a1.json",
+      "sha256": "4fa8ad977f03354b8d30caa3663581cd8d63001f971e4019c08bbe39882f6a1a",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20261810-f0-a1.json",
+      "sha256": "445ca4adad8e23a913e578a661f47162069921a59066e73af0b38abf0e46be74",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20261810-f1-a1.json",
+      "sha256": "107dfff594cde5ad3f3cb43f1027d015a4aaa26cfbb1120509da8f41fdbcf799",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20261810-f2-a1.json",
+      "sha256": "1c066172af814b899e2d0dd0b1a1ecfd11c482acb7ed3178f2f595ca415d4abe",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20261810-f3-a1.json",
+      "sha256": "409f822580d7511ed01a8618e418c55a06fdcd6991120d38123f337dfccc104c",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20262810-f0-a1.json",
+      "sha256": "49cd85ee7a2fbaf59cd280116ca54e31b3bc881f1ffb58eb2854b06c98e7f28c",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20262810-f1-a1.json",
+      "sha256": "1d6eddd2103065986ce9df1aba7e6c7dfb99254bb374fbedcba556e10bb0d27e",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20262810-f2-a1.json",
+      "sha256": "ef3a4bf04dceb26ea4dfbaa4ba4bfb1fa578edf3d533b0884f6adbbafce8c9f9",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20262810-f3-a1.json",
+      "sha256": "aee67333a02a25c7856e9168cb8efb705ec3562721ea776ff14047600a412004",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20263810-f0-a1.json",
+      "sha256": "a92f49e059032fadd22287e9c912e59f6161f7785471ade445d387e8d0657018",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20263810-f1-a1.json",
+      "sha256": "a4422d4058aef0d8b1ffdea08737eb0a7c6b2f67d836a4987941abf24d477583",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20263810-f2-a1.json",
+      "sha256": "d20ed95d6382d144406dfc3d9a791eecd56fde388b43941481f15fbb0d7a8b16",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20263810-f3-a1.json",
+      "sha256": "10da4e5c08b1085a31819502dbf78ec57e0dae9647db08b82c1a18c0e280bf5a",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20264810-f0-a1.json",
+      "sha256": "7925d05400911c97ba00c405529763bee9a010a1b6e1146841a2ba7339065ca5",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20264810-f1-a1.json",
+      "sha256": "eada20a28fe7c2c2bfb3acc1d6a2470bea0c2a53c5518e14d3bb8ee5f72abf1f",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20264810-f2-a1.json",
+      "sha256": "831b21a3bc67b5d65c4a0255e289c508038e2cd29b2f189ef04556bde9a34eff",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v4-s20264810-f3-a1.json",
+      "sha256": "07b85493b1e0200631cc52d7f9d445f6050863f08bc6002c6abdf793d0eeeec3",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20260810-f0-a1.json",
+      "sha256": "d1c6acc56aca3e358e6495d40f8933a8510b3b2f08b09a5340e1cd6143a03a2d",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20260810-f1-a1.json",
+      "sha256": "beff7b2f2f883ef9c0879f7542a088db178f05f7f6b40a900805734acb1e9c17",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20260810-f2-a1.json",
+      "sha256": "90520d525c78edecd797215b12b3b646eafcccd05212c4266a7e73abd7d868dc",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20260810-f3-a1.json",
+      "sha256": "b6fc0492048dac4ae816628b5b01fca78d75bc1421fbfc5ac1a485822a38f767",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20261810-f0-a1.json",
+      "sha256": "5d01ed6c5a4e53f82edc352d6a6e00c1d00d82e45759705bd4accbacf5b2d8d6",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20261810-f1-a1.json",
+      "sha256": "0a10efc54ec77557f7828c9f13cc14b52f401b9e2b136a7ed36f5b87a4f57aaa",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20261810-f2-a1.json",
+      "sha256": "6bc4ab7ed8f6564b5cf8768b141f81b315c67420f1fcb0981de0ba71b510bd09",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20261810-f3-a1.json",
+      "sha256": "87c0575985136f3624261ecf828beff0aed678d3eef28e4c63b7f8408cae14bf",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20262810-f0-a1.json",
+      "sha256": "ee37d49cdec7fc58b3b7db557423c9ba274a6fd5827428ea10eb3ab94671c3e9",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20262810-f1-a1.json",
+      "sha256": "e64b3f40ed1d7706653cc05ff722bf948dcf5e57f35006539fc392918f70f35c",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20262810-f2-a1.json",
+      "sha256": "1d4dff9d1f9f6336bc6dea2c90d19370ee4c53b2fe72b531c9762439bb2684b7",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20262810-f3-a1.json",
+      "sha256": "3e2f77e008e9c5b361b5aaf2da16d595e1a87c9c736f3a7337d7f1daa8caa472",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20263810-f0-a1.json",
+      "sha256": "6e3f29b4e96ffb68c4465c6482002490fbddf0fa63eacc6ec2fbc6967717fa1d",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20263810-f1-a1.json",
+      "sha256": "ceda06c716bea2f6cccff3cd7d4f5e0749ede4170409789fadd22550976e90bf",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20263810-f2-a1.json",
+      "sha256": "807fe6cc82e1034bdc32eeb50cb9ff38c4144ee3eb821c031f4047699e1327e0",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20263810-f3-a1.json",
+      "sha256": "ca7271f923ab98b4e7dd6578641db93e68667f09faf1b9a41c87fb8399b5fdaf",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20264810-f0-a1.json",
+      "sha256": "553a8ce508a3ce59a5d5f1261c7acfa31435489366e54987ee05319ea983c607",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20264810-f1-a1.json",
+      "sha256": "d212e11a77931797623b32f113da034efe1332cc9d5e1d160ec071a8cc6ea01c",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20264810-f2-a1.json",
+      "sha256": "74c4e04d4ccdf1d42e789c9e38427c1368154a976c7e15c2d9805f70d3d5a77b",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v5-s20264810-f3-a1.json",
+      "sha256": "e94c36f0d1f7136cef8c0a19b18b474ca2f3c959fc1ad33f3cc361dec7b5a7e5",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20260810-f0-a1.json",
+      "sha256": "b75267db28055578245d5e0c969b0e83591c8f482f04feb3f4715125736470c5",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20260810-f1-a1.json",
+      "sha256": "accaa831527533731adff1e1b45c11599ef7a10e1507b577f612cf6069729d66",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20260810-f2-a1.json",
+      "sha256": "2f019a174b90532f7766677afdc50880cd97262a03e0abbf55dc9d5f18add46e",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20260810-f3-a1.json",
+      "sha256": "48f32a8ca3dded0467bf26fe64e1d6e9b0835e1dc1b14103e1c89831905b6f17",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20261810-f0-a1.json",
+      "sha256": "0cc4db08404916e89da5163e87120c7c68be9010c7dff6a7af188fe28c3313e0",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20261810-f1-a1.json",
+      "sha256": "ec6017e5aa1b81d362f25b146816175d650a6c2ce9d70a81f66b859adcc37c96",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20261810-f2-a1.json",
+      "sha256": "85168ee2de596b251bfdd3acb6250fcfb845034699b5c9a7d1084f8fbae2cef3",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20261810-f3-a1.json",
+      "sha256": "cca6420506f0166558838528cc285252862be5677e8b05498e8fbc5234aff022",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20262810-f0-a1.json",
+      "sha256": "9243baf73464510a0cb9b40b642e241924b86ff65778adfe13baa839740b39b5",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20262810-f1-a1.json",
+      "sha256": "ccc82f404446d0087dded752fd02b54487111e497b63a799251fc40e6d8d58d7",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20262810-f2-a1.json",
+      "sha256": "d9bb7452b77df0a5fc85a73b78e044f70cb7e8fab0c66ee6611abab26692ac8a",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20262810-f3-a1.json",
+      "sha256": "f8f815f7fb5eec1b918bd07431a247a21f415c8429b0e1610607d15a3774dddd",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20263810-f0-a1.json",
+      "sha256": "684d425579d31efb7533d47fefec55505c5ce841b7c45692122df72962a8fc8a",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20263810-f1-a1.json",
+      "sha256": "458164668090e778a24c2489effc8b6c397a6009c20186014a3e3c7c9eadfb8e",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20263810-f2-a1.json",
+      "sha256": "f354c499ed87d2bc90d7d2fb6ca5771c22691bd03734ffca40177f5c5cd3d802",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20263810-f3-a1.json",
+      "sha256": "4b22dc9701825124dc7c7945b76f0428bced5fa96eaf6969bb93533da373ad41",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20264810-f0-a1.json",
+      "sha256": "0b1e98f646bd96945b7273fbfd806cdb6d2b548a8dc8668fac5013c319cf2c24",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20264810-f1-a1.json",
+      "sha256": "c8b3b53592e4bb872f3a29312259a35b422760da8f579ee65222ab5c97605fa0",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20264810-f2-a1.json",
+      "sha256": "db46c883bc392591d163fbdc57e60ce50514c7ec94ace137a1a4e31f61b59f19",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/jobs/markers/full/v6-s20264810-f3-a1.json",
+      "sha256": "4179ed2ba8be0c1dc05cb59eadd5f51a7f2bf674ec59b86b2e0cc7f5f46e1bca",
+      "size_bytes": 514
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/ledger.json",
+      "sha256": "9e2a27d989e3e26e02af1bc667b999e6fced905c8575383aed94aff4ec77ef9e",
+      "size_bytes": 109014
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/full/attempt1/plan.json",
+      "sha256": "2c8b08c37ec6997c45417adbb4e74e0f394cb133845129e7a2c3fece66a0d0a1",
+      "size_bytes": 139836
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/launch_manifest.json",
+      "sha256": "38fd482c1343f10efc8ec18507b05f5110f226898f236815a97b9671f7269223",
+      "size_bytes": 7537
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V0.pilot-receipt.json",
+      "sha256": "c8862589967e1013cec3d5f1dd4658eb314de263ff8697bf746d74d9d0379c16",
+      "size_bytes": 4283
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V1.pilot-receipt.json",
+      "sha256": "14875e6da31a66847cfc5feb8d2526cd29d313d6c925185216941add9d5db33d",
+      "size_bytes": 4283
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V2.pilot-receipt.json",
+      "sha256": "bed01f5e7fd24f614a463f753d144c9f4467307fce79976798257948fa80ce1f",
+      "size_bytes": 4283
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V3.pilot-receipt.json",
+      "sha256": "4ed4cd65fff716322e12cb42fce81be59c987855c7d6823ef317a9988657a649",
+      "size_bytes": 4283
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V4.pilot-receipt.json",
+      "sha256": "0a7f341113f47c1ac1945d318c4a1a722014051209879bd7e050569ee07bb855",
+      "size_bytes": 4284
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V5.pilot-receipt.json",
+      "sha256": "f09879d46b870c7aa3977abe3000770d4bc23d58dbbd214fc6e876d67f4715b9",
+      "size_bytes": 4283
+    },
+    {
+      "path": "state/materialized/same_gene_robustness_v1/recovery_r1/pilot/receipts/V6.pilot-receipt.json",
+      "sha256": "67d8c521c7b7ac6c4a45c7106882ffb4e887e7e70467c708154e121f132e97a5",
+      "size_bytes": 4284
+    },
+    {
+      "path": "state/tracking/bagm.sqlite3",
+      "sha256": "3a5e5b895e74852fee79699345d3df7de4ada3799b806c670a6b641df0db6443",
+      "size_bytes": 12029952
+    },
+    {
+      "path": "tests/integration/infrastructure/test_registry_queue.py",
+      "sha256": "40c1f412af3a30d49e9127b3c04a8e0c1a1d87183fbf5a88be0b1b595df060aa",
+      "size_bytes": 24168
+    },
+    {
+      "path": "tests/unit/infrastructure/test_run_archive.py",
+      "sha256": "31bea352d7baeb2b96cfadc6bfe5ff830c9ad78c992d2a69bc049504d55e670a",
+      "size_bytes": 21706
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_analyze_same_gene_robustness.py",
+      "sha256": "fafde5929e608ec48a5cdbd4d0e330035203d4c3148b7841ddbbdc470d0535a6",
+      "size_bytes": 29739
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_environment_lock.py",
+      "sha256": "be4259521948756cc639c9521de768a9908338031e86b26e94c6f2f70b50cf1a",
+      "size_bytes": 5650
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_launch_same_gene_robustness.py",
+      "sha256": "fa53bb52138c73e948955cb179c6fcdccbff3f21f90c90f515d4ae4b82988f33",
+      "size_bytes": 25831
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_materialize_same_gene_robustness.py",
+      "sha256": "a9fad379a2c61883cb4ae8f7307469ebfa3594d581090ceace05c895474a719c",
+      "size_bytes": 50512
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_prepare_same_gene_robustness_variants.py",
+      "sha256": "a4c6019ec57b4fc9af4a677c50cde5953102b248c8a5cac26dcdf181f4f7ab30",
+      "size_bytes": 12184
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_run_same_gene_robustness.py",
+      "sha256": "71c764c4306ed626857995df518c2448d35c3b35b07f0771fd9ac9d3e139fdfa",
+      "size_bytes": 33541
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_same_gene_nonlinear.py",
+      "sha256": "174f0791ec7a8f047c5d668dcad99c5f6c0caa3fff7a6d215b6976e592310037",
+      "size_bytes": 4117
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_same_gene_nonlinear_convergence.py",
+      "sha256": "d11e58b8a9b4617c83906a2995d09156c7b17f3390317d60f3315a9c2757cf2f",
+      "size_bytes": 46666
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_same_gene_phase_transforms.py",
+      "sha256": "a14bdbb380f1461f275a86dab41d37705bd226cc773c732cf5ec440bfdd17f72",
+      "size_bytes": 6747
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_same_gene_recovery.py",
+      "sha256": "c99e1bc2d2cbd1b340b75254053d50ca43ec3f5a7dcaff6ced29fceff4fac6a0",
+      "size_bytes": 12374
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_same_gene_residualization.py",
+      "sha256": "728df1ec98a257323ae254f0ef98dabbc9fb0cc3f1a4d229a56fd07236d20486",
+      "size_bytes": 12061
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_same_gene_robustness.py",
+      "sha256": "aee3242f643e5ba20b579c7610575508aaa80c7385bd54a3c81bdb2b41da0679",
+      "size_bytes": 6191
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_same_gene_robustness_analysis_recovery_v2.py",
+      "sha256": "01372f6056a6105524ad25ee5d501a8d99009406ef8d35ba2f7eb9ab31119c36",
+      "size_bytes": 19894
+    },
+    {
+      "path": "tests/unit/spatial_benchmark/test_same_gene_robustness_analysis_registry_recovery.py",
+      "sha256": "b4ee73649d9622e00e4a8df9c75e41c0bfb6f73beff0af4bdc7ff565090c54e9",
+      "size_bytes": 16852
+    }
+  ],
+  "tolerances": {
+    "jacobian_max_abs": 1e-06,
+    "metric_relative": 1e-12
+  }
+}

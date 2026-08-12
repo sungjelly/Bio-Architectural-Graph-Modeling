@@ -1,0 +1,42 @@
+{
+  "campaign_id": "cmp_20260810_same_gene_robustness_multiverse_v1",
+  "files": [
+    {
+      "path": "aggregate_jacobians.npz",
+      "sha256": "767c907fc4ee9d7aceec40feeac02b958c5b05d3d36000833b7704022aa31fef",
+      "size_bytes": 987143947
+    },
+    {
+      "path": "aggregate_results.json",
+      "sha256": "d188f44ac642994e95586cb7ea426eb127284fe2f8325ef1302342bf6fc8e37b",
+      "size_bytes": 424428
+    },
+    {
+      "path": "analysis_provenance.json",
+      "sha256": "005fa4318ff28578e88c106c9a47b7cb72d953dbcc8f088a0f68f608b578c01e",
+      "size_bytes": 98101
+    },
+    {
+      "path": "component_metrics.csv",
+      "sha256": "02a297a0e40f9ac9d569d8c1b150798421a4a9d92f8338878b5e3d05ea07585e",
+      "size_bytes": 688346
+    },
+    {
+      "path": "eligible_gene_summary.csv",
+      "sha256": "0a49cb35bc3c1e6f387c70b193655f28302a31dc1bbb7914726134d4da8422ed",
+      "size_bytes": 55692
+    },
+    {
+      "path": "report.md",
+      "sha256": "2ee29bea380a3119d4085c9485036912a9ebe1f84bf919058669461ec308a440",
+      "size_bytes": 3260
+    },
+    {
+      "path": "run_verification.csv",
+      "sha256": "bda476437412e6bc63a5115c4c2f6811b410e8fad425aaa54dab4440cca0e069",
+      "size_bytes": 63293
+    }
+  ],
+  "files_sha256": "78e7e9781c08e1c53ffb05eda8cff960d0c07f9d9abb6d2f443706201eb5a202",
+  "schema_version": 1
+}
