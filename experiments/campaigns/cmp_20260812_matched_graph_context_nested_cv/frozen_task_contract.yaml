@@ -65,6 +65,23 @@ search:
   learning_rates: [0.0003, 0.001, 0.003]
   weight_decays: [0.0, 0.0001, 0.001]
   dropouts: [0.0, 0.1, 0.2]
+  candidates:
+    - {id: c00, hidden: 32, learning_rate: 0.0003, weight_decay: 0.0, dropout: 0.0}
+    - {id: c01, hidden: 32, learning_rate: 0.0003, weight_decay: 0.001, dropout: 0.2}
+    - {id: c02, hidden: 32, learning_rate: 0.001, weight_decay: 0.0001, dropout: 0.1}
+    - {id: c03, hidden: 32, learning_rate: 0.003, weight_decay: 0.0, dropout: 0.2}
+    - {id: c04, hidden: 32, learning_rate: 0.003, weight_decay: 0.001, dropout: 0.0}
+    - {id: c05, hidden: 64, learning_rate: 0.0003, weight_decay: 0.0, dropout: 0.1}
+    - {id: c06, hidden: 64, learning_rate: 0.0003, weight_decay: 0.001, dropout: 0.0}
+    - {id: c07, hidden: 64, learning_rate: 0.001, weight_decay: 0.0, dropout: 0.2}
+    - {id: c08, hidden: 64, learning_rate: 0.001, weight_decay: 0.0001, dropout: 0.1}
+    - {id: c09, hidden: 64, learning_rate: 0.003, weight_decay: 0.0001, dropout: 0.0}
+    - {id: c10, hidden: 64, learning_rate: 0.003, weight_decay: 0.001, dropout: 0.2}
+    - {id: c11, hidden: 128, learning_rate: 0.0003, weight_decay: 0.0001, dropout: 0.2}
+    - {id: c12, hidden: 128, learning_rate: 0.0003, weight_decay: 0.001, dropout: 0.0}
+    - {id: c13, hidden: 128, learning_rate: 0.001, weight_decay: 0.0, dropout: 0.0}
+    - {id: c14, hidden: 128, learning_rate: 0.001, weight_decay: 0.001, dropout: 0.1}
+    - {id: c15, hidden: 128, learning_rate: 0.003, weight_decay: 0.0001, dropout: 0.1}
   stage_a_seed: 20260812
   stage_a_advance_rule: best_candidate_per_arm_per_hidden_width
   stage_a_candidates_per_arm_advanced: 3

@@ -124,8 +124,29 @@ feature-deletion/substitution faithfulness diagnostics, not new fitted arms.
 The deterministic 16-candidate design spans context hidden width
 `{32, 64, 128}`, learning rate `{3e-4, 1e-3, 3e-3}`, weight decay
 `{0, 1e-4, 1e-3}`, and dropout `{0, 0.1, 0.2}` without taking the full Cartesian
-product. Batch size is fixed at 4096. Every candidate follows one continuous
-AdamW trajectory and is scored at epochs `[12, 24, 48, 96, 192]`.
+product. The exact pre-outcome tuples are:
+
+| ID | hidden | learning rate | weight decay | dropout |
+|---|---:|---:|---:|---:|
+| c00 | 32 | 0.0003 | 0 | 0 |
+| c01 | 32 | 0.0003 | 0.001 | 0.2 |
+| c02 | 32 | 0.001 | 0.0001 | 0.1 |
+| c03 | 32 | 0.003 | 0 | 0.2 |
+| c04 | 32 | 0.003 | 0.001 | 0 |
+| c05 | 64 | 0.0003 | 0 | 0.1 |
+| c06 | 64 | 0.0003 | 0.001 | 0 |
+| c07 | 64 | 0.001 | 0 | 0.2 |
+| c08 | 64 | 0.001 | 0.0001 | 0.1 |
+| c09 | 64 | 0.003 | 0.0001 | 0 |
+| c10 | 64 | 0.003 | 0.001 | 0.2 |
+| c11 | 128 | 0.0003 | 0.0001 | 0.2 |
+| c12 | 128 | 0.0003 | 0.001 | 0 |
+| c13 | 128 | 0.001 | 0 | 0 |
+| c14 | 128 | 0.001 | 0.001 | 0.1 |
+| c15 | 128 | 0.003 | 0.0001 | 0.1 |
+
+Batch size is fixed at 4096. Every candidate follows one continuous AdamW
+trajectory and is scored at epochs `[12, 24, 48, 96, 192]`.
 
 Stage A evaluates all candidates with seed 20260812 on all four validation
 folds. For each arm and each hidden-width stratum, the best candidate by
