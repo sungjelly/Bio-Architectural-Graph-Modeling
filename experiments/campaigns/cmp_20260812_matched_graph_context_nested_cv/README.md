@@ -250,7 +250,26 @@ seed/arm coverage, unsafe GPU collision, peak VRAM above 20.5 GiB, less than
 25 GiB free disk, registry/artifact inconsistency, or a failed checkpoint
 replay. An unfavorable scientific result is not a blocker.
 
-Exact commands are added here with their generated receipt paths before
-production starts. Final verification includes focused tests, artifact
-verification, and `PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark
-doctor`.
+### Exact execution sequence
+
+Run from the repository root with `PYTHONPATH=src`. The coordinator writes its
+checksum-bound authorities below
+`state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/`:
+
+```bash
+PYTHONPATH=src /venv/main/bin/python scripts/train/launch_matched_graph_context.py materialize
+PYTHONPATH=src /venv/main/bin/python scripts/train/launch_matched_graph_context.py launch-stage-a --plan state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/stage_a_plan.json
+PYTHONPATH=src /venv/main/bin/python scripts/train/launch_matched_graph_context.py select-stage-a --plan state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/stage_a_plan.json
+PYTHONPATH=src /venv/main/bin/python scripts/train/launch_matched_graph_context.py materialize-stage-b --stage-a-selection state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/stage_a_selection.json
+PYTHONPATH=src /venv/main/bin/python scripts/train/launch_matched_graph_context.py launch-stage-b --plan state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/stage_b_plan.json
+PYTHONPATH=src /venv/main/bin/python scripts/train/launch_matched_graph_context.py lock-selection --stage-a-plan state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/stage_a_plan.json --stage-a-selection state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/stage_a_selection.json --stage-b-plan state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/stage_b_plan.json
+PYTHONPATH=src /venv/main/bin/python scripts/train/launch_matched_graph_context.py materialize-confirmation --selection-receipt state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/selection_receipt.json
+PYTHONPATH=src /venv/main/bin/python scripts/train/launch_matched_graph_context.py launch-confirmation --plan state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/confirmation_plan.json
+PYTHONPATH=src /venv/main/bin/python scripts/analysis/analyze_matched_graph_context.py --selection-receipt state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/selection_receipt.json --confirmation state/matched_graph_context/cmp_20260812_matched_graph_context_nested_cv/confirmation_plan.json --output-root reports/analyses/matched_graph_context_nested_cv
+```
+
+The preflight synthetic receipt is `synthetic_gate.json`; the irreversible
+outcome firewall is `selection_receipt.json`. Final verification includes the
+focused tests, all immutable run-bundle checksums, the analysis `_SUCCESS`
+receipt, registry consistency, and `PYTHONPATH=src /venv/main/bin/python -m
+spatial_benchmark doctor`.
