@@ -1,0 +1,96 @@
+schema_version: 1
+campaign_id: cmp_20260812_matched_graph_context_nested_cv
+exploratory: true
+outcome_blinding:
+  prior_outcomes_observed: true
+  new_tuning_must_not_evaluate_outer_test: true
+  maximum_designation: exploratory_nested_geometry_cv
+data:
+  prepared_root: data/processed/same_gene_robustness_v1/variants/v0_within_fov_log1p_all
+  variant_id: V0
+  cells: 407999
+  primary_eligible_receivers: 396622
+  genes: 1000
+  morphology_features: 22
+  slides: [SO_1, SO_2]
+  geometry_components: 27
+  raw_fingerprint: e1513d598d4ea910386842cdf4a6d9bd58e21318d484bdb34dfb3962f1490ea5
+  processed_fingerprint: 01c525695883784befc1b9ebbe37a6d96b248d5b18450f46a1255e571bd3819e
+  split_fingerprint: 12c0d46244ed443a482586fc85422672f9f04132c7def49a741c40ba48bf4264
+split:
+  id: opaque_geometry_components_075mm_4fold_v1
+  folds: [0, 1, 2, 3]
+  validation_rule: outer_plus_one_mod_four
+  tuning_train_rule: neither_outer_nor_validation
+  final_train_rule: every_non_outer_component
+  primary_weighting: equal_geometry_component
+  independent_biological_units_available: false
+features:
+  receiver_rna: prohibited
+  receiver_library_size: prohibited
+  rna_derived_labels: prohibited
+  identifiers: prohibited
+  technical_probes: prohibited
+  morphology_imaging: 22
+  broad_field_basis: [x, y, x2, xy, y2]
+  broad_field_fit_scope: training_only_within_slide_center_scale
+  graph_context_fit_scope: training_only
+graph:
+  partition: within_fov
+  k: 12
+  self_edges: false
+  near_um: [0.0, 25.0]
+  annular_um: [25.0, 50.0]
+  permutation: frozen_receiver_collision_free_degree_preserving_source_state_mapping
+  short_edge_sensitivity_um: [10.0, 25.0]
+model:
+  family: matched_additive_context_mlp
+  gene_count: 1000
+  base_feature_count: 27
+  activation: exact_gelu
+  no_graph_context: frozen_rank27_projection_of_base_features
+  projection_seed: 2026081201
+  exact_parameter_match_across_arms: true
+  arms: [no_graph, observed_near, permuted_near, observed_annular]
+trainer:
+  optimizer: AdamW
+  batch_size: 4096
+  epoch_candidates: [12, 24, 48, 96, 192]
+  gradient_clip_norm: null
+  precision: fp32
+  deterministic: true
+search:
+  design: deterministic_16_candidate_space_filling_grid
+  hidden_widths: [32, 64, 128]
+  learning_rates: [0.0003, 0.001, 0.003]
+  weight_decays: [0.0, 0.0001, 0.001]
+  dropouts: [0.0, 0.1, 0.2]
+  stage_a_seed: 20260812
+  stage_a_candidates_per_arm_advanced: 3
+  stage_b_additional_seeds: [20261812, 20262812]
+  selection_metric: validation_component_equal_mse
+  near_tie_relative_tolerance: 0.0025
+  tie_break: [lower_seed_sd, smaller_hidden, larger_weight_decay, lower_dropout, lower_learning_rate, candidate_id]
+confirmation:
+  seeds: [20260812, 20261812, 20262812, 20263812, 20264812]
+  folds: [0, 1, 2, 3]
+  selected_configuration_per_arm: true
+  outer_evaluation_role: exploratory_held_out_geometry
+synthetic_gate:
+  positive_context_relative_gain_minimum: 0.05
+  null_context_absolute_gain_maximum: 0.01
+  finite_and_deterministic_required: true
+metrics:
+  primary: component_equal_standardized_mse
+  secondary: [component_equal_mae, per_gene_mse, per_gene_pearson, slide_specific_effect, faithfulness_substitution]
+  bootstrap_resamples: 10000
+  bootstrap_seed: 20260812
+decision:
+  graph_vs_no_graph_relative_gain_minimum: 0.02
+  graph_vs_permutation_relative_gain_minimum: 0.01
+  interval_lower_must_exceed_zero: true
+  both_slides_positive: true
+  minimum_favoring_components: 20
+  minimum_favoring_seeds: 4
+  mae_must_not_worsen: true
+claim_ceiling: graph_alignment_dependent_predictive_dependency_within_two_observed_slides

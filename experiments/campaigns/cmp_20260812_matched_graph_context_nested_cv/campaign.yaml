@@ -1,0 +1,20 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260812_matched_graph_context_nested_cv
+display_name: Matched graph-context nested-CV experiment
+status: planned
+outcome: pending
+exploratory: true
+contract_status: frozen_before_new_training
+definition: experiments/campaigns/cmp_20260812_matched_graph_context_nested_cv/README.md
+frozen_contract: experiments/campaigns/cmp_20260812_matched_graph_context_nested_cv/frozen_task_contract.yaml
+frozen_contract_sha256: b51909eb363eb07ab4914792612f36fcdf629c4fe0bd03cf919394bdeede41f7
+dataset_id: gastric_cosmx_v0_matched_graph_context_v1
+dataset_version: same_gene_robustness_v0
+split_id: opaque_geometry_components_075mm_4fold_v1
+arms: [no_graph, observed_near, permuted_near, observed_annular]
+search_candidates: 16
+search_stage_a_seed: 20260812
+search_stage_b_seeds: [20261812, 20262812]
+confirmation_seeds: [20260812, 20261812, 20262812, 20263812, 20264812]
+folds: [0, 1, 2, 3]
+automatic_enqueue: false
