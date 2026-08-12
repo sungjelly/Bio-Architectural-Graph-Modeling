@@ -66,11 +66,14 @@ search:
   weight_decays: [0.0, 0.0001, 0.001]
   dropouts: [0.0, 0.1, 0.2]
   stage_a_seed: 20260812
+  stage_a_advance_rule: best_candidate_per_arm_per_hidden_width
   stage_a_candidates_per_arm_advanced: 3
   stage_b_additional_seeds: [20261812, 20262812]
   selection_metric: validation_component_equal_mse
+  shared_hidden_selection: minimax_relative_arm_regret_then_mean_regret_then_smaller_width
+  arm_specific_selection_within_shared_hidden: true
   near_tie_relative_tolerance: 0.0025
-  tie_break: [lower_seed_sd, smaller_hidden, larger_weight_decay, lower_dropout, lower_learning_rate, candidate_id]
+  tie_break: [lower_seed_sd, larger_weight_decay, lower_dropout, lower_learning_rate, candidate_id]
 confirmation:
   seeds: [20260812, 20261812, 20262812, 20263812, 20264812]
   folds: [0, 1, 2, 3]

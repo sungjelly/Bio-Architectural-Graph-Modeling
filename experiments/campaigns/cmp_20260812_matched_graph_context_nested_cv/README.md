@@ -128,17 +128,26 @@ product. Batch size is fixed at 4096. Every candidate follows one continuous
 AdamW trajectory and is scored at epochs `[12, 24, 48, 96, 192]`.
 
 Stage A evaluates all candidates with seed 20260812 on all four validation
-folds. For each arm, the best three candidates by equal-fold validation MSE
-advance. Stage B evaluates the union of those candidates with seeds 20261812
-and 20262812. One configuration per arm is selected from the three-seed,
-four-fold equal-weight mean. Within 0.25% of the minimum, the tie-break order is
-lower seed standard deviation, smaller hidden width, larger weight decay,
-lower dropout, lower learning rate, and candidate ID. Selection uses no
+folds. For each arm and each hidden-width stratum, the best candidate by
+equal-fold validation MSE advances, giving three candidates per arm while
+preserving all widths. Stage B evaluates the union of those candidates with
+seeds 20261812 and 20262812.
+
+The confirmation architecture must remain exactly parameter matched. For each
+arm and width, Stage B first identifies its best optimizer/dropout candidate.
+For width `h`, arm-specific relative regret is
+`best_mse(arm,h) / best_mse(arm,any_h) - 1`. The shared width minimizes the
+maximum regret across all four arms, then mean regret, then width. Within that
+shared width, one learning-rate/weight-decay/dropout configuration is selected
+per arm from the three-seed, four-fold equal-weight mean. Within 0.25% of the
+minimum, the tie-break order is lower seed standard deviation, larger weight
+decay, lower dropout, lower learning rate, and candidate ID. Selection uses no
 outer-test metric and is frozen before confirmation.
 
 Confirmation uses seeds 20260812, 20261812, 20262812, 20263812, and 20264812,
 all four outer folds, fresh final-train fits, and the independently selected
-arm configurations. No best-seed or best-fold selection is permitted.
+arm optimizer configurations with the one shared hidden width. No best-seed or
+best-fold selection is permitted.
 
 ### Metrics, inference, and decisions
 
