@@ -8,8 +8,9 @@ contract_status: frozen_before_new_training
 definition: experiments/campaigns/cmp_20260812_matched_graph_context_nested_cv/README.md
 frozen_contract: experiments/campaigns/cmp_20260812_matched_graph_context_nested_cv/frozen_task_contract.yaml
 frozen_contract_sha256: b51909eb363eb07ab4914792612f36fcdf629c4fe0bd03cf919394bdeede41f7
-dataset_id: gastric_cosmx_v0_matched_graph_context_v1
-dataset_version: same_gene_robustness_v0
+dataset_id: gastric_cosmx_drive_public
+dataset_version: drive_snapshot_20260810
+processed_variant: same_gene_robustness_v0
 split_id: opaque_geometry_components_075mm_4fold_v1
 arms: [no_graph, observed_near, permuted_near, observed_annular]
 search_candidates: 16
