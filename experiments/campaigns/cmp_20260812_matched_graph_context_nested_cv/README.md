@@ -19,10 +19,11 @@ slides have already been inspected, so this is not an independent confirmation.
 1. Audit and reuse the checksum-bound V0 all-cell/log1p/within-FOV arrays.
 2. Implement an exact-parameter-matched graph/no-graph model and synthetic
    positive/null recovery gate.
-3. Tune each arm using validation geometry components only, first with one seed
-   and then with three seeds, without evaluating an outer-test component.
-4. Freeze one selected configuration per arm in a checksum-bound selection
-   receipt before any new outer-test evaluation.
+3. Within each outer fold independently, tune each arm using only its paired
+   validation geometry components, first with one seed and then with three
+   seeds, without evaluating that outer-test component.
+4. Freeze one selected configuration per outer-fold/arm in a checksum-bound
+   selection receipt before any new outer-test evaluation.
 5. Fit five paired seeds across all four outer folds for no-graph, true near,
    source-state-permuted near, and annular contexts.
 6. Report component-equal effects, slide-stratified uncertainty, seed and
@@ -151,27 +152,33 @@ product. The exact pre-outcome tuples are:
 Batch size is fixed at 4096. Every candidate follows one continuous AdamW
 trajectory and is scored at epochs `[12, 24, 48, 96, 192]`.
 
-Stage A evaluates all candidates with seed 20260812 on all four validation
-folds. For each arm and each hidden-width stratum, the best candidate by
-equal-fold validation MSE advances, giving three candidates per arm while
-preserving all widths. Stage B evaluates the union of those candidates with
-seeds 20261812 and 20262812.
+Stage A evaluates all candidates with seed 20260812 for all four outer-fold
+jobs, but selection never pools across outer folds. Within each outer fold,
+each arm and each hidden-width stratum advances the best candidate using only
+that outer fold's paired validation components. This gives three candidates
+per outer-fold/arm while preserving all widths. Stage B evaluates those
+outer-specific candidates with seeds 20261812 and 20262812.
 
-The confirmation architecture must remain exactly parameter matched. For each
-arm and width, Stage B first identifies its best optimizer/dropout candidate.
-For width `h`, arm-specific relative regret is
+The confirmation architecture must remain exactly parameter matched within
+each outer fold. Separately for each outer fold, Stage B first identifies each
+arm's best optimizer/dropout candidate at each width. For width `h`, the
+outer-fold-specific arm relative regret is
 `best_mse(arm,h) / best_mse(arm,any_h) - 1`. The shared width minimizes the
-maximum regret across all four arms, then mean regret, then width. Within that
-shared width, one learning-rate/weight-decay/dropout configuration is selected
-per arm from the three-seed, four-fold equal-weight mean. Within 0.25% of the
+maximum regret across all four arms, then mean regret, then width, using only
+that outer fold's validation components. Within that shared width, one
+learning-rate/weight-decay/dropout/epoch configuration is selected per arm
+from its three-seed component-equal validation mean. Within 0.25% of the
 minimum, the tie-break order is lower seed standard deviation, larger weight
-decay, lower dropout, lower learning rate, and candidate ID. Selection uses no
-outer-test metric and is frozen before confirmation.
+decay, lower dropout, lower learning rate, and candidate ID. No validation
+outcome is pooled across outer folds for selection: a component serving as
+outer test in one fold may be validation elsewhere, but can never influence
+the configuration used to predict itself. Four outer-specific selections are
+checksum-bound and frozen before confirmation.
 
 Confirmation uses seeds 20260812, 20261812, 20262812, 20263812, and 20264812,
 all four outer folds, fresh final-train fits, and the independently selected
-arm optimizer configurations with the one shared hidden width. No best-seed or
-best-fold selection is permitted.
+outer-fold/arm optimizer configurations with one shared hidden width per outer
+fold. No best-seed or best-fold selection is permitted.
 
 ### Metrics, inference, and decisions
 

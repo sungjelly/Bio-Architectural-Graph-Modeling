@@ -62,6 +62,8 @@ trainer:
   deterministic: true
 search:
   design: deterministic_16_candidate_space_filling_grid
+  selection_scope: independently_within_each_outer_fold
+  forbidden_selection_pooling: across_outer_folds
   hidden_widths: [32, 64, 128]
   learning_rates: [0.0003, 0.001, 0.003]
   weight_decays: [0.0, 0.0001, 0.001]
@@ -84,18 +86,18 @@ search:
     - {id: c14, hidden: 128, learning_rate: 0.001, weight_decay: 0.001, dropout: 0.1}
     - {id: c15, hidden: 128, learning_rate: 0.003, weight_decay: 0.0001, dropout: 0.1}
   stage_a_seed: 20260812
-  stage_a_advance_rule: best_candidate_per_arm_per_hidden_width
-  stage_a_candidates_per_arm_advanced: 3
+  stage_a_advance_rule: best_candidate_per_outer_fold_per_arm_per_hidden_width
+  stage_a_candidates_per_outer_fold_per_arm_advanced: 3
   stage_b_additional_seeds: [20261812, 20262812]
   selection_metric: validation_component_equal_mse
-  shared_hidden_selection: minimax_relative_arm_regret_then_mean_regret_then_smaller_width
-  arm_specific_selection_within_shared_hidden: true
+  shared_hidden_selection: per_outer_fold_minimax_relative_arm_regret_then_mean_regret_then_smaller_width
+  arm_specific_selection_within_shared_hidden: true_per_outer_fold
   near_tie_relative_tolerance: 0.0025
   tie_break: [lower_seed_sd, larger_weight_decay, lower_dropout, lower_learning_rate, candidate_id]
 confirmation:
   seeds: [20260812, 20261812, 20262812, 20263812, 20264812]
   folds: [0, 1, 2, 3]
-  selected_configuration_per_arm: true
+  selected_configuration_per_outer_fold_per_arm: true
   outer_evaluation_role: exploratory_held_out_geometry
 synthetic_gate:
   positive_context_relative_gain_minimum: 0.05
