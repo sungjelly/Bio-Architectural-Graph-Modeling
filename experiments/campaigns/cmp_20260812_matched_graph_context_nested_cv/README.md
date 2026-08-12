@@ -1,8 +1,8 @@
 # Matched graph-context nested-CV experiment
 
-Status: `planned`
+Status: `running`
 
-Phase: `contract_frozen_before_new_training`
+Phase: `stage_a_nested_tuning`
 
 Outcome: `pending`
 
