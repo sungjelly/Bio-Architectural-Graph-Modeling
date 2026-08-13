@@ -4,7 +4,7 @@
 
 ## 한 문장 요약
 
-이번 실험은 **형태학 정보만 사용하는 모델(no-graph)** 과 **주변 세포의 RNA를 그래프로 전달받는 모델(graph)** 을 같은 조건에서 비교하도록 설계되었습니다. 현재까지는 실험 파이프라인과 1차 하이퍼파라미터 탐색이 정상적으로 진행되었다는 것만 확인되었고, **graph가 no-graph보다 실제로 좋은지는 아직 결론 내릴 단계가 아닙니다.**
+이번 실험은 **형태학 정보만 사용하는 모델(no-graph)** 과 **주변 세포의 RNA를 그래프로 전달받는 모델(graph)** 을 같은 조건에서 비교하도록 설계되었습니다. 현재까지 Stage A/B tuning은 정상 완료되었고 validation에서는 graph 방향의 일관된 신호가 관찰되었습니다. 그러나 **graph가 no-graph보다 실제 held-out test에서도 좋은지는 아직 confirmation 전이라 확정할 수 없습니다.**
 
 ## 무엇을 비교했나?
 
@@ -41,7 +41,7 @@
 
 이 단계는 “어떤 hyperparameter 후보를 다음 단계에서 검증할지”를 정하는 단계입니다. 따라서 Stage A 완료만으로 graph의 성능 우위를 의미하지 않습니다.
 
-### Stage B: 진행 중
+### Stage B: 완료
 
 최신 스냅샷:
 
@@ -51,6 +51,31 @@
 - confirmation 단계는 아직 시작하지 않음
 
 Stage B는 Stage A에서 선택된 후보를 추가 seed로 다시 비교해, 특정 seed나 우연한 hyperparameter 선택에 의한 결과인지 확인하는 단계입니다. 이제 Stage B 전체가 끝났지만, 이 수치는 여전히 outer-test가 아닌 validation 결과입니다.
+
+## 실행 규모와 사용한 hyperparameter
+
+이번 campaign은 다음 순서로 구성되었습니다.
+
+| 단계 | 계산량 | 목적 | test 결과 사용 여부 |
+|---|---:|---|---|
+| Stage A | 4 arms × 16 candidates × 4 folds = **256 jobs** | 후보 hyperparameter 탐색 | 사용하지 않음 |
+| Stage B | 4 arms × 3 후보 × 2 추가 seeds × 4 folds = **96 jobs** | 후보 안정성/seed 재검증 | 사용하지 않음 |
+| Confirmation | 4 arms × 4 folds × 5 seeds = **80 jobs** | 고정 configuration의 outer-test 평가 | 아직 미실행 |
+
+후보군은 learning rate, weight decay, dropout, hidden width, epoch를 포함하며, 모든 arm은 같은 후보 공간과 같은 계산 예산을 사용했습니다. batch size는 4096으로 고정했습니다. graph arm이 더 큰 모델을 써서 이긴 것이 아니라, 모든 arm의 trainable parameter 수와 hidden width를 fold별로 맞추는 규칙을 적용했습니다.
+
+### 최종 선택된 validation configuration
+
+Stage A/B 결과를 이용해 fold별로 선택된 configuration은 다음과 같습니다. `c05`와 `c01`은 사전에 정의된 후보 ID이며, configuration 선택은 validation MSE와 seed 안정성 규칙으로만 수행했습니다.
+
+| fold | no-graph | observed-near | permuted-near | annular | shared width |
+|---:|---|---|---|---|---:|
+| 0 | c05 / 192 epoch | c05 / 48 epoch | c05 / 96 epoch | c05 / 48 epoch | 64 |
+| 1 | c01 / 96 epoch | c01 / 48 epoch | c01 / 48 epoch | c01 / 48 epoch | 32 |
+| 2 | c01 / 24 epoch | c01 / 96 epoch | c01 / 192 epoch | c01 / 192 epoch | 32 |
+| 3 | c01 / 96 epoch | c01 / 192 epoch | c01 / 48 epoch | c01 / 48 epoch | 32 |
+
+이 표는 각 fold의 validation용 선택 결과입니다. 이 configuration을 사용한 outer-test 결과는 아직 계산되지 않았습니다.
 
 ### 완료된 Stage B의 초기 preview
 
@@ -79,7 +104,7 @@ fold별 MSE gain은 다음과 같습니다.
 - 이는 outer-test가 아닌 validation metric이며, confidence interval과 component/slide별 재현성 검사가 없습니다.
 - fold별 configuration과 epoch를 validation에서 선택했기 때문에 이 수치 자체가 선택 편향을 포함할 수 있습니다.
 - MAE 개선폭은 MSE보다 작고, 아직 gene-level/Jacobian 결과가 없습니다.
-- 전체 Stage B가 끝난 뒤 선택 receipt를 고정하고, 별도의 80개 confirmation에서 다시 검증해야 합니다.
+- Stage B 전체가 끝난 뒤 selection receipt는 고정되었지만, 별도의 80개 confirmation에서 다시 검증해야 합니다.
 
 따라서 현재 가장 정확한 표현은 **“초기 validation preview에서는 observed near graph가 no-graph보다 좋아 보이는 신호가 있지만, 아직 통계적으로 확인된 graph 효과는 아니다”**입니다.
 
@@ -99,40 +124,66 @@ fold별 MSE gain은 다음과 같습니다.
 
 다만 이 값은 **최종 confirmation의 observed-near 20개 run**에서만 생성하도록 했습니다. 현재 Stage B tune 결과에는 이 Jacobian 파일이 없고, 현재 confirmation도 시작되지 않았으므로 지금 단계에서 “비슷한 RNA 이름끼리 몇 % 더 높다”고 말할 수 있는 숫자는 아직 없습니다. 최종적으로 값이 나오더라도 이는 모델 sensitivity이지 RNA 간 상관, 세포 간 communication, 생물학적 기전 또는 인과효과를 의미하지 않습니다.
 
-### 아직 남은 단계
+### 현재 남은 단계
 
-1. Stage B 96개 전체 완료
-2. outer fold별 최종 configuration receipt 고정
-3. confirmation 80개 실행
-4. component-equal MSE, MAE, slide-stratified bootstrap CI, seed/component heterogeneity 계산
-5. permutation, annular, 10–25 µm edge-removal sensitivity 분석
-6. 최종 report와 verdict 생성
+1. confirmation 80개 실행
+2. component-equal MSE, MAE, slide-stratified bootstrap CI, seed/component heterogeneity 계산
+3. permutation, annular, 10–25 µm edge-removal sensitivity 분석
+4. 최종 report와 verdict 생성
+
+## 수치 해석: 무엇이 좋아 보이는가?
+
+현재 validation 수치는 세 가지 비교를 구분해서 봐야 합니다.
+
+1. **near vs no-graph**: graph context를 추가했을 때 morphology/broad-field 기준선보다 좋아지는가?
+2. **near vs permutation**: 단순히 source cell을 많이 모으거나 degree를 맞춘 효과가 아니라, 실제 공간적으로 연결된 source-state가 필요한가?
+3. **near vs annular**: 아무 공간적 co-localization이 아니라 가까운 거리의 local context가 중요한가?
+
+현재 결과는 세 비교 모두에서 `observed_near` 방향이 우세합니다. 특히 near vs no-graph 개선폭이 약 4.05%로 사전 graph-support gate인 2%보다 큽니다. permutation 대비 개선도 약 1.81%로 topology-specific gate의 방향과 일치합니다. 다만 gate의 최종 판정에는 validation 수치가 아니라 confirmation의 outer-test component bootstrap CI, slide별 양의 효과, component/seed 일관성이 필요합니다.
+
+MAE 결과도 같은 방향이지만 크기는 더 작습니다. 이는 graph가 큰 squared-error outlier를 줄이는 데는 도움이 될 수 있지만 모든 target에서 균일한 absolute-error 개선을 보인다고 아직 말할 수 없다는 뜻입니다.
 
 ## 지금 말할 수 있는 결과와 말할 수 없는 결과
 
 ### 지금 말할 수 있는 것
 
-- graph/no-graph를 같은 용량과 같은 튜닝 예산으로 비교하는 실험 코드가 실행되고 있습니다.
+- graph/no-graph를 같은 용량과 같은 튜닝 예산으로 비교하는 실험이 완료되었습니다.
 - Stage A의 256개 실행은 모두 정상 완료되었습니다.
-- 현재까지 실패한 Stage B job은 없습니다.
+- Stage B의 96개 실행도 모두 정상 완료되었습니다.
 - 데이터 split, 입력 hash, 실행 소스 hash가 사전에 고정된 값과 일치합니다.
+- fold 0–3 모두에서 observed-near validation MSE가 no-graph 및 permuted-near보다 낮았습니다.
 
 ### 아직 말하면 안 되는 것
 
-- “graph가 no-graph보다 몇 % 좋다”
+- “held-out test에서 graph가 no-graph보다 4.05% 좋다”라고 확정하는 것
 - “graph가 생물학적 상호작용이나 인과 효과를 증명한다”
 - “다른 환자/slide에도 일반화된다”
 
-최종적으로는 `observed_near`가 independently tuned `no_graph`보다 최소 2% 개선되고, component-bootstrap CI가 0을 넘으며, 두 slide와 대부분의 component/seed에서 일관되게 우세해야 graph-support 판정을 내립니다. 그 조건을 충족하지 않으면 결과는 negative 또는 inconclusive로 보고합니다.
+최종적으로는 `observed_near`가 independently tuned `no_graph`보다 최소 2% 개선되고, 95% component-bootstrap CI의 lower bound가 0보다 크며, 두 slide와 최소 20/27 component, 5개 seed 중 최소 4개에서 우세하고, MAE가 악화되지 않아야 graph-support 판정을 내립니다. `observed_near` 대 `permuted_near`도 최소 1% 개선과 CI lower bound > 0을 요구합니다. 조건을 충족하지 않으면 결과는 negative 또는 inconclusive로 보고합니다.
 
 ## 이전 결과와의 관계
 
 과거 탐색 결과에는 near context의 개선이 약 1.5–2.2%로 관찰된 적이 있지만, preprocessing과 estimand가 달라 이번 nested-CV 결과와 직접 합칠 수 없습니다. 특히 cell-type/library residual을 제거하면 개선폭이 약 0.3%까지 줄어든 분석도 있어, 이번 실험은 **graph 신호와 shared state/library confounding을 분리하는 것**을 중요한 목적으로 삼았습니다.
 
+## 남은 실행과 최종 산출물
+
+현재 남은 것은 tuning이 아니라 confirmation과 analysis입니다.
+
+1. frozen selection receipt를 기준으로 confirmation plan 생성
+2. 80개 confirmation run에서 no-graph/near/permutation/annular을 outer-test에 평가
+3. 모든 run의 checkpoint replay 및 artifact checksum 검증
+4. component-equal MSE/MAE와 10,000회 slide-stratified component bootstrap 계산
+5. fold, slide, component, seed, gene, prespecified program별 heterogeneity 요약
+6. 10–25 µm edge removal, annular, permutation, zero-context faithfulness 분석
+7. observed-near 20개 run의 1,000×1,000 RNA Jacobian과 program-level sensitivity 계산
+8. 최종 JSON/Markdown report, verdict, registry reconciliation 생성
+
+현재 confirmation plan과 최종 analysis report가 없으므로, 위 산출물은 아직 생성되지 않았습니다.
+
 ## 결론
 
 현재 결론은 다음과 같습니다.
 
-> **실험 시스템과 1차 튜닝은 정상적으로 진행 중이다. 그러나 최종 graph 대 no-graph 성능 차이는 confirmation과 통계 요약이 끝난 뒤에만 판단할 수 있다.**
+> **Stage A/B tuning은 정상 완료되었고, validation에서는 observed-near graph가 no-graph보다 약 4.05% 낮은 MSE를 보이는 일관된 초기 신호가 있다. 하지만 최종 graph 대 no-graph 효과는 confirmation과 통계 요약이 끝난 뒤에만 판단할 수 있다.**
 
 최종 수치가 나오면 이 문서의 중간 상태를 최종 report 링크와 함께 갱신하겠습니다.
