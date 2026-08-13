@@ -52,6 +52,27 @@
 
 Stage B는 Stage A에서 선택된 후보를 추가 seed로 다시 비교해, 특정 seed나 우연한 hyperparameter 선택에 의한 결과인지 확인하는 단계입니다. 지금은 이 단계의 전체 결과가 잠기지 않았으므로 graph 대 no-graph의 수치 비교를 공개적인 결론으로 사용할 수 없습니다.
 
+### 완료된 46개 job의 임시 preview
+
+사용자가 현재 방향성을 볼 수 있도록, 완료된 Stage B job만 대상으로 각 job의 **validation epoch 중 최저 component-equal MSE**를 단순 평균했습니다.
+
+| arm | 완료 수 | 평균 validation MSE | 평균 validation MAE |
+|---|---:|---:|---:|
+| `no_graph` | 12 | 0.9447 | 0.5012 |
+| `observed_near` | 12 | 0.9156 | 0.5021 |
+| `permuted_near` | 12 | 0.9341 | 0.5068 |
+| `observed_annular` | 10 | 0.9387 | 0.5101 |
+
+이 불완전한 표본에서만 계산하면 `observed_near`는 `no_graph`보다 MSE가 약 **3.1% 낮고**, `permuted_near`보다 약 **2.0% 낮습니다**. 이는 graph 방향의 유망한 초기 신호일 수 있지만, 다음 이유로 최종 결과가 아닙니다.
+
+- 현재 완료된 결과는 outer fold 0–1에만 있고 fold 2–3은 아직 없습니다.
+- arm별 완료 수가 같지 않습니다(`observed_annular` 10개).
+- 이는 outer-test가 아닌 validation metric이며, confidence interval과 component/slide별 재현성 검사가 없습니다.
+- MAE에서는 `observed_near`가 `no_graph`보다 약간 높아, 모든 metric에서 일관된 우위라고 말할 수 없습니다.
+- 전체 Stage B가 끝난 뒤 선택 receipt를 고정하고, 별도의 80개 confirmation에서 다시 검증해야 합니다.
+
+따라서 현재 가장 정확한 표현은 **“초기 validation preview에서는 observed near graph가 no-graph보다 좋아 보이는 신호가 있지만, 아직 통계적으로 확인된 graph 효과는 아니다”**입니다.
+
 ### 아직 남은 단계
 
 1. Stage B 96개 전체 완료
