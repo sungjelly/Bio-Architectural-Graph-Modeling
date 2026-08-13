@@ -43,32 +43,42 @@
 
 ### Stage B: 진행 중
 
-현재 스냅샷:
+최신 스냅샷:
 
-- 46/96 완료
-- 4개 실행 중
+- 96/96 완료
 - 실패 0개
+- 모든 결과와 success marker 확인
 - confirmation 단계는 아직 시작하지 않음
 
-Stage B는 Stage A에서 선택된 후보를 추가 seed로 다시 비교해, 특정 seed나 우연한 hyperparameter 선택에 의한 결과인지 확인하는 단계입니다. 지금은 이 단계의 전체 결과가 잠기지 않았으므로 graph 대 no-graph의 수치 비교를 공개적인 결론으로 사용할 수 없습니다.
+Stage B는 Stage A에서 선택된 후보를 추가 seed로 다시 비교해, 특정 seed나 우연한 hyperparameter 선택에 의한 결과인지 확인하는 단계입니다. 이제 Stage B 전체가 끝났지만, 이 수치는 여전히 outer-test가 아닌 validation 결과입니다.
 
-### 완료된 46개 job의 임시 preview
+### 완료된 Stage B의 초기 preview
 
-사용자가 현재 방향성을 볼 수 있도록, 완료된 Stage B job만 대상으로 각 job의 **validation epoch 중 최저 component-equal MSE**를 단순 평균했습니다.
+Stage B 완료 후에는 사전에 정한 nested selection 규칙으로 각 outer fold/arm의 configuration을 고정하고, 해당 configuration의 3개 seed validation 값을 평균했습니다. 이 값은 **validation preview**이며 최종 test 성능이 아닙니다.
 
 | arm | 완료 수 | 평균 validation MSE | 평균 validation MAE |
 |---|---:|---:|---:|
-| `no_graph` | 12 | 0.9447 | 0.5012 |
-| `observed_near` | 12 | 0.9156 | 0.5021 |
-| `permuted_near` | 12 | 0.9341 | 0.5068 |
-| `observed_annular` | 10 | 0.9387 | 0.5101 |
+| `no_graph` | 4 folds × 3 seeds | 0.9452 | 0.5182 |
+| `observed_near` | 4 folds × 3 seeds | 0.9070 | 0.5091 |
+| `permuted_near` | 4 folds × 3 seeds | 0.9237 | 0.5144 |
+| `observed_annular` | 4 folds × 3 seeds | 0.9141 | 0.5131 |
 
-이 불완전한 표본에서만 계산하면 `observed_near`는 `no_graph`보다 MSE가 약 **3.1% 낮고**, `permuted_near`보다 약 **2.0% 낮습니다**. 이는 graph 방향의 유망한 초기 신호일 수 있지만, 다음 이유로 최종 결과가 아닙니다.
+선택된 validation 값만 비교하면 `observed_near`는 `no_graph`보다 MSE가 약 **4.05% 낮고**, `permuted_near`보다 약 **1.81% 낮습니다**. MAE도 각각 약 **1.76%**, **1.04%** 낮습니다. 네 outer fold 모두 `observed_near`가 `no_graph`와 `permuted_near`보다 낮았습니다.
 
-- 현재 완료된 결과는 outer fold 0–1에만 있고 fold 2–3은 아직 없습니다.
-- arm별 완료 수가 같지 않습니다(`observed_annular` 10개).
+fold별 MSE gain은 다음과 같습니다.
+
+| outer fold | near vs no-graph | near vs permutation |
+|---:|---:|---:|
+| 0 | 4.12% | 2.17% |
+| 1 | 3.46% | 1.89% |
+| 2 | 3.80% | 1.38% |
+| 3 | 4.69% | 1.72% |
+
+이것은 graph 방향의 꽤 일관된 초기 신호입니다. 하지만 다음 이유로 최종 결과가 아닙니다.
+
 - 이는 outer-test가 아닌 validation metric이며, confidence interval과 component/slide별 재현성 검사가 없습니다.
-- MAE에서는 `observed_near`가 `no_graph`보다 약간 높아, 모든 metric에서 일관된 우위라고 말할 수 없습니다.
+- fold별 configuration과 epoch를 validation에서 선택했기 때문에 이 수치 자체가 선택 편향을 포함할 수 있습니다.
+- MAE 개선폭은 MSE보다 작고, 아직 gene-level/Jacobian 결과가 없습니다.
 - 전체 Stage B가 끝난 뒤 선택 receipt를 고정하고, 별도의 80개 confirmation에서 다시 검증해야 합니다.
 
 따라서 현재 가장 정확한 표현은 **“초기 validation preview에서는 observed near graph가 no-graph보다 좋아 보이는 신호가 있지만, 아직 통계적으로 확인된 graph 효과는 아니다”**입니다.
