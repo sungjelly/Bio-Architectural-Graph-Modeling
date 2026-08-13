@@ -73,6 +73,22 @@ Stage B는 Stage A에서 선택된 후보를 추가 seed로 다시 비교해, �
 
 따라서 현재 가장 정확한 표현은 **“초기 validation preview에서는 observed near graph가 no-graph보다 좋아 보이는 신호가 있지만, 아직 통계적으로 확인된 graph 효과는 아니다”**입니다.
 
+## RNA 이름이 비슷한 유전자끼리의 gradient/Jacobian 분석
+
+추가로 계획한 분석은 학습 gradient norm이 아니라 **gene×gene Jacobian**입니다. 즉,
+
+> source RNA gene A의 입력을 조금 변화시켰을 때 target RNA gene B의 예측값이 얼마나, 어떤 방향으로 변하는가?
+
+를 계산합니다. 구현된 Jacobian은 1,000×1,000 행렬이며, RNA program 단위로 요약합니다.
+
+- 행(row): target RNA program
+- 열(column): source RNA program
+- `signed_mean_sensitivity`: 방향을 포함한 평균 민감도
+- `mean_absolute_sensitivity`: 영향 크기만 본 평균 민감도
+- 같은 이름/같은 program 내부 영향과 다른 program 영향의 비율: `same_name_absolute_enrichment`
+
+다만 이 값은 **최종 confirmation의 observed-near 20개 run**에서만 생성하도록 했습니다. 현재 Stage B tune 결과에는 이 Jacobian 파일이 없고, 현재 confirmation도 시작되지 않았으므로 지금 단계에서 “비슷한 RNA 이름끼리 몇 % 더 높다”고 말할 수 있는 숫자는 아직 없습니다. 최종적으로 값이 나오더라도 이는 모델 sensitivity이지 RNA 간 상관, 세포 간 communication, 생물학적 기전 또는 인과효과를 의미하지 않습니다.
+
 ### 아직 남은 단계
 
 1. Stage B 96개 전체 완료
