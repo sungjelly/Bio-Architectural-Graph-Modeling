@@ -3,18 +3,20 @@ from __future__ import annotations
 from concurrent.futures import ThreadPoolExecutor
 import json
 from pathlib import Path
+import sqlite3
 import sys
 from threading import Event
 
 import pytest
 
 from spatial_benchmark.cli import _import_legacy
-from spatial_benchmark.identifiers import scientific_id
+from spatial_benchmark.identifiers import canonical_sha256, scientific_id
 from spatial_benchmark.paths import ProjectPaths
 from spatial_benchmark.queueing import QueueWorker, WorkerSettings
 from spatial_benchmark.registry import (
     InvalidTransitionError,
     Registry,
+    RegistryConflictError,
     RegistryError,
 )
 
@@ -119,10 +121,11 @@ def _success_command(
 
 def test_schema_integrity_and_required_tables(tmp_path: Path) -> None:
     registry = Registry(tmp_path / "registry.sqlite3")
-    assert registry.schema_version() == 3
+    assert registry.schema_version() == 4
     assert registry.integrity_check() == ["ok"]
     assert {
         "campaigns",
+        "campaign_revisions",
         "variants",
         "campaign_variants",
         "runs",
@@ -206,6 +209,116 @@ def test_variant_identity_can_belong_to_multiple_campaigns(tmp_path: Path) -> No
         attempt=1,
         configuration=config,
     )
+
+
+def test_campaign_update_is_compare_and_swap_and_append_only(tmp_path: Path) -> None:
+    registry = Registry(tmp_path / "registry.sqlite3")
+    original = {"active_model_seeds": [0], "deferred_model_seeds": [1, 2, 3, 4]}
+    replacement = {
+        "active_model_seeds": [0, 1, 2, 3],
+        "deferred_model_seeds": [4],
+    }
+    created = registry.create_campaign(
+        "cmp_parallel",
+        name="Parallel campaign",
+        scientific_question="test",
+        config=original,
+        status="planned",
+    )
+
+    updated = registry.update_campaign(
+        "cmp_parallel",
+        config=replacement,
+        expected_config_sha256=canonical_sha256(original),
+        status="running",
+        name="Four-seed parallel campaign",
+        scientific_question="Do four initializations reach a loss plateau?",
+        reason="Activate independently plateaued seeds 1-3.",
+        actor="test-suite",
+    )
+
+    assert updated["changed"] is True
+    assert updated["revision_id"] == 1
+    assert updated["config"] == replacement
+    assert updated["config_sha256"] == canonical_sha256(replacement)
+    assert updated["status"] == "running"
+    assert updated["name"] == "Four-seed parallel campaign"
+    assert (
+        updated["scientific_question"]
+        == "Do four initializations reach a loss plateau?"
+    )
+    assert updated["created_at"] == created["created_at"]
+    revisions = registry.list_campaign_revisions("cmp_parallel")
+    assert len(revisions) == 1
+    assert revisions[0]["previous_config"] == original
+    assert revisions[0]["new_config"] == replacement
+    assert revisions[0]["previous_status"] == "planned"
+    assert revisions[0]["new_status"] == "running"
+    assert revisions[0]["previous_name"] == created["name"]
+    assert revisions[0]["new_name"] == "Four-seed parallel campaign"
+    assert revisions[0]["previous_scientific_question"] == "test"
+    assert (
+        revisions[0]["new_scientific_question"]
+        == "Do four initializations reach a loss plateau?"
+    )
+    assert revisions[0]["reason"] == "Activate independently plateaued seeds 1-3."
+    assert revisions[0]["actor"] == "test-suite"
+
+    with registry.connect() as connection, pytest.raises(
+        sqlite3.IntegrityError, match="append-only"
+    ):
+        connection.execute(
+            "UPDATE campaign_revisions SET reason = ? WHERE revision_id = 1",
+            ("tampered",),
+        )
+
+
+def test_campaign_update_rejects_stale_hash_without_mutation(tmp_path: Path) -> None:
+    registry = Registry(tmp_path / "registry.sqlite3")
+    original = {"active_model_seeds": [0]}
+    registry.create_campaign("cmp_parallel", name="Parallel", config=original)
+
+    with pytest.raises(RegistryConflictError, match="config changed"):
+        registry.update_campaign(
+            "cmp_parallel",
+            config={"active_model_seeds": [0, 1, 2, 3]},
+            expected_config_sha256=canonical_sha256({"wrong": True}),
+            reason="stale writer",
+            actor="test-suite",
+        )
+
+    campaign = registry.get_campaign("cmp_parallel")
+    assert campaign is not None
+    assert campaign["config"] == original
+    assert registry.list_campaign_revisions("cmp_parallel") == []
+
+
+def test_campaign_update_exact_noop_is_idempotent(tmp_path: Path) -> None:
+    registry = Registry(tmp_path / "registry.sqlite3")
+    config = {"active_model_seeds": [0, 1, 2, 3]}
+    created = registry.create_campaign(
+        "cmp_parallel",
+        name="Parallel",
+        scientific_question="Preserved question",
+        config=config,
+        status="running",
+    )
+
+    result = registry.update_campaign(
+        "cmp_parallel",
+        config=config,
+        expected_config_sha256=canonical_sha256(config),
+        status="running",
+        reason="Idempotent reconciliation.",
+        actor="test-suite",
+    )
+
+    assert result["changed"] is False
+    assert result["revision_id"] is None
+    assert result["updated_at"] == created["updated_at"]
+    assert result["name"] == "Parallel"
+    assert result["scientific_question"] == "Preserved question"
+    assert registry.list_campaign_revisions("cmp_parallel") == []
 
 
 def test_stale_job_atomically_fails_associated_run(tmp_path: Path) -> None:

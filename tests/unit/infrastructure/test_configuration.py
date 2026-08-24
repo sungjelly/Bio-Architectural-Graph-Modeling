@@ -265,6 +265,30 @@ def test_relative_qkv_requires_logit_only_geometry_and_uniform_integer_masks(
     )
     validate_experiment_config(joint_plateau)
 
+    independent_plateau = deepcopy(joint_plateau)
+    independent_plateau["seed"] = 1
+    independent_plateau["evaluation"].update(
+        {
+            "protocol": "held_in_pooled_6core_relative_qkv_seed_plateau",
+            "active_model_seeds": [0, 1, 2, 3],
+        }
+    )
+    independent_plateau["trainer"].update(
+        {
+            "continuation_policy": (
+                "independent_seed_training_loss_plateau_25_epoch_blocks"
+            ),
+            "plateau_requires_all_five_seeds": False,
+            "plateau_requires_common_final_epoch": False,
+        }
+    )
+    validate_experiment_config(independent_plateau)
+
+    missing_active_seed = deepcopy(independent_plateau)
+    missing_active_seed["evaluation"]["active_model_seeds"] = [0, 2, 3]
+    with pytest.raises(ConfigurationError, match="current model seed"):
+        validate_experiment_config(missing_active_seed)
+
     invalid = deepcopy(resolved)
     invalid["features"]["relative_positional_encoding"]["role"] = (
         "edge_value_gate"

@@ -964,6 +964,11 @@ class QueueWorker:
             "run_id": run_id,
             "pid": self._child.pid,
             "proc_start_ticks": _process_start_ticks(self._child.pid),
+            # Record the physical device selected by this worker.  Queue jobs
+            # may be GPU-agnostic, so the worker binding is the authoritative
+            # assignment for excluding unrelated live children when explicit
+            # per-GPU workers are enabled.
+            "requested_gpu": self.settings.gpu,
             "command_sha256": canonical_sha256(list(command)),
             "recorded_at": utc_now(),
         }
@@ -1004,6 +1009,36 @@ class QueueWorker:
             os.fsync(handle.fileno())
         self._child_record = None
 
+    def _child_record_gpu(
+        self, record: Mapping[str, Any], *, path: Path
+    ) -> str:
+        """Resolve the physical GPU assigned to a child-process record.
+
+        Current records carry the worker's GPU directly.  Records written by
+        older workers did not, so resolve those through their immutable queue
+        job.  An absent or ambiguous assignment cannot safely be treated as a
+        different GPU.
+        """
+
+        if "requested_gpu" in record:
+            requested_gpu = record.get("requested_gpu")
+        else:
+            job_id = record.get("job_id")
+            job = self.registry.get_job(str(job_id)) if job_id else None
+            requested_gpu = job.get("requested_gpu") if job else None
+        if requested_gpu is None or not str(requested_gpu).strip():
+            raise QueueWorkerError(
+                "Child-process record has no resolvable GPU assignment; "
+                f"refusing a parallel worker: {path}"
+            )
+        gpu = str(requested_gpu)
+        if "," in gpu:
+            raise QueueWorkerError(
+                "Child-process record has an ambiguous GPU assignment; "
+                f"refusing a parallel worker: {path}"
+            )
+        return gpu
+
     def _assert_no_surviving_children(self) -> None:
         directory = self.paths.state_root / "pids"
         if not directory.is_dir():
@@ -1017,6 +1052,12 @@ class QueueWorker:
                 raise QueueWorkerError(
                     f"Unreadable child-process record requires review: {path}"
                 ) from error
+            if self.settings.parallel_gpu_workers:
+                record_gpu = self._child_record_gpu(record, path=path)
+                if record_gpu != str(self.settings.gpu):
+                    # Another per-GPU worker owns this record.  Do not block on
+                    # its live process or move its exited-process evidence.
+                    continue
             if _process_start_ticks(pid) == start_ticks:
                 raise QueueWorkerError(
                     f"Recorded experiment child PID {pid} for job "

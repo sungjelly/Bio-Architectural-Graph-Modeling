@@ -23,7 +23,7 @@ from .identifiers import scientific_payload
 from .paths import current_paths
 
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 DEFAULT_BUSY_TIMEOUT_MS = 30_000
 ARTIFACT_STATUS_DELETED_BY_RETENTION = "deleted_by_retention"
 ARTIFACT_STATUS_RETENTION_PENDING = "retention_deletion_pending"
@@ -105,6 +105,8 @@ def _row_dict(row: sqlite3.Row | None) -> dict[str, Any] | None:
     result = dict(row)
     for name in (
         "config_json",
+        "previous_config_json",
+        "new_config_json",
         "canonical_config_json",
         "command_json",
         "metadata_json",
@@ -449,6 +451,49 @@ _MIGRATION_3 = (
     """,
 )
 
+_MIGRATION_4 = (
+    """
+    CREATE TABLE campaign_revisions (
+        revision_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        campaign_id TEXT NOT NULL REFERENCES campaigns(campaign_id)
+            ON UPDATE RESTRICT ON DELETE RESTRICT,
+        previous_config_sha256 TEXT NOT NULL
+            CHECK(length(previous_config_sha256) = 64),
+        new_config_sha256 TEXT NOT NULL
+            CHECK(length(new_config_sha256) = 64),
+        previous_config_json TEXT NOT NULL,
+        new_config_json TEXT NOT NULL,
+        previous_name TEXT NOT NULL,
+        new_name TEXT NOT NULL,
+        previous_scientific_question TEXT,
+        new_scientific_question TEXT,
+        previous_status TEXT NOT NULL,
+        new_status TEXT NOT NULL,
+        reason TEXT NOT NULL CHECK(length(trim(reason)) > 0),
+        actor TEXT NOT NULL CHECK(length(trim(actor)) > 0),
+        created_at TEXT NOT NULL
+    )
+    """,
+    """
+    CREATE INDEX campaign_revisions_campaign_idx
+    ON campaign_revisions(campaign_id, revision_id)
+    """,
+    """
+    CREATE TRIGGER campaign_revisions_append_only_update
+    BEFORE UPDATE ON campaign_revisions
+    BEGIN
+        SELECT RAISE(ABORT, 'campaign revisions are append-only');
+    END
+    """,
+    """
+    CREATE TRIGGER campaign_revisions_append_only_delete
+    BEFORE DELETE ON campaign_revisions
+    BEGIN
+        SELECT RAISE(ABORT, 'campaign revisions are append-only');
+    END
+    """,
+)
+
 
 class Registry:
     """Versioned SQLite registry with WAL concurrency and transactional states."""
@@ -546,6 +591,13 @@ class Registry:
                     "INSERT INTO schema_migrations(version, applied_at) VALUES (?, ?)",
                     (3, utc_now()),
                 )
+            if current < 4:
+                for statement in _MIGRATION_4:
+                    connection.execute(statement)
+                connection.execute(
+                    "INSERT INTO schema_migrations(version, applied_at) VALUES (?, ?)",
+                    (4, utc_now()),
+                )
 
     def schema_version(self) -> int:
         with self.connect() as connection:
@@ -623,6 +675,188 @@ class Registry:
                 "SELECT * FROM campaigns WHERE campaign_id = ?", (campaign_id,)
             ).fetchone()
         return _row_dict(row)
+
+    def update_campaign(
+        self,
+        campaign_id: str,
+        *,
+        config: Mapping[str, Any],
+        expected_config_sha256: str,
+        reason: str,
+        actor: str,
+        status: str | None = None,
+        name: str | None = None,
+        scientific_question: str | None = None,
+    ) -> dict[str, Any]:
+        """Compare-and-swap a campaign plan and append an immutable revision.
+
+        ``expected_config_sha256`` is the SHA-256 digest of the campaign's
+        current canonical configuration.  Requiring it prevents an operator
+        from silently overwriting a campaign change made after they inspected
+        the record.  Creation semantics remain deliberately separate and
+        unchanged.
+        """
+
+        expected_sha256 = _required_sha256(
+            "expected_config_sha256", expected_config_sha256
+        )
+        reason_text = _required_registry_text("reason", reason)
+        actor_text = _required_registry_text("actor", actor)
+        new_content = _json(config)
+        new_sha256 = _sha256_text(new_content)
+
+        with self.transaction(immediate=True) as connection:
+            current = connection.execute(
+                "SELECT * FROM campaigns WHERE campaign_id = ?", (campaign_id,)
+            ).fetchone()
+            if current is None:
+                raise RegistryError(f"Campaign {campaign_id!r} does not exist.")
+
+            previous_content = str(current["config_json"])
+            previous_sha256 = _sha256_text(previous_content)
+            if previous_sha256 != expected_sha256:
+                raise RegistryConflictError(
+                    f"Campaign {campaign_id!r} config changed: expected "
+                    f"{expected_sha256}, current {previous_sha256}."
+                )
+
+            previous_status = str(current["status"])
+            previous_name = str(current["name"])
+            previous_question = current["scientific_question"]
+            new_name = (
+                previous_name
+                if name is None
+                else _required_registry_text("name", name)
+            )
+            new_question = (
+                previous_question
+                if scientific_question is None
+                else _optional_registry_text(scientific_question)
+            )
+            new_status = (
+                previous_status
+                if status is None
+                else _required_registry_text("status", status)
+            )
+            if (
+                previous_content == new_content
+                and previous_name == new_name
+                and previous_question == new_question
+                and previous_status == new_status
+            ):
+                result = _row_dict(current)
+                assert result is not None
+                result.update(
+                    {
+                        "changed": False,
+                        "revision_id": None,
+                        "previous_config_sha256": previous_sha256,
+                        "config_sha256": new_sha256,
+                        "previous_name": previous_name,
+                        "previous_scientific_question": previous_question,
+                    }
+                )
+                return result
+
+            changed_at = utc_now()
+            updated = connection.execute(
+                """
+                UPDATE campaigns
+                SET name = ?, scientific_question = ?, config_json = ?,
+                    status = ?, updated_at = ?
+                WHERE campaign_id = ? AND config_json = ? AND updated_at = ?
+                    AND name = ? AND scientific_question IS ?
+                """,
+                (
+                    new_name,
+                    new_question,
+                    new_content,
+                    new_status,
+                    changed_at,
+                    campaign_id,
+                    previous_content,
+                    str(current["updated_at"]),
+                    previous_name,
+                    previous_question,
+                ),
+            )
+            if updated.rowcount != 1:
+                raise RegistryConflictError(
+                    f"Campaign {campaign_id!r} changed during update."
+                )
+            revision = connection.execute(
+                """
+                INSERT INTO campaign_revisions(
+                    campaign_id,
+                    previous_config_sha256,
+                    new_config_sha256,
+                    previous_config_json,
+                    new_config_json,
+                    previous_name,
+                    new_name,
+                    previous_scientific_question,
+                    new_scientific_question,
+                    previous_status,
+                    new_status,
+                    reason,
+                    actor,
+                    created_at
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    campaign_id,
+                    previous_sha256,
+                    new_sha256,
+                    previous_content,
+                    new_content,
+                    previous_name,
+                    new_name,
+                    previous_question,
+                    new_question,
+                    previous_status,
+                    new_status,
+                    reason_text,
+                    actor_text,
+                    changed_at,
+                ),
+            )
+            revision_id = int(revision.lastrowid)
+            current = connection.execute(
+                "SELECT * FROM campaigns WHERE campaign_id = ?", (campaign_id,)
+            ).fetchone()
+
+        result = _row_dict(current)
+        assert result is not None
+        result.update(
+            {
+                "changed": True,
+                "revision_id": revision_id,
+                "previous_config_sha256": previous_sha256,
+                "config_sha256": new_sha256,
+                "previous_name": previous_name,
+                "previous_scientific_question": previous_question,
+            }
+        )
+        return result
+
+    def list_campaign_revisions(
+        self, campaign_id: str, *, limit: int = 100
+    ) -> list[dict[str, Any]]:
+        """Return immutable campaign revisions, newest first."""
+
+        if limit < 1:
+            raise ValueError("limit must be positive.")
+        with self.connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT * FROM campaign_revisions
+                WHERE campaign_id = ?
+                ORDER BY revision_id DESC
+                LIMIT ?
+                """,
+                (campaign_id, int(limit)),
+            ).fetchall()
+        return [record for row in rows if (record := _row_dict(row)) is not None]
 
     def register_variant(
         self,
@@ -3016,6 +3250,18 @@ def _sha256_file(path: Path) -> str:
         for block in iter(lambda: handle.read(1024 * 1024), b""):
             digest.update(block)
     return digest.hexdigest()
+
+
+def _sha256_text(value: str) -> str:
+    return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def _required_sha256(name: str, value: Any) -> str:
+    text = str(value).strip().lower()
+    is_hex = all(character in "0123456789abcdef" for character in text)
+    if len(text) != 64 or not is_hex:
+        raise ValueError(f"{name} must be a 64-character hexadecimal SHA-256 digest.")
+    return text
 
 
 def _execution_integer(value: Any, default: int) -> int:

@@ -17,6 +17,12 @@ task_contract_amendments:
     status: partially_superseded_by_amendment_004_execution_scope
   - path: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/task_contract_amendment_004_seed0_first.yaml
     sha256: 0ad3c6373edc45b1c61649217f043f486cfe3cfcf925bad042a2ed635032d174
+    status: superseded_by_amendment_005_execution_scope
+  - path: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/task_contract_amendment_005_three_seeds_parallel.yaml
+    sha256: 806a066c9be589181c5c505a7f7b71e4c31125283477fc0ca07eaa82dc2f5ae8
+    status: superseded_by_amendment_006_execution_scope
+  - path: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/task_contract_amendment_006_four_seeds_resource_gated.yaml
+    sha256: e07c4e8d9d66df8d2c6063d58e4424950b156002a91e811c474d3b9b077c9429
     status: active
 clinical_reconciliation_policy: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/clinical_reconciliation_policy.yaml
 cohort:
@@ -33,17 +39,17 @@ cohort:
   validation_or_test_partition_present: false
 variant:
   name: relative_qkv_gat_256_l4_h8_radial_stratified_k200_r500
-  active_model_seeds: [0]
-  deferred_model_seeds: [1, 2, 3, 4]
-production_run_count: 1
+  active_model_seeds: [0, 1, 2, 3]
+  deferred_model_seeds: [4]
+production_run_count: 4
 production_minimum_global_epochs_per_run: 150
 production_minimum_optimizer_steps_per_run: 900
 production_minimum_complete_core_mask_views_per_run: 9000
 production_minimum_masks_per_cell_per_run: 1500
-production_stopping_policy: seed0_training_loss_plateau_after_minimum_150
+production_stopping_policy: independent_per_seed_training_loss_plateau_after_minimum_150
 production_continuation_block_global_epochs: 25
 production_maximum_scientific_epoch_cap: null
-deferred_multiseed_execution_required_now: false
+deferred_five_seed_completion_required_now: false
 five_seed_completion_claim_allowed: false
 production_maximum_attempts: 2
 automatic_enqueue: false

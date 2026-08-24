@@ -4,7 +4,8 @@
 
 Phase: implementation. Outcome: pending.
 
-The active first phase fits one seed-0 shared masked-expression model across
+The active phase fits four independently initialized shared masked-expression
+models (seeds 0, 1, 2, and 3), each across
 six disconnected Cancer-core graphs: `CAN-01`, `CAN-09`, `CAN-13`, `CAN-15`, `CAN-21`, and
 `CAN-23`. All eligible cells are fit data. There is no validation or test
 partition, no early stopping, no best-epoch selection, and no generalization
@@ -12,9 +13,11 @@ claim. Fixed-mask computations after training are held-in fit diagnostics.
 
 Protected historical sources contain conflicting earlier labels for part of
 the requested cohort. The user explicitly attested on 2026-08-24 that all six
-cores were rediagnosed as Cancer. Seeds 1 through 4 and the five-seed ensemble
-report are explicitly deferred by Amendment 004 and are not part of the
-current completion claim. The versioned
+cores were rediagnosed as Cancer. Amendment 006 keeps seed 0 on GPU 0, launches
+seeds 1 and 2 on GPUs 1 and 2, and activates seed 3 on GPU 3 after a read-only
+resource gate confirms that the existing runs will not be stalled. Seed 4 and
+the five-seed ensemble report remain deferred and are not part of the current
+completion claim. The versioned
 `cancer_6core_user_rediagnosis_attestation_v1` policy preserves both the
 earlier non-identifying labels and the newer attestation without rewriting
 protected inputs. Tissue labels, core identity, slide, FOV, patient identity,
@@ -173,13 +176,14 @@ graph forwards use ten independent masks; each masked Huber loss contributes
 steps once. Thus the ten mask-specific gradients are averaged without changing
 core weighting or optimizer-step count.
 
-Seed 0 runs at least 150 global epochs and 900 optimizer steps, executing at
-least 9,000 complete-core masking views. Each cell therefore receives at least
-1,500 mask realizations. Amendments 003 and 004 supersede Amendment 002's
-fixed-300 stopping clause: epoch 150 is the first seed-0 plateau audit,
+Each active seed runs at least 150 global epochs and 900 optimizer steps,
+executing at least 9,000 complete-core masking views. Each cell therefore
+receives at least 1,500 mask realizations per model. Amendments 003 through 006
+supersede Amendment 002's fixed-300 stopping clause: epoch 150 is the first
+per-seed plateau audit,
 not a fixed endpoint. The prespecified equal-core mean training-loss rule is
-audited every 25 epochs over a 50-epoch window. Seed 0 must pass at two
-consecutive audits; otherwise it continues for another 25-epoch block. The
+audited every 25 epochs over a 50-epoch window. Each seed must pass at two
+consecutive audits; otherwise only that seed continues for another 25-epoch block. The
 two-audit confirmation makes epoch 175 the earliest
 possible final epoch. There is no scientific maximum epoch cap. Epoch-boundary
 resume checkpoints are retained every 25 epochs; the canonical model is the
@@ -189,7 +193,7 @@ selection.
 
 ## Hardware preflight
 
-The binding seed-0 preflight used the complete largest graph, `CAN-23`
+The binding execution preflight used seed 0 and the complete largest graph, `CAN-23`
 (43,462 cells and 9,972,300 directed edges), on one RTX 3090. With receiver
 chunks of 512 and at most 200,000 edges per chunk, the complete-core AMP
 forward/backward pass retained every edge, used 15.10 GiB peak allocated VRAM,
@@ -215,7 +219,55 @@ Selected autograd hooks compute
 \(\partial\hat x_{i,g_t}/\partial x_{j,g_s}\) without materializing exhaustive
 edge-by-gene Jacobians.
 
-The five-seed report uses fixed held-in masks shared across seeds, linear CKA,
+After a seed bundle is finalized, set `CHECKPOINT` to its catalog-resolved
+`checkpoints/last.ckpt`. A standalone reload check is:
+
+```bash
+export CHECKPOINT=artifacts/runs/YYYY/MM/RUN_ID/checkpoints/last.ckpt
+python - <<'PY'
+import os
+from spatial_benchmark.relative_qkv_post_training import (
+    load_prepared_relative_qkv_batches,
+    load_relative_qkv_checkpoint,
+)
+batches = load_prepared_relative_qkv_batches(
+    cohort_dir="data/processed/cancer_6core_relative_qkv_v1",
+    graph_dir="data/processed/cancer_6core_relative_qkv_graphs_v1",
+)
+loaded = load_relative_qkv_checkpoint(
+    os.environ["CHECKPOINT"],
+    num_genes=batches[0].n_genes,
+    node_covariate_dim=batches[0].node_covariates.shape[1],
+    device="cuda:0",
+)
+print(loaded.payload["completed_global_epochs"], loaded.checkpoint_sha256)
+PY
+```
+
+Export exact receiver-sharded cell-cell routing for one core with:
+
+```bash
+python scripts/analysis/export_relative_qkv_edge_attention.py \
+  --checkpoint "$CHECKPOINT" --core CAN-23 --layer -1 --amp \
+  --output-dir artifacts/interpretation/seed0_CAN-23_layer4_attention
+```
+
+For selected RNA derivatives, create a CSV with columns
+`core_alias,source_node,source_feature,receiver_node,target_feature` and
+optional `request_id,attention_head,layer`, then run:
+
+```bash
+python scripts/analysis/compute_relative_qkv_selected_derivatives.py \
+  --checkpoint "$CHECKPOINT" --requests selections.csv \
+  --output-dir artifacts/interpretation/seed0_selected_derivatives
+```
+
+Gene fields accept either zero-based indices or exact panel gene names. These
+commands are deliberately bounded; they do not form an exhaustive Jacobian.
+
+Any four-seed interim comparison uses fixed held-in masks shared across seeds
+and labels dispersion as four-seed ensemble spread. The deferred five-seed
+report uses linear CKA,
 optional Procrustes alignment, Hungarian head matching, matched attention
 correlations and overlaps, positional/content contribution agreement, mutual
 pair stability, and selected-gradient stability. Reported uncertainty is
@@ -226,10 +278,10 @@ interval.
 
 Production begins only after graph, invariance, full/chunk equivalence,
 AMP/FP32, finite-gradient, save/load, resume, and largest-core VRAM checks pass.
-This first phase requires one loadable seed-0 checkpoint at its confirmed
-training-loss plateau, a verified immutable bundle and completion marker, and
-a registered checkpoint-catalog record. It must not be described as a
-completed five-seed campaign or an ensemble stability result. Current local storage is
+This phase requires loadable seed-0, seed-1, seed-2, and seed-3 checkpoints at their
+individually confirmed training-loss plateaus, verified immutable bundles and
+completion markers, and registered checkpoint-catalog records. It must not be
+described as a completed five-seed campaign. Current local storage is
 not volume-backed; this operational risk must remain visible and the instance
 must not be recycled before outputs are secured.
 

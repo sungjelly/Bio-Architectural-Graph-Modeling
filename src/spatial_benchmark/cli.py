@@ -111,6 +111,23 @@ def build_parser() -> argparse.ArgumentParser:
     campaign.add_argument("--plan", type=Path)
     campaign.add_argument("--status", default="planned")
 
+    show_campaign = subparsers.add_parser("show-campaign")
+    show_campaign.add_argument("campaign_id")
+
+    update_campaign = subparsers.add_parser("update-campaign")
+    update_campaign.add_argument("--campaign-id", required=True)
+    update_campaign.add_argument("--plan", required=True, type=Path)
+    update_campaign.add_argument("--expected-config-sha256", required=True)
+    update_campaign.add_argument("--reason", required=True)
+    update_campaign.add_argument("--actor", default="bagm-cli")
+    update_campaign.add_argument("--status")
+    update_campaign.add_argument("--name")
+    update_campaign.add_argument("--scientific-question")
+
+    campaign_revisions = subparsers.add_parser("list-campaign-revisions")
+    campaign_revisions.add_argument("campaign_id")
+    campaign_revisions.add_argument("--limit", type=int, default=100)
+
     enqueue = subparsers.add_parser("enqueue-experiment")
     _enqueue_arguments(enqueue)
 
@@ -375,6 +392,71 @@ def _dispatch(
             status=arguments.status,
         )
         return _select(record, "campaign_id", "name", "status")
+    if command == "show-campaign":
+        record = registry.get_campaign(arguments.campaign_id)
+        if record is None:
+            raise RegistryError(
+                f"Campaign {arguments.campaign_id!r} does not exist."
+            )
+        result = _select(
+            record,
+            "campaign_id",
+            "name",
+            "scientific_question",
+            "status",
+            "config",
+            "created_at",
+            "updated_at",
+        )
+        result["config_sha256"] = canonical_sha256(record["config"])
+        return result
+    if command == "update-campaign":
+        plan = load_yaml_mapping(arguments.plan)
+        record = registry.update_campaign(
+            arguments.campaign_id,
+            config=plan,
+            expected_config_sha256=arguments.expected_config_sha256,
+            reason=arguments.reason,
+            actor=arguments.actor,
+            status=arguments.status,
+            name=arguments.name,
+            scientific_question=arguments.scientific_question,
+        )
+        return _select(
+            record,
+            "campaign_id",
+            "name",
+            "scientific_question",
+            "status",
+            "changed",
+            "revision_id",
+            "previous_config_sha256",
+            "config_sha256",
+            "updated_at",
+        )
+    if command == "list-campaign-revisions":
+        records = registry.list_campaign_revisions(
+            arguments.campaign_id, limit=arguments.limit
+        )
+        return [
+            _select(
+                record,
+                "revision_id",
+                "campaign_id",
+                "previous_config_sha256",
+                "new_config_sha256",
+                "previous_name",
+                "new_name",
+                "previous_scientific_question",
+                "new_scientific_question",
+                "previous_status",
+                "new_status",
+                "reason",
+                "actor",
+                "created_at",
+            )
+            for record in records
+        ]
     if command == "enqueue-experiment":
         config = _load_experiment(arguments.config, paths)
         _campaign_matches(config, arguments.campaign_id)
@@ -607,6 +689,7 @@ def _doctor(registry: Registry, paths: ProjectPaths) -> dict[str, Any]:
     warnings: list[dict[str, Any]] = []
     required_tables = {
         "campaigns",
+        "campaign_revisions",
         "variants",
         "campaign_variants",
         "runs",

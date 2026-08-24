@@ -1,0 +1,77 @@
+amendment_schema_version: 1
+amendment_id: cmp_20260824_relative_qkv_four_seeds_resource_gated_006
+campaign_id: cmp_20260824_cancer_6core_relative_qkv_multiseed
+issued_at_utc: "2026-08-24"
+authority: explicit_user_instruction
+user_instruction_summary: Keep seed 0 running, launch seeds 1 and 2 on their idle GPUs, then launch seed 3 on GPU 3 if a non-disruptive resource audit shows that it will not stall the active runs.
+supersedes:
+  - amendment_id: cmp_20260824_relative_qkv_three_seeds_parallel_005
+    scope:
+      - active_model_seed_count
+      - immediate_completion_gate
+    reason: The later instruction explicitly activates seed 3 subject to a resource-affordability gate after seeds 1 and 2 are healthy.
+preserves:
+  - all_six_cancer_cores
+  - one_shared_model_per_seed_across_disconnected_core_graphs
+  - ten_independent_mask_views_per_core_step
+  - one_optimizer_step_per_core
+  - model_seed_independent_mask_schedule
+  - minimum_epoch_150
+  - no_validation_or_test_partition
+  - exact_attention_without_neighbor_sampling
+  - seed_specific_model_initialization
+
+active_execution:
+  model_seeds: [0, 1, 2, 3]
+  model_count: 4
+  gpu_assignment:
+    0: 0
+    1: 1
+    2: 2
+    3: 3
+  launch_order:
+    - retain_seed_0_on_gpu_0_without_interruption
+    - launch_seed_1_on_gpu_1_and_seed_2_on_gpu_2
+    - audit_gpu_cpu_ram_and_storage_without_stalling_active_runs
+    - launch_seed_3_on_gpu_3_only_if_the_resource_gate_passes
+  seed_3_resource_gate:
+    audit_is_read_only: true
+    require_dedicated_idle_gpu: 3
+    forbid_gpu_oversubscription: true
+    require_seed_0_1_2_workers_healthy: true
+    require_sufficient_host_ram_and_storage: true
+    behavior_on_gate_failure: leave_seed_3_queued_or_deferred_and_report_exact_measurements
+  deferred_model_seeds: [4]
+  deferred_runs_are_currently_required_for_completion: false
+  five_seed_stability_report_required_now: false
+  paired_mask_schedule_across_active_seeds: true
+
+plateau_rule:
+  metric: equal_core_mean_training_masked_huber
+  first_allowed_audit_epoch: 150
+  audit_interval_global_epochs: 25
+  window_global_epochs: 50
+  consecutive_passing_audits_required: 2
+  conditions:
+    relative_mean_improvement_last_25_vs_previous_25_max: 0.002
+    absolute_linear_slope_over_last_50_divided_by_window_mean_max_per_epoch: 0.0001
+    all_window_losses_finite: true
+  scope: each_active_seed_training_history_independently
+  common_final_epoch_required: false
+  validation_or_test_metric: false
+  checkpoint_selection_metric: false
+  behavior_when_one_seed_audit_fails: continue_only_that_seed_for_25_more_global_epochs
+  maximum_scientific_epoch_cap: null
+  earliest_possible_stop_epoch_per_seed: 175
+
+completion:
+  required_checkpoint_count: 4
+  required_model_seeds: [0, 1, 2, 3]
+  checkpoint_role: last_confirmed_training_loss_plateau_epoch
+  every_checkpoint_must_be_independently_loadable: true
+  every_run_must_have_completion_marker: true
+  five_seed_campaign_completion_claim_allowed: false
+  seed_4_remains_deferred: true
+
+interpretation:
+  statement: This phase completes four independently initialized models. It may report four-seed ensemble spread, but not a five-seed campaign completion or calibrated biological confidence interval.

@@ -813,9 +813,6 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                 "max_epochs": 150,
                 "minimum_global_epochs": 150,
                 "fixed_epoch_budget": False,
-                "continuation_policy": (
-                    "seed0_training_loss_plateau_25_epoch_blocks"
-                ),
                 "continuation_block_global_epochs": 25,
                 "plateau_first_audit_epoch": 150,
                 "plateau_window_global_epochs": 50,
@@ -833,9 +830,35 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                         "held_in_pooled_6core_relative_qkv_seed_plateau "
                         f"requires trainer.{field}={expected!r}."
                     )
-            if config.get("seed") != 0:
+            continuation_policy = trainer.get("continuation_policy")
+            allowed_policies = {
+                "seed0_training_loss_plateau_25_epoch_blocks",
+                "independent_seed_training_loss_plateau_25_epoch_blocks",
+            }
+            if continuation_policy not in allowed_policies:
                 raise ConfigurationError(
-                    "held_in_pooled_6core_relative_qkv_seed_plateau requires seed=0."
+                    "held_in_pooled_6core_relative_qkv_seed_plateau requires "
+                    "an independent per-seed plateau continuation policy."
+                )
+            seed = config.get("seed")
+            if isinstance(seed, bool) or not isinstance(seed, int) or not 0 <= seed <= 4:
+                raise ConfigurationError(
+                    "held_in_pooled_6core_relative_qkv_seed_plateau requires "
+                    "an integer model seed from 0 through 4."
+                )
+            if (
+                continuation_policy
+                == "seed0_training_loss_plateau_25_epoch_blocks"
+                and seed != 0
+            ):
+                raise ConfigurationError(
+                    "The legacy seed0 plateau policy is valid only for seed 0."
+                )
+            active_seeds = evaluation.get("active_model_seeds")
+            if not isinstance(active_seeds, list) or seed not in active_seeds:
+                raise ConfigurationError(
+                    "The current model seed must appear in "
+                    "evaluation.active_model_seeds."
                 )
     elif canonical_prediction_split == "fit" or str(primary).startswith("fit/"):
         raise ConfigurationError(

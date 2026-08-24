@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Train the active seed-0 six-core relative-QKV model to loss plateau."""
+"""Train one configured six-core relative-QKV model to loss plateau."""
 
 from __future__ import annotations
 
@@ -57,14 +57,19 @@ from spatial_benchmark.training import (  # noqa: E402
 
 CAMPAIGN_ID = "cmp_20260824_cancer_6core_relative_qkv_multiseed"
 ACTIVE_PROTOCOL = "held_in_pooled_6core_relative_qkv_seed_plateau"
-ACTIVE_SEED = 0
+ACTIVE_MODEL_SEEDS = (0, 1, 2, 3)
+DEFERRED_MODEL_SEEDS = (4,)
+PREFLIGHT_REFERENCE_SEED = 0
 ACTIVE_AMENDMENT_SHA256 = (
-    "0ad3c6373edc45b1c61649217f043f486cfe3cfcf925bad042a2ed635032d174"
+    "e07c4e8d9d66df8d2c6063d58e4424950b156002a91e811c474d3b9b077c9429"
 )
 ACTIVE_AMENDMENT = (
     Path("experiments/campaigns")
     / CAMPAIGN_ID
-    / "task_contract_amendment_004_seed0_first.yaml"
+    / "task_contract_amendment_006_four_seeds_resource_gated.yaml"
+)
+SEED0_FIRST_AMENDMENT_SHA256 = (
+    "0ad3c6373edc45b1c61649217f043f486cfe3cfcf925bad042a2ed635032d174"
 )
 HELD_IN_MASK_BASE_SEED = 2026082491
 HARDWARE_PREFLIGHT_RECEIPT = Path(
@@ -75,7 +80,7 @@ PREFLIGHT_BASE_ATTEMPT = 1
 
 
 class RelativeQKVRunnerError(RuntimeError):
-    """Raised before the active seed-0 run can violate its contract."""
+    """Raised before an active per-seed run can violate its contract."""
 
 
 def _section(config: Mapping[str, Any], name: str) -> Mapping[str, Any]:
@@ -92,8 +97,20 @@ def _require_equal(actual: object, expected: object, *, field: str) -> None:
         )
 
 
+def _configured_model_seed(config: Mapping[str, Any]) -> int:
+    value = config.get("seed")
+    if isinstance(value, bool) or not isinstance(value, int):
+        raise RelativeQKVRunnerError("seed must be an integer model seed.")
+    seed = int(value)
+    if seed not in ACTIVE_MODEL_SEEDS:
+        raise RelativeQKVRunnerError(
+            f"seed must be one of {ACTIVE_MODEL_SEEDS}; got {seed!r}."
+        )
+    return seed
+
+
 def _validate_active_contract(config: Mapping[str, Any]) -> None:
-    _require_equal(config.get("seed"), ACTIVE_SEED, field="seed")
+    _configured_model_seed(config)
     campaign = _section(config, "campaign")
     _require_equal(campaign.get("campaign_id"), CAMPAIGN_ID, field="campaign_id")
     evaluation = _section(config, "evaluation")
@@ -142,7 +159,7 @@ def _validate_active_contract(config: Mapping[str, Any]) -> None:
         _require_equal(trainer.get(field), expected, field=f"trainer.{field}")
     amendment = _PROJECT_ROOT / ACTIVE_AMENDMENT
     if not amendment.is_file() or sha256_file(amendment) != ACTIVE_AMENDMENT_SHA256:
-        raise RelativeQKVRunnerError("Active seed-0 task amendment checksum mismatch.")
+        raise RelativeQKVRunnerError("Active task amendment checksum mismatch.")
 
 
 def _validate_hardware_preflight(
@@ -238,13 +255,34 @@ def _validate_hardware_preflight(
 
 
 def _preflight_bound_config(config: Mapping[str, Any]) -> dict[str, Any]:
-    """Remove retry-only recovery routing from the preflight identity."""
+    """Normalize seed/retry routing while binding every contract setting.
+
+    The expensive hardware preflight is model-seed neutral: seeds 0 through 3
+    share it when, and only when, all scientific, model, and execution fields
+    are otherwise identical.  Retry attempt and resume path are execution
+    routing rather than properties exercised by the preflight.
+    """
 
     normalized = dict(config)
+    normalized["seed"] = PREFLIGHT_REFERENCE_SEED
     normalized["attempt"] = PREFLIGHT_BASE_ATTEMPT
+    trainer = normalized.get("trainer")
+    if isinstance(trainer, Mapping):
+        normalized_trainer = dict(trainer)
+        normalized_trainer["continuation_policy"] = (
+            "seed0_training_loss_plateau_25_epoch_blocks"
+        )
+        normalized["trainer"] = normalized_trainer
+    evaluation = normalized.get("evaluation")
+    if isinstance(evaluation, Mapping):
+        normalized_evaluation = dict(evaluation)
+        normalized_evaluation["active_model_seeds"] = [0]
+        normalized_evaluation["deferred_model_seeds"] = [1, 2, 3, 4]
+        normalized["evaluation"] = normalized_evaluation
     launcher = normalized.get("launcher")
     if isinstance(launcher, Mapping):
         normalized_launcher = dict(launcher)
+        normalized_launcher["requested_gpu"] = str(PREFLIGHT_REFERENCE_SEED)
         normalized_launcher.pop("resume_checkpoint", None)
         normalized["launcher"] = normalized_launcher
     return normalized
@@ -282,13 +320,13 @@ def _seeded_model_from_config(
     num_genes: int,
     node_covariate_dim: int,
 ) -> ReceiverChunkedRelativeGeometryQKVGraphTransformer:
-    """Construct the production model with initialization bound to seed 0."""
+    """Construct the production model after installing its configured seed."""
 
     trainer = _section(config, "trainer")
     # Parameters are initialized inside module constructors.  Installing the
     # model seed only when the trainer starts would be too late.
     set_deterministic_seed(
-        ACTIVE_SEED,
+        _configured_model_seed(config),
         deterministic=bool(trainer["deterministic"]),
         warn_only=bool(trainer["deterministic_warn_only"]),
     )
@@ -308,7 +346,7 @@ def _training_config(
     trainer = _section(config, "trainer")
     masking = _section(config, "masking")
     return PooledRelativeQKVTrainingConfig(
-        model_seed=ACTIVE_SEED,
+        model_seed=_configured_model_seed(config),
         segment_start_global_epoch=start_epoch,
         segment_end_global_epoch=end_epoch,
         learning_rate=float(trainer["learning_rate"]),
@@ -343,11 +381,13 @@ def _checkpoint_payload(
     resume: PooledRelativeQKVEpochBoundaryResume,
     plateau: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
+    model_seed = _configured_model_seed(config)
+    _require_equal(resume.model_seed, model_seed, field="resume.model_seed")
     return {
         "checkpoint_schema": "cancer_6core_relative_qkv_resume_v1",
         "run_id": archive.run_id,
         "campaign_id": CAMPAIGN_ID,
-        "model_seed": ACTIVE_SEED,
+        "model_seed": model_seed,
         "completed_global_epochs": resume.completed_global_epochs,
         "optimizer_steps_completed": resume.optimizer_steps_completed,
         "mask_base_seed": resume.mask_base_seed,
@@ -401,12 +441,19 @@ def _load_resume_checkpoint(
         field="resume.checkpoint_schema",
     )
     _require_equal(payload.get("campaign_id"), CAMPAIGN_ID, field="resume.campaign_id")
-    _require_equal(payload.get("model_seed"), ACTIVE_SEED, field="resume.model_seed")
     _require_equal(
-        payload.get("active_amendment_sha256"),
-        ACTIVE_AMENDMENT_SHA256,
-        field="resume.active_amendment_sha256",
+        payload.get("model_seed"),
+        _configured_model_seed(config),
+        field="resume.model_seed",
     )
+    source_amendment = payload.get("active_amendment_sha256")
+    compatible_amendments = {ACTIVE_AMENDMENT_SHA256}
+    if _configured_model_seed(config) == 0:
+        compatible_amendments.add(SEED0_FIRST_AMENDMENT_SHA256)
+    if source_amendment not in compatible_amendments:
+        raise RelativeQKVRunnerError(
+            "resume.active_amendment_sha256 is incompatible with the active seed."
+        )
     if payload.get("model_construction") != dict(model_construction):
         raise RelativeQKVRunnerError(
             "Resume checkpoint model construction differs from the active model."
@@ -439,10 +486,14 @@ def _load_resume_checkpoint(
     }
 
 
-def _seed_plateau_decision(losses: Sequence[float]) -> dict[str, Any]:
+def _seed_plateau_decision(
+    losses: Sequence[float],
+    *,
+    model_seed: int = PREFLIGHT_REFERENCE_SEED,
+) -> dict[str, Any]:
     decision = single_seed_plateau_decision(
         losses,
-        model_seed=ACTIVE_SEED,
+        model_seed=int(model_seed),
         completed_global_epochs=len(losses),
     )
     return {
@@ -569,16 +620,17 @@ def _held_in_diagnostics(
     return metrics, core_metrics, prediction_rows
 
 
-def run_seed0_to_plateau(
+def run_seed_to_plateau(
     config: Mapping[str, Any],
     archive: RunArchive,
     *,
     resume_checkpoint: Path | None = None,
 ) -> dict[str, Any]:
-    """Train seed 0 in deterministic segments until two plateau audits pass."""
+    """Train the configured seed until two per-seed plateau audits pass."""
 
     started = time.monotonic()
     _validate_active_contract(config)
+    model_seed = _configured_model_seed(config)
     preflight = _validate_hardware_preflight(config)
     dataset = _section(config, "dataset")
     cohort_dir = (_PROJECT_ROOT / str(dataset["prepared_artifact"])).resolve()
@@ -674,7 +726,7 @@ def run_seed0_to_plateau(
             record.equal_core_mean_masked_huber
             for record in final_result.global_history
         ]
-        plateau = _seed_plateau_decision(losses)
+        plateau = _seed_plateau_decision(losses, model_seed=model_seed)
         archive.write_json(
             f"diagnostics/plateau_audit_epoch_{end_epoch:04d}.json",
             plateau,
@@ -773,8 +825,9 @@ def run_seed0_to_plateau(
         {
             "active_amendment": str(ACTIVE_AMENDMENT),
             "active_amendment_sha256": ACTIVE_AMENDMENT_SHA256,
-            "model_seed": ACTIVE_SEED,
-            "deferred_model_seeds": [1, 2, 3, 4],
+            "model_seed": model_seed,
+            "active_model_seeds": list(ACTIVE_MODEL_SEEDS),
+            "deferred_model_seeds": list(DEFERRED_MODEL_SEEDS),
             "five_seed_campaign_complete": False,
             "mask_base_seed": MASK_BASE_SEED,
             "held_in_mask_base_seed": HELD_IN_MASK_BASE_SEED,
@@ -805,7 +858,7 @@ def run_seed0_to_plateau(
         "status": "success",
         "campaign_id": CAMPAIGN_ID,
         "model_name": "relative-qkv-gat",
-        "model_seed": ACTIVE_SEED,
+        "model_seed": model_seed,
         "final_epoch": final_result.completed_global_epochs,
         "optimizer_steps": final_result.optimizer_steps_completed,
         "parameter_count": parameter_count,
@@ -816,7 +869,8 @@ def run_seed0_to_plateau(
         "checkpoint": "checkpoints/last.ckpt",
         "plateau_confirmed": True,
         "five_seed_campaign_complete": False,
-        "deferred_model_seeds": [1, 2, 3, 4],
+        "active_model_seeds": list(ACTIVE_MODEL_SEEDS),
+        "deferred_model_seeds": list(DEFERRED_MODEL_SEEDS),
         "resume_source": resume_receipt,
         "generalization_estimate": False,
     }
@@ -824,9 +878,27 @@ def run_seed0_to_plateau(
     return summary
 
 
+def run_seed0_to_plateau(
+    config: Mapping[str, Any],
+    archive: RunArchive,
+    *,
+    resume_checkpoint: Path | None = None,
+) -> dict[str, Any]:
+    """Backward-compatible entry point for the now config-seeded runner."""
+
+    return run_seed_to_plateau(
+        config,
+        archive,
+        resume_checkpoint=resume_checkpoint,
+    )
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Train the active seed-0 six-core relative-QKV model to plateau."
+        description=(
+            "Train a configured six-core relative-QKV model seed to its "
+            "training-loss plateau."
+        )
     )
     parser.add_argument("--config", required=True, type=Path)
     parser.add_argument("--run-scratch", required=True, type=Path)
@@ -837,7 +909,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     archive, config = _worker_archive_and_config(args)
-    summary = run_seed0_to_plateau(
+    summary = run_seed_to_plateau(
         config,
         archive,
         resume_checkpoint=args.resume_checkpoint,
