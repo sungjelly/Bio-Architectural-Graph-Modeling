@@ -11,7 +11,7 @@ task_root="${BAGM_ROOT:-/workspace/BAGM}"
 source /venv/main/bin/activate
 cd "${task_root}"
 
-exec pty /venv/main/bin/python -m spatial_benchmark \
+exec /venv/main/bin/python -u -m spatial_benchmark \
   --database "${task_root}/state/tracking/bagm.sqlite3" \
   worker \
   --worker-id "relative-qkv-gpu-${gpu_id}" \
