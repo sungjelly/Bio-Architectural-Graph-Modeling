@@ -38,6 +38,7 @@ from spatial_benchmark.pooled_relative_qkv_training import (  # noqa: E402
     MASK_BASE_SEED,
     PooledRelativeQKVEpochBoundaryResume,
     PooledRelativeQKVTrainingConfig,
+    epoch_boundary_resume_from_checkpoint,
     fit_pooled_relative_qkv_segment,
     single_seed_plateau_decision,
 )
@@ -188,8 +189,7 @@ def _validate_hardware_preflight(
     # is bound to the root attempt's otherwise-identical resolved scientific
     # and execution contract, so retries do not require rerunning an expensive
     # largest-core hardware diagnostic.
-    preflight_config = dict(config)
-    preflight_config["attempt"] = PREFLIGHT_BASE_ATTEMPT
+    preflight_config = _preflight_bound_config(config)
     resolved_config_sha256 = hashlib.sha256(
         json.dumps(
             preflight_config,
@@ -235,6 +235,19 @@ def _validate_hardware_preflight(
             "Preflight staged geometry dtype no longer matches the run."
         )
     return value
+
+
+def _preflight_bound_config(config: Mapping[str, Any]) -> dict[str, Any]:
+    """Remove retry-only recovery routing from the preflight identity."""
+
+    normalized = dict(config)
+    normalized["attempt"] = PREFLIGHT_BASE_ATTEMPT
+    launcher = normalized.get("launcher")
+    if isinstance(launcher, Mapping):
+        normalized_launcher = dict(launcher)
+        normalized_launcher.pop("resume_checkpoint", None)
+        normalized["launcher"] = normalized_launcher
+    return normalized
 
 
 def _model_from_config(
@@ -362,6 +375,68 @@ def _checkpoint_bytes(payload: Mapping[str, Any]) -> bytes:
     stream = io.BytesIO()
     torch.save(dict(payload), stream)
     return stream.getvalue()
+
+
+def _load_resume_checkpoint(
+    path: Path,
+    *,
+    config: Mapping[str, Any],
+    model_construction: Mapping[str, Any],
+) -> tuple[PooledRelativeQKVEpochBoundaryResume, dict[str, Any]]:
+    """Load a checksum-valid periodic checkpoint for a queue recovery run."""
+
+    resolved = path.expanduser().resolve(strict=True)
+    try:
+        value = torch.load(resolved, map_location="cpu", weights_only=True)
+    except (OSError, RuntimeError, TypeError, ValueError) as exc:
+        raise RelativeQKVRunnerError(
+            f"Cannot load epoch-boundary resume checkpoint: {resolved}."
+        ) from exc
+    if not isinstance(value, Mapping):
+        raise RelativeQKVRunnerError("Resume checkpoint must contain a mapping.")
+    payload = dict(value)
+    _require_equal(
+        payload.get("checkpoint_schema"),
+        "cancer_6core_relative_qkv_resume_v1",
+        field="resume.checkpoint_schema",
+    )
+    _require_equal(payload.get("campaign_id"), CAMPAIGN_ID, field="resume.campaign_id")
+    _require_equal(payload.get("model_seed"), ACTIVE_SEED, field="resume.model_seed")
+    _require_equal(
+        payload.get("active_amendment_sha256"),
+        ACTIVE_AMENDMENT_SHA256,
+        field="resume.active_amendment_sha256",
+    )
+    if payload.get("model_construction") != dict(model_construction):
+        raise RelativeQKVRunnerError(
+            "Resume checkpoint model construction differs from the active model."
+        )
+    source_config = payload.get("resolved_config")
+    if not isinstance(source_config, Mapping) or _preflight_bound_config(
+        source_config
+    ) != _preflight_bound_config(config):
+        raise RelativeQKVRunnerError(
+            "Resume checkpoint resolved configuration differs from the active contract."
+        )
+    resume = epoch_boundary_resume_from_checkpoint(payload)
+    if resume.completed_global_epochs % int(
+        _section(config, "trainer")["checkpoint_every_global_epochs"]
+    ):
+        raise RelativeQKVRunnerError(
+            "Resume checkpoint is not at a locked 25-epoch boundary."
+        )
+    plateau = payload.get("plateau")
+    if isinstance(plateau, Mapping) and plateau.get("should_stop") is True:
+        raise RelativeQKVRunnerError(
+            "A plateau-confirmed final checkpoint must be used directly, not resumed."
+        )
+    return resume, {
+        "source_checkpoint": str(resolved),
+        "source_checkpoint_sha256": sha256_file(resolved),
+        "source_run_id": payload.get("run_id"),
+        "completed_global_epochs": resume.completed_global_epochs,
+        "resume_checksum": resume.resume_checksum,
+    }
 
 
 def _seed_plateau_decision(losses: Sequence[float]) -> dict[str, Any]:
@@ -497,6 +572,8 @@ def _held_in_diagnostics(
 def run_seed0_to_plateau(
     config: Mapping[str, Any],
     archive: RunArchive,
+    *,
+    resume_checkpoint: Path | None = None,
 ) -> dict[str, Any]:
     """Train seed 0 in deterministic segments until two plateau audits pass."""
 
@@ -527,6 +604,28 @@ def run_seed0_to_plateau(
         **dict(model_config),
     }
 
+    configured_resume = _section(config, "launcher").get("resume_checkpoint")
+    if resume_checkpoint is not None and configured_resume is not None:
+        raise RelativeQKVRunnerError(
+            "Specify a resume checkpoint through either CLI or launcher config, not both."
+        )
+    resume_path = (
+        resume_checkpoint
+        if resume_checkpoint is not None
+        else (None if configured_resume is None else Path(str(configured_resume)))
+    )
+    resume_receipt: dict[str, Any] | None = None
+    resume: PooledRelativeQKVEpochBoundaryResume | None = None
+    if resume_path is not None:
+        if not resume_path.is_absolute():
+            resume_path = _PROJECT_ROOT / resume_path
+        resume, resume_receipt = _load_resume_checkpoint(
+            resume_path,
+            config=config,
+            model_construction=model_construction,
+        )
+        archive.write_json("provenance/resume_source.json", resume_receipt)
+
     written_epochs: set[int] = set()
 
     def save_periodic(resume: PooledRelativeQKVEpochBoundaryResume) -> None:
@@ -547,9 +646,16 @@ def run_seed0_to_plateau(
         )
         written_epochs.add(epoch)
 
-    resume = None
-    start_epoch = 0
-    end_epoch = int(_section(config, "trainer")["minimum_global_epochs"])
+    start_epoch = 0 if resume is None else resume.completed_global_epochs
+    minimum_epochs = int(_section(config, "trainer")["minimum_global_epochs"])
+    continuation_epochs = int(
+        _section(config, "trainer")["continuation_block_global_epochs"]
+    )
+    end_epoch = (
+        minimum_epochs
+        if start_epoch < minimum_epochs
+        else start_epoch + continuation_epochs
+    )
     plateau: dict[str, Any] | None = None
     final_result = None
     while True:
@@ -686,6 +792,7 @@ def run_seed0_to_plateau(
                 "receipt_content_sha256"
             ],
             "checkpoint_sha256": sha256_file(checkpoint_path),
+            "resume_source": resume_receipt,
         },
     )
     peak_vram_gib = (
@@ -710,6 +817,7 @@ def run_seed0_to_plateau(
         "plateau_confirmed": True,
         "five_seed_campaign_complete": False,
         "deferred_model_seeds": [1, 2, 3, 4],
+        "resume_source": resume_receipt,
         "generalization_estimate": False,
     }
     archive.write_summary(summary)
@@ -722,13 +830,18 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument("--config", required=True, type=Path)
     parser.add_argument("--run-scratch", required=True, type=Path)
+    parser.add_argument("--resume-checkpoint", type=Path)
     return parser
 
 
 def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     archive, config = _worker_archive_and_config(args)
-    summary = run_seed0_to_plateau(config, archive)
+    summary = run_seed0_to_plateau(
+        config,
+        archive,
+        resume_checkpoint=args.resume_checkpoint,
+    )
     print(json.dumps(summary, sort_keys=True))
     return 0
 

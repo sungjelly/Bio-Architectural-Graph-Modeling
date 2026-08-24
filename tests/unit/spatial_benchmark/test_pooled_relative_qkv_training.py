@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from dataclasses import asdict
+
 import numpy as np
 import pytest
 import torch
@@ -12,6 +14,7 @@ from spatial_benchmark.pooled_relative_qkv_training import (
     PooledRelativeQKVCoreBatch,
     PooledRelativeQKVTrainingConfig,
     PooledRelativeQKVTrainingError,
+    epoch_boundary_resume_from_checkpoint,
     fit_pooled_relative_qkv_segment,
     joint_five_seed_plateau_decision,
     make_exact_uniform_training_mask,
@@ -389,6 +392,61 @@ def test_epoch_boundary_resume_matches_uninterrupted_training() -> None:
         len(record.mask_views) == MASK_VIEWS_PER_CORE_STEP
         for record in first_segment.resume.core_history
     )
+
+
+def test_serialized_epoch_boundary_resume_round_trip(tmp_path) -> None:
+    batches = _core_batches()
+    torch.manual_seed(71)
+    first_model = _TinyRelativeModel(3, dropout=0.25)
+    first = fit_pooled_relative_qkv_segment(
+        first_model,
+        batches,
+        _config(model_seed=5, end=1),
+    )
+    resume = first.resume
+    payload = {
+        "completed_global_epochs": resume.completed_global_epochs,
+        "optimizer_steps_completed": resume.optimizer_steps_completed,
+        "model_seed": resume.model_seed,
+        "mask_base_seed": resume.mask_base_seed,
+        "core_order_seed": resume.core_order_seed,
+        "mask_views_per_core_step": resume.mask_views_per_core_step,
+        "model_state_dict": resume.model_state_dict,
+        "model_state_checksum": resume.model_state_checksum,
+        "optimizer_state_dict": resume.optimizer_state_dict,
+        "optimizer_state_checksum": resume.optimizer_state_checksum,
+        "amp_scaler_state_dict": resume.scaler_state_dict,
+        "amp_scaler_state_checksum": resume.scaler_state_checksum,
+        "core_history": [asdict(record) for record in resume.core_history],
+        "global_history": [asdict(record) for record in resume.global_history],
+        "history_checksum": resume.history_checksum,
+        "resume_checksum": resume.resume_checksum,
+        "model_step_rng_derivation": resume.model_step_rng_derivation,
+    }
+    checkpoint = tmp_path / "epoch_0001.ckpt"
+    torch.save(payload, checkpoint)
+    loaded = torch.load(checkpoint, map_location="cpu", weights_only=True)
+    restored = epoch_boundary_resume_from_checkpoint(loaded)
+    assert restored.resume_checksum == resume.resume_checksum
+    assert restored.core_history == resume.core_history
+    assert restored.global_history == resume.global_history
+
+    continued_model = _TinyRelativeModel(3, dropout=0.25)
+    continued = fit_pooled_relative_qkv_segment(
+        continued_model,
+        batches,
+        _config(model_seed=5, start=1, end=2),
+        resume=restored,
+    )
+    direct_model = _TinyRelativeModel(3, dropout=0.25)
+    direct = fit_pooled_relative_qkv_segment(
+        direct_model,
+        batches,
+        _config(model_seed=5, start=1, end=2),
+        resume=resume,
+    )
+    assert continued.final_state_checksum == direct.final_state_checksum
+    assert continued.history_checksum == direct.history_checksum
 
 
 def test_nonzero_segment_start_requires_matching_resume() -> None:

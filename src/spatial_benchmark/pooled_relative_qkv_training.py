@@ -726,6 +726,91 @@ class PooledRelativeQKVEpochBoundaryResume:
                 raise PooledRelativeQKVTrainingError("Resume checksum is malformed.")
 
 
+def epoch_boundary_resume_from_checkpoint(
+    payload: Mapping[str, Any],
+) -> PooledRelativeQKVEpochBoundaryResume:
+    """Reconstruct and checksum-validate a serialized runner resume payload."""
+
+    def mapping(value: Any, location: str) -> Mapping[str, Any]:
+        if not isinstance(value, Mapping):
+            raise PooledRelativeQKVTrainingError(
+                f"Serialized resume {location} must be a mapping."
+            )
+        return value
+
+    try:
+        core_records: list[PooledRelativeQKVCoreStepRecord] = []
+        raw_core_history = payload["core_history"]
+        if not isinstance(raw_core_history, (list, tuple)):
+            raise PooledRelativeQKVTrainingError(
+                "Serialized resume core_history must be a sequence."
+            )
+        for core_index, raw_core in enumerate(raw_core_history):
+            core = dict(mapping(raw_core, f"core_history[{core_index}]"))
+            raw_views = core.get("mask_views")
+            if not isinstance(raw_views, (list, tuple)):
+                raise PooledRelativeQKVTrainingError(
+                    "Serialized resume mask_views must be a sequence."
+                )
+            core["mask_views"] = tuple(
+                PooledRelativeQKVMaskViewRecord(
+                    **dict(mapping(view, "mask view record"))
+                )
+                for view in raw_views
+            )
+            core_records.append(PooledRelativeQKVCoreStepRecord(**core))
+
+        global_records: list[PooledRelativeQKVGlobalEpochRecord] = []
+        raw_global_history = payload["global_history"]
+        if not isinstance(raw_global_history, (list, tuple)):
+            raise PooledRelativeQKVTrainingError(
+                "Serialized resume global_history must be a sequence."
+            )
+        for epoch_index, raw_epoch in enumerate(raw_global_history):
+            epoch = dict(mapping(raw_epoch, f"global_history[{epoch_index}]"))
+            aliases = epoch.get("ordered_aliases")
+            if not isinstance(aliases, (list, tuple)):
+                raise PooledRelativeQKVTrainingError(
+                    "Serialized resume ordered_aliases must be a sequence."
+                )
+            epoch["ordered_aliases"] = tuple(str(alias) for alias in aliases)
+            global_records.append(PooledRelativeQKVGlobalEpochRecord(**epoch))
+
+        return PooledRelativeQKVEpochBoundaryResume(
+            completed_global_epochs=int(payload["completed_global_epochs"]),
+            optimizer_steps_completed=int(payload["optimizer_steps_completed"]),
+            model_seed=int(payload["model_seed"]),
+            mask_base_seed=int(payload["mask_base_seed"]),
+            core_order_seed=int(payload["core_order_seed"]),
+            mask_views_per_core_step=int(payload["mask_views_per_core_step"]),
+            model_state_dict=_clone_tree_to_cpu(
+                mapping(payload["model_state_dict"], "model_state_dict")
+            ),
+            model_state_checksum=str(payload["model_state_checksum"]),
+            optimizer_state_dict=_clone_tree_to_cpu(
+                mapping(payload["optimizer_state_dict"], "optimizer_state_dict")
+            ),
+            optimizer_state_checksum=str(payload["optimizer_state_checksum"]),
+            scaler_state_dict=_clone_tree_to_cpu(
+                mapping(payload["amp_scaler_state_dict"], "amp_scaler_state_dict")
+            ),
+            scaler_state_checksum=str(payload["amp_scaler_state_checksum"]),
+            core_history=tuple(core_records),
+            global_history=tuple(global_records),
+            history_checksum=str(payload["history_checksum"]),
+            resume_checksum=str(payload["resume_checksum"]),
+            model_step_rng_derivation=str(
+                payload.get("model_step_rng_derivation", MODEL_STEP_RNG_DERIVATION)
+            ),
+        )
+    except PooledRelativeQKVTrainingError:
+        raise
+    except (KeyError, TypeError, ValueError) as exc:
+        raise PooledRelativeQKVTrainingError(
+            "Serialized epoch-boundary resume payload is invalid."
+        ) from exc
+
+
 @dataclass(frozen=True)
 class PooledRelativeQKVTrainingResult:
     core_history: tuple[PooledRelativeQKVCoreStepRecord, ...]
@@ -1468,6 +1553,7 @@ __all__ = [
     "PooledRelativeQKVTrainingResult",
     "SingleSeedPlateauDecision",
     "audit_training_loss_plateau",
+    "epoch_boundary_resume_from_checkpoint",
     "fit_pooled_relative_qkv_segment",
     "joint_five_seed_plateau_decision",
     "make_exact_uniform_training_mask",
