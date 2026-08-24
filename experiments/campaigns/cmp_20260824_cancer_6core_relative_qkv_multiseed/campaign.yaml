@@ -1,0 +1,49 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260824_cancer_6core_relative_qkv_multiseed
+display_name: Six-core Cancer relative-geometric QKV Transformer multiseed fit
+status: implementation
+definition: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/README.md
+frozen_task_contract: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/frozen_task_contract.yaml
+frozen_task_contract_sha256: 0ce1c2aceeebc5a739c625bbdca22032976885285d887dd836f54dc52cd6d70a
+task_contract_amendments:
+  - path: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/task_contract_amendment_001_plateau.yaml
+    sha256: 2e18e0dd84f3a8e970cea6ce24f4492248ccdff2927eaacc7b3c5dd8e3a331d0
+    status: superseded_by_amendment_002
+  - path: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/task_contract_amendment_002_ten_mask_views_fixed300.yaml
+    sha256: 5370f65a6204be1f4ecd1feac97a7a16e629340f07864060fa54206f3ddb010c
+    status: partially_superseded_by_amendment_003_stopping_policy_only
+  - path: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/task_contract_amendment_003_joint_plateau_min150.yaml
+    sha256: f011d4a0368295bb295fae84b3778719f191b50c789f017f4bf20daa4c6d8ad2
+    status: partially_superseded_by_amendment_004_execution_scope
+  - path: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/task_contract_amendment_004_seed0_first.yaml
+    sha256: 0ad3c6373edc45b1c61649217f043f486cfe3cfcf925bad042a2ed635032d174
+    status: active
+clinical_reconciliation_policy: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/clinical_reconciliation_policy.yaml
+cohort:
+  tissue_context: user_attested_rediagnosed_cancer
+  aliases:
+    - CAN-01
+    - CAN-09
+    - CAN-13
+    - CAN-15
+    - CAN-21
+    - CAN-23
+  independent_core_count: 6
+  fit_scope: all_cells_six_cancer_cores_transductive
+  validation_or_test_partition_present: false
+variant:
+  name: relative_qkv_gat_256_l4_h8_radial_stratified_k200_r500
+  active_model_seeds: [0]
+  deferred_model_seeds: [1, 2, 3, 4]
+production_run_count: 1
+production_minimum_global_epochs_per_run: 150
+production_minimum_optimizer_steps_per_run: 900
+production_minimum_complete_core_mask_views_per_run: 9000
+production_minimum_masks_per_cell_per_run: 1500
+production_stopping_policy: seed0_training_loss_plateau_after_minimum_150
+production_continuation_block_global_epochs: 25
+production_maximum_scientific_epoch_cap: null
+deferred_multiseed_execution_required_now: false
+five_seed_completion_claim_allowed: false
+production_maximum_attempts: 2
+automatic_enqueue: false

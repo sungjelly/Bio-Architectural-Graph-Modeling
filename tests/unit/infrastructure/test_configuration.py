@@ -191,6 +191,98 @@ def test_qkv_gat_matched_self_requires_canonical_family_and_no_edges(
         validate_experiment_config(with_edges)
 
 
+def test_relative_qkv_requires_logit_only_geometry_and_uniform_integer_masks(
+    tmp_path: Path,
+) -> None:
+    base = _configuration_tree(tmp_path)
+    resolved = compose_config(base, config_root=tmp_path)
+    resolved["model"].update(
+        {
+            "name": "relative-qkv-gat",
+            "family": "relative_geometry_qkv_graph_transformer",
+            "uses_edge_inputs": False,
+        }
+    )
+    resolved["features"] = {
+        "use_edge_features": False,
+        "relative_positional_encoding": {
+            "role": "attention_logit_bias_only",
+        },
+    }
+    resolved["dataset"]["task"] = "masked_expression_regression"
+    resolved["masking"] = {
+        "type": "uniform_per_cell_integer_count",
+        "count_min": 0,
+        "count_max": 1000,
+        "positions_without_replacement": True,
+        "model_seed_in_mask_derivation": False,
+        "independent_views_per_core_epoch": 10,
+        "ratio_stratification_or_bins": False,
+        "mask_seed_derivation_fields": [
+            "base_mask_seed",
+            "core_alias",
+            "global_epoch",
+            "mask_view_index",
+        ],
+    }
+    resolved["evaluation"] = {
+        "protocol": "held_in_pooled_6core_relative_qkv_fixed_budget",
+        "canonical_prediction_split": "fit",
+        "splits": ["fit"],
+        "primary_metric": "fit/uniform_per_cell/masked_huber",
+        "primary_direction": "minimize",
+    }
+    resolved["trainer"].update(
+        {
+            "restore_best": False,
+            "primary_checkpoint_role": "last",
+            "checkpoint_policy": "periodic_and_last",
+        }
+    )
+    validate_experiment_config(resolved)
+
+    joint_plateau = deepcopy(resolved)
+    joint_plateau["evaluation"]["protocol"] = (
+        "held_in_pooled_6core_relative_qkv_joint_plateau"
+    )
+    joint_plateau["trainer"].update(
+        {
+            "max_epochs": 150,
+            "minimum_global_epochs": 150,
+            "fixed_epoch_budget": False,
+            "continuation_policy": "joint_all_seed_plateau_25_epoch_blocks",
+            "continuation_block_global_epochs": 25,
+            "plateau_first_audit_epoch": 150,
+            "plateau_window_global_epochs": 50,
+            "plateau_consecutive_passing_audits": 2,
+            "plateau_requires_all_five_seeds": True,
+            "plateau_requires_common_final_epoch": True,
+            "mask_views_per_core_step": 10,
+            "optimizer_zero_grad_per_core_step": 1,
+            "optimizer_steps_per_core_step": 1,
+            "early_stopping": False,
+        }
+    )
+    validate_experiment_config(joint_plateau)
+
+    invalid = deepcopy(resolved)
+    invalid["features"]["relative_positional_encoding"]["role"] = (
+        "edge_value_gate"
+    )
+    with pytest.raises(ConfigurationError, match="logits only"):
+        validate_experiment_config(invalid)
+
+    invalid = deepcopy(resolved)
+    invalid["masking"]["model_seed_in_mask_derivation"] = True
+    with pytest.raises(ConfigurationError, match="exclude model seed"):
+        validate_experiment_config(invalid)
+
+    invalid = deepcopy(resolved)
+    invalid["trainer"]["checkpoint_policy"] = "last_only"
+    with pytest.raises(ConfigurationError, match="periodic_and_last"):
+        validate_experiment_config(invalid)
+
+
 def test_mean_adjacency_sage_requires_canonical_family(
     tmp_path: Path,
 ) -> None:

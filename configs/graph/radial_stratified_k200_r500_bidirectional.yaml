@@ -1,0 +1,28 @@
+graph:
+  kind: radial_stratified_knn
+  neighbor_k: 200
+  k: 200
+  radius_um: 500.0
+  maximum_range_um: 500.0
+  radial_shells:
+    - {lower_um: 0.0, upper_um: 50.0, quota: 48}
+    - {lower_um: 50.0, upper_um: 150.0, quota: 64}
+    - {lower_um: 150.0, upper_um: 300.0, quota: 48}
+    - {lower_um: 300.0, upper_um: 500.0, quota: 40}
+  quota_refill: nearest_remaining_within_500um
+  tie_breaking: distance_then_source_index
+  symmetry: union
+  directed_selection_then_bidirectional_union: true
+  deduplicate_directed_edges: true
+  canonical_order: receiver_then_source
+  min_distance_um: 0.0
+  edge_dropout: 0.0
+  self_loops: false
+  cross_core_edges: false
+  graph_batches: six_disconnected_complete_core_graphs
+  coordinates_are_node_covariates: false
+  construction_receiver_chunk_size: 512
+  exact_search_epsilon: 0.0
+  long_range_coverage_shell_um: [300.0, 500.0]
+  require_all_eligible_long_range_covered: true
+

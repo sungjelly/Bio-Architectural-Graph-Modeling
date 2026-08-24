@@ -1,0 +1,44 @@
+dataset:
+  dataset_id: cosmx_cancer_6core_pooled_fit_v1
+  version: cancer_6core_pooled_fit_v1
+  split_id: fit_all_six_cancer_cores_transductive_v1
+  dataset_fingerprint: 45fe649d1de0f3df3af0f4a1ae69d17249711359d55dde7d1acf45ed1881e77d
+  split_fingerprint: 956931f2cee4d48d33768fa7c6d034e43e4aaf2b40247b527f0755d860805ead
+  cohort_manifest_file_sha256: 9c4ea4c9445f5230c5f823b4b1cd7a5b230767b43daa7018c99dc27bbf9613ad
+  graph_manifest_file_sha256: 20caa27c4d0a816a01475eda321e1910505b3b7849bc8eaa22a56e3cbfd1b48d
+  reconciliation_policy_sha256: 9a5fe243d385fb4bf3e2621f2f1b5f31ac749f6571c2592716d9222f2624233c
+  preprocessing_version: cancer_6core_equal_core_log1p_metadata_v1
+  task: masked_expression_regression
+  target_scale: shared_equal_core_standardized_log1p_raw_biological_counts
+  fit_scope: all_cells_six_cancer_cores_transductive
+  total_fit_cells: 117996
+  biological_target_count: 1000
+  validation_or_test_partition_present: false
+  generalization_claim_supported: false
+  clinical_reconciliation_policy: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/clinical_reconciliation_policy.yaml
+  core_aliases:
+    - CAN-01
+    - CAN-09
+    - CAN-13
+    - CAN-15
+    - CAN-21
+    - CAN-23
+  original_core_numbers:
+    CAN-01: 1
+    CAN-09: 9
+    CAN-13: 13
+    CAN-15: 15
+    CAN-21: 21
+    CAN-23: 23
+  prepared_artifact: data/processed/cancer_6core_relative_qkv_v1
+  prepared_graph_artifact: data/processed/cancer_6core_relative_qkv_graphs_v1
+  experimental_unit: cancer_spatial_core
+  tissue_context: user_attested_rediagnosed_cancer
+  technical_control_prefixes_excluded:
+    - Negative
+    - SystemControl
+  expression_transform:
+    source: raw_nonnegative_probe_counts
+    transform: log1p_then_gene_wise_standardize
+    moment_weighting: equal_core
+    library_size_normalization: false

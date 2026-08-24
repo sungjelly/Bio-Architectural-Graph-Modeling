@@ -771,6 +771,7 @@ def _condition(
         "g3",
         "hybrid-count-gat",
         "qkv-gat",
+        "relative-qkv-gat",
     }:
         condition = f"{model_name}_true"
     else:
@@ -796,6 +797,8 @@ def _condition(
             "hybrid_count_gat_",
             "qkv-gat_",
             "qkv_gat_",
+            "relative-qkv-gat_",
+            "relative_qkv_gat_",
         )
     ):
         role = "candidate_model"

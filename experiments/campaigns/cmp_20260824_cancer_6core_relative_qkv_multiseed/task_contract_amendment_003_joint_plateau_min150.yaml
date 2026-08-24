@@ -1,0 +1,58 @@
+amendment_schema_version: 1
+amendment_id: cmp_20260824_relative_qkv_joint_plateau_min150_003
+campaign_id: cmp_20260824_cancer_6core_relative_qkv_multiseed
+issued_at_utc: "2026-08-24"
+authority: explicit_user_instruction
+user_instruction_summary: Lower the minimum training epoch for the five-model plateau campaign to 150.
+supersedes:
+  - amendment_id: cmp_20260824_relative_qkv_ten_mask_views_fixed300_002
+    scope: stopping_policy_only
+    reason: The later instruction lowers the minimum epoch, reactivating loss-plateau continuation instead of a fixed epoch-300 stop.
+preserves_from_amendment_002:
+  - ten_independent_mask_views_per_core_step
+  - arithmetic_mean_of_ten_mask_view_gradients
+  - one_optimizer_step_per_core
+  - model_seed_independent_mask_schedule
+
+minimum_training:
+  global_epochs_per_model: 150
+  optimizer_steps_per_model: 900
+  complete_core_forward_backward_views_per_model: 9000
+  masks_per_cell_per_model: 1500
+
+plateau_metric:
+  name: equal_core_mean_training_masked_huber
+  source: global_epoch_history
+  validation_or_test_metric: false
+  checkpoint_selection_metric: false
+
+plateau_rule:
+  audit_interval_global_epochs: 25
+  first_allowed_audit_epoch: 150
+  window_global_epochs: 50
+  consecutive_passing_audits_required: 2
+  per_seed_conditions:
+    relative_mean_improvement_last_25_vs_previous_25_max: 0.002
+    absolute_linear_slope_over_last_50_divided_by_window_mean_max_per_epoch: 0.0001
+    all_window_losses_finite: true
+  joint_condition: every_seed_0_through_4_passes_at_the_same_campaign_audit
+  common_final_epoch_across_seeds: true
+  behavior_when_any_seed_fails: continue_all_five_models_for_25_more_global_epochs
+  maximum_scientific_epoch_cap: null
+  earliest_possible_common_stop_epoch: 175
+  note: Two consecutive joint passing audits are required, so an audit may first pass at epoch 150 but the earliest confirmed stop is epoch 175.
+
+checkpointing:
+  interval_global_epochs: 25
+  canonical_role: last_common_joint_plateau_epoch
+  best_checkpoint_selection: false
+  epoch_300_role_if_reached: ordinary_periodic_checkpoint
+
+resume:
+  boundary: completed_global_epoch
+  continuation_block_global_epochs: 25
+  preserve_completed_view_schedule: true
+  future_mask_sequence_rederived_exactly_from_locked_seed_fields: true
+
+interpretation:
+  statement: Epoch 150 is the first joint plateau audit, not a fixed endpoint; training continues in common 25-epoch blocks until every seed satisfies the prespecified rule at two consecutive audits.

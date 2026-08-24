@@ -75,6 +75,7 @@ def _write_success_support(archive: RunArchive) -> None:
     (
         "held_in_full_core_fixed_budget",
         "held_in_pooled_10core_fixed_budget",
+        "held_in_pooled_6core_relative_qkv_fixed_budget",
     ),
 )
 def test_canonical_fit_prediction_accepts_explicit_held_in_protocols(

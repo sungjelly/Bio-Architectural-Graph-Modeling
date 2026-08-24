@@ -142,6 +142,14 @@ def build_parser() -> argparse.ArgumentParser:
     worker.add_argument("--once", action="store_true")
     worker.add_argument("--auto-retry", action="store_true")
     worker.add_argument(
+        "--parallel-gpu-workers",
+        action="store_true",
+        help=(
+            "Use one advisory worker lock per explicit GPU instead of the "
+            "project-global lock. Start at most one such worker per GPU."
+        ),
+    )
+    worker.add_argument(
         "--allow-test-jobs",
         action="store_true",
         help="Permit explicitly marked CPU-only dummy jobs; never use for science.",
@@ -413,6 +421,7 @@ def _dispatch(
             once=arguments.once,
             auto_retry=arguments.auto_retry,
             allow_test_jobs=arguments.allow_test_jobs,
+            parallel_gpu_workers=arguments.parallel_gpu_workers,
         )
         processed = QueueWorker(
             registry, settings=settings, paths=paths

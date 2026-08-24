@@ -16,6 +16,7 @@ import math
 import os
 from pathlib import Path
 import platform
+import re
 import shutil
 import signal
 import socket
@@ -93,6 +94,7 @@ class WorkerSettings:
     once: bool = False
     auto_retry: bool = False
     allow_test_jobs: bool = False
+    parallel_gpu_workers: bool = False
 
     def validate(self) -> None:
         if not self.worker_id.strip():
@@ -102,6 +104,15 @@ class WorkerSettings:
                 raise ValueError(f"{name} must be positive.")
         if self.min_free_gb < 0:
             raise ValueError("min_free_gb must be non-negative.")
+        if self.parallel_gpu_workers:
+            if self.gpu is None or not str(self.gpu).strip():
+                raise ValueError(
+                    "parallel_gpu_workers requires one explicit GPU."
+                )
+            if "," in str(self.gpu):
+                raise ValueError(
+                    "parallel_gpu_workers requires exactly one GPU index."
+                )
 
 
 class ProjectWorkerLock:
@@ -276,6 +287,30 @@ def command_for_config(
             "--run-scratch",
             "{run_scratch}",
         ]
+    if protocol in {
+        "held_in_pooled_6core_relative_qkv_fixed_budget",
+        "held_in_pooled_6core_relative_qkv_joint_plateau",
+        "held_in_pooled_6core_relative_qkv_seed_plateau",
+    }:
+        model = _section(configuration, "model")
+        model_name = str(model.get("name", "")).strip().lower()
+        if model_name != "relative-qkv-gat":
+            raise ConfigurationError(
+                f"{protocol} requires "
+                "model.name=relative-qkv-gat."
+            )
+        script = (
+            selected_paths.project_root
+            / "scripts/train/run_pooled_relative_qkv.py"
+        )
+        return [
+            sys.executable,
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
     if protocol == "held_in_full_core_fixed_budget":
         model_name = ""
         if "model" in configuration:
@@ -382,7 +417,13 @@ def command_for_config(
 
 
 class QueueWorker:
-    """One-lock, one-subprocess queue runner."""
+    """One-lock, one-subprocess queue runner.
+
+    The backward-compatible default takes the project-global worker lock.
+    Explicit GPU-parallel workers instead take one deterministic lock per
+    physical GPU, so two workers cannot intentionally claim the same device
+    while independent registry-backed jobs can use distinct devices.
+    """
 
     def __init__(
         self,
@@ -395,7 +436,11 @@ class QueueWorker:
         self.registry = registry
         self.settings = settings
         self.paths = paths or current_paths()
-        self.lock_path = self.paths.state_root / "locks" / "bagm-worker.lock"
+        lock_name = "bagm-worker.lock"
+        if settings.parallel_gpu_workers:
+            gpu_key = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(settings.gpu))
+            lock_name = f"bagm-worker-gpu-{gpu_key}.lock"
+        self.lock_path = self.paths.state_root / "locks" / lock_name
         self._stop = threading.Event()
         self._child: subprocess.Popen[bytes] | None = None
         self._child_record: Path | None = None

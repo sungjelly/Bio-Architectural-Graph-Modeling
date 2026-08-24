@@ -1,0 +1,51 @@
+amendment_schema_version: 1
+amendment_id: cmp_20260824_relative_qkv_joint_plateau_001
+campaign_id: cmp_20260824_cancer_6core_relative_qkv_multiseed
+issued_at_utc: "2026-08-24"
+authority: explicit_user_instruction
+user_instruction_summary: Continue training until the loss has plateaued for all five models.
+supersedes_contract_fields:
+  - optimization.fixed_epoch_budget
+  - training.global_epochs
+  - training.optimizer_steps_per_model
+  - training.total_optimizer_steps
+  - acceptance_criteria.fixed_epoch_300_completion
+
+minimum_training:
+  global_epochs_per_model: 300
+  optimizer_steps_per_model: 1800
+  optimizer_steps_all_five_models: 9000
+
+plateau_metric:
+  name: equal_core_mean_training_masked_huber
+  source: global_epoch_history
+  validation_or_test_metric: false
+  checkpoint_selection_metric: false
+
+plateau_rule:
+  audit_interval_global_epochs: 25
+  first_allowed_stop_epoch: 300
+  window_global_epochs: 50
+  consecutive_passing_audits_required: 2
+  per_seed_conditions:
+    relative_mean_improvement_last_25_vs_previous_25_max: 0.002
+    absolute_linear_slope_over_last_50_divided_by_window_mean_max_per_epoch: 0.0001
+    all_window_losses_finite: true
+  joint_condition: every_seed_0_through_4_passes_at_the_same_campaign_audit
+  common_final_epoch_across_seeds: true
+  behavior_when_any_seed_fails: continue_all_five_models_for_25_more_global_epochs
+  maximum_scientific_epoch_cap: null
+  external_stop_conditions:
+    - unavailable_hardware
+    - insufficient_storage
+    - nonfinite_training
+    - invalid_or_unloadable_resume_state
+
+checkpointing:
+  interval_global_epochs: 25
+  canonical_role: last_common_joint_plateau_epoch
+  best_checkpoint_selection: false
+
+interpretation:
+  statement: The plateau rule extends training only; it never shortens the original 300-epoch minimum and never uses held-in diagnostic performance to choose an epoch.
+

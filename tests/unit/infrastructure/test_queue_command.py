@@ -180,6 +180,65 @@ def test_pooled_protocol_rejects_non_hybrid_model(tmp_path: Path) -> None:
         )
 
 
+def test_relative_six_core_protocol_uses_dedicated_runner(
+    tmp_path: Path,
+) -> None:
+    command = command_for_config(
+        {
+            "evaluation": {
+                "protocol": "held_in_pooled_6core_relative_qkv_fixed_budget",
+            },
+            "model": {"name": "relative-qkv-gat"},
+        },
+        paths=_paths(tmp_path),
+    )
+
+    assert command[1] == str(
+        tmp_path / "scripts/train/run_pooled_relative_qkv.py"
+    )
+    assert command[2:] == [
+        "--config",
+        "{run_scratch}/config.resolved.yaml",
+        "--run-scratch",
+        "{run_scratch}",
+    ]
+
+
+def test_relative_six_core_joint_plateau_protocol_uses_dedicated_runner(
+    tmp_path: Path,
+) -> None:
+    command = command_for_config(
+        {
+            "evaluation": {
+                "protocol": "held_in_pooled_6core_relative_qkv_joint_plateau",
+            },
+            "model": {"name": "relative-qkv-gat"},
+        },
+        paths=_paths(tmp_path),
+    )
+
+    assert command[1] == str(
+        tmp_path / "scripts/train/run_pooled_relative_qkv.py"
+    )
+
+
+def test_relative_six_core_protocol_rejects_other_models(
+    tmp_path: Path,
+) -> None:
+    with pytest.raises(ConfigurationError, match="relative-qkv-gat"):
+        command_for_config(
+            {
+                "evaluation": {
+                    "protocol": (
+                        "held_in_pooled_6core_relative_qkv_fixed_budget"
+                    ),
+                },
+                "model": {"name": "qkv-gat"},
+            },
+            paths=_paths(tmp_path),
+        )
+
+
 def test_self_hurdle_protocol_uses_graphless_hurdle_runner(
     tmp_path: Path,
 ) -> None:

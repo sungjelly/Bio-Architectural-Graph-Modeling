@@ -86,12 +86,14 @@ SUPPORTED_MODEL_NAMES = frozenset(
         "myjju-genemae",
         "qkv-gat",
         "qkv-gat-matched-self",
+        "relative-qkv-gat",
         "self-hurdle-count",
     }
 )
 PRIMARY_METRIC_DIRECTIONS = {
     "fit/partial_gene/log1p_cp10k_masked_huber": "minimize",
     "fit/partial_gene/masked_huber": "minimize",
+    "fit/uniform_per_cell/masked_huber": "minimize",
     "fit/whole_node/hybrid_loss": "minimize",
     "fit/whole_node/hurdle_loss": "minimize",
     "fit/whole_node/masked_huber": "minimize",
@@ -515,6 +517,14 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             "model.family=edge_aware_qkv_graph_transformer."
         )
     if (
+        model_name == "relative-qkv-gat"
+        and family.strip() != "relative_geometry_qkv_graph_transformer"
+    ):
+        raise ConfigurationError(
+            "relative-qkv-gat requires "
+            "model.family=relative_geometry_qkv_graph_transformer."
+        )
+    if (
         model_name == "qkv-gat-matched-self"
         and family.strip() != "qkv_parameter_matched_self_control"
     ):
@@ -582,23 +592,73 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
 
     masking = _mapping(config, "masking")
     _required(masking, "type", "masking")
-    if isinstance(masking.get("rate"), Mapping) and masking["rate"]:
-        rates = dict(masking["rate"])
-    elif "rate" in masking:
-        rates = {"rate": masking["rate"]}
-    elif isinstance(masking.get("rates"), Mapping) and masking["rates"]:
-        rates = dict(masking["rates"])
-    else:
-        raise ConfigurationError("masking requires rate or a non-empty rates mapping.")
-    for name, value in rates.items():
-        if (
-            isinstance(value, bool)
-            or not isinstance(value, (int, float))
-            or not 0 <= float(value) <= 1
-        ):
+    masking_type = str(masking.get("type", "")).strip().lower()
+    if masking_type == "uniform_per_cell_integer_count":
+        minimum = _positive_integer(
+            _required(masking, "count_min", "masking"),
+            "masking.count_min",
+            allow_zero=True,
+        )
+        maximum = _positive_integer(
+            _required(masking, "count_max", "masking"),
+            "masking.count_max",
+        )
+        if minimum != 0 or maximum != 1000:
             raise ConfigurationError(
-                f"masking rate {name!r} must be between zero and one."
+                "uniform_per_cell_integer_count requires inclusive support "
+                "from 0 through 1000."
             )
+        if masking.get("positions_without_replacement") is not True:
+            raise ConfigurationError(
+                "uniform per-cell masking requires sampling without replacement."
+            )
+        if masking.get("model_seed_in_mask_derivation") is not False:
+            raise ConfigurationError(
+                "uniform per-cell mask derivation must exclude model seed."
+            )
+        if model_name == "relative-qkv-gat":
+            if masking.get("independent_views_per_core_epoch") != 10:
+                raise ConfigurationError(
+                    "relative-qkv-gat requires exactly ten independent mask "
+                    "views per core epoch."
+                )
+            if masking.get("ratio_stratification_or_bins") is not False:
+                raise ConfigurationError(
+                    "relative-qkv-gat mask views may not use ratio bins or strata."
+                )
+            expected_seed_fields = [
+                "base_mask_seed",
+                "core_alias",
+                "global_epoch",
+                "mask_view_index",
+            ]
+            if list(masking.get("mask_seed_derivation_fields", ())) != (
+                expected_seed_fields
+            ):
+                raise ConfigurationError(
+                    "relative-qkv-gat mask seeds must derive only from base "
+                    "seed, core alias, global epoch, and mask view index."
+                )
+    else:
+        if isinstance(masking.get("rate"), Mapping) and masking["rate"]:
+            rates = dict(masking["rate"])
+        elif "rate" in masking:
+            rates = {"rate": masking["rate"]}
+        elif isinstance(masking.get("rates"), Mapping) and masking["rates"]:
+            rates = dict(masking["rates"])
+        else:
+            raise ConfigurationError(
+                "masking requires rate or a non-empty rates mapping."
+            )
+        for name, value in rates.items():
+            if (
+                isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not 0 <= float(value) <= 1
+            ):
+                raise ConfigurationError(
+                    f"masking rate {name!r} must be between zero and one."
+                )
 
     dataset = _mapping(config, "dataset")
     for field in ("dataset_id", "version", "split_id"):
@@ -616,6 +676,24 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             "Enabled edge features require features.edge_features or "
             "features.edge_feature_names."
         )
+    if model_name == "relative-qkv-gat":
+        if use_edges:
+            raise ConfigurationError(
+                "relative-qkv-gat prohibits ordinary edge features."
+            )
+        relative = features.get("relative_positional_encoding")
+        if not isinstance(relative, Mapping):
+            raise ConfigurationError(
+                "relative-qkv-gat requires relative_positional_encoding."
+            )
+        if relative.get("role") != "attention_logit_bias_only":
+            raise ConfigurationError(
+                "relative geometry may affect attention logits only."
+            )
+        if model.get("uses_edge_inputs") is not False:
+            raise ConfigurationError(
+                "relative-qkv-gat must declare model.uses_edge_inputs=false."
+            )
 
     graph = _mapping(config, "graph")
     _positive_integer(
@@ -662,6 +740,9 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
     held_in_fit_protocols = {
         "held_in_full_core_fixed_budget",
         "held_in_pooled_10core_fixed_budget",
+        "held_in_pooled_6core_relative_qkv_fixed_budget",
+        "held_in_pooled_6core_relative_qkv_joint_plateau",
+        "held_in_pooled_6core_relative_qkv_seed_plateau",
     }
     if protocol in held_in_fit_protocols:
         if canonical_prediction_split != "fit":
@@ -686,15 +767,80 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                 f"{protocol} requires "
                 "trainer.primary_checkpoint_role=last."
             )
-        if trainer.get("checkpoint_policy") != "last_only":
+        expected_checkpoint_policy = (
+            "periodic_and_last"
+            if protocol
+            in {
+                "held_in_pooled_6core_relative_qkv_fixed_budget",
+                "held_in_pooled_6core_relative_qkv_joint_plateau",
+                "held_in_pooled_6core_relative_qkv_seed_plateau",
+            }
+            else "last_only"
+        )
+        if trainer.get("checkpoint_policy") != expected_checkpoint_policy:
             raise ConfigurationError(
                 f"{protocol} requires "
-                "trainer.checkpoint_policy=last_only."
+                "trainer.checkpoint_policy="
+                f"{expected_checkpoint_policy}."
             )
+        if protocol == "held_in_pooled_6core_relative_qkv_joint_plateau":
+            locked_values = {
+                "max_epochs": 150,
+                "minimum_global_epochs": 150,
+                "fixed_epoch_budget": False,
+                "continuation_policy": (
+                    "joint_all_seed_plateau_25_epoch_blocks"
+                ),
+                "continuation_block_global_epochs": 25,
+                "plateau_first_audit_epoch": 150,
+                "plateau_window_global_epochs": 50,
+                "plateau_consecutive_passing_audits": 2,
+                "plateau_requires_all_five_seeds": True,
+                "plateau_requires_common_final_epoch": True,
+                "mask_views_per_core_step": 10,
+                "optimizer_zero_grad_per_core_step": 1,
+                "optimizer_steps_per_core_step": 1,
+                "early_stopping": False,
+            }
+            for field, expected in locked_values.items():
+                if trainer.get(field) != expected:
+                    raise ConfigurationError(
+                        "held_in_pooled_6core_relative_qkv_joint_plateau "
+                        f"requires trainer.{field}={expected!r}."
+                    )
+        if protocol == "held_in_pooled_6core_relative_qkv_seed_plateau":
+            locked_values = {
+                "max_epochs": 150,
+                "minimum_global_epochs": 150,
+                "fixed_epoch_budget": False,
+                "continuation_policy": (
+                    "seed0_training_loss_plateau_25_epoch_blocks"
+                ),
+                "continuation_block_global_epochs": 25,
+                "plateau_first_audit_epoch": 150,
+                "plateau_window_global_epochs": 50,
+                "plateau_consecutive_passing_audits": 2,
+                "plateau_requires_all_five_seeds": False,
+                "plateau_requires_common_final_epoch": False,
+                "mask_views_per_core_step": 10,
+                "optimizer_zero_grad_per_core_step": 1,
+                "optimizer_steps_per_core_step": 1,
+                "early_stopping": False,
+            }
+            for field, expected in locked_values.items():
+                if trainer.get(field) != expected:
+                    raise ConfigurationError(
+                        "held_in_pooled_6core_relative_qkv_seed_plateau "
+                        f"requires trainer.{field}={expected!r}."
+                    )
+            if config.get("seed") != 0:
+                raise ConfigurationError(
+                    "held_in_pooled_6core_relative_qkv_seed_plateau requires seed=0."
+                )
     elif canonical_prediction_split == "fit" or str(primary).startswith("fit/"):
         raise ConfigurationError(
             "fit prediction/metric semantics require "
-            "an explicit held-in fixed-budget evaluation protocol."
+            "an explicit held-in fit evaluation protocol."
         )
 
     token_task = "masked_expression_token_classification"
@@ -798,8 +944,10 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
         raise ConfigurationError(
             f"{model_name.upper()} requires edge features off."
         )
-    if dataset.get("task") == "masked_expression_regression" and "expression" not in str(
-        masking.get("type", "")
+    if (
+        dataset.get("task") == "masked_expression_regression"
+        and "expression" not in str(masking.get("type", ""))
+        and masking_type != "uniform_per_cell_integer_count"
     ):
         raise ConfigurationError(
             "Masked-expression regression requires an expression-masking configuration."

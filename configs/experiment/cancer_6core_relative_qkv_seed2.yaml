@@ -1,0 +1,16 @@
+version: 1
+defaults:
+  - model: relative_qkv_gat_256_l4_h8
+  - masking: uniform_per_cell_0_100
+  - dataset: cancer_6core_pooled_fit_v1
+  - features: cosmx_cancer_6core_metadata_relative_geometry
+  - graph: radial_stratified_k200_r500_bidirectional
+  - trainer: pooled_relative_qkv_joint_plateau_min150
+  - evaluation: held_in_cancer_6core_fit_diagnostics
+  - launcher: local_single_gpu_3090
+campaign: {campaign_id: cmp_20260824_cancer_6core_relative_qkv_multiseed, display_name: Six-core Cancer relative-geometric QKV Transformer multiseed fit}
+experiment: {variant_label: relative_qkv_gat_256_l4_h8_radial_stratified_k200_r500, estimand: held_in_all_cells_six_cancer_cores_transductive_masked_reconstruction, permitted_claim: fitted_cohort_predictive_dependencies_and_model_seed_spread}
+classification: {schema_version: 1, lifecycle_stage: locked_final, study_axis: six_core_relative_geometry_qkv_transductive_fit, scientific_variant: relative_qkv_gat_256_l4_h8_radial_stratified_k200_r500, retention_class: retain_locked_final_models, classification_confidence: high}
+seed: 2
+fold: 0
+attempt: 1

@@ -1,0 +1,209 @@
+contract_schema_version: 1
+campaign_id: cmp_20260824_cancer_6core_relative_qkv_multiseed
+frozen_at_utc: "2026-08-24"
+status: locked_before_implementation_and_data_materialization
+
+objective:
+  summary: Train five independently initialized relative-geometric sparse QKV graph Transformers shared across six disconnected Cancer-core graphs.
+  deliverables:
+    - five verified final epoch-300 model checkpoints for seeds 0 through 4
+    - resumable epoch-boundary checkpoints at least every 25 global epochs
+    - immutable cohort, preprocessing, graph, and relative-geometry receipts
+    - held-in fixed-mask diagnostics that do not select checkpoints
+    - receiver-chunked explanation and selected Jacobian interfaces
+    - five-seed representation, attention, positional-bias, and gradient stability report
+
+scientific_question: Can one shared relative-geometric QKV graph Transformer reconstruct independently masked expression across the six fitted Cancer cores while exposing transformation-invariant spatial routing summaries for later model-behavior analysis?
+primary_hypothesis: Content-based QKV compatibility plus invariant relative-geometric logit bias can learn useful held-in predictive dependencies under exact complete-neighborhood attention.
+credible_alternatives:
+  - Reconstruction is dominated by same-cell co-expression and always-visible morphology or imaging metadata.
+  - Attention reflects degree-normalized routing without stable cell-cell predictive dependence.
+  - Learned spatial preference is seed-unstable or driven mainly by distance and density rather than tissue orientation.
+  - Short-range associations reflect segmentation spillover or broad spatial fields rather than direct communication.
+
+estimand: held_in_all_cells_six_cancer_cores_transductive_masked_expression_reconstruction
+maximum_permitted_claim: Model-derived predictive dependencies and seed spread within the fitted six-core cohort.
+prohibited_claims:
+  - patient-held-out or sample-held-out generalization
+  - calibrated biological confidence intervals from five seeds
+  - direct signaling or biological causality from attention, gradients, or Jacobians
+
+cohort:
+  aliases:
+    - CAN-01
+    - CAN-09
+    - CAN-13
+    - CAN-15
+    - CAN-21
+    - CAN-23
+  original_core_numbers:
+    - 1
+    - 9
+    - 13
+    - 15
+    - 21
+    - 23
+  tissue_context_policy: cancer_6core_user_rediagnosis_attestation_v1
+  policy_path: experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/clinical_reconciliation_policy.yaml
+  experimental_unit: complete_spatial_core
+  fitting_cells: all_eligible_cells
+  fit_scope: all_cells_six_cancer_cores_transductive
+  validation_or_test_partition_present: false
+  generalization_claim_supported: false
+
+inputs:
+  biological_targets: 1000
+  source_representation: raw_nonnegative_probe_counts
+  target_transform: shared_equal_core_weighted_gene_wise_standardized_log1p
+  technical_control_prefixes_excluded:
+    - Negative
+    - SystemControl
+  node_channels:
+    - masked_expression
+    - explicit_binary_gene_mask
+    - permitted_morphology_and_imaging_metadata
+  prohibited_node_channels:
+    - raw_coordinates
+    - core_or_slide_or_fov_identity
+    - patient_or_cell_identifiers
+    - vendor_annotations
+    - expression_derived_library_size_or_qc_totals
+
+graph:
+  policy: radial_stratified_knn
+  nominal_pre_symmetrization_k: 200
+  maximum_range_um: 500.0
+  shell_quotas:
+    - {lower_um: 0.0, upper_um: 50.0, quota: 48}
+    - {lower_um: 50.0, upper_um: 150.0, quota: 64}
+    - {lower_um: 150.0, upper_um: 300.0, quota: 48}
+    - {lower_um: 300.0, upper_um: 500.0, quota: 40}
+  directed_selection_then_bidirectional_union: true
+  self_loops: false
+  cross_core_edges: false
+  neighbor_sampling: false
+  long_range_gate: Every coverage-eligible receiver has at least one retained 300-500um incoming edge.
+
+relative_position:
+  rbf_count: 64
+  rbf_range_um: [0.0, 500.0]
+  smooth_cutoff: true
+  local_orientation_radius_um: 150.0
+  local_orientation_max_neighbors: 64
+  local_orientation_weight_sigma_um: 75.0
+  feature_dimension: 70
+  invariances:
+    - translation
+    - rotation
+    - reflection
+  allowed_effect: per_head_attention_logit_bias_only
+  prohibited_effects:
+    - edge_key_or_value_content
+    - value_gating
+    - raw_relative_vectors_in_values
+
+architecture:
+  name: receiver_chunked_relative_geometry_qkv_graph_transformer
+  hidden_dimension: 256
+  graph_layers: 4
+  attention_heads: 8
+  attention_head_dimension: 32
+  ffn_dimension: 1024
+  decoder_hidden_dimension: 1024
+  residual_ffn_dropout: 0.10
+  attention_dropout: 0.0
+  positional_bias_hidden_dimension: 128
+  positional_bias_final_projection_zero_initialized: true
+  activation_checkpointing: true
+  exact_receiver_chunking: true
+  initial_receiver_chunk_size: 512
+  initial_max_edges_per_chunk: 200000
+
+masking:
+  distribution: independent_exact_uniform_integer_masked_count_per_cell
+  support: [0, 1000]
+  without_replacement_within_cell: true
+  mask_base_seed: 2026082401
+  schedule_independent_of_model_seed: true
+  metadata_always_visible: true
+  encoder_reapplies_mask: true
+
+optimization:
+  loss: masked_huber_on_standardized_log1p
+  huber_delta: 1.0
+  optimizer: AdamW
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  gradient_clip_norm: 1.0
+  scheduler: none
+  mixed_precision: enabled_only_after_fp32_equivalence_preflight
+  early_stopping: false
+  restore_best: false
+  checkpoint_role: final_last_epoch
+  zero_mask_step_policy: deterministic_fail_closed_resample_from_prespecified_seed_namespace
+
+training:
+  model_seeds: [0, 1, 2, 3, 4]
+  core_order_seed: 2026082402
+  global_epochs: 300
+  complete_core_steps_per_global_epoch: 6
+  optimizer_steps_per_model: 1800
+  total_optimizer_steps: 9000
+  one_complete_core_staged_on_gpu_at_a_time: true
+  periodic_checkpoint_every_global_epochs: 25
+  fixed_budget: true
+
+held_in_diagnostics:
+  checkpoint_selection_role: none
+  fixed_inputs_and_masks_identical_across_seeds: true
+  metrics:
+    - masked_huber
+    - masked_mae
+    - masked_mse
+    - masked_r2
+  name_required: held_in_fit_diagnostic
+
+controls_and_nulls:
+  implementation_controls:
+    - full_edge_vs_receiver_chunked_equivalence
+    - fp32_vs_amp_equivalence
+    - transformation_and_permutation_invariance
+    - no_raw_coordinate_or_hidden_expression_leakage
+    - save_load_and_resume_equivalence
+  interpretation_controls_reserved_for_later:
+    - distance_and_degree_adjustment
+    - parameter_randomization
+    - degree_and_distance_preserving_graph_nulls
+    - segmentation_and coordinate perturbation
+  positive_control: finite masked-reconstruction learning on a deterministic synthetic graph with planted content and geometric structure
+  negative_control: zero-initialized positional projection must produce zero positional bias before training
+
+acceptance_criteria:
+  - all focused and relevant regression tests pass
+  - largest-core preflight passes exactness, finite-gradient, save-load, and measured VRAM gates
+  - all six graph coverage gates pass with zero cross-core and self edges
+  - all five runs complete exactly 300 finite global epochs and 1800 optimizer steps
+  - all five final checkpoints reload and reproduce fixed predictions and attention within declared tolerance
+  - every final bundle verifies checksums, provenance, completion marker, and checkpoint catalog entry
+  - ensemble stability report includes all five seeds without favorable-seed exclusion
+
+falsification_or_stop_criteria:
+  - any selected core cannot be reconciled as Cancer under the frozen policy
+  - biological-probe or permitted-metadata schemas disagree across cores
+  - radial coverage or invariance gates fail
+  - exact graph content cannot fit available resources after execution-only chunk reduction
+  - numerical equivalence, finite-gradient, resume, or reload checks fail
+  - persistent storage or hardware becomes unavailable before verified finalization
+
+required_resources:
+  gpu_contract: one_or_more_idle_cuda_gpus_with_at_least_24GB_vram
+  runtime_execution: repository_registry_queue_and_supervisor_workers
+  artifact_roots:
+    active: scratch/active_runs
+    immutable: artifacts/runs
+
+verification_commands:
+  focused_tests: PYTHONPATH=src /venv/main/bin/python -m pytest -q tests/unit/spatial_benchmark/test_relative_geometry.py tests/unit/spatial_benchmark/test_relative_qkv_graph_transformer.py tests/unit/spatial_benchmark/test_cancer_pooled_full_core.py
+  repository_tests: PYTHONPATH=src /venv/main/bin/python -m pytest -q
+  doctor: PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark doctor
+
