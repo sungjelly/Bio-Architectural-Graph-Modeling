@@ -48,7 +48,10 @@ from spatial_benchmark.run_archive import (  # noqa: E402
     RunArchive,
     deidentify_prediction_rows,
 )
-from spatial_benchmark.training import _autocast_context  # noqa: E402
+from spatial_benchmark.training import (  # noqa: E402
+    _autocast_context,
+    set_deterministic_seed,
+)
 
 
 CAMPAIGN_ID = "cmp_20260824_cancer_6core_relative_qkv_multiseed"
@@ -67,6 +70,7 @@ HARDWARE_PREFLIGHT_RECEIPT = Path(
     "state/preflight/cancer_6core_relative_qkv_seed0.json"
 )
 HARDWARE_PREFLIGHT_SCHEMA = "cancer_6core_relative_qkv_hardware_preflight_v1"
+PREFLIGHT_BASE_ATTEMPT = 1
 
 
 class RelativeQKVRunnerError(RuntimeError):
@@ -180,9 +184,15 @@ def _validate_hardware_preflight(
         or value.get("completed_experiment") is not False
     ):
         raise RelativeQKVRunnerError("Hardware preflight did not pass every gate.")
+    # A queue retry changes only the execution attempt.  The passing preflight
+    # is bound to the root attempt's otherwise-identical resolved scientific
+    # and execution contract, so retries do not require rerunning an expensive
+    # largest-core hardware diagnostic.
+    preflight_config = dict(config)
+    preflight_config["attempt"] = PREFLIGHT_BASE_ATTEMPT
     resolved_config_sha256 = hashlib.sha256(
         json.dumps(
-            config,
+            preflight_config,
             sort_keys=True,
             separators=(",", ":"),
             allow_nan=False,
@@ -250,6 +260,29 @@ def _model_from_config(
         receiver_chunk_size=int(model["receiver_chunk_size"]),
         max_edges_per_chunk=int(model["max_edges_per_chunk"]),
         activation_checkpointing=bool(model["activation_checkpointing"]),
+    )
+
+
+def _seeded_model_from_config(
+    config: Mapping[str, Any],
+    *,
+    num_genes: int,
+    node_covariate_dim: int,
+) -> ReceiverChunkedRelativeGeometryQKVGraphTransformer:
+    """Construct the production model with initialization bound to seed 0."""
+
+    trainer = _section(config, "trainer")
+    # Parameters are initialized inside module constructors.  Installing the
+    # model seed only when the trainer starts would be too late.
+    set_deterministic_seed(
+        ACTIVE_SEED,
+        deterministic=bool(trainer["deterministic"]),
+        warn_only=bool(trainer["deterministic_warn_only"]),
+    )
+    return _model_from_config(
+        config,
+        num_genes=num_genes,
+        node_covariate_dim=node_covariate_dim,
     )
 
 
@@ -480,7 +513,7 @@ def run_seed0_to_plateau(
     if tuple(batch.alias for batch in batches) != CANCER_ALIASES:
         raise RelativeQKVRunnerError("Loaded batches do not match the six-core order.")
     archive.write_json("diagnostics/hardware_preflight.json", preflight)
-    model = _model_from_config(
+    model = _seeded_model_from_config(
         config,
         num_genes=batches[0].n_genes,
         node_covariate_dim=int(batches[0].node_covariates.shape[1]),

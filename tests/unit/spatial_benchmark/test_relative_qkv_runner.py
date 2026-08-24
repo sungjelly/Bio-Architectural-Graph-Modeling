@@ -9,6 +9,7 @@ import sys
 
 import numpy as np
 import pytest
+import torch
 
 from spatial_benchmark.configuration import compose_config
 
@@ -24,6 +25,7 @@ sys.modules[_SPEC.name] = _RUNNER
 _SPEC.loader.exec_module(_RUNNER)
 RelativeQKVRunnerError = _RUNNER.RelativeQKVRunnerError
 _model_from_config = _RUNNER._model_from_config
+_seeded_model_from_config = _RUNNER._seeded_model_from_config
 _seed_plateau_decision = _RUNNER._seed_plateau_decision
 _validate_active_contract = _RUNNER._validate_active_contract
 _validate_hardware_preflight = _RUNNER._validate_hardware_preflight
@@ -70,6 +72,26 @@ def test_production_model_construction_uses_locked_dimensions() -> None:
     assert model.receiver_chunk_size == 512
     assert model.max_edges_per_chunk == 200_000
     assert sum(parameter.numel() for parameter in model.parameters()) > 0
+
+
+def test_production_model_initialization_is_bound_to_seed_zero() -> None:
+    config = _resolved()
+    torch.manual_seed(91)
+    first = _seeded_model_from_config(
+        config, num_genes=1000, node_covariate_dim=23
+    )
+    first_state = {
+        name: tensor.detach().clone() for name, tensor in first.state_dict().items()
+    }
+    torch.manual_seed(8128)
+    second = _seeded_model_from_config(
+        config, num_genes=1000, node_covariate_dim=23
+    )
+    assert first_state.keys() == second.state_dict().keys()
+    assert all(
+        torch.equal(first_state[name], tensor)
+        for name, tensor in second.state_dict().items()
+    )
 
 
 def test_production_runner_requires_checksum_bound_hardware_preflight(
@@ -126,6 +148,9 @@ def test_production_runner_requires_checksum_bound_hardware_preflight(
     path = tmp_path / "preflight.json"
     path.write_text(json.dumps(receipt))
     assert _validate_hardware_preflight(config, receipt_path=path) == receipt
+    retry_config = deepcopy(config)
+    retry_config["attempt"] = 2
+    assert _validate_hardware_preflight(retry_config, receipt_path=path) == receipt
 
     receipt["model"]["receiver_chunk_size"] = 1
     path.write_text(json.dumps(receipt))
