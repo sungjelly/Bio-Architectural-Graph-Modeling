@@ -44,6 +44,7 @@ from .queueing import (
     QueueWorker,
     WorkerLockError,
     WorkerSettings,
+    _resolve_prepared_artifact_reference,
     command_for_config,
 )
 from .registry import (
@@ -1115,9 +1116,7 @@ def _validate_registered_references(
         )
     reference = dataset.get("prepared_artifact_reference")
     if reference:
-        prepared = Path(str(reference))
-        if not prepared.is_absolute():
-            prepared = paths.project_root / prepared
+        prepared = _resolve_prepared_artifact_reference(reference, paths=paths)
         if not prepared.exists():
             raise ConfigurationError(
                 f"Prepared dataset artifact does not exist: {prepared}."

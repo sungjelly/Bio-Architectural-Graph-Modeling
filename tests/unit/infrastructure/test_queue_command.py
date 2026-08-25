@@ -5,6 +5,7 @@ import sys
 
 import pytest
 
+from spatial_benchmark.cli import _validate_registered_references
 from spatial_benchmark.configuration import (
     ConfigurationError,
     compose_config,
@@ -374,6 +375,7 @@ def test_so2_queue_validation_resolves_data_reference_via_data_root(
         queued_command=command,
         requested_gpu="0,1,2,3",
     )
+    _validate_registered_references(config, registry=registry, paths=paths)
     assert _resolve_prepared_artifact_reference(
         relative_reference,
         paths=paths,
