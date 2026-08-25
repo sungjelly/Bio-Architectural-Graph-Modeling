@@ -1,15 +1,22 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 
+import pytest
+
 from spatial_benchmark.artifact_retention import (
+    ArtifactRetentionError,
     DELETED_BY_RETENTION,
     compact_registered_artifacts,
+    retire_registered_run_bundles,
     select_retention_candidates,
 )
+from spatial_benchmark.cli import _doctor, _verify_bundles
+from spatial_benchmark.identifiers import canonical_json
 from spatial_benchmark.paths import ProjectPaths
-from spatial_benchmark.registry import Registry
+from spatial_benchmark.registry import FULL_RUN_RETENTION_RECEIPT_KIND, Registry
 
 
 def _paths(root: Path) -> ProjectPaths:
@@ -114,6 +121,94 @@ def _record_file(
             verification_status="verified",
         )
     return artifact_id, path
+
+
+def _register_full_bundle_run(
+    registry: Registry,
+    paths: ProjectPaths,
+    *,
+    campaign_id: str,
+    run_id: str,
+    status: str,
+) -> tuple[Path, int, Path]:
+    scientific_id = f"sci_{run_id}"
+    registry.register_variant(
+        scientific_id,
+        campaign_id=campaign_id,
+        configuration={},
+    )
+    root = paths.artifact_root / "runs" / "2026" / "08" / run_id
+    root.mkdir()
+    registry.create_run(
+        run_id,
+        campaign_id=campaign_id,
+        scientific_id=scientific_id,
+        repro_id=f"rep_{run_id}",
+        seed=0,
+        fold=0,
+        attempt=1,
+        configuration={},
+        status=status,
+        artifact_path=root,
+    )
+    registry.register_run_semantics(
+        run_id,
+        lifecycle_stage="posthoc_evaluation",
+        study_axis="retirement-test",
+        source_batch="test",
+        seed_known=True,
+        fold_known=True,
+        attempt_known=True,
+        retention_class="retain_conclusion_bearing_analysis",
+        category_key=f"posthoc/{run_id}",
+        classification_confidence="high",
+        timestamp_basis="test",
+    )
+    payload_id, payload = _record_file(
+        registry,
+        run_id,
+        root,
+        name="result.bin",
+        kind="metadata",
+        content=b"result-payload",
+    )
+    checksums = {
+        "result.bin": {
+            "type": "file",
+            "size": payload.stat().st_size,
+            "sha256": hashlib.sha256(payload.read_bytes()).hexdigest(),
+        }
+    }
+    manifest_content = (
+        json.dumps({"version": 1, "files": checksums}, indent=2, sort_keys=True)
+        + "\n"
+    ).encode("utf-8")
+    _record_file(
+        registry,
+        run_id,
+        root,
+        name="provenance/artifact_checksums.json",
+        kind="provenance",
+        content=manifest_content,
+    )
+    marker_name = {"completed": "_SUCCESS", "failed": "_FAILED"}[status]
+    marker_status = marker_name.removeprefix("_").lower()
+    marker = root / marker_name
+    marker.write_text(
+        json.dumps(
+            {
+                "run_id": run_id,
+                "status": marker_status,
+                "content_sha256": hashlib.sha256(
+                    canonical_json(checksums).encode("utf-8")
+                ).hexdigest(),
+            },
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    return root, payload_id, payload
 
 
 def test_retention_selection_excludes_small_locked_and_promoted_payloads(
@@ -296,3 +391,112 @@ def test_retention_apply_tombstones_payloads_and_preserves_compact_evidence(
     assert checkpoint_statuses[checkpoint_id] == DELETED_BY_RETENTION
     assert checkpoint_statuses[failed_checkpoint_id] == DELETED_BY_RETENTION
     assert registry.verify_artifacts() == []
+
+
+def test_full_run_retirement_requires_complete_campaign_and_verifies_receipt(
+    tmp_path: Path,
+) -> None:
+    paths = _paths(tmp_path)
+    registry = Registry(paths.state_root / "tracking" / "bagm.sqlite3")
+    campaign_id = "cmp_full_retirement"
+    registry.create_campaign(campaign_id, name=campaign_id)
+    first_root, prior_id, prior_payload = _register_full_bundle_run(
+        registry,
+        paths,
+        campaign_id=campaign_id,
+        run_id="r_retire_first",
+        status="failed",
+    )
+    second_root, _, _ = _register_full_bundle_run(
+        registry,
+        paths,
+        campaign_id=campaign_id,
+        run_id="r_retire_second",
+        status="completed",
+    )
+    prior_payload.unlink()
+    with registry.transaction(immediate=True) as connection:
+        connection.execute(
+            "UPDATE artifacts SET status = ? WHERE artifact_id = ?",
+            (DELETED_BY_RETENTION, prior_id),
+        )
+    output = paths.report_root / "retention" / "retire_complete_campaign"
+
+    with pytest.raises(ArtifactRetentionError, match="complete run set"):
+        retire_registered_run_bundles(
+            registry,
+            run_ids=["r_retire_first"],
+            expected_campaign_id=campaign_id,
+            decision_id="retire_complete_campaign",
+            output_dir=output,
+            paths=paths,
+            apply=False,
+        )
+
+    planned = retire_registered_run_bundles(
+        registry,
+        run_ids=["r_retire_first", "r_retire_second"],
+        expected_campaign_id=campaign_id,
+        decision_id="retire_complete_campaign",
+        output_dir=output,
+        prior_retention_decision_ids=["earlier_cleanup"],
+        paths=paths,
+        apply=False,
+    )
+    assert planned["original_artifact_row_count"] == 4
+    assert planned["present_artifact_count"] == 3
+    assert planned["prior_tombstone_count"] == 1
+    assert first_root.is_dir() and second_root.is_dir()
+
+    applied = retire_registered_run_bundles(
+        registry,
+        run_ids=["r_retire_second", "r_retire_first"],
+        expected_campaign_id=campaign_id,
+        decision_id="retire_complete_campaign",
+        output_dir=output,
+        prior_retention_decision_ids=["earlier_cleanup"],
+        paths=paths,
+        apply=True,
+    )
+
+    assert applied["deleted_registered_artifact_count"] == 3
+    assert applied["deleted_terminal_marker_count"] == 2
+    assert not first_root.exists() and not second_root.exists()
+    verified, issues = registry.verify_full_run_retirements()
+    assert verified == {"r_retire_first", "r_retire_second"}
+    assert issues == []
+    assert registry.verify_artifacts() == []
+    assert _verify_bundles(registry, None, paths) == []
+    doctor = _doctor(registry, paths)
+    assert not any(
+        issue.get("kind") == "missing_canonical_markers"
+        for issue in doctor["issues"]
+    )
+    with registry.connect() as connection:
+        original_statuses = {
+            str(row["status"])
+            for row in connection.execute(
+                """
+                SELECT status FROM artifacts
+                WHERE kind != ?
+                """,
+                (FULL_RUN_RETENTION_RECEIPT_KIND,),
+            )
+        }
+        receipt_rows = connection.execute(
+            "SELECT run_id, status FROM artifacts WHERE kind = ?",
+            (FULL_RUN_RETENTION_RECEIPT_KIND,),
+        ).fetchall()
+    assert original_statuses == {DELETED_BY_RETENTION}
+    assert {(row["run_id"], row["status"]) for row in receipt_rows} == {
+        ("r_retire_first", "present"),
+        ("r_retire_second", "present"),
+    }
+
+    first_root.mkdir()
+    verified, issues = registry.verify_full_run_retirements()
+    assert verified == {"r_retire_second"}
+    assert any(
+        issue["issue"] == "full_retirement_root_still_exists" for issue in issues
+    )
+    assert _verify_bundles(registry, None, paths)

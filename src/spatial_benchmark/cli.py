@@ -838,6 +838,17 @@ def _doctor(registry: Registry, paths: ProjectPaths) -> dict[str, Any]:
     missing_artifact_paths: list[str] = []
     retention_state_issues: list[dict[str, str]] = []
     missing_canonical_markers: list[str] = []
+    verified_retirements, full_retirement_issues = (
+        registry.verify_full_run_retirements()
+    )
+    if full_retirement_issues:
+        issues.append(
+            {
+                "kind": "full_run_retirement_issues",
+                "count": len(full_retirement_issues),
+                "items": full_retirement_issues[:20],
+            }
+        )
     with registry.connect() as connection:
         for row in connection.execute(
             "SELECT dataset_id, dataset_version, protected_source_path FROM datasets"
@@ -904,6 +915,8 @@ def _doctor(registry: Registry, paths: ProjectPaths) -> dict[str, Any]:
               )
             """
         ):
+            if str(row["run_id"]) in verified_retirements:
+                continue
             marker = {
                 "completed": "_SUCCESS",
                 "failed": "_FAILED",
@@ -1161,6 +1174,9 @@ def _verify_bundles(
     run_id: str | None,
     paths: ProjectPaths,
 ) -> list[dict[str, Any]]:
+    verified_retirements, retirement_issues = (
+        registry.verify_full_run_retirements(run_id=run_id)
+    )
     parameters: tuple[str, ...] = (run_id,) if run_id else ()
     with registry.connect() as connection:
         records = [
@@ -1199,7 +1215,7 @@ def _verify_bundles(
                 ),
             ).fetchall()
         ]
-    issues: list[dict[str, Any]] = []
+    issues: list[dict[str, Any]] = list(retirement_issues)
     tombstones_by_run: dict[str, dict[str, dict[str, Any]]] = {}
     for tombstone in tombstone_rows:
         tombstone_run_id = str(tombstone["run_id"])
@@ -1232,9 +1248,11 @@ def _verify_bundles(
     for record in records:
         if not record or not record.get("artifact_path"):
             continue
-        if record.get("is_legacy_native"):
+        if record.get("is_legacy_native") or str(record["run_id"]) in (
+            verified_retirements
+        ):
             # Registry.verify_artifacts validates the native files against the
-            # audited legacy manifest; do not demand canonical BAGM markers.
+            # audited legacy manifest or full-retirement receipt.
             continue
         try:
             verify_run_bundle(
