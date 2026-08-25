@@ -456,21 +456,27 @@ It freshly rendered all eleven figures, while the 21 GB directed table was not
 opened, hashed, copied, or modified. Scientific tables and values were not
 recomputed.
 
-The canonical scientific bundle is:
+The historical canonical scientific bundle was:
 
 ```text
 artifacts/runs/2026/08/r_20260825T110043Z_0da9fbf2_s000_f00_a01_5e477ab9/
 ```
 
-It contains all requested assignment, directed-edge, mutual-edge, niche
-summary, color, region, sensitivity, manifest, QC, README, and original static
-figure files. The corrected final static figures are the versioned supplement:
+Before the local retention decision below, it contained all requested
+assignment, directed-edge, mutual-edge, niche summary, color, region,
+sensitivity, manifest, QC, README, and original static figure files. The
+historical corrected final static figures were the versioned supplement:
 
 ```text
 artifacts/runs/2026/08/r_20260825T120155Z_0da9fbf2_s000_f00_a01_a41036ce/
 ```
 
-Core-to-figure mapping is `CAN-01 -> core_01_attention_niche_map.png`,
+Both bundle roots are now locally retired and absent; their immutable run IDs,
+checksums, statuses, metrics, and external retirement receipts remain in the
+registry. Recreate the products with the full registered execution below.
+
+The historical core-to-figure mapping is
+`CAN-01 -> core_01_attention_niche_map.png`,
 `CAN-09 -> core_09_attention_niche_map.png`,
 `CAN-13 -> core_13_attention_niche_map.png`,
 `CAN-15 -> core_15_attention_niche_map.png`,
@@ -478,6 +484,42 @@ Core-to-figure mapping is `CAN-01 -> core_01_attention_niche_map.png`,
 `CAN-23 -> core_23_attention_niche_map.png`. The combined and corrected overlay
 figures use `six_core_attention_niche_map.*` and
 `six_core_mutual_attention_network_overlay.*`, respectively.
+
+## Local run-bundle retirement
+
+On 2026-08-25 the repository owner explicitly requested deletion of all local
+run artifacts created by this campaign to recover storage, accepting that the
+maps and scientific tables must be recreated from the retained code and
+upstream checkpoints. Decision
+`retire_20260825_six_core_attention_niche_runs` retired exactly all seven
+campaign runs: five failed or interrupted attempts and the two completed runs
+identified above. No upstream trained-model run or checkpoint was included.
+
+The checksum-bound plan covers all 244 original artifact rows and seven
+terminal markers. Application rehashed every one of the 240 files still
+present, preserved four earlier tombstones from
+`cleanup_20260825_relative_qkv_final_only_v2`, created an SQLite-consistent
+pre-deletion snapshot, removed the 240 files and seven markers, and registered
+one external full-run receipt for each absent bundle. Apparent deleted size was
+47,115,175,143 bytes; measured free space increased by 47,114,747,904 bytes
+(`43.879 GiB`).
+
+The complete decision, plan, application receipt, per-run receipts, hashes, and
+pre/post validation are in
+`reports/retention/retire_20260825_six_core_attention_niche_runs/`. The plan
+SHA-256 is
+`f152f35df6a8f227d3ba70a03f5b1cf7039091d81196910c4bd4c42ad3c20c0d`;
+the application-receipt SHA-256 is
+`7fa7d496434a88221846658896e7e135093f66dbe6afce26c7e1bcc58ef88ee6`.
+
+All 244 original registry rows now have status `deleted_by_retention`; seven
+external receipt rows are present and no deletion is pending. Historical run,
+queue, failure, metric, alias, category, scientific/reproduction identity, and
+retention-class records remain unchanged. The original recovery and figure
+patch configurations remain unchanged for provenance and will fail explicitly
+while their pinned local source bundles are retired. Run the full analysis
+first to create a new immutable scientific bundle before producing another
+versioned figure supplement.
 
 ## Verification and full commands
 
@@ -543,17 +585,19 @@ PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
 
 - Focused attention-niche, configuration, and archive tests: `84 passed` with
   two upstream Torch JIT deprecation warnings.
-- Canonical scientific run artifact/registry verification: valid, with no
-  issues.
-- Final figure-patch artifact/registry verification: valid, with no issues.
-- Full repository suite: `1,143 passed`, `1 skipped`, and `34 failed`. The
+- Full-run retirement infrastructure and relevant archive/attention-niche
+  tests after implementation: `109 passed` with two upstream Torch JIT
+  deprecation warnings.
+- After retention, all seven external run receipts, 244 original tombstones,
+  and absent roots verify with no registry or bundle issues; repository-wide
+  `verify-artifacts` returns `valid: true`.
+- Full repository suite after retirement: `1,144 passed`, `1 skipped`, and
+  `34 failed`. The
   failures are confined to unrelated campaigns whose required local fixtures
   are unavailable: an adjacency-ablation locked smoke materialization,
   multiscale-synthetic prepared geometry, MyJJu locked materializations, and an
   external MyJJu audit source. No attention-niche or run-archive test failed.
-- Repository doctor: database integrity, configuration checks, checkpoint
-  catalog, queue state, and worker lock passed. Overall doctor status is false
-  solely because `6.558 GB` free disk is below the repository-wide `25 GB`
-  threshold after preserving the immutable source and conclusion-bearing
-  analysis bundles. No historical artifact was deleted to suppress this
-  warning.
+- Repository doctor after retention: `ok: true`, database integrity `ok`, no
+  issues or warnings, and `50.545 GiB` free against the `25 GiB` threshold.
+- All four upstream final checkpoint SHA-256 values match their pre-retention
+  catalog receipts.

@@ -2,7 +2,7 @@
 
 Decision ID: `retire_20260825_six_core_attention_niche_runs`
 
-Status: planned; apply receipt pending.
+Status: applied and verified at `2026-08-25T14:51:58.114204Z`.
 
 On 2026-08-25, the repository owner explicitly requested deletion of all run
 artifacts created by campaign
@@ -55,7 +55,36 @@ Plan SHA-256:
 f152f35df6a8f227d3ba70a03f5b1cf7039091d81196910c4bd4c42ad3c20c0d
 ```
 
-The applied command is the same exact seven-run invocation used for planning,
-with `--apply` appended. The generated `application_receipt.json`, per-run
-receipts, registry verification, measured free-space delta, and final status
-will be recorded here after application.
+The applied command was the same exact seven-run invocation used for planning,
+with `--apply` appended. Before deletion it independently rehashed all 240
+present registered files, rechecked the seven terminal markers, and created the
+SQLite-consistent snapshot at:
+
+```text
+state/backups/bagm_pre_retire_20260825_six_core_attention_niche_runs.sqlite3
+```
+
+The operation removed 240 registered files and seven terminal markers. The
+logical planned size was 47,115,175,143 bytes; measured filesystem free space
+increased by 47,114,747,904 bytes (`43.879 GiB`), from 7,157,219,328 to
+54,271,967,232 bytes. The small difference reflects filesystem accounting.
+
+Application receipt SHA-256:
+
+```text
+7fa7d496434a88221846658896e7e135093f66dbe6afce26c7e1bcc58ef88ee6
+```
+
+Post-application verification found all seven original roots absent, all 244
+original artifact rows tombstoned, seven present external run receipts, zero
+pending deletions, and no receipt, registry, or bundle issues. The full
+`verify-artifacts` command returned `valid: true`; repository doctor returned
+`ok: true`, database integrity `ok`, and 50.545 GiB free. All four upstream
+trained-model checkpoint SHA-256 values still match their pre-deletion catalog
+receipts.
+
+Focused regression tests passed (`109 passed`). The full repository suite
+reported `1,144 passed`, `1 skipped`, and the same 34 unrelated failures caused
+by unavailable adjacency-ablation, multiscale-synthetic, MyJJu locked
+materializations, or external MyJJu audit sources; no retirement,
+attention-niche, archive, registry, or CLI test failed.
