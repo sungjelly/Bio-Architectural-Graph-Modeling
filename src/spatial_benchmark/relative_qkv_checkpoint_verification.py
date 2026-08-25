@@ -16,6 +16,7 @@ from dataclasses import asdict
 import hashlib
 import json
 import math
+import os
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -49,7 +50,7 @@ from .relative_qkv_post_training import (
     fixed_inference_mask,
     load_relative_qkv_checkpoint,
 )
-from .training import _autocast_context
+from .training import _autocast_context, set_deterministic_seed
 
 
 VERIFICATION_SCHEMA = "cancer_6core_relative_qkv_checkpoint_verification_v1"
@@ -561,6 +562,7 @@ def _validate_config_contract(
     *,
     amendment_path: Path | None,
     model_seed: int,
+    enforce_production_contract: bool,
 ) -> Mapping[str, Any]:
     config = _mapping(payload.get("resolved_config"), "checkpoint.resolved_config")
     campaign = _mapping(config.get("campaign"), "resolved_config.campaign")
@@ -581,6 +583,24 @@ def _validate_config_contract(
     }
     for name, expected in locked_trainer.items():
         _require_equal(trainer.get(name), expected, location=f"trainer.{name}")
+    deterministic = trainer.get("deterministic")
+    deterministic_warn_only = trainer.get("deterministic_warn_only")
+    if type(deterministic) is not bool:
+        raise RelativeQKVCheckpointVerificationError(
+            "trainer.deterministic must be boolean."
+        )
+    if type(deterministic_warn_only) is not bool:
+        raise RelativeQKVCheckpointVerificationError(
+            "trainer.deterministic_warn_only must be boolean."
+        )
+    if enforce_production_contract and (
+        deterministic is not True or deterministic_warn_only is not False
+    ):
+        raise RelativeQKVCheckpointVerificationError(
+            "Production checkpoint verification requires "
+            "trainer.deterministic=true and "
+            "trainer.deterministic_warn_only=false."
+        )
     _require_equal(
         masking.get("mask_base_seed"), MASK_BASE_SEED, location="masking.mask_base_seed"
     )
@@ -772,11 +792,51 @@ def _difference_receipt(
         raise RelativeQKVCheckpointVerificationError(
             f"{location} replay contains non-finite values."
         )
-    difference = np.abs(first - second)
-    allclose = bool(np.allclose(first, second, atol=atol, rtol=rtol))
+    first64 = first.astype(np.float64, copy=False)
+    second64 = second.astype(np.float64, copy=False)
+    difference = np.abs(first64 - second64)
+    allowed_difference = float(atol) + float(rtol) * np.abs(second64)
+    failing = difference > allowed_difference
+    failing_count = int(np.count_nonzero(failing))
+    allclose = failing_count == 0
+    maximum_difference = float(difference.max(initial=0.0))
+    mean_difference = float(difference.mean()) if difference.size else 0.0
+
+    worst: dict[str, Any] | None = None
+    if difference.size:
+        ratio = np.zeros_like(difference, dtype=np.float64)
+        np.divide(
+            difference,
+            allowed_difference,
+            out=ratio,
+            where=allowed_difference > 0.0,
+        )
+        ratio[(allowed_difference <= 0.0) & (difference > 0.0)] = np.inf
+        worst_flat_index = int(np.argmax(ratio if failing_count else difference))
+        worst_index = tuple(
+            int(value) for value in np.unravel_index(worst_flat_index, first.shape)
+        )
+        worst = {
+            "index": list(worst_index),
+            "first_value": float(first64[worst_index]),
+            "second_value": float(second64[worst_index]),
+            "absolute_difference": float(difference[worst_index]),
+            "allowed_difference": float(allowed_difference[worst_index]),
+            "tolerance_ratio": float(ratio[worst_index]),
+        }
     if not allclose:
+        assert worst is not None
         raise RelativeQKVCheckpointVerificationError(
-            f"{location} reload replay exceeds atol={atol}, rtol={rtol}."
+            f"{location} reload replay exceeds atol={atol}, rtol={rtol}; "
+            f"maximum_absolute_difference={maximum_difference:.9g}, "
+            f"mean_absolute_difference={mean_difference:.9g}, "
+            f"failing_elements={failing_count}/{difference.size}, "
+            f"worst_index={worst['index']}, "
+            f"first_value={worst['first_value']:.9g}, "
+            f"second_value={worst['second_value']:.9g}, "
+            f"worst_absolute_difference={worst['absolute_difference']:.9g}, "
+            f"worst_allowed_difference={worst['allowed_difference']:.9g}, "
+            f"worst_tolerance_ratio={worst['tolerance_ratio']:.9g}."
         )
     first_sha = _array_sha256(first)
     second_sha = _array_sha256(second)
@@ -787,8 +847,11 @@ def _difference_receipt(
         "second_sha256": second_sha,
         "byte_identical": first_sha == second_sha,
         "within_tolerance": allclose,
-        "maximum_absolute_difference": float(difference.max(initial=0.0)),
-        "mean_absolute_difference": float(difference.mean()) if difference.size else 0.0,
+        "element_count": int(difference.size),
+        "failing_element_count": failing_count,
+        "maximum_absolute_difference": maximum_difference,
+        "mean_absolute_difference": mean_difference,
+        "worst_comparison": worst,
         "atol": float(atol),
         "rtol": float(rtol),
     }
@@ -1014,11 +1077,41 @@ def verify_relative_qkv_checkpoint(
         if amendment_path is None
         else Path(amendment_path).expanduser().resolve(strict=True)
     )
+    resolved_device = torch.device(device)
+    cuda_was_initialized = bool(
+        resolved_device.type == "cuda" and torch.cuda.is_initialized()
+    )
+    if resolved_device.type == "cuda":
+        workspace_config = os.environ.get("CUBLAS_WORKSPACE_CONFIG")
+        if workspace_config is None:
+            if cuda_was_initialized:
+                raise RelativeQKVCheckpointVerificationError(
+                    "CUDA was initialized before deterministic verification could "
+                    "set CUBLAS_WORKSPACE_CONFIG; launch a fresh verifier process "
+                    "with CUBLAS_WORKSPACE_CONFIG=:4096:8."
+                )
+            os.environ["CUBLAS_WORKSPACE_CONFIG"] = ":4096:8"
+            workspace_config = ":4096:8"
+        if enforce_production_contract and workspace_config not in {
+            ":4096:8",
+            ":16:8",
+        }:
+            raise RelativeQKVCheckpointVerificationError(
+                "Production CUDA verification requires "
+                "CUBLAS_WORKSPACE_CONFIG=:4096:8 or :16:8."
+            )
+        if not torch.cuda.is_available():
+            raise RelativeQKVCheckpointVerificationError(
+                "CUDA checkpoint verification was requested but CUDA is unavailable."
+            )
+
+    # The first reconstruction deliberately remains on CPU.  This exposes the
+    # serialized trainer contract before any model allocation or replay on CUDA.
     loaded_first = load_relative_qkv_checkpoint(
         resolved_checkpoint,
         num_genes=first_batch.n_genes,
         node_covariate_dim=int(first_batch.node_covariates.shape[1]),
-        device=device,
+        device="cpu",
     )
     payload = loaded_first.payload
     _require_equal(payload.get("checkpoint_schema"), CHECKPOINT_SCHEMA, location="schema")
@@ -1041,6 +1134,7 @@ def verify_relative_qkv_checkpoint(
         payload,
         amendment_path=resolved_amendment,
         model_seed=model_seed,
+        enforce_production_contract=enforce_production_contract,
     )
     resume, losses = _validate_history_semantics(
         payload, materialized, model_seed=model_seed
@@ -1077,11 +1171,33 @@ def verify_relative_qkv_checkpoint(
     staged_geometry_dtype = str(
         trainer.get("staged_relative_geometry_dtype", "float32")
     )
-    resolved_device = torch.device(device)
+    deterministic = bool(trainer["deterministic"])
+    deterministic_warn_only = bool(trainer["deterministic_warn_only"])
     if amp and resolved_device.type != "cuda" and enforce_production_contract:
         raise RelativeQKVCheckpointVerificationError(
             "The production AMP held-in replay requires a CUDA device."
         )
+    set_deterministic_seed(
+        model_seed,
+        deterministic=deterministic,
+        warn_only=deterministic_warn_only,
+    )
+    deterministic_algorithms_enabled = bool(
+        torch.are_deterministic_algorithms_enabled()
+    )
+    deterministic_algorithms_warn_only_enabled = bool(
+        torch.is_deterministic_algorithms_warn_only_enabled()
+    )
+    if enforce_production_contract and (
+        deterministic_algorithms_enabled is not True
+        or deterministic_algorithms_warn_only_enabled is not False
+    ):
+        raise RelativeQKVCheckpointVerificationError(
+            "The production deterministic CUDA execution contract was not "
+            "installed successfully."
+        )
+    loaded_first.model.to(resolved_device)
+    loaded_first.model.eval()
     loaded_second = load_relative_qkv_checkpoint(
         resolved_checkpoint,
         num_genes=first_batch.n_genes,
@@ -1262,6 +1378,19 @@ def verify_relative_qkv_checkpoint(
             "device": str(resolved_device),
             "amp": amp,
             "amp_dtype": amp_dtype,
+            "deterministic": deterministic,
+            "deterministic_warn_only": deterministic_warn_only,
+            "deterministic_seed": model_seed,
+            "deterministic_algorithms_enabled": (
+                deterministic_algorithms_enabled
+            ),
+            "deterministic_algorithms_warn_only_enabled": (
+                deterministic_algorithms_warn_only_enabled
+            ),
+            "cublas_workspace_config": os.environ.get(
+                "CUBLAS_WORKSPACE_CONFIG"
+            ),
+            "cuda_initialized_before_verifier": cuda_was_initialized,
             "stage_complete_core_graph_on_device": stage_graph,
             "staged_relative_geometry_dtype": staged_geometry_dtype,
             "attention_receivers_per_core_maximum": attention_receivers_per_core,

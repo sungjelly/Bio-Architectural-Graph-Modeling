@@ -10,6 +10,7 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
+import spatial_benchmark.relative_qkv_checkpoint_verification as verification
 from spatial_benchmark.cancer_pooled_full_core import CANCER_ALIASES
 from spatial_benchmark.fingerprints import sha256_file
 from spatial_benchmark.pooled_relative_qkv_training import (
@@ -224,6 +225,8 @@ def _checkpoint_fixture(
     tmp_path: Path,
     *,
     model_seed: int,
+    deterministic: bool = True,
+    deterministic_warn_only: bool = False,
 ) -> tuple[
     Path,
     tuple[PooledRelativeQKVCoreBatch, ...],
@@ -296,6 +299,8 @@ def _checkpoint_fixture(
             "steps_per_global_epoch": 6,
             "early_stopping": False,
             "restore_best": False,
+            "deterministic": deterministic,
+            "deterministic_warn_only": deterministic_warn_only,
             "amp": False,
             "amp_dtype": "auto",
             "stage_complete_core_graph_on_device": False,
@@ -424,3 +429,90 @@ def test_verifier_rejects_tampered_plateau_and_unapproved_seed(
             amendment_path=amendment,
             enforce_production_contract=False,
         )
+
+
+def test_verifier_installs_stored_deterministic_contract(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    checkpoint, batches, cohort, graph, amendment = _checkpoint_fixture(
+        tmp_path,
+        model_seed=3,
+        deterministic=True,
+        deterministic_warn_only=False,
+    )
+    calls: list[tuple[int, bool, bool]] = []
+
+    def record_seed(
+        seed: int,
+        *,
+        deterministic: bool,
+        warn_only: bool,
+    ) -> None:
+        calls.append((seed, deterministic, warn_only))
+
+    monkeypatch.setattr(verification, "set_deterministic_seed", record_seed)
+    receipt = verification.verify_relative_qkv_checkpoint(
+        checkpoint,
+        batches,
+        cohort_manifest_path=cohort,
+        graph_manifest_path=graph,
+        amendment_path=amendment,
+        device="cpu",
+        attention_receivers_per_core=1,
+        enforce_production_contract=False,
+    )
+
+    assert calls == [(3, True, False)]
+    assert receipt["execution"]["deterministic"] is True
+    assert receipt["execution"]["deterministic_warn_only"] is False
+    assert receipt["execution"]["deterministic_seed"] == 3
+
+
+def test_production_verifier_rejects_nondeterministic_trainer_contract(
+    tmp_path: Path,
+) -> None:
+    checkpoint, batches, cohort, graph, amendment = _checkpoint_fixture(
+        tmp_path,
+        model_seed=2,
+        deterministic=False,
+        deterministic_warn_only=True,
+    )
+
+    with pytest.raises(
+        RelativeQKVCheckpointVerificationError,
+        match="deterministic=true.*deterministic_warn_only=false",
+    ):
+        verify_relative_qkv_checkpoint(
+            checkpoint,
+            batches,
+            cohort_manifest_path=cohort,
+            graph_manifest_path=graph,
+            amendment_path=amendment,
+            enforce_production_contract=True,
+        )
+
+
+def test_replay_difference_failure_reports_actionable_delta() -> None:
+    first = np.array([[0.0, 1.0], [2.0, 3.0]], dtype=np.float32)
+    second = first.copy()
+    second[1, 0] = 2.01
+
+    with pytest.raises(RelativeQKVCheckpointVerificationError) as caught:
+        verification._difference_receipt(
+            first,
+            second,
+            atol=1e-7,
+            rtol=1e-6,
+            location="CAN-01 fixed prediction",
+        )
+
+    message = str(caught.value)
+    assert "CAN-01 fixed prediction" in message
+    assert "maximum_absolute_difference=" in message
+    assert "mean_absolute_difference=" in message
+    assert "failing_elements=1/4" in message
+    assert "worst_index=[1, 0]" in message
+    assert "first_value=" in message
+    assert "second_value=" in message
+    assert "worst_allowed_difference=" in message
