@@ -20,6 +20,7 @@ export BAGM_EXPORT_ROOT="${runtime_root}/exports"
 export BAGM_REPORT_ROOT="${runtime_root}/reports"
 export PYTHONPATH="${source_root}/src"
 export PYTHONUNBUFFERED=1
+export CUBLAS_WORKSPACE_CONFIG=:4096:8
 
 source /venv/main/bin/activate
 cd "${source_root}"
