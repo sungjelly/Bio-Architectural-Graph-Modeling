@@ -160,6 +160,7 @@ def test_fixed_mask_and_streamed_attention_are_deterministic_and_exact() -> None
     assert first.n_masked_entries > 0
 
     streamed: list[tuple[np.ndarray, ...]] = []
+    streamed_embeddings: list[np.ndarray] = []
 
     def consume(
         _start: int,
@@ -178,6 +179,7 @@ def test_fixed_mask_and_streamed_attention_are_deterministic_and_exact() -> None
         first.mask,
         layer=-1,
         consumer=consume,
+        node_embedding_consumer=streamed_embeddings.append,
     )
     with torch.no_grad():
         standard = model(
@@ -207,6 +209,10 @@ def test_fixed_mask_and_streamed_attention_are_deterministic_and_exact() -> None
     )
     np.testing.assert_allclose(
         combined[order], standard.combined_logits.numpy(), atol=1e-7
+    )
+    assert len(streamed_embeddings) == 1
+    np.testing.assert_allclose(
+        streamed_embeddings[0], standard.full_node_embedding.numpy(), atol=1e-7
     )
 
 
@@ -245,7 +251,22 @@ def test_edge_export_fields_use_degree_and_reciprocal_pair_contract() -> None:
     )
     expected_mean = attention.mean(axis=1)
     np.testing.assert_allclose(routing, indegree[edges[1, edge_ids]] * expected_mean)
-    assert table.column_names[-2:] == ["attention_head_00", "attention_head_01"]
+    assert table.column_names[-8:] == [
+        "attention_head_00",
+        "attention_head_01",
+        "content_logit_head_00",
+        "content_logit_head_01",
+        "positional_bias_head_00",
+        "positional_bias_head_01",
+        "combined_logit_head_00",
+        "combined_logit_head_01",
+    ]
+    np.testing.assert_allclose(
+        table.column("content_logit_head_01").to_numpy(), attention[:, 1] * 2
+    )
+    np.testing.assert_allclose(
+        table.column("positional_bias_head_00").to_numpy(), -attention[:, 0]
+    )
     np.testing.assert_allclose(
         table.column("distance_um").to_numpy(),
         np.linalg.norm(

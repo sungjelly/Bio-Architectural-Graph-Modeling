@@ -34,7 +34,7 @@ from spatial_benchmark.relative_qkv_post_training import (  # noqa: E402
 )
 
 
-EXPORT_SCHEMA = "cancer_6core_relative_qkv_edge_attention_v1"
+EXPORT_SCHEMA = "cancer_6core_relative_qkv_edge_attention_v2"
 
 
 def _edge_table(
@@ -61,7 +61,9 @@ def _edge_table(
         np.asarray(values, dtype=np.float32)
         for values in (attention, content, bias, combined)
     ]
-    if any(values.ndim != 2 or values.shape[0] != len(ids) for values in arrays):
+    if any(values.ndim != 2 or values.shape[0] != len(ids) for values in arrays) or len(
+        {values.shape for values in arrays}
+    ) != 1:
         raise RelativeQKVPostTrainingError(
             "Streamed attention channels do not align to edge IDs."
         )
@@ -93,8 +95,14 @@ def _edge_table(
         "reciprocal_edge_id": reciprocal_ids[ids],
         "reciprocal_key": pair_keys[ids],
     }
-    for head in range(attention_values.shape[1]):
-        columns[f"attention_head_{head:02d}"] = attention_values[:, head]
+    for prefix, values in (
+        ("attention", attention_values),
+        ("content_logit", content_values),
+        ("positional_bias", bias_values),
+        ("combined_logit", combined_values),
+    ):
+        for head in range(values.shape[1]):
+            columns[f"{prefix}_head_{head:02d}"] = values[:, head]
     return pa.table(columns), directional
 
 
@@ -161,6 +169,7 @@ def export_attention(
     )
     routing[:] = np.nan
     shard_receipts: list[dict[str, Any]] = []
+    node_embedding: np.ndarray | None = None
 
     try:
         def consume(
@@ -204,6 +213,20 @@ def export_attention(
                 }
             )
 
+        def consume_node_embedding(values: np.ndarray) -> None:
+            nonlocal node_embedding
+            array = np.asarray(values, dtype=np.float32)
+            if (
+                node_embedding is not None
+                or array.ndim != 2
+                or array.shape[0] != batch.n_nodes
+                or not np.isfinite(array).all()
+            ):
+                raise RelativeQKVPostTrainingError(
+                    "Final node embedding is duplicated, non-finite, or misaligned."
+                )
+            node_embedding = np.ascontiguousarray(array)
+
         # The callback needs the normalized layer value. Resolve it before the
         # streaming call while preserving negative-layer CLI convenience.
         resolved_layer = layer if layer >= 0 else loaded.model.graph_layers + layer
@@ -214,11 +237,16 @@ def export_attention(
             layer=layer,
             amp=amp,
             consumer=consume,
+            node_embedding_consumer=consume_node_embedding,
         )
         routing.flush()
         if not np.isfinite(routing).all():
             raise RelativeQKVPostTrainingError(
                 "Receiver shards did not cover every directed edge exactly once."
+            )
+        if node_embedding is None:
+            raise RelativeQKVPostTrainingError(
+                "Receiver stream did not return the final node embedding."
             )
 
         output_shards: list[dict[str, Any]] = []
@@ -251,6 +279,21 @@ def export_attention(
         del routing
         routing_path.unlink()
         shutil.rmtree(intermediate)
+        embedding_path = staging / "node_embeddings.parquet"
+        embedding_columns: dict[str, Any] = {
+            "core_alias": [alias] * batch.n_nodes,
+            "node_index": np.arange(batch.n_nodes, dtype=np.int64),
+        }
+        for dimension in range(node_embedding.shape[1]):
+            embedding_columns[f"embedding_{dimension:03d}"] = node_embedding[
+                :, dimension
+            ]
+        pq.write_table(
+            pa.table(embedding_columns),
+            embedding_path,
+            compression="zstd",
+            use_dictionary=["core_alias"],
+        )
         manifest: dict[str, Any] = {
             "schema": EXPORT_SCHEMA,
             "core_alias": alias,
@@ -286,6 +329,20 @@ def export_attention(
             "numeric_storage": {
                 "coordinates_and_distance": "float64",
                 "routing_and_logit_channels": "float32",
+                "node_embeddings": "float32",
+            },
+            "per_head_channels": [
+                "attention",
+                "content_logit",
+                "positional_bias",
+                "combined_logit",
+            ],
+            "node_embeddings": {
+                "path": embedding_path.name,
+                "sha256": file_sha256(embedding_path),
+                "node_count": int(node_embedding.shape[0]),
+                "embedding_dimension": int(node_embedding.shape[1]),
+                "fixed_input_identity": "core_alias + node_index",
             },
             "degree_adjustment": "receiver_in_degree * mean_head_attention",
             "reciprocal_key": "min_node * node_count + max_node",

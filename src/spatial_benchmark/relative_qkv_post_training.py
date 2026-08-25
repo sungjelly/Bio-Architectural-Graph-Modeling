@@ -373,6 +373,7 @@ def reciprocal_edge_ids(
 AttentionShardConsumer = Callable[
     [int, int, np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray], None
 ]
+NodeEmbeddingConsumer = Callable[[np.ndarray], None]
 
 
 def stream_receiver_attention(
@@ -384,12 +385,15 @@ def stream_receiver_attention(
     amp: bool = False,
     amp_dtype: torch.dtype = torch.float16,
     consumer: AttentionShardConsumer,
+    node_embedding_consumer: NodeEmbeddingConsumer | None = None,
 ) -> int:
     """Stream one layer's exact edge diagnostics in complete receiver shards.
 
     The callback receives ``(receiver_start, receiver_stop, edge_ids,
     attention, content, bias, combined)`` as CPU NumPy arrays.  The complete
-    per-head edge matrix is never retained by this function.
+    per-head edge matrix is never retained by this function.  If supplied,
+    ``node_embedding_consumer`` receives the final full-core embedding once,
+    after every graph layer has completed.
     """
 
     if model.training:
@@ -468,6 +472,12 @@ def stream_receiver_attention(
                         combined.detach().float().cpu().numpy(),
                     )
             node_embedding = torch.cat(outputs, dim=0)
+        if node_embedding_consumer is not None:
+            node_embedding_consumer(
+                np.ascontiguousarray(
+                    node_embedding.detach().float().cpu().numpy()
+                )
+            )
     return selected_layer
 
 

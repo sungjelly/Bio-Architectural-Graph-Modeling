@@ -1,9 +1,11 @@
-"""Dependency-light five-seed stability primitives for relative QKV models.
+"""Dependency-light ensemble stability primitives for relative QKV models.
 
 The functions in this module operate only on caller-supplied, fixed-inference
 NumPy arrays.  They do not load datasets or models and never construct an
-exhaustive Jacobian.  Cross-seed APIs fail closed unless they receive exactly
-five distinct seeds with identical fixed-input identifiers.
+exhaustive Jacobian.  Cross-seed APIs default to the frozen five-seed contract,
+but an amended campaign can explicitly declare another expected ensemble size.
+In either case they fail closed unless they receive exactly that many distinct
+seeds with identical fixed-input identifiers.
 
 Reported variation is labelled *ensemble spread* or *seed uncertainty*.  It is
 not a calibrated biological confidence interval.
@@ -27,7 +29,7 @@ SEED_UNCERTAINTY_LABEL = "seed uncertainty"
 
 
 class StabilityContractError(ValueError):
-    """Raised when fixed-input or five-seed stability contracts are violated."""
+    """Raised when fixed-input or ensemble stability contracts are violated."""
 
 
 def _as_finite_float_array(
@@ -83,20 +85,44 @@ class FixedSeedArray:
         object.__setattr__(self, "values", values)
 
 
-def _validate_five_seed_arrays(
+def _seed_count_text(seed_count: int) -> str:
+    return {2: "two", 3: "three", 4: "four", 5: "five"}.get(
+        seed_count, str(seed_count)
+    )
+
+
+def _validate_expected_seed_count(expected_seed_count: int) -> int:
+    if (
+        isinstance(expected_seed_count, bool)
+        or not isinstance(expected_seed_count, Integral)
+        or int(expected_seed_count) < 2
+    ):
+        raise StabilityContractError(
+            "expected_seed_count must be an integer greater than or equal to two."
+        )
+    return int(expected_seed_count)
+
+
+def _validate_seed_arrays(
     records: Sequence[FixedSeedArray],
     *,
     name: str,
     require_same_shape: bool,
+    expected_seed_count: int = EXPECTED_SEED_COUNT,
 ) -> tuple[FixedSeedArray, ...]:
+    expected_count = _validate_expected_seed_count(expected_seed_count)
+    expected_count_text = _seed_count_text(expected_count)
     ordered = tuple(sorted(records, key=lambda record: int(record.seed)))
-    if len(ordered) != EXPECTED_SEED_COUNT:
+    if len(ordered) != expected_count:
         raise StabilityContractError(
-            f"{name} requires exactly five seed records; received {len(ordered)}."
+            f"{name} requires exactly {expected_count_text} seed records; "
+            f"received {len(ordered)}."
         )
     seeds = tuple(int(record.seed) for record in ordered)
-    if len(set(seeds)) != EXPECTED_SEED_COUNT:
-        raise StabilityContractError(f"{name} requires five distinct seeds.")
+    if len(set(seeds)) != expected_count:
+        raise StabilityContractError(
+            f"{name} requires {expected_count_text} distinct seeds."
+        )
     reference_ids = ordered[0].fixed_input_ids
     reference_shape = np.asarray(ordered[0].values).shape
     for record in ordered[1:]:
@@ -193,11 +219,15 @@ def embedding_stability(
     records: Sequence[FixedSeedArray],
     *,
     include_orthogonal_procrustes: bool = True,
+    expected_seed_count: int = EXPECTED_SEED_COUNT,
 ) -> EmbeddingStability:
-    """Calculate all pairwise embedding similarities for exactly five seeds."""
+    """Calculate pairwise embedding similarities for the declared ensemble."""
 
-    ordered = _validate_five_seed_arrays(
-        records, name="embedding stability", require_same_shape=False
+    ordered = _validate_seed_arrays(
+        records,
+        name="embedding stability",
+        require_same_shape=False,
+        expected_seed_count=expected_seed_count,
     )
     arrays = [
         _as_finite_float_array(record.values, name="embedding", minimum_ndim=2)
@@ -205,14 +235,15 @@ def embedding_stability(
     ]
     if any(array.ndim != 2 for array in arrays):
         raise StabilityContractError("Each embedding must be two-dimensional.")
-    cka = np.eye(EXPECTED_SEED_COUNT, dtype=np.float64)
+    seed_count = len(ordered)
+    cka = np.eye(seed_count, dtype=np.float64)
     procrustes = (
-        np.eye(EXPECTED_SEED_COUNT, dtype=np.float64)
+        np.eye(seed_count, dtype=np.float64)
         if include_orthogonal_procrustes
         else None
     )
-    for left in range(EXPECTED_SEED_COUNT):
-        for right in range(left + 1, EXPECTED_SEED_COUNT):
+    for left in range(seed_count):
+        for right in range(left + 1, seed_count):
             cka[left, right] = cka[right, left] = linear_cka(
                 arrays[left], arrays[right]
             )
@@ -343,11 +374,15 @@ def match_attention_heads(
     signature_records: Sequence[FixedSeedArray],
     *,
     reference_seed: int = 0,
+    expected_seed_count: int = EXPECTED_SEED_COUNT,
 ) -> HeadAlignment:
     """Align every seed's heads to a reference using fixed-data signatures."""
 
-    ordered = _validate_five_seed_arrays(
-        signature_records, name="attention-head matching", require_same_shape=True
+    ordered = _validate_seed_arrays(
+        signature_records,
+        name="attention-head matching",
+        require_same_shape=True,
+        expected_seed_count=expected_seed_count,
     )
     signatures = [
         _as_finite_float_array(record.values, name="head signature", minimum_ndim=2)
@@ -361,11 +396,10 @@ def match_attention_heads(
     heads = signatures[reference_index].shape[1]
     if heads < 1:
         raise StabilityContractError("At least one attention head is required.")
-    permutations = np.empty((EXPECTED_SEED_COUNT, heads), dtype=np.int64)
-    matrices = np.empty(
-        (EXPECTED_SEED_COUNT, heads, heads), dtype=np.float64
-    )
-    matched = np.empty((EXPECTED_SEED_COUNT, heads), dtype=np.float64)
+    seed_count = len(ordered)
+    permutations = np.empty((seed_count, heads), dtype=np.int64)
+    matrices = np.empty((seed_count, heads, heads), dtype=np.float64)
+    matched = np.empty((seed_count, heads), dtype=np.float64)
     reference = signatures[reference_index]
     for seed_index, signature in enumerate(signatures):
         matrix = _column_spearman_matrix(reference, signature)
@@ -392,8 +426,12 @@ def _validate_alignment(
     *,
     name: str,
 ) -> tuple[FixedSeedArray, ...]:
-    ordered = _validate_five_seed_arrays(
-        records, name=name, require_same_shape=True
+    expected_seed_count = len(alignment.seeds)
+    ordered = _validate_seed_arrays(
+        records,
+        name=name,
+        require_same_shape=True,
+        expected_seed_count=expected_seed_count,
     )
     seeds = tuple(int(record.seed) for record in ordered)
     if seeds != alignment.seeds:
@@ -402,6 +440,13 @@ def _validate_alignment(
     if len(shape) != 2 or shape[1] != alignment.n_heads:
         raise StabilityContractError(
             f"{name} values must have shape [fixed_items, aligned_heads]."
+        )
+    if alignment.reference_to_seed_head.shape != (
+        expected_seed_count,
+        alignment.n_heads,
+    ):
+        raise StabilityContractError(
+            f"{name} head-permutation rows do not match the declared ensemble."
         )
     return ordered
 
@@ -455,7 +500,8 @@ def matched_head_attention_stability(
     resolved_top_k = _resolve_top_k(
         len(reference), top_k=top_k, top_fraction=top_fraction
     )
-    spearman = np.empty((EXPECTED_SEED_COUNT, alignment.n_heads), dtype=np.float64)
+    seed_count = len(ordered)
+    spearman = np.empty((seed_count, alignment.n_heads), dtype=np.float64)
     jaccard = np.empty_like(spearman)
     for seed_index, candidate in enumerate(arrays):
         for reference_head in range(alignment.n_heads):
@@ -508,9 +554,7 @@ def positional_bias_response_stability(
     arrays = [np.asarray(record.values, dtype=np.float64) for record in ordered]
     reference_index = _seed_index(ordered, alignment.reference_seed)
     reference = arrays[reference_index]
-    correlations = np.empty(
-        (EXPECTED_SEED_COUNT, alignment.n_heads), dtype=np.float64
-    )
+    correlations = np.empty((len(ordered), alignment.n_heads), dtype=np.float64)
     for seed_index, candidate in enumerate(arrays):
         for reference_head in range(alignment.n_heads):
             if seed_index == reference_index:
@@ -561,10 +605,11 @@ def content_position_contribution_agreement(
         )
     if not np.isfinite(epsilon) or epsilon <= 0:
         raise StabilityContractError("epsilon must be positive and finite.")
-    spearman = np.empty((EXPECTED_SEED_COUNT, alignment.n_heads), dtype=np.float64)
+    seed_count = len(content)
+    spearman = np.empty((seed_count, alignment.n_heads), dtype=np.float64)
     same_sign = np.empty_like(spearman)
     content_fraction = np.empty_like(spearman)
-    for seed_index in range(EXPECTED_SEED_COUNT):
+    for seed_index in range(seed_count):
         content_values = np.asarray(content[seed_index].values, dtype=np.float64)
         position_values = np.asarray(position[seed_index].values, dtype=np.float64)
         for reference_head in range(alignment.n_heads):
@@ -638,16 +683,20 @@ def summarize_relationship_ensemble(
     support_records: Sequence[FixedSeedArray] | None = None,
     support_magnitude_threshold: float = 0.0,
     quantile_levels: Sequence[float] = (0.05, 0.25, 0.75, 0.95),
+    expected_seed_count: int = EXPECTED_SEED_COUNT,
 ) -> RelationshipEnsembleSummary:
-    """Summarize scalar relationship scores across exactly five aligned seeds.
+    """Summarize scalar scores across the declared aligned ensemble.
 
     If explicit binary ``support_records`` are omitted, a seed supports a
     relationship when its absolute score is strictly greater than
     ``support_magnitude_threshold``.
     """
 
-    ordered = _validate_five_seed_arrays(
-        records, name="relationship ensemble", require_same_shape=True
+    ordered = _validate_seed_arrays(
+        records,
+        name="relationship ensemble",
+        require_same_shape=True,
+        expected_seed_count=expected_seed_count,
     )
     arrays = [np.asarray(record.values, dtype=np.float64) for record in ordered]
     if any(array.ndim != 1 for array in arrays):
@@ -674,10 +723,11 @@ def summarize_relationship_ensemble(
     if support_records is None:
         support = np.abs(values) > support_magnitude_threshold
     else:
-        support_ordered = _validate_five_seed_arrays(
+        support_ordered = _validate_seed_arrays(
             support_records,
             name="relationship support",
             require_same_shape=True,
+            expected_seed_count=expected_seed_count,
         )
         if tuple(int(record.seed) for record in support_ordered) != tuple(
             int(record.seed) for record in ordered
@@ -799,11 +849,15 @@ def mutual_routing_pair_stability(
     top_k: int | None = None,
     top_fraction: float = 0.05,
     quantile_levels: Sequence[float] = (0.05, 0.25, 0.75, 0.95),
+    expected_seed_count: int = EXPECTED_SEED_COUNT,
 ) -> RelationshipEnsembleSummary:
     """Summarize mutual-routing pairs and count top-pair support across seeds."""
 
-    ordered = _validate_five_seed_arrays(
-        records, name="mutual-routing stability", require_same_shape=True
+    ordered = _validate_seed_arrays(
+        records,
+        name="mutual-routing stability",
+        require_same_shape=True,
+        expected_seed_count=expected_seed_count,
     )
     arrays = [np.asarray(record.values, dtype=np.float64) for record in ordered]
     if any(array.ndim != 1 for array in arrays):
@@ -828,6 +882,7 @@ def mutual_routing_pair_stability(
         ordered,
         support_records=support_records,
         quantile_levels=quantile_levels,
+        expected_seed_count=expected_seed_count,
     )
 
 
@@ -848,11 +903,15 @@ def selected_gradient_stability(
     *,
     magnitude_threshold: float = 0.0,
     quantile_levels: Sequence[float] = (0.05, 0.25, 0.75, 0.95),
+    expected_seed_count: int = EXPECTED_SEED_COUNT,
 ) -> SelectedGradientStability:
     """Summarize caller-selected source-gene to target-gene gradients only."""
 
-    ordered = _validate_five_seed_arrays(
-        records, name="selected-gradient stability", require_same_shape=True
+    ordered = _validate_seed_arrays(
+        records,
+        name="selected-gradient stability",
+        require_same_shape=True,
+        expected_seed_count=expected_seed_count,
     )
     arrays = [np.asarray(record.values, dtype=np.float64) for record in ordered]
     if any(array.ndim != 1 for array in arrays):
@@ -877,6 +936,7 @@ def selected_gradient_stability(
         ordered,
         support_records=support_records,
         quantile_levels=quantile_levels,
+        expected_seed_count=expected_seed_count,
     )
     median_sign = np.sign(summary.median)
     sign_match = (np.sign(values) == median_sign[None, :]) & supported
@@ -887,9 +947,10 @@ def selected_gradient_stability(
         out=np.zeros_like(sign_count, dtype=np.float64),
         where=summary.support_count > 0,
     )
-    pairwise = np.eye(EXPECTED_SEED_COUNT, dtype=np.float64)
-    for left in range(EXPECTED_SEED_COUNT):
-        for right in range(left + 1, EXPECTED_SEED_COUNT):
+    seed_count = len(ordered)
+    pairwise = np.eye(seed_count, dtype=np.float64)
+    for left in range(seed_count):
+        for right in range(left + 1, seed_count):
             value = (
                 spearman_correlation(values[left], values[right])
                 if values.shape[1] >= 2

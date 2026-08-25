@@ -99,6 +99,101 @@ def test_embedding_stability_requires_five_aligned_seeds() -> None:
         embedding_stability(misaligned)
 
 
+def test_explicit_four_seed_amendment_uses_dynamic_ensemble_dimensions() -> None:
+    rng = np.random.default_rng(20260824)
+    seed_order = (0, 1, 2, 3)
+    base_embedding = rng.normal(size=(40, 6))
+    embedding_records = _records(
+        [base_embedding + seed * 0.001 for seed in seed_order],
+        seed_order=seed_order,
+    )
+    embedding_report = embedding_stability(
+        embedding_records,
+        expected_seed_count=4,
+    )
+    assert embedding_report.seeds == seed_order
+    assert embedding_report.linear_cka.shape == (4, 4)
+    assert embedding_report.orthogonal_procrustes_similarity is not None
+    assert embedding_report.orthogonal_procrustes_similarity.shape == (4, 4)
+
+    reference = rng.normal(size=(80, 3))
+    column_orders = (
+        np.asarray([0, 1, 2]),
+        np.asarray([2, 0, 1]),
+        np.asarray([1, 2, 0]),
+        np.asarray([0, 2, 1]),
+    )
+    attention_records = _records(
+        [reference[:, order] for order in column_orders],
+        seed_order=seed_order,
+    )
+    alignment = match_attention_heads(
+        attention_records,
+        expected_seed_count=4,
+    )
+    assert alignment.seeds == seed_order
+    assert alignment.reference_to_seed_head.shape == (4, 3)
+    attention_report = matched_head_attention_stability(
+        attention_records,
+        alignment,
+        top_k=8,
+    )
+    position_report = positional_bias_response_stability(
+        attention_records,
+        alignment,
+    )
+    contribution_report = content_position_contribution_agreement(
+        attention_records,
+        attention_records,
+        alignment,
+    )
+    assert attention_report.matched_head_spearman.shape == (4, 3)
+    assert attention_report.matched_head_top_edge_jaccard.shape == (4, 3)
+    assert position_report.matched_head_spearman.shape == (4, 3)
+    assert contribution_report.within_seed_spearman.shape == (4, 3)
+
+    relationship_ids = ("relation-a", "relation-b")
+    relationship_records = _records(
+        [
+            np.asarray([float(seed + 1), -float(seed + 1)])
+            for seed in seed_order
+        ],
+        identifiers=relationship_ids,
+        seed_order=seed_order,
+    )
+    relationship_report = summarize_relationship_ensemble(
+        relationship_records,
+        expected_seed_count=4,
+    )
+    np.testing.assert_array_equal(relationship_report.support_count, [4, 4])
+    assert relationship_report.seeds == seed_order
+    assert relationship_report.calibrated_confidence_interval is False
+
+    mutual_report = mutual_routing_pair_stability(
+        relationship_records,
+        top_k=1,
+        expected_seed_count=4,
+    )
+    gradient_report = selected_gradient_stability(
+        relationship_records,
+        expected_seed_count=4,
+    )
+    assert int(mutual_report.support_count.max()) <= 4
+    assert gradient_report.pairwise_seed_spearman.shape == (4, 4)
+
+
+def test_four_seed_records_still_require_explicit_amendment_count() -> None:
+    seed_order = (0, 1, 2, 3)
+    records = _records(
+        [np.arange(8, dtype=float)[:, None] + seed for seed in seed_order],
+        seed_order=seed_order,
+    )
+    with pytest.raises(StabilityContractError, match="exactly five"):
+        embedding_stability(records)
+    with pytest.raises(StabilityContractError, match="greater than or equal to two"):
+        embedding_stability(records, expected_seed_count=1)
+
+
 def test_five_seeds_must_be_distinct() -> None:
     values = [np.arange(10, dtype=float)[:, None] for _ in range(5)]
     duplicate_seed_records = _records(
