@@ -1,0 +1,44 @@
+dataset:
+  dataset_id: cosmx_so2_14core_pooled_fit_v1
+  version: so2_14core_pooled_fit_v1
+  split_id: fit_all_so2_cores_15_through_28_transductive_v1
+  dataset_fingerprint: c7abbeddd8ed018d09163bb290224d3a92fd38ab3f3696d012b731f2f05f9bf0
+  dataset_fingerprint_role: immutable_cohort_manifest_content_sha256
+  split_fingerprint: 385f27e29cc8e598eb6d6545dbc5d01337ed30661254e5848b88876aa9771abd
+  split_fingerprint_status: verified_canonical_fit_only_cohort_assignment
+  split_fingerprint_canonicalization: sorted_keys_compact_json_sha256
+  split_fingerprint_basis:
+    aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26, SO2-C27, SO2-C28]
+    dataset_id: cosmx_so2_14core_pooled_fit_v1
+    fit_scope: all_cells_so2_cores_15_through_28_transductive
+    total_cells: 246063
+    validation_or_test_partition_present: false
+    version: so2_14core_pooled_fit_v1
+  cohort_manifest_file_sha256: 69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158
+  graph_manifest_file_sha256: c4a632473e458ae6e6eeab92c026ebf6e4d18ae49b568723f0e66a67db4fc90f
+  graph_manifest_content_sha256: e41a4c92868bac96d05984b5a070d9984cda6ac04e3ad30458e5920259c573d5
+  completed_cohort_manifest_sha256: d7e41ab22cf5ba340775160daf403205783c522d4ce573dda0d1fe2323c58b51
+  prepared_artifact_reference: data/processed/so2_14core_relative_qkv_graphs_v1
+  preprocessing_version: so2_14core_equal_core_log1p_metadata_v1
+  task: masked_expression_regression
+  target_scale: shared_equal_core_standardized_log1p_raw_biological_counts
+  fit_scope: all_cells_so2_cores_15_through_28_transductive
+  total_fit_cells: 246063
+  biological_target_count: 1000
+  validation_or_test_partition_present: false
+  generalization_claim_supported: false
+  core_aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26, SO2-C27, SO2-C28]
+  original_core_numbers: [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
+  prepared_artifact: data/processed/so2_14core_relative_qkv_v1
+  prepared_graph_artifact: data/processed/so2_14core_relative_qkv_graphs_v1
+  experimental_unit: spatial_core
+  source_slide: SO_2
+  tissue_context: not_asserted_neutral_core_number_cohort
+  explicitly_excluded_unmapped_fov: 246
+  explicitly_excluded_unmapped_fov_cells: 340
+  technical_control_prefixes_excluded: [Negative, SystemControl]
+  expression_transform:
+    source: raw_nonnegative_probe_counts
+    transform: log1p_then_gene_wise_standardize
+    moment_weighting: equal_core
+    library_size_normalization: false

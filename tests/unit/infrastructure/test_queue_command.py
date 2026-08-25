@@ -5,14 +5,21 @@ import sys
 
 import pytest
 
-from spatial_benchmark.configuration import ConfigurationError
+from spatial_benchmark.configuration import (
+    ConfigurationError,
+    compose_config,
+)
 from spatial_benchmark.paths import ProjectPaths
 from spatial_benchmark.queueing import (
     ArtifactFinalizationError,
+    QueueWorker,
+    WorkerSettings,
     _peak_vram_from_summary,
     _primary_metric,
+    _resolve_prepared_artifact_reference,
     command_for_config,
 )
+from spatial_benchmark.registry import Registry
 
 
 def _paths(root: Path) -> ProjectPaths:
@@ -237,6 +244,148 @@ def test_relative_six_core_protocol_rejects_other_models(
                 "model": {"name": "qkv-gat"},
             },
             paths=_paths(tmp_path),
+        )
+
+
+def test_so2_four_rank_protocol_uses_tracked_torchrun_agent(
+    tmp_path: Path,
+) -> None:
+    command = command_for_config(
+        {
+            "evaluation": {
+                "protocol": "held_in_pooled_14core_relative_qkv_seed_plateau",
+            },
+            "model": {"name": "relative-qkv-gat"},
+            "campaign": {
+                "campaign_id": "cmp_20260825_so2_14core_relative_qkv_seed0_batch2"
+            },
+            "launcher": {
+                "requested_gpu": "0,1,2,3",
+                "process_count": 4,
+                "elastic_max_restarts": 0,
+            },
+        },
+        paths=_paths(tmp_path),
+    )
+
+    assert command[:8] == [
+        sys.executable,
+        "-m",
+        "torch.distributed.run",
+        "--standalone",
+        "--nnodes=1",
+        "--nproc-per-node=4",
+        "--max-restarts=0",
+        str(tmp_path / "scripts/train/run_so2_14core_relative_qkv.py"),
+    ]
+    assert command[8:] == [
+        "--config",
+        "{run_scratch}/config.resolved.yaml",
+        "--run-scratch",
+        "{run_scratch}",
+    ]
+
+
+def test_so2_four_rank_protocol_rejects_elastic_restart_or_gpu_drift(
+    tmp_path: Path,
+) -> None:
+    base = {
+        "evaluation": {
+            "protocol": "held_in_pooled_14core_relative_qkv_seed_plateau",
+        },
+        "model": {"name": "relative-qkv-gat"},
+        "campaign": {
+            "campaign_id": "cmp_20260825_so2_14core_relative_qkv_seed0_batch2"
+        },
+        "launcher": {
+            "requested_gpu": "0,1,2,3",
+            "process_count": 4,
+            "elastic_max_restarts": 0,
+        },
+    }
+    for field, value in (("requested_gpu", "0,1,2"), ("elastic_max_restarts", 1)):
+        invalid = {
+            **base,
+            "launcher": {**base["launcher"], field: value},
+        }
+        with pytest.raises(ConfigurationError, match="four-rank"):
+            command_for_config(invalid, paths=_paths(tmp_path))
+
+
+def test_so2_queue_validation_resolves_data_reference_via_data_root(
+    tmp_path: Path,
+) -> None:
+    source_root = Path(__file__).resolve().parents[3]
+    runtime_data = tmp_path / "separate-runtime-data"
+    paths = ProjectPaths(
+        project_root=source_root,
+        config_root=source_root / "configs",
+        data_root=runtime_data,
+        artifact_root=tmp_path / "artifacts",
+        state_root=tmp_path / "state",
+        scratch_root=tmp_path / "scratch",
+        cache_root=tmp_path / "cache",
+        export_root=tmp_path / "exports",
+        report_root=tmp_path / "reports",
+    )
+    relative_reference = "data/processed/unit-only-so2-prepared"
+    prepared = runtime_data / "processed/unit-only-so2-prepared"
+    prepared.mkdir(parents=True)
+    assert not (source_root / relative_reference).exists()
+
+    config = compose_config(
+        source_root
+        / "configs/experiment/so2_14core_relative_qkv_seed0_batch2.yaml",
+        config_root=source_root / "configs",
+    )
+    config["dataset"]["prepared_artifact_reference"] = relative_reference
+    registry = Registry(paths.state_root / "tracking/bagm.sqlite3")
+    registry.register_dataset(
+        str(config["dataset"]["dataset_id"]),
+        str(config["dataset"]["version"]),
+        display_name="SO2 queue data-root fixture",
+        raw_fingerprint=str(config["dataset"]["dataset_fingerprint"]),
+        processed_fingerprint=str(config["dataset"]["dataset_fingerprint"]),
+        preprocessing_version=str(config["dataset"]["preprocessing_version"]),
+        verification_status="verified",
+    )
+    registry.register_split(
+        str(config["dataset"]["split_id"]),
+        dataset_id=str(config["dataset"]["dataset_id"]),
+        dataset_version=str(config["dataset"]["version"]),
+        method="all_cells_fit_only_transductive",
+        unit="spatial_cell",
+        fingerprint=str(config["dataset"]["split_fingerprint"]),
+        verification_status="verified",
+    )
+    worker = QueueWorker(
+        registry,
+        settings=WorkerSettings(
+            worker_id="so2-data-root-test",
+            gpu="0,1,2,3",
+            once=True,
+            min_free_gb=0,
+        ),
+        paths=paths,
+    )
+    command = command_for_config(config, paths=paths)
+    worker._validate_job(
+        config,
+        queued_command=command,
+        requested_gpu="0,1,2,3",
+    )
+    assert _resolve_prepared_artifact_reference(
+        relative_reference,
+        paths=paths,
+    ) == prepared.resolve()
+
+
+def test_prepared_data_reference_cannot_escape_data_root(tmp_path: Path) -> None:
+    paths = _paths(tmp_path)
+    with pytest.raises(ConfigurationError, match="escapes"):
+        _resolve_prepared_artifact_reference(
+            "data/../../outside",
+            paths=paths,
         )
 
 

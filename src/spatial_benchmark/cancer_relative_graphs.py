@@ -215,19 +215,54 @@ def _relative_parameter_record() -> dict[str, Any]:
     }
 
 
-def materialize_cancer_core_relative_graph(
+def relative_geometry_parameter_record() -> dict[str, Any]:
+    """Return a defensive copy of the locked relative-geometry parameters."""
+
+    return deepcopy(_relative_parameter_record())
+
+
+def verify_cancer_relative_graph_collection(
+    *,
+    cohort_dir: str | Path,
+    graph_dir: str | Path,
+) -> dict[str, Any]:
+    """Public read-only verifier used before safe cross-cohort cache reuse."""
+
+    cohort_root = Path(cohort_dir)
+    _verify_cohort_manifest(cohort_root)
+    return _verify_graph_collection(
+        Path(graph_dir),
+        cohort_manifest_path=cohort_root / "manifest.json",
+    )
+
+
+def materialize_relative_core_graph(
     *,
     alias: str,
     coordinates_um: np.ndarray,
     output_dir: str | Path,
+    allowed_aliases: tuple[str, ...],
+    artifact_kind: str,
+    contract_error: type[ValueError] = ValueError,
     receiver_chunk_size: int = DEFAULT_RECEIVER_CHUNK_SIZE,
     max_edges_per_chunk: int = DEFAULT_MAX_EDGES_PER_CHUNK,
 ) -> dict[str, Any]:
-    """Write one canonical graph plus one shared read-only feature cache."""
+    """Write one canonical graph plus one shared read-only feature cache.
+
+    This cohort-neutral implementation is shared by the historical six-Cancer
+    wrapper and additive cohorts.  Alias allow-lists and artifact kinds remain
+    explicit so one cohort can never silently consume another cohort's cache.
+    """
 
     canonical_alias = str(alias).strip().upper()
-    if canonical_alias not in CANCER_ALIASES:
-        raise CancerRelativeGraphContractError("Unknown Cancer core alias.")
+    canonical_allowed = tuple(str(value).strip().upper() for value in allowed_aliases)
+    if not canonical_allowed or len(set(canonical_allowed)) != len(canonical_allowed):
+        raise contract_error("Graph alias allow-list must be nonempty and unique.")
+    if canonical_alias not in canonical_allowed:
+        raise contract_error("Unknown core alias for this graph collection.")
+    clean_artifact_kind = str(artifact_kind).strip()
+    if not clean_artifact_kind:
+        raise contract_error("Graph artifact kind must be nonempty.")
     destination = Path(output_dir)
     if destination.exists():
         raise FileExistsError(
@@ -235,7 +270,7 @@ def materialize_cancer_core_relative_graph(
         )
     coordinates = np.asarray(coordinates_um, dtype=np.float64)
     if coordinates.ndim != 2 or coordinates.shape[1] != 2:
-        raise CancerRelativeGraphContractError(
+        raise contract_error(
             "coordinates_um must have shape [n_cells, 2]."
         )
 
@@ -305,7 +340,7 @@ def materialize_cancer_core_relative_graph(
             observed_edges += edge_count
             shard_checksums.append(shard.checksum_sha256)
         if observed_edges != graph.edge_index.shape[1]:
-            raise CancerRelativeGraphContractError(
+            raise contract_error(
                 "Relative feature cache did not cover every canonical edge."
             )
         feature_cache.flush()
@@ -328,7 +363,7 @@ def materialize_cancer_core_relative_graph(
             "relative_geometry.npy": _sha256_file(feature_path),
         }
         record: dict[str, Any] = {
-            "artifact_kind": "cancer_core_radial_relative_geometry",
+            "artifact_kind": clean_artifact_kind,
             "format_version": GRAPH_ARTIFACT_SCHEMA_VERSION,
             "alias": canonical_alias,
             "n_cells": int(len(coordinates)),
@@ -374,6 +409,31 @@ def materialize_cancer_core_relative_graph(
     except BaseException:
         shutil.rmtree(temporary, ignore_errors=True)
         raise
+
+
+def materialize_cancer_core_relative_graph(
+    *,
+    alias: str,
+    coordinates_um: np.ndarray,
+    output_dir: str | Path,
+    receiver_chunk_size: int = DEFAULT_RECEIVER_CHUNK_SIZE,
+    max_edges_per_chunk: int = DEFAULT_MAX_EDGES_PER_CHUNK,
+) -> dict[str, Any]:
+    """Backward-compatible six-Cancer-core materialization wrapper."""
+
+    canonical_alias = str(alias).strip().upper()
+    if canonical_alias not in CANCER_ALIASES:
+        raise CancerRelativeGraphContractError("Unknown Cancer core alias.")
+    return materialize_relative_core_graph(
+        alias=canonical_alias,
+        coordinates_um=coordinates_um,
+        output_dir=output_dir,
+        allowed_aliases=CANCER_ALIASES,
+        artifact_kind="cancer_core_radial_relative_geometry",
+        contract_error=CancerRelativeGraphContractError,
+        receiver_chunk_size=receiver_chunk_size,
+        max_edges_per_chunk=max_edges_per_chunk,
+    )
 
 
 def prepare_cancer_6core_relative_graphs(
@@ -531,5 +591,8 @@ __all__ = [
     "GRAPH_ARTIFACT_SCHEMA_VERSION",
     "load_cancer_relative_qkv_batches",
     "materialize_cancer_core_relative_graph",
+    "materialize_relative_core_graph",
     "prepare_cancer_6core_relative_graphs",
+    "relative_geometry_parameter_record",
+    "verify_cancer_relative_graph_collection",
 ]

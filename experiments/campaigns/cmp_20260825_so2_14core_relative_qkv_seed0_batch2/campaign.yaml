@@ -1,0 +1,38 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260825_so2_14core_relative_qkv_seed0_batch2
+display_name: SO2 cores 15-28 Relative-Geometric QKV Transformer seed-0 fit
+status: implementation
+definition: experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/README.md
+frozen_task_contract: experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/frozen_task_contract.yaml
+frozen_task_contract_sha256: 27e98401807ffaf0cd88269fded75b96f25d21f4e4556eb0cbc3d59289479ae8
+cohort:
+  source_slide: SO_2
+  aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26, SO2-C27, SO2-C28]
+  independent_core_count: 14
+  total_fit_cells: 246063
+  fit_scope: all_cells_so2_cores_15_through_28_transductive
+  validation_or_test_partition_present: false
+immutable_preparation:
+  cohort_manifest_content_sha256: c7abbeddd8ed018d09163bb290224d3a92fd38ab3f3696d012b731f2f05f9bf0
+  graph_manifest_file_sha256: c4a632473e458ae6e6eeab92c026ebf6e4d18ae49b568723f0e66a67db4fc90f
+  graph_manifest_content_sha256: e41a4c92868bac96d05984b5a070d9984cda6ac04e3ad30458e5920259c573d5
+  completed_cohort_manifest_sha256: d7e41ab22cf5ba340775160daf403205783c522d4ce573dda0d1fe2323c58b51
+variant:
+  name: relative_qkv_gat_256_l4_h8_radial_stratified_k200_r500_batch2_ddp4
+  model_seeds: [0]
+production_run_count: 1
+production_minimum_global_epochs: 150
+production_optimizer_updates_per_global_epoch: 7
+production_masks_per_cell_per_epoch: 10
+production_stopping_policy: two_consecutive_training_loss_plateau_audits_after_epoch_150
+production_continuation_block_global_epochs: 25
+production_maximum_scientific_epoch_cap: null
+execution:
+  world_size: 4
+  backend: nccl
+  physical_gpu_ids: [0, 1, 2, 3]
+  elastic_max_restarts: 0
+  checkpoint_policy: atomic_latest_then_final_last_only
+  epoch_metrics_csv: results/epoch_metrics.csv
+production_maximum_attempts: 2
+automatic_enqueue: false

@@ -218,6 +218,40 @@ def _analysis_only_artifact_contract(configuration: Mapping[str, Any]) -> bool:
     )
 
 
+def _resolve_prepared_artifact_reference(
+    reference: object,
+    *,
+    paths: ProjectPaths,
+) -> Path:
+    """Resolve a registered prepared input against its owning BAGM root.
+
+    Absolute references remain absolute. Relative references beginning with
+    ``data/`` are rooted at ``BAGM_DATA_ROOT`` (with that leading component
+    removed); all other legacy references retain project-root semantics. Both
+    relative forms are prevented from escaping their selected root.
+    """
+
+    raw = Path(str(reference)).expanduser()
+    if raw.is_absolute():
+        return raw.resolve(strict=False)
+    if not raw.parts:
+        raise ConfigurationError(
+            "dataset.prepared_artifact_reference cannot be empty."
+        )
+    if raw.parts[0] == "data":
+        root = paths.data_root.resolve(strict=False)
+        relative = Path(*raw.parts[1:])
+    else:
+        root = paths.project_root.resolve(strict=False)
+        relative = raw
+    candidate = (root / relative).resolve(strict=False)
+    if not candidate.is_relative_to(root):
+        raise ConfigurationError(
+            "dataset.prepared_artifact_reference escapes its configured root."
+        )
+    return candidate
+
+
 def command_for_config(
     configuration: Mapping[str, Any],
     *,
@@ -350,6 +384,40 @@ def command_for_config(
             "--run-scratch",
             "{run_scratch}",
         ]
+    if protocol == "held_in_pooled_14core_relative_qkv_seed_plateau":
+        model = _section(configuration, "model")
+        campaign = _section(configuration, "campaign")
+        launcher = _section(configuration, "launcher")
+        if (
+            str(model.get("name", "")).strip().lower() != "relative-qkv-gat"
+            or campaign.get("campaign_id")
+            != "cmp_20260825_so2_14core_relative_qkv_seed0_batch2"
+            or launcher.get("requested_gpu") != "0,1,2,3"
+            or launcher.get("process_count") != 4
+            or launcher.get("elastic_max_restarts") != 0
+        ):
+            raise ConfigurationError(
+                "The SO2 14-core protocol requires its registered four-rank "
+                "Relative-QKV campaign with GPUs 0,1,2,3 and no elastic restarts."
+            )
+        script = (
+            selected_paths.project_root
+            / "scripts/train/run_so2_14core_relative_qkv.py"
+        )
+        return [
+            sys.executable,
+            "-m",
+            "torch.distributed.run",
+            "--standalone",
+            "--nnodes=1",
+            "--nproc-per-node=4",
+            "--max-restarts=0",
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
     if protocol == "held_in_full_core_fixed_budget":
         model_name = ""
         if "model" in configuration:
@@ -413,9 +481,10 @@ def command_for_config(
             "dataset.prepared_artifact_reference is required for the "
             "spatial benchmark launcher."
         )
-    prepared_path = Path(str(prepared))
-    if not prepared_path.is_absolute():
-        prepared_path = selected_paths.project_root / prepared_path
+    prepared_path = _resolve_prepared_artifact_reference(
+        prepared,
+        paths=selected_paths,
+    )
     script = selected_paths.project_root / "scripts/train/run_spatial_benchmark.py"
     command = [
         sys.executable,
@@ -982,9 +1051,10 @@ class QueueWorker:
             )
         reference = dataset.get("prepared_artifact_reference")
         if reference and not is_test:
-            path = Path(str(reference))
-            if not path.is_absolute():
-                path = self.paths.project_root / path
+            path = _resolve_prepared_artifact_reference(
+                reference,
+                paths=self.paths,
+            )
             if not path.exists():
                 raise MissingDatasetError(
                     f"Prepared dataset artifact does not exist: {path}"

@@ -744,6 +744,7 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
     held_in_fit_protocols = {
         "held_in_full_core_fixed_budget",
         "held_in_pooled_10core_fixed_budget",
+        "held_in_pooled_14core_relative_qkv_seed_plateau",
         "held_in_pooled_6core_relative_qkv_fixed_budget",
         "held_in_pooled_6core_relative_qkv_joint_plateau",
         "held_in_pooled_6core_relative_qkv_seed_plateau",
@@ -889,14 +890,18 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                 "trainer.primary_checkpoint_role=last."
             )
         expected_checkpoint_policy = (
-            "periodic_and_last"
-            if protocol
-            in {
-                "held_in_pooled_6core_relative_qkv_fixed_budget",
-                "held_in_pooled_6core_relative_qkv_joint_plateau",
-                "held_in_pooled_6core_relative_qkv_seed_plateau",
-            }
-            else "last_only"
+            "atomic_latest_then_final_last_only"
+            if protocol == "held_in_pooled_14core_relative_qkv_seed_plateau"
+            else (
+                "periodic_and_last"
+                if protocol
+                in {
+                    "held_in_pooled_6core_relative_qkv_fixed_budget",
+                    "held_in_pooled_6core_relative_qkv_joint_plateau",
+                    "held_in_pooled_6core_relative_qkv_seed_plateau",
+                }
+                else "last_only"
+            )
         )
         if trainer.get("checkpoint_policy") != expected_checkpoint_policy:
             raise ConfigurationError(
@@ -980,6 +985,79 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                 raise ConfigurationError(
                     "The current model seed must appear in "
                     "evaluation.active_model_seeds."
+                )
+        if protocol == "held_in_pooled_14core_relative_qkv_seed_plateau":
+            expected_aliases = [f"SO2-C{core}" for core in range(15, 29)]
+            locked_values = {
+                "batch_size": 2,
+                "core_visits_per_global_epoch": 14,
+                "cores_per_optimizer_update": 2,
+                "optimizer_updates_per_global_epoch": 7,
+                "max_epochs": None,
+                "initial_global_epoch_budget": 150,
+                "minimum_global_epochs": 150,
+                "fixed_epoch_budget": False,
+                "continuation_policy": (
+                    "single_seed_training_loss_plateau_25_epoch_blocks"
+                ),
+                "continuation_block_global_epochs": 25,
+                "plateau_first_audit_epoch": 150,
+                "plateau_window_global_epochs": 50,
+                "plateau_consecutive_passing_audits": 2,
+                "maximum_scientific_epoch_cap": None,
+                "mask_views_per_core_step": 10,
+                "mask_views_per_rank_per_optimizer_update": 5,
+                "optimizer_zero_grad_per_paired_core_update": 1,
+                "optimizer_steps_per_paired_core_update": 1,
+                "early_stopping": False,
+                "distributed": True,
+                "distributed_backend": "nccl",
+                "distributed_world_size": 4,
+                "rank_zero_only_artifact_writes": True,
+                "checkpoint_every_global_epochs": 1,
+                "epoch_metrics_csv": "results/epoch_metrics.csv",
+                "epoch_metrics_fsync": True,
+            }
+            for field, expected in locked_values.items():
+                if trainer.get(field) != expected:
+                    raise ConfigurationError(
+                        "held_in_pooled_14core_relative_qkv_seed_plateau "
+                        f"requires trainer.{field}={expected!r}."
+                    )
+            launcher = _mapping(config, "launcher")
+            locked_launcher = {
+                "requested_gpu": "0,1,2,3",
+                "requested_gpu_count": 4,
+                "require_exact_visible_devices": "0,1,2,3",
+                "distributed": True,
+                "distributed_backend": "nccl",
+                "process_count": 4,
+                "elastic_max_restarts": 0,
+                "hardware_preflight_receipt": (
+                    "state/preflight/so2_14core_relative_qkv_ddp4.json"
+                ),
+            }
+            for field, expected in locked_launcher.items():
+                if launcher.get(field) != expected:
+                    raise ConfigurationError(
+                        "held_in_pooled_14core_relative_qkv_seed_plateau "
+                        f"requires launcher.{field}={expected!r}."
+                    )
+            if model_name != "relative-qkv-gat":
+                raise ConfigurationError(
+                    "The SO2 14-core protocol requires model.name=relative-qkv-gat."
+                )
+            if config.get("seed") != 0 or evaluation.get("active_model_seeds") != [0]:
+                raise ConfigurationError(
+                    "The SO2 14-core production protocol is locked to model seed 0."
+                )
+            if dataset.get("core_aliases") != expected_aliases:
+                raise ConfigurationError(
+                    "The SO2 14-core protocol requires exact ordered cores 15--28."
+                )
+            if dataset.get("total_fit_cells") != 246063:
+                raise ConfigurationError(
+                    "The SO2 14-core protocol requires exactly 246,063 fit cells."
                 )
     elif canonical_prediction_split == "fit" or str(primary).startswith("fit/"):
         raise ConfigurationError(

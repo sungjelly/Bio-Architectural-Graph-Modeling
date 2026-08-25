@@ -11,6 +11,7 @@ from spatial_benchmark.configuration import (
     load_yaml_mapping,
     validate_experiment_config,
 )
+from spatial_benchmark.identifiers import canonical_sha256
 
 
 GROUPS = {
@@ -336,6 +337,60 @@ def test_relative_qkv_requires_logit_only_geometry_and_uniform_integer_masks(
     invalid["trainer"]["checkpoint_policy"] = "last_only"
     with pytest.raises(ConfigurationError, match="periodic_and_last"):
         validate_experiment_config(invalid)
+
+
+def test_so2_14core_relative_qkv_config_locks_ddp_and_latest_only_policy() -> None:
+    project_root = Path(__file__).resolve().parents[3]
+    source = (
+        project_root
+        / "configs/experiment/so2_14core_relative_qkv_seed0_batch2.yaml"
+    )
+    resolved = compose_config(source, config_root=project_root / "configs")
+    validate_experiment_config(resolved)
+    assert resolved["dataset"]["core_aliases"] == [
+        f"SO2-C{core}" for core in range(15, 29)
+    ]
+    assert resolved["trainer"]["optimizer_updates_per_global_epoch"] == 7
+    assert resolved["trainer"]["max_epochs"] is None
+    assert resolved["trainer"]["initial_global_epoch_budget"] == 150
+    assert resolved["trainer"]["minimum_global_epochs"] == 150
+    assert resolved["trainer"]["maximum_scientific_epoch_cap"] is None
+    assert resolved["trainer"]["checkpoint_every_global_epochs"] == 1
+    assert resolved["trainer"]["checkpoint_policy"] == (
+        "atomic_latest_then_final_last_only"
+    )
+    assert resolved["launcher"]["requested_gpu"] == "0,1,2,3"
+    assert resolved["launcher"]["elastic_max_restarts"] == 0
+    assert canonical_sha256(
+        resolved["dataset"]["split_fingerprint_basis"]
+    ) == resolved["dataset"]["split_fingerprint"]
+    assert resolved["dataset"]["graph_manifest_file_sha256"] == (
+        "c4a632473e458ae6e6eeab92c026ebf6e4d18ae49b568723f0e66a67db4fc90f"
+    )
+    assert resolved["dataset"]["graph_manifest_content_sha256"] == (
+        "e41a4c92868bac96d05984b5a070d9984cda6ac04e3ad30458e5920259c573d5"
+    )
+    assert resolved["dataset"]["completed_cohort_manifest_sha256"] == (
+        "d7e41ab22cf5ba340775160daf403205783c522d4ce573dda0d1fe2323c58b51"
+    )
+    assert resolved["dataset"]["prepared_artifact_reference"] == (
+        "data/processed/so2_14core_relative_qkv_graphs_v1"
+    )
+
+    for section, field, value in (
+        ("trainer", "max_epochs", 150),
+        ("trainer", "initial_global_epoch_budget", 175),
+        ("trainer", "maximum_scientific_epoch_cap", 150),
+        ("trainer", "distributed_world_size", 3),
+        ("trainer", "cores_per_optimizer_update", 1),
+        ("trainer", "checkpoint_every_global_epochs", 25),
+        ("launcher", "elastic_max_restarts", 1),
+        ("launcher", "requested_gpu", "0,1,2"),
+    ):
+        invalid = deepcopy(resolved)
+        invalid[section][field] = value
+        with pytest.raises(ConfigurationError, match="14core|14-core"):
+            validate_experiment_config(invalid)
 
 
 def test_mean_adjacency_sage_requires_canonical_family(

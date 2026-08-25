@@ -1,0 +1,73 @@
+schema_version: 1
+campaign_id: cmp_20260825_so2_14core_relative_qkv_seed0_batch2
+status: frozen_before_implementation
+objective: fit_one_shared_relative_geometric_qkv_model_on_so2_cores_15_through_28
+estimand: held_in_all_cells_14core_transductive_masked_expression_reconstruction
+permitted_claim: model_fit_behavior_and_predictive_dependencies_within_fitted_cores
+generalization_claim_supported: false
+validation_or_test_partition_present: false
+cohort:
+  slide: SO_2
+  core_numbers: [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
+  core_aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26, SO2-C27, SO2-C28]
+  expected_cells: 246063
+  unmapped_fov_excluded: 246
+  tissue_context: mixed_reviewed_context_core_routing_cohort
+  cancer_attestation_not_extended_beyond: [15, 21, 23]
+model:
+  architecture: relative_geometric_qkv_graph_transformer
+  hidden_dim: 256
+  graph_layers: 4
+  attention_heads: 8
+  attention_head_dim: 32
+  ffn_dim: 1024
+  decoder_dim: 1024
+  relative_geometry_role: attention_logit_bias_only
+graph:
+  kind: radial_stratified_knn
+  nominal_k: 200
+  maximum_range_um: 500
+  radial_quotas: [48, 64, 48, 40]
+  bidirectional_union: true
+  self_loops: false
+  cross_core_edges: false
+masking:
+  distribution: uniform_integer_mask_count_0_through_1000
+  views_per_core_epoch: 10
+  model_seed_in_mask_derivation: false
+training:
+  model_seed: 0
+  distributed_world_size: 4
+  distributed_backend: nccl
+  gpu_ids: [0, 1, 2, 3]
+  core_visits_per_global_epoch: 14
+  cores_per_optimizer_update: 2
+  optimizer_updates_per_global_epoch: 7
+  mask_view_gradients_per_optimizer_update: 20
+  mask_views_per_rank_per_optimizer_update: 5
+  rank_assignment: [core_a_views_0_4, core_a_views_5_9, core_b_views_0_4, core_b_views_5_9]
+  maximum_simultaneously_staged_cores_per_gpu: 1
+  ddp_gradient_average: exact_mean_across_20_core_view_losses
+  optimizer: AdamW
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  gradient_clip_norm: 1.0
+  minimum_global_epochs: 150
+  plateau_audit_interval_epochs: 25
+  plateau_window_epochs: 50
+  plateau_consecutive_passing_audits: 2
+  checkpoint_retention: atomic_latest_only_during_training_then_final_last_only
+observability:
+  csv_path_within_run: results/epoch_metrics.csv
+  csv_flush: every_completed_global_epoch_with_fsync
+  append_only_metrics_events: true
+  per_core_losses: true
+  gradient_norms: true
+acceptance:
+  focused_tests_pass: true
+  existing_six_core_regressions_pass: true
+  graph_qc_pass: true
+  amp_fp32_preflight_pass: true
+  deterministic_resume_pass: true
+  live_csv_verified: true
+  final_checkpoint_loadable: true

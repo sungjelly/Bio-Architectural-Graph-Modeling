@@ -410,6 +410,7 @@ def _canonical_prediction_split(root: Path) -> str:
         held_in_protocols = {
             "held_in_full_core_fixed_budget",
             "held_in_pooled_10core_fixed_budget",
+            "held_in_pooled_14core_relative_qkv_seed_plateau",
             "held_in_pooled_6core_relative_qkv_fixed_budget",
             "held_in_pooled_6core_relative_qkv_joint_plateau",
             "held_in_pooled_6core_relative_qkv_seed_plateau",
