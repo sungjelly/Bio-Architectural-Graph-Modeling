@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import numpy as np
 import pandas as pd
 import pytest
+import yaml
 
 import spatial_benchmark.attention_niche_pipeline as pipeline
 from spatial_benchmark.attention_niche_pipeline import (
@@ -25,6 +26,7 @@ from spatial_benchmark.attention_niche_pipeline import (
     _validate_interpretation_identifier_minimization,
     _stream_validate_recovery_edge_alignment,
     _validated_render_recovery_request,
+    _validated_visualization_patch_request,
     _write_directed_core_table,
     _write_mutual_core_table,
 )
@@ -109,6 +111,96 @@ def test_render_recovery_requires_exact_launcher_identity() -> None:
         )
 
 
+def test_visualization_patch_requires_exact_launcher_identity() -> None:
+    assert _validated_visualization_patch_request({}) is None
+    patch = {
+        "mode": pipeline.VISUALIZATION_PATCH_MODE,
+        "source_run_id": pipeline.VISUALIZATION_PATCH_SOURCE_RUN_ID,
+        "source_queue_job_id": pipeline.VISUALIZATION_PATCH_SOURCE_QUEUE_JOB_ID,
+        "source_success_marker_file_sha256": (
+            pipeline.VISUALIZATION_PATCH_SUCCESS_FILE_SHA256
+        ),
+        "source_artifact_checksum_manifest_sha256": (
+            pipeline.VISUALIZATION_PATCH_CHECKSUM_MANIFEST_SHA256
+        ),
+        "expected_renderer_source_sha256": (
+            pipeline.VISUALIZATION_PATCH_RENDERER_SHA256
+        ),
+        "minimum_figure_headroom_gib": 2.0,
+    }
+
+    request = _validated_visualization_patch_request(
+        {"visualization_patch": patch}
+    )
+
+    assert request is not None
+    assert request.source_run_id == pipeline.VISUALIZATION_PATCH_SOURCE_RUN_ID
+    with pytest.raises(pipeline.AttentionNichePipelineError, match="drifted"):
+        _validated_visualization_patch_request(
+            {
+                "visualization_patch": {
+                    **patch,
+                    "source_queue_job_id": "q_wrong",
+                }
+            }
+        )
+    with pytest.raises(pipeline.AttentionNichePipelineError, match="unrecognized"):
+        _validated_visualization_patch_request(
+            {"visualization_patch": {**patch, "copy_source_bundle": True}}
+        )
+
+
+def test_visualization_patch_dispatches_before_checkpoint_or_input_loading(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from spatial_benchmark.configuration import compose_config
+    from spatial_benchmark.paths import ProjectPaths
+
+    project_root = Path(__file__).resolve().parents[3]
+    config = compose_config(
+        project_root
+        / "experiments/campaigns/"
+        "cmp_20260825_six_core_attention_routing_niches/"
+        "figure_patch_config.yaml",
+        config_root=project_root / "configs",
+    )
+    config_path = tmp_path / "config.resolved.yaml"
+    config_path.write_text(yaml.safe_dump(config), encoding="utf-8")
+    paths = ProjectPaths.from_environment({"BAGM_ROOT": str(tmp_path)})
+    run_id = "r_20260825T120000Z_0da9fbf2_s000_f00_a01_patch001"
+    run_scratch = paths.scratch_root / "active_runs" / run_id
+    run_scratch.mkdir(parents=True)
+    expected = {"status": "success", "execution_mode": "visualization_patch"}
+
+    def patch_runner(**kwargs: object) -> dict[str, str]:
+        assert kwargs["run_id"] == run_id
+        return expected
+
+    monkeypatch.setattr(
+        pipeline,
+        "_run_attention_niche_visualization_patch",
+        patch_runner,
+    )
+    monkeypatch.setattr(
+        pipeline,
+        "discover_completed_checkpoint_members",
+        lambda *args, **kwargs: pytest.fail(
+            "visualization patch reached checkpoint discovery"
+        ),
+    )
+
+    observed = pipeline.run_attention_niche_pipeline(
+        config_path=config_path,
+        run_id=run_id,
+        run_scratch=run_scratch,
+        database=tmp_path / "unused.sqlite3",
+        paths=paths,
+    )
+
+    assert observed == expected
+
+
 def test_recovery_launcher_is_excluded_but_metadata_is_scientific() -> None:
     source = {
         "metadata": {"analysis_mask_views": 10},
@@ -133,6 +225,19 @@ def test_recovery_launcher_is_excluded_but_metadata_is_scientific() -> None:
     assert _scientific_config_without_recovery_runtime(
         source
     ) != _scientific_config_without_recovery_runtime(metadata_drift)
+
+    visualization_patch = {
+        **source,
+        "launcher": {
+            "requested_gpu": "0,2,3",
+            "visualization_patch": {
+                "mode": pipeline.VISUALIZATION_PATCH_MODE
+            },
+        },
+    }
+    assert _scientific_config_without_recovery_runtime(
+        source
+    ) == _scientific_config_without_recovery_runtime(visualization_patch)
 
 
 def test_recovery_materialization_uses_distinct_inode_ficlone(

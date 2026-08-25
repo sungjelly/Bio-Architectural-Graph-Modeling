@@ -402,6 +402,50 @@ The combined figure now reserves a larger top margin, and an automated
 renderer-bounds test requires the complete suptitle to remain above every
 top-row panel title before another registered continuation is launched.
 
+## Full result and locked visualization correction
+
+The corrected registered continuation
+`r_20260825T110043Z_0da9fbf2_s000_f00_a01_5e477ab9` completed with primary QC
+metric `1.0` (29/29 explicit checks). The repository verifier subsequently
+reported no bundle or registry issues. It preserved scientific ID
+`sci_0da9fbf2afff6323`, used all four completed model seeds and ten common mask
+views, and materialized the seven canonical scientific products byte-identical
+to the verified extraction source. No checkpoint or prepared input changed.
+
+| Core | Cells | Directed edges | Reciprocal pairs | Retained mutual edges | Preliminary communities | Final connected niches | Micro-niches | Median confidence | Cells below 0.60 |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 8,924 | 2,028,020 | 1,014,010 | 46,046 | 41 | 1,882 | 1,802 | 0.8861 | 460 |
+| 9 | 17,223 | 3,990,012 | 1,995,006 | 87,541 | 65 | 2,520 | 2,346 | 0.8941 | 591 |
+| 13 | 5,345 | 1,225,416 | 612,708 | 28,656 | 37 | 113 | 78 | 0.7119 | 1,028 |
+| 15 | 38,145 | 8,607,462 | 4,303,731 | 225,194 | 69 | 2,977 | 2,758 | 0.7384 | 8,982 |
+| 21 | 4,897 | 1,137,942 | 568,971 | 27,048 | 41 | 865 | 806 | 0.8297 | 319 |
+| 23 | 43,462 | 9,972,300 | 4,986,150 | 267,158 | 101 | 1,706 | 1,544 | 0.7783 | 6,899 |
+| **Total** | **117,996** | **26,961,152** | **13,480,576** | **681,643** | **354** | **10,063** | **9,334** | — | **18,279** |
+
+The computational partition exists and passes its locked correctness gates, but
+the broad coherent-region hypothesis is weakened: spatial connectedness split
+354 preliminary communities into 10,063 final components, and 9,334 (92.76%)
+are micro-niches. This fragmentation is retained as negative evidence and no
+threshold was relaxed. Overall cell confidence has mean `0.7451` and median
+`0.7964`; low-confidence cells remain visible. Core 13 used the prespecified
+Delaunay fallback capped at `75 um` because segmentation-polygon adjacency had
+only `0.828` non-isolated coverage, below the locked `0.90` audit threshold;
+the other five cores used polygon adjacency.
+
+Human visual QC found the primary combined map and all six individual maps
+clean, but found one presentation-only defect in the optional network overlay:
+its second suptitle line overlapped the Core 9 panel header. The completed run is
+immutable and is not edited. A separate registered visualization-only patch is
+therefore permitted to read the exact completed source run above, verify its
+registry and checksum identities, hash only the assignment, retained-mutual,
+and region files it actually reads, and render the eleven figures with the
+corrected layout. It must not instantiate a model, extract attention, recompute
+scientific tables, copy the 21 GB directed table, or mutate the source. Its
+acceptance gate is source identity plus complete figure output, title/panel
+bounding-box separation, exact core order/counts/scale bars, and an independent
+archive verification. This is a versioned figure correction, not a new
+scientific result.
+
 ## Verification and full commands
 
 Focused tests:

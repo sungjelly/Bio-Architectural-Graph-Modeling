@@ -879,6 +879,24 @@ def _add_confidence_note(
     )
 
 
+def _require_suptitle_clearance(figure: Any) -> None:
+    """Fail closed when a two-line heading overlaps a top-row panel title."""
+
+    if figure._suptitle is None:
+        raise AttentionNicheVisualizationError("Figure suptitle is absent.")
+    figure.canvas.draw()
+    renderer = figure.canvas.get_renderer()
+    suptitle_bounds = figure._suptitle.get_window_extent(renderer=renderer)
+    if any(
+        suptitle_bounds.y0
+        <= axis.title.get_window_extent(renderer=renderer).y1
+        for axis in figure.axes[:3]
+    ):
+        raise AttentionNicheVisualizationError(
+            "Figure suptitle overlaps a top-row panel title."
+        )
+
+
 def create_combined_attention_niche_figure(
     assignments: pd.DataFrame,
     regions: Mapping[str, Any],
@@ -933,6 +951,7 @@ def create_combined_attention_niche_figure(
             figure,
             low_confidence_threshold=low_confidence_threshold,
         )
+        _require_suptitle_clearance(figure)
     return figure
 
 
@@ -1381,7 +1400,7 @@ def create_mutual_attention_network_overlay_figure(
         max_edges_total=max_edges_total,
     )
     with _visualization_context():
-        figure, axes = plt.subplots(2, 3, figsize=(18.0, 11.5))
+        figure, axes = plt.subplots(2, 3, figsize=(18.0, 12.0))
         for axis, core_number in zip(axes.ravel(), CORE_ORDER, strict=True):
             cells = prepared.loc[prepared["core_number"] == core_number]
             edges = selected_edges.loc[selected_edges["core_number"] == core_number]
@@ -1399,15 +1418,16 @@ def create_mutual_attention_network_overlay_figure(
             title += f"\n{map_label}"
         figure.suptitle(
             title,
-            fontsize=16.0,
+            fontsize=15.0,
             fontweight="bold",
-            y=0.985,
+            y=0.992,
+            linespacing=1.12,
         )
         figure.subplots_adjust(
             left=0.035,
             right=0.985,
             bottom=0.035,
-            top=0.935,
+            top=0.89,
             wspace=0.12,
             hspace=0.17,
         )
@@ -1415,6 +1435,7 @@ def create_mutual_attention_network_overlay_figure(
             figure,
             low_confidence_threshold=low_confidence_threshold,
         )
+        _require_suptitle_clearance(figure)
     return figure
 
 

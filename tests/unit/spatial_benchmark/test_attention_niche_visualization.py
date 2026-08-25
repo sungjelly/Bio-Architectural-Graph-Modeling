@@ -308,6 +308,28 @@ def test_strongest_overlay_edges_obey_both_caps_and_retained_flag() -> None:
     pd.testing.assert_frame_equal(selected, repeated)
 
 
+def test_overlay_figure_title_stays_above_top_row_panel_titles() -> None:
+    assignments, regions, edges = _synthetic_inputs()
+    figure = visualization.create_mutual_attention_network_overlay_figure(
+        assignments,
+        regions,
+        edges,
+        max_edges_per_core=2,
+        max_edges_total=7,
+    )
+    try:
+        figure.canvas.draw()
+        renderer = figure.canvas.get_renderer()
+        suptitle_bounds = figure._suptitle.get_window_extent(renderer=renderer)
+        assert all(
+            suptitle_bounds.y0
+            > axis.title.get_window_extent(renderer=renderer).y1
+            for axis in figure.axes[:3]
+        )
+    finally:
+        plt.close(figure)
+
+
 def test_render_all_outputs_atomically_with_qc_receipt(tmp_path: Path) -> None:
     assignments, regions, edges = _synthetic_inputs()
     artifacts = visualization.render_attention_niche_visualizations(

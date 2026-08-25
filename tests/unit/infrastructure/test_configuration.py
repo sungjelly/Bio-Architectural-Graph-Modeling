@@ -219,6 +219,37 @@ def test_attention_niche_render_recovery_preserves_scientific_variant() -> None:
     assert scientific_id(recovery) == "sci_0da9fbf2afff6323"
 
 
+def test_attention_niche_figure_patch_preserves_scientific_variant() -> None:
+    project_root = Path(__file__).resolve().parents[3]
+    campaign_root = (
+        project_root
+        / "experiments/campaigns/"
+        "cmp_20260825_six_core_attention_routing_niches"
+    )
+    normal = compose_config(
+        campaign_root / "analysis_config.yaml",
+        config_root=project_root / "configs",
+    )
+    patch = compose_config(
+        campaign_root / "figure_patch_config.yaml",
+        config_root=project_root / "configs",
+    )
+
+    validate_experiment_config(patch)
+    assert patch["metadata"] == normal["metadata"]
+    assert patch["launcher"]["requested_gpu"] == "0,2,3"
+    assert patch["launcher"]["visualization_patch"]["mode"] == (
+        "verified_completed_run_visualization_only_v1"
+    )
+    assert len(
+        patch["launcher"]["visualization_patch"][
+            "expected_renderer_source_sha256"
+        ]
+    ) == 64
+    assert scientific_id(patch) == scientific_id(normal)
+    assert scientific_id(patch) == "sci_0da9fbf2afff6323"
+
+
 def test_qkv_gat_matched_self_requires_canonical_family_and_no_edges(
     tmp_path: Path,
 ) -> None:

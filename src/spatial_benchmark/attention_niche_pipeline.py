@@ -66,6 +66,7 @@ EXPECTED_ALIASES = tuple(CANCER_ALIASES)
 EXPECTED_CORE_NUMBERS = tuple(CORE_NUMBERS)
 EXPECTED_TOTAL_CELLS = 117_996
 EXPECTED_TOTAL_DIRECTED_EDGES = 26_961_152
+EXPECTED_TOTAL_RETAINED_MUTUAL_EDGES = 681_643
 EXPECTED_GENE_SCHEMA_SHA256 = (
     "046eb86c7ea8f1fe6977598a0190132340400fc61802fcde63ab5ac0e9502b03"
 )
@@ -159,6 +160,30 @@ RENDER_RECOVERY_CANONICAL_OUTPUTS = (
     "attention_niche_colors.json",
     "attention_niche_regions.geojson",
     "attention_niche_parameter_sensitivity.csv",
+)
+VISUALIZATION_PATCH_SOURCE_RUN_ID = (
+    "r_20260825T110043Z_0da9fbf2_s000_f00_a01_5e477ab9"
+)
+VISUALIZATION_PATCH_SOURCE_QUEUE_JOB_ID = "q_b549591aeff683de350f"
+VISUALIZATION_PATCH_SUCCESS_FILE_SHA256 = (
+    "accccfaf2bbde183423fb4580e690e9cbaee48e47b0c98603781ee25eef2fcd4"
+)
+VISUALIZATION_PATCH_CHECKSUM_MANIFEST_SHA256 = (
+    "30f73654a09a135a59b6a3f85b5c8322f2d44f63af8d403a0a0595187951f0fe"
+)
+VISUALIZATION_PATCH_RENDERER_SHA256 = (
+    "d08e6ee4d18c0aab89a437baf3e1c1b40eb29bd986697179b8a6c93bd2d18d02"
+)
+VISUALIZATION_PATCH_MODE = "verified_completed_run_visualization_only_v1"
+VISUALIZATION_PATCH_RENDER_INPUTS = (
+    "cell_attention_niche_assignments.parquet",
+    "attention_niche_regions.geojson",
+    "mutual_attention_edges.parquet",
+)
+VISUALIZATION_PATCH_OUTPUTS = tuple(
+    relative
+    for relative in REQUIRED_ANALYSIS_OUTPUTS
+    if Path(relative).suffix.lower() in {".png", ".pdf", ".svg"}
 )
 _LINUX_FICLONE = 0x40049409
 
@@ -388,6 +413,94 @@ class VerifiedRenderRecoverySource:
     queue_job: Mapping[str, Any] = field(repr=False)
     source_git_identity: Mapping[str, Any] = field(repr=False)
     source_git_provenance: Mapping[str, Mapping[str, Any]] = field(repr=False)
+
+
+@dataclass(frozen=True, slots=True)
+class VisualizationPatchRequest:
+    """Exact identity of the approved visualization-only patch source."""
+
+    mode: str
+    source_run_id: str
+    source_queue_job_id: str
+    source_success_marker_file_sha256: str
+    source_artifact_checksum_manifest_sha256: str
+    expected_renderer_source_sha256: str
+    minimum_figure_headroom_gib: float
+
+
+@dataclass(frozen=True, slots=True)
+class VerifiedVisualizationPatchSource:
+    """Receipt-bound completed source used without copying scientific tables."""
+
+    root: Path
+    resolved_config: Mapping[str, Any] = field(repr=False)
+    success_marker: Mapping[str, Any] = field(repr=False)
+    artifact_files: Mapping[str, Mapping[str, Any]] = field(repr=False)
+    registry_artifacts: Mapping[str, Mapping[str, Any]] = field(repr=False)
+    rendering_input_receipts: Mapping[str, Mapping[str, Any]] = field(repr=False)
+    queue_job: Mapping[str, Any] = field(repr=False)
+    source_success_marker_file_sha256: str
+    source_artifact_checksum_manifest_sha256: str
+    source_config_sha256: str
+    scientific_config_sha256: str
+
+
+def _validated_visualization_patch_request(
+    launcher: Mapping[str, Any],
+) -> VisualizationPatchRequest | None:
+    """Return the one locked visualization patch, or ``None``."""
+
+    if "visualization_patch" not in launcher:
+        return None
+    raw = launcher.get("visualization_patch")
+    if not isinstance(raw, Mapping):
+        raise AttentionNichePipelineError(
+            "launcher.visualization_patch must be an explicit mapping."
+        )
+    expected = {
+        "mode": VISUALIZATION_PATCH_MODE,
+        "source_run_id": VISUALIZATION_PATCH_SOURCE_RUN_ID,
+        "source_queue_job_id": VISUALIZATION_PATCH_SOURCE_QUEUE_JOB_ID,
+        "source_success_marker_file_sha256": (
+            VISUALIZATION_PATCH_SUCCESS_FILE_SHA256
+        ),
+        "source_artifact_checksum_manifest_sha256": (
+            VISUALIZATION_PATCH_CHECKSUM_MANIFEST_SHA256
+        ),
+        "expected_renderer_source_sha256": VISUALIZATION_PATCH_RENDERER_SHA256,
+        "minimum_figure_headroom_gib": 2.0,
+    }
+    if set(raw) != set(expected):
+        raise AttentionNichePipelineError(
+            "launcher.visualization_patch has missing or unrecognized fields."
+        )
+    drift = {
+        key: {"expected": expected_value, "observed": raw.get(key)}
+        for key, expected_value in expected.items()
+        if raw.get(key) != expected_value
+    }
+    if drift:
+        raise AttentionNichePipelineError(
+            "Visualization patch identity drifted: "
+            + ", ".join(sorted(drift))
+        )
+    return VisualizationPatchRequest(
+        mode=str(expected["mode"]),
+        source_run_id=str(expected["source_run_id"]),
+        source_queue_job_id=str(expected["source_queue_job_id"]),
+        source_success_marker_file_sha256=str(
+            expected["source_success_marker_file_sha256"]
+        ),
+        source_artifact_checksum_manifest_sha256=str(
+            expected["source_artifact_checksum_manifest_sha256"]
+        ),
+        expected_renderer_source_sha256=str(
+            expected["expected_renderer_source_sha256"]
+        ),
+        minimum_figure_headroom_gib=float(
+            expected["minimum_figure_headroom_gib"]
+        ),
+    )
 
 
 def _validated_render_recovery_request(
@@ -776,6 +889,294 @@ def _verify_render_recovery_source_identity(
         },
         source_git_identity=source_git_identity,
         source_git_provenance=provenance_receipts,
+    )
+
+
+def _verify_visualization_patch_source_identity(
+    *,
+    request: VisualizationPatchRequest,
+    database: str | Path,
+    paths: ProjectPaths,
+    current_config: Mapping[str, Any],
+) -> VerifiedVisualizationPatchSource:
+    """Verify the completed source without hashing unused scientific tables."""
+
+    database_path = Path(database).resolve(strict=True)
+    connection = sqlite3.connect(f"file:{database_path}?mode=ro", uri=True)
+    connection.row_factory = sqlite3.Row
+    try:
+        run_row = connection.execute(
+            """
+            SELECT run_id, campaign_id, scientific_id, status, artifact_path,
+                   failure_category, config_json
+            FROM runs
+            WHERE run_id = ?
+            """,
+            (request.source_run_id,),
+        ).fetchone()
+        queue_rows = connection.execute(
+            """
+            SELECT job_id, run_id, campaign_id, status, failure_category,
+                   requested_gpu, canonical_config_json
+            FROM queue_jobs
+            WHERE run_id = ?
+            ORDER BY job_id
+            """,
+            (request.source_run_id,),
+        ).fetchall()
+        artifact_rows = connection.execute(
+            """
+            SELECT path, sha256, size_bytes, status
+            FROM artifacts
+            WHERE run_id = ?
+            ORDER BY path
+            """,
+            (request.source_run_id,),
+        ).fetchall()
+    finally:
+        connection.close()
+    if run_row is None or (
+        str(run_row["run_id"]) != request.source_run_id
+        or str(run_row["campaign_id"]) != ANALYSIS_CAMPAIGN_ID
+        or str(run_row["scientific_id"]) != RENDER_RECOVERY_SCIENTIFIC_ID
+        or str(run_row["status"]) != "completed"
+        or run_row["failure_category"] is not None
+    ):
+        raise AttentionNichePipelineError(
+            "Visualization-patch source is not the exact completed registry run."
+        )
+    if len(queue_rows) != 1:
+        raise AttentionNichePipelineError(
+            "Visualization-patch source must have exactly one completed queue job."
+        )
+    queue_row = queue_rows[0]
+    if (
+        str(queue_row["job_id"]) != request.source_queue_job_id
+        or str(queue_row["run_id"]) != request.source_run_id
+        or str(queue_row["campaign_id"]) != ANALYSIS_CAMPAIGN_ID
+        or str(queue_row["status"]) != "completed"
+        or queue_row["failure_category"] is not None
+        or str(queue_row["requested_gpu"]) != "0,2,3"
+    ):
+        raise AttentionNichePipelineError(
+            "Visualization-patch queue identity/status drifted."
+        )
+
+    raw_root = Path(str(run_row["artifact_path"]))
+    if raw_root.is_symlink():
+        raise AttentionNichePipelineError(
+            "Visualization-patch source archive cannot be a symlink."
+        )
+    try:
+        source_root = raw_root.resolve(strict=True)
+        canonical_root = RunArchive.artifact_path_for(
+            request.source_run_id, paths
+        ).resolve(strict=True)
+    except OSError as exc:
+        raise AttentionNichePipelineError(
+            "Visualization-patch source archive is unavailable."
+        ) from exc
+    if source_root != canonical_root:
+        raise AttentionNichePipelineError(
+            "Visualization-patch source is not its canonical archive path."
+        )
+
+    success_path = source_root / "_SUCCESS"
+    checksum_manifest_path = source_root / "provenance/artifact_checksums.json"
+    if (
+        success_path.is_symlink()
+        or checksum_manifest_path.is_symlink()
+        or not success_path.is_file()
+        or not checksum_manifest_path.is_file()
+        or sha256_file(success_path)
+        != request.source_success_marker_file_sha256
+        or sha256_file(checksum_manifest_path)
+        != request.source_artifact_checksum_manifest_sha256
+    ):
+        raise AttentionNichePipelineError(
+            "Visualization-patch source completion/checksum identity drifted."
+        )
+    success_marker = _load_json(success_path, "visualization-patch success marker")
+    if (
+        success_marker.get("run_id") != request.source_run_id
+        or success_marker.get("status") != "success"
+        or len(str(success_marker.get("content_sha256", ""))) != 64
+    ):
+        raise AttentionNichePipelineError(
+            "Visualization-patch source success marker is malformed."
+        )
+    checksum_manifest = _load_json(
+        checksum_manifest_path,
+        "visualization-patch source checksum manifest",
+    )
+    raw_artifact_files = checksum_manifest.get("files")
+    if (
+        checksum_manifest.get("version") != 1
+        or not isinstance(raw_artifact_files, Mapping)
+    ):
+        raise AttentionNichePipelineError(
+            "Visualization-patch source checksum manifest lacks files."
+        )
+    artifact_files: dict[str, Mapping[str, Any]] = {}
+    for relative, raw_receipt in raw_artifact_files.items():
+        if (
+            not isinstance(relative, str)
+            or Path(relative).is_absolute()
+            or ".." in Path(relative).parts
+            or not isinstance(raw_receipt, Mapping)
+        ):
+            raise AttentionNichePipelineError(
+                "Visualization-patch source has a malformed artifact receipt."
+            )
+        receipt = dict(raw_receipt)
+        path = source_root / relative
+        try:
+            path.relative_to(source_root)
+            file_stat = path.lstat()
+        except (OSError, ValueError) as exc:
+            raise AttentionNichePipelineError(
+                f"Visualization-patch source artifact is unavailable: {relative}."
+            ) from exc
+        if (
+            path.is_symlink()
+            or not stat.S_ISREG(file_stat.st_mode)
+            or receipt.get("type") != "file"
+            or int(receipt.get("size", -1)) != int(file_stat.st_size)
+            or len(str(receipt.get("sha256", ""))) != 64
+        ):
+            raise AttentionNichePipelineError(
+                f"Visualization-patch source artifact receipt drifted: {relative}."
+            )
+        artifact_files[relative] = receipt
+
+    registry_artifacts: dict[str, Mapping[str, Any]] = {}
+    for artifact_row in artifact_rows:
+        artifact_path = Path(str(artifact_row["path"]))
+        if not artifact_path.is_absolute():
+            artifact_path = paths.project_root / artifact_path
+        try:
+            relative = artifact_path.resolve(strict=False).relative_to(
+                source_root
+            ).as_posix()
+        except ValueError as exc:
+            raise AttentionNichePipelineError(
+                "A visualization-patch registry artifact is outside the source."
+            ) from exc
+        if relative in registry_artifacts:
+            raise AttentionNichePipelineError(
+                f"Duplicate visualization-patch artifact receipt: {relative}."
+            )
+        registry_artifacts[relative] = {
+            "sha256": str(artifact_row["sha256"] or ""),
+            "size_bytes": int(artifact_row["size_bytes"] or 0),
+            "status": str(artifact_row["status"]),
+        }
+    checksum_manifest_relative = "provenance/artifact_checksums.json"
+    expected_registry_paths = set(artifact_files) | {checksum_manifest_relative}
+    if (
+        set(registry_artifacts) != expected_registry_paths
+        or any(
+            receipt.get("status") != "present"
+            for receipt in registry_artifacts.values()
+        )
+    ):
+        raise AttentionNichePipelineError(
+            "All and only source artifact receipts must be registered present."
+        )
+    for relative, expected in artifact_files.items():
+        registered = registry_artifacts[relative]
+        if (
+            registered.get("sha256") != expected.get("sha256")
+            or int(registered.get("size_bytes", -1))
+            != int(expected.get("size", -2))
+        ):
+            raise AttentionNichePipelineError(
+                f"Source registry/checksum receipt mismatch: {relative}."
+            )
+    manifest_registry_receipt = registry_artifacts[checksum_manifest_relative]
+    if (
+        manifest_registry_receipt.get("sha256")
+        != request.source_artifact_checksum_manifest_sha256
+        or int(manifest_registry_receipt.get("size_bytes", -1))
+        != checksum_manifest_path.stat().st_size
+    ):
+        raise AttentionNichePipelineError(
+            "Source checksum-manifest registry receipt drifted."
+        )
+
+    config_path = source_root / "config.resolved.yaml"
+    config_receipt = artifact_files.get("config.resolved.yaml")
+    if not isinstance(config_receipt, Mapping):
+        raise AttentionNichePipelineError(
+            "Source resolved configuration is not checksum-bound."
+        )
+    source_config_sha256 = sha256_file(config_path)
+    try:
+        source_config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+        registry_config = json.loads(str(run_row["config_json"]))
+        queue_config = json.loads(str(queue_row["canonical_config_json"]))
+    except (OSError, ValueError, yaml.YAMLError) as exc:
+        raise AttentionNichePipelineError(
+            "Visualization-patch source configuration is malformed."
+        ) from exc
+    if (
+        not isinstance(source_config, Mapping)
+        or not isinstance(registry_config, Mapping)
+        or not isinstance(queue_config, Mapping)
+        or source_config != registry_config
+        or source_config != queue_config
+        or source_config_sha256 != config_receipt.get("sha256")
+        or _scientific_config_without_recovery_runtime(source_config)
+        != _scientific_config_without_recovery_runtime(current_config)
+        or scientific_id(source_config) != RENDER_RECOVERY_SCIENTIFIC_ID
+        or scientific_id(current_config) != RENDER_RECOVERY_SCIENTIFIC_ID
+    ):
+        raise AttentionNichePipelineError(
+            "Visualization-patch source/current configuration identity drifted."
+        )
+
+    rendering_input_receipts: dict[str, Mapping[str, Any]] = {}
+    for relative in VISUALIZATION_PATCH_RENDER_INPUTS:
+        expected = artifact_files.get(relative)
+        if not isinstance(expected, Mapping):
+            raise AttentionNichePipelineError(
+                f"Rendering input lacks a source receipt: {relative}."
+            )
+        observed_sha256 = sha256_file(source_root / relative)
+        if observed_sha256 != expected.get("sha256"):
+            raise AttentionNichePipelineError(
+                f"Rendering input checksum drifted: {relative}."
+            )
+        rendering_input_receipts[relative] = {
+            "sha256": observed_sha256,
+            "size_bytes": int(expected["size"]),
+            "source_relative_path": relative,
+        }
+
+    return VerifiedVisualizationPatchSource(
+        root=source_root,
+        resolved_config=dict(source_config),
+        success_marker=dict(success_marker),
+        artifact_files=artifact_files,
+        registry_artifacts=registry_artifacts,
+        rendering_input_receipts=rendering_input_receipts,
+        queue_job={
+            "job_id": str(queue_row["job_id"]),
+            "run_id": str(queue_row["run_id"]),
+            "status": str(queue_row["status"]),
+            "failure_category": queue_row["failure_category"],
+            "requested_gpu": str(queue_row["requested_gpu"]),
+        },
+        source_success_marker_file_sha256=(
+            request.source_success_marker_file_sha256
+        ),
+        source_artifact_checksum_manifest_sha256=(
+            request.source_artifact_checksum_manifest_sha256
+        ),
+        source_config_sha256=source_config_sha256,
+        scientific_config_sha256=_canonical_sha256(
+            _scientific_config_without_recovery_runtime(source_config)
+        ),
     )
 
 
@@ -3854,6 +4255,145 @@ class RecoveryCanonicalData:
     audit: Mapping[str, Any] = field(repr=False)
 
 
+@dataclass(frozen=True, slots=True)
+class VisualizationPatchInputs:
+    """Three checksum-verified source products consumed by the renderer."""
+
+    assignments: pd.DataFrame = field(repr=False)
+    regions: Mapping[str, Any] = field(repr=False)
+    retained_mutual_edges: pd.DataFrame = field(repr=False)
+    audit: Mapping[str, Any] = field(repr=False)
+
+
+def _load_visualization_patch_inputs(
+    source: VerifiedVisualizationPatchSource,
+) -> VisualizationPatchInputs:
+    """Load only assignments, regions, and projected retained mutual edges."""
+
+    assignments = pd.read_parquet(
+        source.root / "cell_attention_niche_assignments.parquet"
+    )
+    required_assignment_columns = {
+        "core_number",
+        "core_alias",
+        "cell_index",
+        "x_um",
+        "y_um",
+        "coordinate_unit",
+        "final_niche_id",
+        "niche_color",
+        "mutual_routing_hub_score",
+        "assignment_confidence",
+        "map_label",
+    }
+    if not required_assignment_columns.issubset(assignments.columns):
+        raise AttentionNichePipelineError(
+            "Visualization-patch assignments lack required renderer columns."
+        )
+    if (
+        len(assignments) != EXPECTED_TOTAL_CELLS
+        or tuple(sorted(assignments["core_number"].unique().tolist()))
+        != tuple(sorted(EXPECTED_CORE_NUMBERS))
+        or assignments.duplicated(["core_number", "cell_index"]).any()
+        or not assignments["coordinate_unit"].eq("micrometres").all()
+        or set(assignments["map_label"].dropna().astype(str))
+        != {"4-model ensemble-consensus map"}
+        or not np.isfinite(
+            assignments[
+                [
+                    "x_um",
+                    "y_um",
+                    "mutual_routing_hub_score",
+                    "assignment_confidence",
+                ]
+            ].to_numpy(dtype=np.float64)
+        ).all()
+    ):
+        raise AttentionNichePipelineError(
+            "Visualization-patch assignment coverage/QC failed."
+        )
+    for alias, core_number in zip(
+        EXPECTED_ALIASES, EXPECTED_CORE_NUMBERS, strict=True
+    ):
+        selected = assignments.loc[assignments["core_number"] == core_number]
+        if (
+            selected.empty
+            or not selected["core_alias"].eq(alias).all()
+            or not np.array_equal(
+                np.sort(selected["cell_index"].to_numpy(dtype=np.int64)),
+                np.arange(len(selected), dtype=np.int64),
+            )
+        ):
+            raise AttentionNichePipelineError(
+                f"Visualization-patch assignment identity failed for Core {core_number}."
+            )
+
+    regions = _load_json(
+        source.root / "attention_niche_regions.geojson",
+        "visualization-patch source regions",
+    )
+    features = regions.get("features")
+    geometry_validation = regions.get("geometry_validation")
+    if (
+        regions.get("type") != "FeatureCollection"
+        or regions.get("coordinate_unit") != "um"
+        or not isinstance(features, list)
+        or len(features) != int(assignments["final_niche_id"].nunique())
+        or not isinstance(geometry_validation, Mapping)
+        or int(geometry_validation.get("invalid_after_repair", -1)) != 0
+    ):
+        raise AttentionNichePipelineError(
+            "Visualization-patch source region geometry audit failed."
+        )
+
+    retained_columns = [
+        "core_number",
+        "cell_i_index",
+        "cell_j_index",
+        "M_ij",
+        "support_P_ij",
+        "retained_primary",
+    ]
+    retained_table = pq.read_table(
+        source.root / "mutual_attention_edges.parquet",
+        columns=retained_columns,
+        filters=[("retained_primary", "=", True)],
+    )
+    retained = retained_table.to_pandas()
+    if (
+        len(retained) != EXPECTED_TOTAL_RETAINED_MUTUAL_EDGES
+        or tuple(sorted(retained["core_number"].unique().tolist()))
+        != tuple(sorted(EXPECTED_CORE_NUMBERS))
+        or not retained["retained_primary"].all()
+        or not (retained["cell_i_index"] < retained["cell_j_index"]).all()
+        or not (retained["M_ij"] > 1.0).all()
+        or not (retained["support_P_ij"] >= 0.60).all()
+        or retained.duplicated(
+            ["core_number", "cell_i_index", "cell_j_index"]
+        ).any()
+    ):
+        raise AttentionNichePipelineError(
+            "Visualization-patch retained mutual-edge projection failed."
+        )
+
+    return VisualizationPatchInputs(
+        assignments=assignments,
+        regions=regions,
+        retained_mutual_edges=retained,
+        audit={
+            "source_files_read_for_rendering": list(
+                VISUALIZATION_PATCH_RENDER_INPUTS
+            ),
+            "assignment_rows": int(len(assignments)),
+            "region_feature_count": int(len(features)),
+            "retained_mutual_edge_rows": int(len(retained)),
+            "mutual_columns_projected": retained_columns,
+            "mutual_full_table_loaded": False,
+            "directed_attention_table_opened_or_hashed": False,
+        },
+    )
+
+
 def _parquet_core_position_audit(
     path: Path,
     *,
@@ -4406,6 +4946,479 @@ def _validated_recovery_canonical_data(
             "edge_alignment": edge_alignment,
         },
     )
+
+
+def _run_attention_niche_visualization_patch(
+    *,
+    request: VisualizationPatchRequest,
+    config: Mapping[str, Any],
+    run_id: str,
+    output_root: Path,
+    database: str | Path,
+    selected_paths: ProjectPaths,
+) -> dict[str, Any]:
+    """Re-render eleven figures from one immutable completed source bundle."""
+
+    import subprocess
+
+    from .attention_niche_visualization import (
+        render_attention_niche_visualizations,
+    )
+
+    if run_id == request.source_run_id:
+        raise AttentionNichePipelineError(
+            "Visualization patch requires a new worker-owned run ID."
+        )
+    if any((output_root / relative).exists() for relative in VISUALIZATION_PATCH_OUTPUTS):
+        raise AttentionNichePipelineError(
+            "Visualization patch refuses to overwrite an existing figure."
+        )
+    renderer_path = Path(__file__).with_name("attention_niche_visualization.py")
+    renderer_sha256 = sha256_file(renderer_path)
+    if renderer_sha256 != request.expected_renderer_source_sha256:
+        raise AttentionNichePipelineError(
+            "Visualization-patch renderer source identity drifted."
+        )
+    source = _verify_visualization_patch_source_identity(
+        request=request,
+        database=database,
+        paths=selected_paths,
+        current_config=config,
+    )
+    disk_snapshots = [
+        _filesystem_snapshot(output_root, stage="visualization_patch_preflight")
+    ]
+    if disk_snapshots[-1]["free_gib"] < request.minimum_figure_headroom_gib:
+        raise AttentionNichePipelineError(
+            "Insufficient free disk headroom for the visualization patch."
+        )
+    inputs = _load_visualization_patch_inputs(source)
+    visualization = render_attention_niche_visualizations(
+        inputs.assignments,
+        inputs.regions,
+        inputs.retained_mutual_edges,
+        output_root,
+        dpi=300,
+        individual_dpi=450,
+        include_overlay=True,
+        max_edges_per_core=1_000,
+        max_edges_total=4_000,
+        invert_y=True,
+        low_confidence_threshold=0.60,
+        allow_cross_core_color_reuse=False,
+    )
+    visualization_receipt = json.loads(
+        _canonical_json(dict(visualization.receipt))
+    )
+    disk_snapshots.append(
+        _filesystem_snapshot(
+            output_root, stage="visualization_patch_figures_complete"
+        )
+    )
+    visualization_receipt["output_paths"] = [
+        _relative_to_root(Path(path), output_root)
+        for path in visualization_receipt.get("output_paths", [])
+    ]
+    observed_outputs = set(visualization_receipt["output_paths"])
+    omitted_rings = visualization_receipt.get(
+        "zero_area_interior_rings_omitted_from_render"
+    )
+    if (
+        visualization_receipt.get("schema")
+        != "attention_niche_visualization_receipt_v2"
+        or visualization_receipt.get("status") != "complete"
+        or visualization_receipt.get("core_order")
+        != list(EXPECTED_CORE_NUMBERS)
+        or int(visualization_receipt.get("total_cell_count", -1))
+        != EXPECTED_TOTAL_CELLS
+        or observed_outputs != set(VISUALIZATION_PATCH_OUTPUTS)
+        or visualization_receipt.get("region_holes_preserved")
+        != "all_nondegenerate"
+        or visualization_receipt.get("nondegenerate_region_holes_preserved")
+        is not True
+        or not isinstance(omitted_rings, Mapping)
+        or int(omitted_rings.get("count", -1)) != 3
+        or omitted_rings.get("identifier_list_sha256")
+        != RENDER_RECOVERY_OMITTED_RING_SHA256
+        or omitted_rings.get("scientific_geometry_modified") is not False
+    ):
+        raise AttentionNichePipelineError(
+            "Visualization-patch renderer receipt failed its locked contract."
+        )
+
+    post_render_hashes: dict[str, str] = {}
+    for relative, pre_receipt in source.rendering_input_receipts.items():
+        observed = sha256_file(source.root / relative)
+        post_render_hashes[relative] = observed
+        if observed != pre_receipt.get("sha256"):
+            raise AttentionNichePipelineError(
+                f"Visualization source changed during rendering: {relative}."
+            )
+    if (
+        sha256_file(source.root / "_SUCCESS")
+        != source.source_success_marker_file_sha256
+        or sha256_file(source.root / "provenance/artifact_checksums.json")
+        != source.source_artifact_checksum_manifest_sha256
+        or sha256_file(source.root / "config.resolved.yaml")
+        != source.source_config_sha256
+    ):
+        raise AttentionNichePipelineError(
+            "Visualization-patch source lifecycle/config identity changed."
+        )
+    for relative, receipt in source.artifact_files.items():
+        path = source.root / relative
+        if (
+            path.is_symlink()
+            or not path.is_file()
+            or int(path.stat().st_size) != int(receipt["size"])
+        ):
+            raise AttentionNichePipelineError(
+                f"Visualization-patch source artifact changed: {relative}."
+            )
+
+    copied_scientific_outputs = [
+        relative
+        for relative in RENDER_RECOVERY_CANONICAL_OUTPUTS
+        if (output_root / relative).exists()
+    ]
+    if copied_scientific_outputs:
+        raise AttentionNichePipelineError(
+            "Visualization patch must not copy canonical scientific products."
+        )
+    figure_checksums = _artifact_checksums(
+        output_root, VISUALIZATION_PATCH_OUTPUTS
+    )
+    try:
+        recovery_git_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=selected_paths.project_root,
+            text=True,
+            capture_output=True,
+            check=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise AttentionNichePipelineError(
+            "Cannot record visualization-patch Git commit."
+        ) from exc
+
+    qc_checks = {
+        "exact_completed_source_run_and_queue": bool(
+            source.queue_job.get("job_id") == request.source_queue_job_id
+            and source.queue_job.get("status") == "completed"
+        ),
+        "exact_success_marker_file_sha256": bool(
+            source.source_success_marker_file_sha256
+            == request.source_success_marker_file_sha256
+        ),
+        "exact_checksum_manifest_sha256": bool(
+            source.source_artifact_checksum_manifest_sha256
+            == request.source_artifact_checksum_manifest_sha256
+        ),
+        "all_source_artifact_receipts_registered_present": bool(
+            source.registry_artifacts
+            and all(
+                receipt.get("status") == "present"
+                for receipt in source.registry_artifacts.values()
+            )
+        ),
+        "scientific_configuration_unchanged": bool(
+            scientific_id(config) == RENDER_RECOVERY_SCIENTIFIC_ID
+        ),
+        "exact_title_layout_renderer_source": bool(
+            renderer_sha256 == request.expected_renderer_source_sha256
+        ),
+        "only_three_scientific_inputs_read_for_rendering": bool(
+            set(inputs.audit["source_files_read_for_rendering"])
+            == set(VISUALIZATION_PATCH_RENDER_INPUTS)
+            and inputs.audit["directed_attention_table_opened_or_hashed"]
+            is False
+        ),
+        "source_render_inputs_unchanged": bool(
+            all(
+                post_render_hashes[relative] == receipt.get("sha256")
+                for relative, receipt in source.rendering_input_receipts.items()
+            )
+        ),
+        "exact_core_order_and_all_cells_rendered": bool(
+            visualization_receipt.get("core_order")
+            == list(EXPECTED_CORE_NUMBERS)
+            and visualization_receipt.get("all_eligible_cells_rendered_without_sampling")
+            is True
+            and visualization_receipt.get("total_cell_count")
+            == EXPECTED_TOTAL_CELLS
+        ),
+        "all_eleven_figures_freshly_rendered": bool(
+            observed_outputs == set(VISUALIZATION_PATCH_OUTPUTS)
+            and len(figure_checksums) == 11
+        ),
+        "overlay_is_locked_display_subset": bool(
+            visualization_receipt.get("overlay", {}).get("included") is True
+            and visualization_receipt.get("overlay", {}).get("max_edges_per_core")
+            == 1_000
+            and visualization_receipt.get("overlay", {}).get("max_edges_total")
+            == 4_000
+        ),
+        "coordinates_aspect_labels_and_scale_bars_preserved": bool(
+            visualization_receipt.get("coordinate_unit") == "micrometres"
+            and visualization_receipt.get("equal_physical_aspect") is True
+            and visualization_receipt.get("panel_titles_include_core_number")
+            is True
+            and visualization_receipt.get("in_panel_core_labels")
+            == [f"Core {core}" for core in EXPECTED_CORE_NUMBERS]
+            and all(
+                value.get("present") and value.get("unit") == "µm"
+                for value in visualization_receipt.get("scale_bars", {}).values()
+            )
+        ),
+        "all_nondegenerate_region_holes_preserved": bool(
+            visualization_receipt.get("nondegenerate_region_holes_preserved")
+            is True
+            and omitted_rings.get("scientific_geometry_modified") is False
+        ),
+        "scientific_tables_and_values_not_recomputed": True,
+        "source_bundle_not_copied_or_mutated": not copied_scientific_outputs,
+    }
+    if not all(qc_checks.values()):
+        failed = sorted(name for name, passed in qc_checks.items() if not passed)
+        raise AttentionNichePipelineError(
+            "Visualization-only patch QC failed: " + ", ".join(failed)
+        )
+    qc_fraction = float(sum(qc_checks.values()) / len(qc_checks))
+    if qc_fraction != 1.0:
+        raise AttentionNichePipelineError(
+            "Visualization-only patch requires QC fraction 1.0."
+        )
+
+    requested_gpu = str(config["launcher"].get("requested_gpu", "0,2,3"))
+    reproduction_command = (
+        "PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark "
+        "--database state/tracking/bagm.sqlite3 enqueue-experiment "
+        f"--campaign-id {ANALYSIS_CAMPAIGN_ID} "
+        "--config experiments/campaigns/"
+        "cmp_20260825_six_core_attention_routing_niches/"
+        "figure_patch_config.yaml --priority 0 --max-attempts 1 "
+        f"--gpu {requested_gpu} && "
+        "PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark "
+        "--database state/tracking/bagm.sqlite3 worker "
+        "--worker-id attention-niche-visualization-patch "
+        f"--gpu {requested_gpu} --min-free-gb 4 --once"
+    )
+    readme = f"""# Six-core attention-routing niche figure patch
+
+Status: complete visualization-only patch of immutable completed source run
+`{request.source_run_id}`. This run corrects the mutual-attention overlay title
+layout and freshly renders all eleven static figure files with the current
+renderer.
+
+Scientific tables recomputed: `false`. Scientific values recomputed: `false`.
+Visualizations recomputed: `true`. The source assignments, model-defined region
+geometry, and retained mutual-edge projection were read and checksum-verified;
+they were not copied into this bundle. The 21 GB directed-attention table was
+not opened, hashed, copied, or modified. No model, checkpoint, prepared input,
+or mask was loaded. Existing niche assignments, confidence values, and retained
+mutual scores were loaded only as renderer inputs; none of those scientific
+values was recomputed.
+
+Source completion marker SHA-256:
+`{request.source_success_marker_file_sha256}`. Source checksum-manifest SHA-256:
+`{request.source_artifact_checksum_manifest_sha256}`. Queue job:
+`{request.source_queue_job_id}`. Scientific ID remains
+`{RENDER_RECOVERY_SCIENTIFIC_ID}`.
+
+Reproduce as a new registered analysis-only visualization patch:
+
+```bash
+{reproduction_command}
+```
+
+> {LIMITATION}
+"""
+    _write_text_atomic(output_root / "README.md", readme)
+    qc_lines = [
+        "# Attention-routing niche visualization-patch QC",
+        "",
+        f"Overall QC pass fraction: `{qc_fraction:.6f}` "
+        f"({sum(qc_checks.values())}/{len(qc_checks)}).",
+        "",
+        f"- Source run: `{request.source_run_id}` (completed).",
+        f"- Source queue job: `{request.source_queue_job_id}` (completed).",
+        "- Scientific tables recomputed: `false`.",
+        "- Scientific values recomputed: `false`.",
+        "- Visualizations recomputed: `true`.",
+        "- Source bundle copied or mutated: `false`.",
+        "- Directed-attention table opened or content-hashed: `false`.",
+        f"- Fresh figure count: `{len(figure_checksums)}`.",
+        f"- Renderer source SHA-256: `{renderer_sha256}`.",
+        "",
+        "## Explicit checks",
+        "",
+        *[
+            f"- {'PASS' if passed else 'FAIL'} — `{name}`"
+            for name, passed in qc_checks.items()
+        ],
+        "",
+        "## Interpretation limit",
+        "",
+        f"> {LIMITATION}",
+        "",
+    ]
+    _write_text_atomic(
+        output_root / "analysis_qc_report.md", "\n".join(qc_lines)
+    )
+
+    patch_outputs = (
+        *VISUALIZATION_PATCH_OUTPUTS,
+        "analysis_qc_report.md",
+        "README.md",
+    )
+    output_artifacts = _artifact_checksums(output_root, patch_outputs)
+    canonical_source_references = {
+        relative: {
+            "source_run_id": request.source_run_id,
+            "source_relative_path": relative,
+            **dict(source.artifact_files[relative]),
+            "copied_to_patch_bundle": False,
+        }
+        for relative in RENDER_RECOVERY_CANONICAL_OUTPUTS
+    }
+    source_content_hashed = [
+        "_SUCCESS",
+        "provenance/artifact_checksums.json",
+        "config.resolved.yaml",
+        *VISUALIZATION_PATCH_RENDER_INPUTS,
+    ]
+    source_not_content_hashed = sorted(
+        set(source.artifact_files)
+        - {"config.resolved.yaml", *VISUALIZATION_PATCH_RENDER_INPUTS}
+    )
+    analysis_manifest = {
+        "schema": "six_core_attention_niche_visualization_patch_v1",
+        "status": "complete",
+        "run_id": run_id,
+        "campaign_id": ANALYSIS_CAMPAIGN_ID,
+        "artifact_contract": "analysis_only",
+        "execution_mode": VISUALIZATION_PATCH_MODE,
+        "patch_reason": "correct_mutual_attention_overlay_title_layout",
+        "created_at": _utc_now(),
+        "scientific_id": RENDER_RECOVERY_SCIENTIFIC_ID,
+        "terminology": "model-defined attention-routing niches",
+        "limitation": LIMITATION,
+        "core_order": list(EXPECTED_CORE_NUMBERS),
+        "scientific_tables_recomputed": False,
+        "scientific_values_recomputed": False,
+        "visualizations_recomputed": True,
+        "attention_extraction_performed": False,
+        "model_or_checkpoint_loading_performed": False,
+        "source_bundle_copied": False,
+        "source_bundle_mutated": False,
+        "source_lineage": {
+            "source_run_id": request.source_run_id,
+            "source_queue_job": dict(source.queue_job),
+            "source_bundle": _relative_to_root(
+                source.root, selected_paths.project_root
+            ),
+            "success_marker": dict(source.success_marker),
+            "success_marker_file_sha256": (
+                source.source_success_marker_file_sha256
+            ),
+            "artifact_checksum_manifest_sha256": (
+                source.source_artifact_checksum_manifest_sha256
+            ),
+            "source_config_sha256": source.source_config_sha256,
+            "scientific_config_sha256": source.scientific_config_sha256,
+            "all_registry_artifact_receipts": dict(
+                source.registry_artifacts
+            ),
+            "canonical_scientific_artifact_references": (
+                canonical_source_references
+            ),
+            "source_files_content_hashed": source_content_hashed,
+            "source_files_not_content_hashed": source_not_content_hashed,
+            "directed_attention_table_opened_or_hashed": False,
+            "rendering_input_pre_receipts": dict(
+                source.rendering_input_receipts
+            ),
+            "rendering_input_post_sha256": post_render_hashes,
+        },
+        "rendering_input_audit": dict(inputs.audit),
+        "renderer_provenance": {
+            "git_commit": recovery_git_commit,
+            "renderer_source_relative_path": _relative_to_root(
+                renderer_path, selected_paths.project_root
+            ),
+            "renderer_source_sha256": renderer_sha256,
+            "expected_renderer_source_sha256": (
+                request.expected_renderer_source_sha256
+            ),
+            "title_layout_patch": (
+                "mutual-attention overlay suptitle clearance above top-row "
+                "panel titles"
+            ),
+        },
+        "resource_execution": {
+            "gpu_attention_extraction_performed": False,
+            "peak_vram_gib": 0.0,
+            "minimum_figure_headroom_gib": (
+                request.minimum_figure_headroom_gib
+            ),
+            "filesystem_snapshots": disk_snapshots,
+        },
+        "visualization_receipt": visualization_receipt,
+        "qc_checks": qc_checks,
+        "qc_pass_fraction": qc_fraction,
+        "artifacts": output_artifacts,
+        "reproduction_command": reproduction_command,
+    }
+    _write_yaml_atomic(output_root / "analysis_manifest.yaml", analysis_manifest)
+    _artifact_checksums(
+        output_root,
+        (*patch_outputs, "analysis_manifest.yaml"),
+    )
+
+    final_metrics = {
+        "analysis/attention_niche_qc_pass_fraction": qc_fraction,
+        "analysis/visualization_patch_qc_pass_fraction": qc_fraction,
+        "analysis/visualization_patch_figure_count": 11.0,
+        "analysis/total_cells": float(EXPECTED_TOTAL_CELLS),
+        "analysis/retained_mutual_edges": float(
+            EXPECTED_TOTAL_RETAINED_MUTUAL_EDGES
+        ),
+    }
+    _write_json_atomic(output_root / "metrics" / "final.json", final_metrics)
+    _write_text_atomic(
+        output_root / "metrics" / "history.jsonl",
+        _canonical_json(
+            {"step": 0, **final_metrics, "analysis_complete": True}
+        )
+        + "\n",
+    )
+    _write_text_atomic(
+        output_root / "metrics" / "events.jsonl",
+        "".join(
+            _canonical_json({"name": name, "value": value, "step": 0}) + "\n"
+            for name, value in final_metrics.items()
+        ),
+    )
+    summary = {
+        "run_id": run_id,
+        "status": "success",
+        "analysis_kind": "six_core_attention_niche_visualization_patch",
+        "execution_mode": VISUALIZATION_PATCH_MODE,
+        "source_run_id": request.source_run_id,
+        "scientific_id": RENDER_RECOVERY_SCIENTIFIC_ID,
+        "scientific_tables_recomputed": False,
+        "scientific_values_recomputed": False,
+        "visualizations_recomputed": True,
+        "source_bundle_copied_or_mutated": False,
+        "primary_metric_name": "analysis/attention_niche_qc_pass_fraction",
+        "primary_metric_value": qc_fraction,
+        "metrics": final_metrics,
+        "figure_count": 11,
+        "core_numbers": list(EXPECTED_CORE_NUMBERS),
+        "limitation": LIMITATION,
+    }
+    _write_json_atomic(output_root / "summary.json", summary)
+    return summary
 
 
 def _run_attention_niche_render_recovery(
@@ -5135,6 +6148,20 @@ def run_attention_niche_pipeline(
     if not isinstance(launcher, Mapping):
         raise AttentionNichePipelineError("Resolved launcher configuration is absent.")
     recovery_request = _validated_render_recovery_request(launcher)
+    visualization_patch_request = _validated_visualization_patch_request(launcher)
+    if recovery_request is not None and visualization_patch_request is not None:
+        raise AttentionNichePipelineError(
+            "Render recovery and visualization patch modes are mutually exclusive."
+        )
+    if visualization_patch_request is not None:
+        return _run_attention_niche_visualization_patch(
+            request=visualization_patch_request,
+            config=config,
+            run_id=run_id,
+            output_root=output_root,
+            database=database,
+            selected_paths=selected_paths,
+        )
 
     dataset = config.get("dataset", {})
     if not isinstance(dataset, Mapping):
