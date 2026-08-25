@@ -36,7 +36,9 @@ from spatial_benchmark.fingerprints import sha256_file  # noqa: E402
 from spatial_benchmark.masking import derive_mask_seed  # noqa: E402
 from spatial_benchmark.pooled_relative_qkv_training import (  # noqa: E402
     MASK_BASE_SEED,
+    PooledRelativeQKVCoreStepRecord,
     PooledRelativeQKVEpochBoundaryResume,
+    PooledRelativeQKVGlobalEpochRecord,
     PooledRelativeQKVTrainingConfig,
     epoch_boundary_resume_from_checkpoint,
     fit_pooled_relative_qkv_segment,
@@ -77,6 +79,7 @@ HARDWARE_PREFLIGHT_RECEIPT = Path(
 )
 HARDWARE_PREFLIGHT_SCHEMA = "cancer_6core_relative_qkv_hardware_preflight_v1"
 PREFLIGHT_BASE_ATTEMPT = 1
+TRAINING_MONITOR_SCHEMA = "relative_qkv_training_epoch_monitor_v1"
 
 
 class RelativeQKVRunnerError(RuntimeError):
@@ -503,6 +506,230 @@ def _seed_plateau_decision(
     }
 
 
+def _training_monitor_contract(config: Mapping[str, Any]) -> dict[str, Any]:
+    """Describe the live metric semantics before the first optimizer step."""
+
+    trainer = _section(config, "trainer")
+    return {
+        "schema": TRAINING_MONITOR_SCHEMA,
+        "event_file": "metrics/events.jsonl",
+        "stdout_prefix": "[bagm-training]",
+        "event_frequency": "after_each_complete_global_epoch",
+        "global_epoch_definition": {
+            "complete_core_optimizer_steps": len(CANCER_ALIASES),
+            "mask_views_per_core_step": int(trainer["mask_views_per_core_step"]),
+            "optimizer_steps_per_core_step": int(
+                trainer["optimizer_steps_per_core_step"]
+            ),
+        },
+        "training_objective": {
+            "name": "equal_core_mean_masked_huber",
+            "event_name": "fit/training/equal_core_mean_masked_huber",
+            "direction": "minimize",
+            "elementwise_loss": "Huber",
+            "huber_delta": float(trainer["huber_delta"]),
+            "target_scale": "shared_standardized_log1p_raw_counts",
+            "mask_scope": "masked_entries_only",
+            "view_aggregation": "arithmetic_mean_across_10_mask_views",
+            "core_aggregation": "equal_core_arithmetic_mean_across_6_cores",
+        },
+        "live_diagnostics": [
+            "per_core_masked_huber",
+            "mean_gradient_norm_before_clip",
+            "max_gradient_norm_before_clip",
+            "learning_rate",
+            "epoch_duration_seconds",
+            "process_mean_epoch_duration_seconds",
+            "rolling_5_epoch_duration_seconds",
+            "eta_to_current_audit_seconds",
+            "masked_entries_per_second",
+            "process_peak_cuda_memory_allocated_gib",
+        ],
+        "gradient_clip_norm": float(trainer["gradient_clip_norm"]),
+        "duration_scope": (
+            "six complete-core steps and 60 mask views; excludes monitoring "
+            "writes and periodic checkpoint serialization"
+        ),
+        "timing_in_checkpoint_checksum": False,
+        "validation_or_test_partition_present": False,
+        "post_training_fixed_mask_metrics": [
+            "masked_huber",
+            "masked_mae",
+            "masked_mse",
+            "masked_r2",
+        ],
+    }
+
+
+def _training_progress_record(
+    *,
+    run_id: str,
+    model_seed: int,
+    epoch: PooledRelativeQKVGlobalEpochRecord,
+    core_steps: Sequence[PooledRelativeQKVCoreStepRecord],
+    epoch_duration_seconds: float,
+    observed_epoch_durations: Sequence[float],
+    segment_end_global_epoch: int,
+    learning_rate: float,
+    gradient_clip_norm: float,
+    process_peak_cuda_memory_allocated_gib: float,
+) -> dict[str, Any]:
+    """Build one finite, aligned, human- and machine-readable epoch record."""
+
+    records = tuple(core_steps)
+    if len(records) != len(CANCER_ALIASES) or tuple(
+        record.alias for record in records
+    ) != tuple(epoch.ordered_aliases):
+        raise RelativeQKVRunnerError(
+            "Training monitor requires six core steps aligned to epoch order."
+        )
+    durations = np.asarray(observed_epoch_durations, dtype=np.float64)
+    if durations.size == 0 or not np.isfinite(durations).all() or bool(
+        (durations < 0).any()
+    ):
+        raise RelativeQKVRunnerError(
+            "Training monitor durations must be finite and non-negative."
+        )
+    duration = float(epoch_duration_seconds)
+    if not math.isfinite(duration) or duration < 0 or duration != float(
+        durations[-1]
+    ):
+        raise RelativeQKVRunnerError(
+            "Current epoch duration must be the last observed duration."
+        )
+    losses = np.asarray(
+        [record.masked_huber_loss for record in records], dtype=np.float64
+    )
+    gradients = np.asarray(
+        [record.gradient_norm for record in records], dtype=np.float64
+    )
+    scalar_values = np.concatenate(
+        [
+            losses,
+            gradients,
+            np.asarray(
+                [
+                    epoch.equal_core_mean_masked_huber,
+                    learning_rate,
+                    gradient_clip_norm,
+                    process_peak_cuda_memory_allocated_gib,
+                ],
+                dtype=np.float64,
+            ),
+        ]
+    )
+    if not np.isfinite(scalar_values).all() or bool((gradients < 0).any()):
+        raise RelativeQKVRunnerError(
+            "Training monitor loss, gradient, and resource values must be finite."
+        )
+    if learning_rate <= 0 or gradient_clip_norm <= 0:
+        raise RelativeQKVRunnerError(
+            "Training monitor optimizer settings must be positive."
+        )
+    if process_peak_cuda_memory_allocated_gib < 0:
+        raise RelativeQKVRunnerError(
+            "Training monitor CUDA allocation cannot be negative."
+        )
+    completed = int(epoch.completed_global_epochs)
+    segment_end = int(segment_end_global_epoch)
+    if segment_end < completed:
+        raise RelativeQKVRunnerError(
+            "Training monitor segment end precedes the completed epoch."
+        )
+    rolling_duration = float(durations[-5:].mean())
+    remaining_epochs = segment_end - completed
+    masked_entries = sum(
+        int(record.n_masked_entries_across_views) for record in records
+    )
+    nodes_across_views = sum(
+        int(record.n_nodes) * int(record.n_mask_views) for record in records
+    )
+    edges_across_views = sum(
+        int(record.n_edges) * int(record.n_mask_views) for record in records
+    )
+    masked_entries_per_second = (
+        0.0 if duration == 0.0 else masked_entries / duration
+    )
+    return {
+        "schema": TRAINING_MONITOR_SCHEMA,
+        "run_id": str(run_id),
+        "model_seed": int(model_seed),
+        "global_epoch": int(epoch.global_epoch),
+        "completed_global_epochs": completed,
+        "current_segment_end_global_epoch": segment_end,
+        "remaining_epochs_to_current_audit": remaining_epochs,
+        "optimizer_steps_this_epoch": int(epoch.optimizer_steps_this_epoch),
+        "cumulative_optimizer_steps": int(epoch.cumulative_optimizer_steps),
+        "loss_name": "equal_core_mean_masked_huber",
+        "equal_core_mean_masked_huber": float(
+            epoch.equal_core_mean_masked_huber
+        ),
+        "per_core_masked_huber": {
+            record.alias: float(record.masked_huber_loss) for record in records
+        },
+        "mean_gradient_norm_before_clip": float(gradients.mean()),
+        "max_gradient_norm_before_clip": float(gradients.max()),
+        "gradient_clip_norm": float(gradient_clip_norm),
+        "learning_rate": float(learning_rate),
+        "epoch_duration_seconds": duration,
+        "process_mean_epoch_duration_seconds": float(durations.mean()),
+        "rolling_5_epoch_duration_seconds": rolling_duration,
+        "eta_to_current_audit_seconds": float(
+            remaining_epochs * rolling_duration
+        ),
+        "mask_views_completed": sum(
+            int(record.n_mask_views) for record in records
+        ),
+        "masked_entries_across_views": masked_entries,
+        "nodes_across_views": nodes_across_views,
+        "edges_across_views": edges_across_views,
+        "masked_entries_per_second": float(masked_entries_per_second),
+        "process_peak_cuda_memory_allocated_gib": float(
+            process_peak_cuda_memory_allocated_gib
+        ),
+        "validation_or_test_metric": False,
+        "checkpoint_selection_metric": False,
+    }
+
+
+def _emit_training_progress(
+    archive: RunArchive,
+    progress: Mapping[str, Any],
+) -> None:
+    """Durably append and immediately print one completed-epoch observation."""
+
+    archive.append_metric_event(
+        {
+            "name": "fit/training/equal_core_mean_masked_huber",
+            "value": progress["equal_core_mean_masked_huber"],
+            "step": progress["completed_global_epochs"],
+            "phase": "training_epoch",
+            "monitor": dict(progress),
+        }
+    )
+    stdout_progress = {
+        key: progress[key]
+        for key in (
+            "run_id",
+            "model_seed",
+            "completed_global_epochs",
+            "current_segment_end_global_epoch",
+            "equal_core_mean_masked_huber",
+            "epoch_duration_seconds",
+            "rolling_5_epoch_duration_seconds",
+            "eta_to_current_audit_seconds",
+            "mean_gradient_norm_before_clip",
+            "max_gradient_norm_before_clip",
+            "process_peak_cuda_memory_allocated_gib",
+        )
+    }
+    print(
+        "[bagm-training] "
+        + json.dumps(stdout_progress, sort_keys=True, allow_nan=False),
+        flush=True,
+    )
+
+
 def _held_in_diagnostics(
     model: torch.nn.Module,
     batches: Sequence[Any],
@@ -642,6 +869,10 @@ def run_seed_to_plateau(
     if tuple(batch.alias for batch in batches) != CANCER_ALIASES:
         raise RelativeQKVRunnerError("Loaded batches do not match the six-core order.")
     archive.write_json("diagnostics/hardware_preflight.json", preflight)
+    archive.write_json(
+        "metrics/training_monitor_contract.json",
+        _training_monitor_contract(config),
+    )
     model = _seeded_model_from_config(
         config,
         num_genes=batches[0].n_genes,
@@ -708,6 +939,34 @@ def run_seed_to_plateau(
         if start_epoch < minimum_epochs
         else start_epoch + continuation_epochs
     )
+    trainer = _section(config, "trainer")
+    observed_epoch_durations: list[float] = []
+
+    def emit_epoch_progress(
+        epoch: PooledRelativeQKVGlobalEpochRecord,
+        core_steps: tuple[PooledRelativeQKVCoreStepRecord, ...],
+        epoch_duration_seconds: float,
+    ) -> None:
+        observed_epoch_durations.append(float(epoch_duration_seconds))
+        peak_cuda_gib = (
+            torch.cuda.max_memory_allocated() / float(1024**3)
+            if torch.cuda.is_available()
+            else 0.0
+        )
+        progress = _training_progress_record(
+            run_id=archive.run_id,
+            model_seed=model_seed,
+            epoch=epoch,
+            core_steps=core_steps,
+            epoch_duration_seconds=epoch_duration_seconds,
+            observed_epoch_durations=observed_epoch_durations,
+            segment_end_global_epoch=end_epoch,
+            learning_rate=float(trainer["learning_rate"]),
+            gradient_clip_norm=float(trainer["gradient_clip_norm"]),
+            process_peak_cuda_memory_allocated_gib=peak_cuda_gib,
+        )
+        _emit_training_progress(archive, progress)
+
     plateau: dict[str, Any] | None = None
     final_result = None
     while True:
@@ -721,6 +980,7 @@ def run_seed_to_plateau(
             ),
             resume=resume,
             checkpoint_callback=save_periodic,
+            epoch_callback=emit_epoch_progress,
         )
         losses = [
             record.equal_core_mean_masked_huber

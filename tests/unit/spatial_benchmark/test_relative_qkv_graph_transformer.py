@@ -144,6 +144,67 @@ def test_full_and_exact_receiver_chunked_outputs_gradients_and_explanations_matc
         )
 
 
+@pytest.mark.parametrize(
+    "model_class",
+    [
+        RelativeGeometryQKVGraphTransformer,
+        ReceiverChunkedRelativeGeometryQKVGraphTransformer,
+    ],
+)
+def test_intermediate_embeddings_are_exact_aligned_and_prediction_invariant(
+    model_class: type[RelativeGeometryQKVGraphTransformer],
+) -> None:
+    expression, mask, metadata, edge_index, geometry = _inputs()
+    model = _model(model_class).eval()
+    target_nodes = torch.tensor([4, 1, 3])
+    decoder_inputs: list[torch.Tensor] = []
+
+    def capture_decoder_input(
+        _module: torch.nn.Module,
+        arguments: tuple[torch.Tensor, ...],
+    ) -> None:
+        decoder_inputs.append(arguments[0].detach().clone())
+
+    handle = model.decoder.register_forward_pre_hook(capture_decoder_input)
+    try:
+        with torch.inference_mode():
+            standard = model(
+                expression,
+                mask,
+                edge_index=edge_index,
+                relative_geometry=geometry,
+                node_covariates=metadata,
+                target_nodes=target_nodes,
+            )
+            extended = model(
+                expression,
+                mask,
+                edge_index=edge_index,
+                relative_geometry=geometry,
+                node_covariates=metadata,
+                target_nodes=target_nodes,
+                return_intermediate_embeddings=True,
+            )
+            expected_h0 = model.encoder(
+                expression,
+                mask,
+                metadata,
+            ).index_select(0, target_nodes)
+    finally:
+        handle.remove()
+
+    assert standard.node_encoder_embedding is None
+    assert standard.final_graph_embedding is None
+    assert extended.node_encoder_embedding is not None
+    assert extended.final_graph_embedding is not None
+    assert torch.equal(extended.prediction, standard.prediction)
+    assert torch.equal(extended.node_encoder_embedding, expected_h0)
+    assert torch.equal(extended.final_graph_embedding, extended.node_embedding)
+    assert torch.equal(extended.final_graph_embedding, decoder_inputs[-1])
+    assert extended.node_encoder_embedding.shape == (3, model.hidden_dim)
+    assert extended.final_graph_embedding.shape == (3, model.hidden_dim)
+
+
 def test_attention_normalizes_per_receiver_and_explanation_filter_stays_aligned() -> None:
     expression, mask, metadata, edge_index, geometry = _inputs()
     model = _model(ReceiverChunkedRelativeGeometryQKVGraphTransformer)

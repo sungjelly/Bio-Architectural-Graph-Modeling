@@ -386,12 +386,27 @@ def _canonical_prediction_split(root: Path) -> str:
     split = str(
         evaluation.get("canonical_prediction_split", "validation")
     ).strip().lower()
+    artifact_contract = str(evaluation.get("artifact_contract", "predictive"))
+    protocol = str(evaluation.get("protocol", "")).strip().lower()
+    if artifact_contract == "analysis_only":
+        if (
+            protocol != "posthoc_attention_routing_niche_v1"
+            or split != "analysis"
+        ):
+            raise RunValidationError(
+                "analysis_only bundles require the registered post-hoc "
+                "attention-routing protocol and canonical role 'analysis'."
+            )
+        return "analysis"
+    if artifact_contract != "predictive":
+        raise RunValidationError(
+            "evaluation.artifact_contract must be predictive or analysis_only."
+        )
     if split not in {"validation", "fit"}:
         raise RunValidationError(
             "evaluation.canonical_prediction_split must be validation or fit."
         )
     if split == "fit":
-        protocol = str(evaluation.get("protocol", "")).strip().lower()
         held_in_protocols = {
             "held_in_full_core_fixed_budget",
             "held_in_pooled_10core_fixed_budget",
@@ -448,18 +463,20 @@ def _validate_success_contract_at(
             "Successful run is missing required files: " + ", ".join(missing)
         )
     prediction_split = _canonical_prediction_split(root)
-    checkpoint = _canonical_checkpoint_path(root)
-    if not checkpoint.is_file():
-        checkpoint_relative = checkpoint.relative_to(root).as_posix()
-        if checkpoint_relative not in tombstoned_paths:
+    analysis_only = prediction_split == "analysis"
+    if not analysis_only:
+        checkpoint = _canonical_checkpoint_path(root)
+        if not checkpoint.is_file():
+            checkpoint_relative = checkpoint.relative_to(root).as_posix()
+            if checkpoint_relative not in tombstoned_paths:
+                raise RunValidationError(
+                    "Successful run is missing its declared primary checkpoint: "
+                    f"{checkpoint_relative}"
+                )
+        elif checkpoint.stat().st_size == 0:
             raise RunValidationError(
-                "Successful run is missing its declared primary checkpoint: "
-                f"{checkpoint_relative}"
+                "Successful run declared primary checkpoint is empty."
             )
-    elif checkpoint.stat().st_size == 0:
-        raise RunValidationError(
-            "Successful run declared primary checkpoint is empty."
-        )
     history_paths = [
         root / f"metrics/history{suffix}"
         for suffix in (".parquet", ".jsonl", ".csv")
@@ -469,26 +486,27 @@ def _validate_success_contract_at(
         raise RunValidationError(
             "Successful run is missing non-empty metrics/history in a supported format."
         )
-    prediction_paths = [
-        root / f"predictions/{prediction_split}{suffix}"
-        for suffix in (".parquet", ".jsonl", ".csv")
-        if (root / f"predictions/{prediction_split}{suffix}").is_file()
-    ]
-    tombstoned_prediction = any(
-        f"predictions/{prediction_split}{suffix}" in tombstoned_paths
-        for suffix in (".parquet", ".jsonl", ".csv")
-    )
-    if (
-        not tombstoned_prediction
-        and (
-            not prediction_paths
-            or all(path.stat().st_size == 0 for path in prediction_paths)
+    if not analysis_only:
+        prediction_paths = [
+            root / f"predictions/{prediction_split}{suffix}"
+            for suffix in (".parquet", ".jsonl", ".csv")
+            if (root / f"predictions/{prediction_split}{suffix}").is_file()
+        ]
+        tombstoned_prediction = any(
+            f"predictions/{prediction_split}{suffix}" in tombstoned_paths
+            for suffix in (".parquet", ".jsonl", ".csv")
         )
-    ):
-        raise RunValidationError(
-            "Successful run requires non-empty canonical "
-            f"{prediction_split} predictions."
-        )
+        if (
+            not tombstoned_prediction
+            and (
+                not prediction_paths
+                or all(path.stat().st_size == 0 for path in prediction_paths)
+            )
+        ):
+            raise RunValidationError(
+                "Successful run requires non-empty canonical "
+                f"{prediction_split} predictions."
+            )
     resolved_config: Mapping[str, Any] | None = None
     for relative in ("manifest.yaml", "config.resolved.yaml"):
         value = yaml.safe_load((root / relative).read_text(encoding="utf-8"))
@@ -504,6 +522,39 @@ def _validate_success_contract_at(
         else:
             resolved_config = value
     assert resolved_config is not None
+    if analysis_only:
+        evaluation = resolved_config.get("evaluation", {})
+        metadata = resolved_config.get("metadata", {})
+        if (
+            not isinstance(evaluation, Mapping)
+            or evaluation.get("artifact_contract") != "analysis_only"
+            or not isinstance(metadata, Mapping)
+        ):
+            raise RunValidationError(
+                "Analysis-only bundle configuration is malformed."
+            )
+        required_analysis = metadata.get("required_analysis_outputs")
+        if (
+            not isinstance(required_analysis, Sequence)
+            or isinstance(required_analysis, (str, bytes))
+            or not required_analysis
+        ):
+            raise RunValidationError(
+                "Analysis-only bundle must declare required_analysis_outputs."
+            )
+        seen_analysis: set[str] = set()
+        for raw_relative in required_analysis:
+            relative = _safe_relative(str(raw_relative)).as_posix()
+            if relative in seen_analysis:
+                raise RunValidationError(
+                    "required_analysis_outputs contains duplicates."
+                )
+            seen_analysis.add(relative)
+            output = root / relative
+            if not output.is_file() or output.stat().st_size == 0:
+                raise RunValidationError(
+                    f"Analysis-only bundle is missing required output: {relative}"
+                )
     summary = json.loads((root / "summary.json").read_text(encoding="utf-8"))
     if not isinstance(summary, Mapping) or summary.get("run_id") != run_id:
         raise RunValidationError(
@@ -578,21 +629,21 @@ def _validate_success_contract_at(
             "summary primary_metric_name does not match the resolved "
             "evaluation.primary_metric."
         )
-    if prediction_split == "fit" and configured_primary is not None:
+    if prediction_split in {"fit", "analysis"} and configured_primary is not None:
         if declared_primary != configured_primary:
             raise RunValidationError(
-                "Held-in summary must declare the configured primary metric."
+                "Summary must declare the configured primary metric."
             )
         if configured_primary not in final_metrics:
             raise RunValidationError(
-                "Held-in final metrics omit the configured primary metric."
+                "Final metrics omit the configured primary metric."
             )
         declared_value = summary.get("primary_metric_value")
         if isinstance(declared_value, bool) or not isinstance(
             declared_value, (int, float)
         ):
             raise RunValidationError(
-                "Held-in summary must declare a numeric primary_metric_value."
+                "Summary must declare a numeric primary_metric_value."
             )
         _finite_numeric(declared_value, "summary primary metric")
         if not math.isclose(
@@ -602,7 +653,7 @@ def _validate_success_contract_at(
             abs_tol=0.0,
         ):
             raise RunValidationError(
-                "Held-in summary primary metric value does not match "
+                "Summary primary metric value does not match "
                 "metrics/final.json."
             )
     event_lines = [

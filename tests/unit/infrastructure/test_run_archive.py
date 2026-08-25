@@ -188,6 +188,56 @@ def test_successful_run_is_published_after_required_contract(
         archive.write_text("logs/late.log", "not allowed")
 
 
+def test_analysis_only_run_requires_outputs_but_not_checkpoint_or_predictions(
+    tmp_path: Path,
+) -> None:
+    run_id = _run_id("analysis1")
+    metric = "analysis/attention_niche_qc_pass_fraction"
+    archive = RunArchive.create(
+        run_id,
+        paths=_paths(tmp_path),
+        manifest={"lifecycle_status_source": "registry_and_completion_marker"},
+        resolved_config={
+            "evaluation": {
+                "protocol": "posthoc_attention_routing_niche_v1",
+                "artifact_contract": "analysis_only",
+                "canonical_prediction_split": "analysis",
+                "primary_metric": metric,
+            },
+            "metadata": {
+                "required_analysis_outputs": ["analysis_manifest.yaml"]
+            },
+        },
+    )
+    archive.write_summary(
+        {
+            "status": "success",
+            "primary_metric_name": metric,
+            "primary_metric_value": 1.0,
+        }
+    )
+    archive.append_metric_event({"name": metric, "value": 1.0, "step": 0})
+    archive.write_json("metrics/final.json", {metric: 1.0})
+    archive.write_table("metrics/history", [{"step": 0, metric: 1.0}])
+    archive.prepare_log_files()
+    archive.write_json("provenance/git.json", {"commit": "test", "dirty": False})
+    archive.write_text("provenance/uncommitted_changes.patch", "")
+    archive.write_text("provenance/environment.txt", "python=test\n")
+    archive.write_json("provenance/hardware.json", {"device": "cpu"})
+    archive.write_json("provenance/data_fingerprints.json", {"dataset": "test"})
+    archive.write_json("provenance/split_fingerprint.json", {"split": "test"})
+    archive.write_text("provenance/command.txt", '{"argv":["test"],"cwd":"/tmp"}\n')
+
+    with pytest.raises(RunValidationError, match="missing required output"):
+        archive._validate_success_ready()
+    archive.write_text("analysis_manifest.yaml", "status: complete\n")
+    final_path = archive.finalize_success()
+
+    assert not (final_path / "checkpoints/best.ckpt").exists()
+    assert not any((final_path / "predictions").glob("analysis.*"))
+    assert verify_run_bundle(final_path)["status"] == "success"
+
+
 def test_retention_tombstones_must_match_immutable_bundle_manifest(
     tmp_path: Path,
 ) -> None:

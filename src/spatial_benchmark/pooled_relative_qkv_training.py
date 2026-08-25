@@ -26,6 +26,7 @@ import hashlib
 import json
 import math
 from numbers import Integral
+import time
 from typing import Any, Callable, Mapping, Sequence
 
 import numpy as np
@@ -958,6 +959,14 @@ def _assert_finite_gradients(model: nn.Module, *, epoch: int, alias: str) -> Non
 
 
 CheckpointCallback = Callable[[PooledRelativeQKVEpochBoundaryResume], None]
+EpochCallback = Callable[
+    [
+        PooledRelativeQKVGlobalEpochRecord,
+        tuple[PooledRelativeQKVCoreStepRecord, ...],
+        float,
+    ],
+    None,
+]
 
 
 def fit_pooled_relative_qkv_segment(
@@ -967,8 +976,15 @@ def fit_pooled_relative_qkv_segment(
     *,
     resume: PooledRelativeQKVEpochBoundaryResume | None = None,
     checkpoint_callback: CheckpointCallback | None = None,
+    epoch_callback: EpochCallback | None = None,
 ) -> PooledRelativeQKVTrainingResult:
-    """Fit one queued epoch segment using six staged complete-core steps/epoch."""
+    """Fit one queued epoch segment using six staged complete-core steps/epoch.
+
+    ``epoch_callback`` observes a completed epoch and its wall-clock training
+    duration. The diagnostic duration is deliberately excluded from cumulative
+    history and checkpoint checksums so deterministic resume semantics do not
+    depend on hardware timing.
+    """
 
     batches_by_alias = _validate_core_batches(core_batches)
     if resume is None:
@@ -1023,6 +1039,7 @@ def fit_pooled_relative_qkv_segment(
     for global_epoch in range(
         config.segment_start_global_epoch, config.segment_end_global_epoch
     ):
+        epoch_started = time.monotonic()
         order = relative_qkv_core_order(
             global_epoch,
             aliases=aliases,
@@ -1222,16 +1239,24 @@ def fit_pooled_relative_qkv_segment(
         if not np.isfinite(losses).all():
             raise FloatingPointError("Global-epoch training losses are non-finite.")
         completed = global_epoch + 1
-        global_history.append(
-            PooledRelativeQKVGlobalEpochRecord(
-                global_epoch=global_epoch,
-                completed_global_epochs=completed,
-                ordered_aliases=order,
-                optimizer_steps_this_epoch=STEPS_PER_GLOBAL_EPOCH,
-                cumulative_optimizer_steps=completed * STEPS_PER_GLOBAL_EPOCH,
-                equal_core_mean_masked_huber=float(losses.mean()),
-            )
+        epoch_record = PooledRelativeQKVGlobalEpochRecord(
+            global_epoch=global_epoch,
+            completed_global_epochs=completed,
+            ordered_aliases=order,
+            optimizer_steps_this_epoch=STEPS_PER_GLOBAL_EPOCH,
+            cumulative_optimizer_steps=completed * STEPS_PER_GLOBAL_EPOCH,
+            equal_core_mean_masked_huber=float(losses.mean()),
         )
+        global_history.append(epoch_record)
+        epoch_duration_seconds = time.monotonic() - epoch_started
+        if not math.isfinite(epoch_duration_seconds) or epoch_duration_seconds < 0:
+            raise RuntimeError("Global-epoch wall-clock duration is invalid.")
+        if epoch_callback is not None:
+            epoch_callback(
+                epoch_record,
+                tuple(epoch_records),
+                float(epoch_duration_seconds),
+            )
         if (
             checkpoint_callback is not None
             and completed % CHECKPOINT_INTERVAL_GLOBAL_EPOCHS == 0

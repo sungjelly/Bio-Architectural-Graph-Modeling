@@ -20,6 +20,18 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+attention-niche-analysis = [
+  "igraph>=0.11,<2",
+  "leidenalg>=0.10,<1",
+  "pyarrow>=17",
+  "shapely>=2,<3",
+]
+embedding-analysis = [
+  "faiss-cpu>=1.11,<2",
+  "igraph>=0.11,<2",
+  "leidenalg>=0.10,<1",
+  "pyarrow>=17",
+]
 parquet = ["pyarrow>=17"]
 test = ["pytest>=8"]
 

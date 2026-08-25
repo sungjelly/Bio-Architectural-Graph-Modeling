@@ -27,12 +27,15 @@ _SPEC.loader.exec_module(_RUNNER)
 RelativeQKVRunnerError = _RUNNER.RelativeQKVRunnerError
 _checkpoint_payload = _RUNNER._checkpoint_payload
 _configured_model_seed = _RUNNER._configured_model_seed
+_emit_training_progress = _RUNNER._emit_training_progress
 _load_resume_checkpoint = _RUNNER._load_resume_checkpoint
 _model_from_config = _RUNNER._model_from_config
 _preflight_bound_config = _RUNNER._preflight_bound_config
 _seeded_model_from_config = _RUNNER._seeded_model_from_config
 _seed_plateau_decision = _RUNNER._seed_plateau_decision
 _training_config = _RUNNER._training_config
+_training_monitor_contract = _RUNNER._training_monitor_contract
+_training_progress_record = _RUNNER._training_progress_record
 _validate_active_contract = _RUNNER._validate_active_contract
 _validate_hardware_preflight = _RUNNER._validate_hardware_preflight
 
@@ -42,6 +45,102 @@ def _resolved() -> dict[str, object]:
         PROJECT_ROOT / "configs/experiment/cancer_6core_relative_qkv_seed0.yaml",
         config_root=PROJECT_ROOT / "configs",
     )
+
+
+def _synthetic_epoch_monitor_record() -> dict[str, object]:
+    aliases = tuple(_RUNNER.CANCER_ALIASES)
+    core_steps = tuple(
+        SimpleNamespace(
+            alias=alias,
+            masked_huber_loss=(index + 1) / 10.0,
+            gradient_norm=float(index + 1),
+            n_masked_entries_across_views=100,
+            n_nodes=2,
+            n_edges=3,
+            n_mask_views=10,
+        )
+        for index, alias in enumerate(aliases)
+    )
+    epoch = SimpleNamespace(
+        global_epoch=1,
+        completed_global_epochs=2,
+        ordered_aliases=aliases,
+        optimizer_steps_this_epoch=6,
+        cumulative_optimizer_steps=12,
+        equal_core_mean_masked_huber=0.35,
+    )
+    return _training_progress_record(
+        run_id="r_monitor",
+        model_seed=2,
+        epoch=epoch,
+        core_steps=core_steps,
+        epoch_duration_seconds=10.0,
+        observed_epoch_durations=(8.0, 10.0),
+        segment_end_global_epoch=5,
+        learning_rate=1e-4,
+        gradient_clip_norm=1.0,
+        process_peak_cuda_memory_allocated_gib=2.5,
+    )
+
+
+def test_training_monitor_contract_names_objective_and_post_training_metrics() -> None:
+    contract = _training_monitor_contract(_resolved())
+    assert contract["event_file"] == "metrics/events.jsonl"
+    assert contract["training_objective"]["name"] == (
+        "equal_core_mean_masked_huber"
+    )
+    assert contract["training_objective"]["huber_delta"] == 1.0
+    assert contract["validation_or_test_partition_present"] is False
+    assert contract["post_training_fixed_mask_metrics"] == [
+        "masked_huber",
+        "masked_mae",
+        "masked_mse",
+        "masked_r2",
+    ]
+
+
+def test_training_progress_record_contains_timing_losses_gradients_and_eta() -> None:
+    progress = _synthetic_epoch_monitor_record()
+    assert progress["completed_global_epochs"] == 2
+    assert progress["equal_core_mean_masked_huber"] == pytest.approx(0.35)
+    assert progress["per_core_masked_huber"] == {
+        alias: pytest.approx((index + 1) / 10.0)
+        for index, alias in enumerate(_RUNNER.CANCER_ALIASES)
+    }
+    assert progress["mean_gradient_norm_before_clip"] == pytest.approx(3.5)
+    assert progress["max_gradient_norm_before_clip"] == pytest.approx(6.0)
+    assert progress["epoch_duration_seconds"] == pytest.approx(10.0)
+    assert progress["process_mean_epoch_duration_seconds"] == pytest.approx(9.0)
+    assert progress["rolling_5_epoch_duration_seconds"] == pytest.approx(9.0)
+    assert progress["eta_to_current_audit_seconds"] == pytest.approx(27.0)
+    assert progress["mask_views_completed"] == 60
+    assert progress["masked_entries_per_second"] == pytest.approx(60.0)
+    assert progress["process_peak_cuda_memory_allocated_gib"] == pytest.approx(2.5)
+    assert progress["validation_or_test_metric"] is False
+
+
+def test_emit_training_progress_appends_one_event_and_flushes_stdout(capsys) -> None:
+    class Archive:
+        def __init__(self) -> None:
+            self.events: list[dict[str, object]] = []
+
+        def append_metric_event(self, event: dict[str, object]) -> None:
+            self.events.append(event)
+
+    archive = Archive()
+    progress = _synthetic_epoch_monitor_record()
+    _emit_training_progress(archive, progress)
+
+    assert len(archive.events) == 1
+    assert archive.events[0]["name"] == (
+        "fit/training/equal_core_mean_masked_huber"
+    )
+    assert archive.events[0]["value"] == pytest.approx(0.35)
+    assert archive.events[0]["step"] == 2
+    assert archive.events[0]["monitor"] == progress
+    output = capsys.readouterr().out
+    assert output.startswith("[bagm-training] {")
+    assert '"epoch_duration_seconds": 10.0' in output
 
 
 def test_active_runner_accepts_configured_seeds_zero_through_three() -> None:

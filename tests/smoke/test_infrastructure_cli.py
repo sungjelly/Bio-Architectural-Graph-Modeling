@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 
@@ -30,6 +31,7 @@ def test_cli_exposes_required_commands() -> None:
         "show-checkpoint",
         "resolve-checkpoint",
         "export-checkpoint-catalog",
+        "analyze-embedding-clusters",
         "summarize-variants",
         "export-leaderboard",
         "promote-run",
@@ -37,6 +39,76 @@ def test_cli_exposes_required_commands() -> None:
         "import-legacy",
     ):
         assert command in help_text
+
+
+def test_embedding_analysis_parser_defaults_and_help() -> None:
+    parser = build_parser()
+    arguments = parser.parse_args(
+        [
+            "analyze-embedding-clusters",
+            "--run-id",
+            "r_test_embedding_analysis",
+        ]
+    )
+    assert arguments.command_name == "analyze-embedding-clusters"
+    assert arguments.run_id == "r_test_embedding_analysis"
+    assert arguments.checkpoint is None
+    assert arguments.n_neighbors == 30
+    assert arguments.leiden_resolution == 1.0
+    assert arguments.pca_components == 50
+    assert arguments.random_seed == 20260825
+    assert arguments.device == "cuda:0"
+    assert arguments.output_dir is None
+
+    subparsers = next(
+        action
+        for action in parser._actions
+        if isinstance(action, argparse._SubParsersAction)
+    )
+    help_text = subparsers.choices["analyze-embedding-clusters"].format_help()
+    for option in (
+        "--run-id",
+        "--checkpoint",
+        "--n-neighbors",
+        "--leiden-resolution",
+        "--pca-components",
+        "--random-seed",
+        "--device",
+        "--output-dir",
+    ):
+        assert option in help_text
+
+
+def test_embedding_analysis_parser_accepts_explicit_overrides(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "last.ckpt"
+    output = tmp_path / "embedding-analysis"
+    arguments = build_parser().parse_args(
+        [
+            "analyze-embedding-clusters",
+            "--checkpoint",
+            str(checkpoint),
+            "--n-neighbors",
+            "41",
+            "--leiden-resolution",
+            "1.25",
+            "--pca-components",
+            "32",
+            "--random-seed",
+            "19",
+            "--device",
+            "cpu",
+            "--output-dir",
+            str(output),
+        ]
+    )
+    assert arguments.run_id is None
+    assert arguments.checkpoint == checkpoint
+    assert arguments.n_neighbors == 41
+    assert arguments.leiden_resolution == 1.25
+    assert arguments.pca_components == 32
+    assert arguments.random_seed == 19
+    assert arguments.device == "cpu"
+    assert arguments.output_dir == output
 
 
 def test_doctor_initializes_temp_project(tmp_path: Path, capsys) -> None:

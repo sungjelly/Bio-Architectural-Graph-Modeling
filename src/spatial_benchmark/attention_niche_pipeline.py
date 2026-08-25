@@ -1,0 +1,3750 @@
+"""End-to-end post-training extraction for six-core attention-routing niches.
+
+The pipeline is deliberately read-only with respect to trained models and
+prepared inputs.  It discovers only successful, catalog-verified ``last``
+checkpoints, replays newly generated analysis masks in evaluation mode, and
+streams exact complete-receiver attention diagnostics.  Attention-routing
+niches are model-defined spatial partitions, not biological or causal claims.
+"""
+
+from __future__ import annotations
+
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
+import hashlib
+import json
+import math
+import os
+from pathlib import Path
+import platform
+import shutil
+import socket
+import sqlite3
+import tempfile
+import time
+from typing import Any, Iterable, Mapping, Sequence
+
+import numpy as np
+import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
+import torch
+import yaml
+
+from .cancer_pooled_full_core import (
+    CANCER_ALIASES,
+    CORE_NUMBERS,
+    resolve_cancer_core_routes,
+)
+from .data import (
+    ALLOWED_METADATA_COLUMNS,
+    CoreSelection,
+    discover_slide_raw_path,
+    load_selected_core,
+)
+from .fingerprints import sha256_file
+from .paths import ProjectPaths, current_paths
+from .pooled_relative_qkv_training import PooledRelativeQKVCoreBatch
+from .relative_qkv_post_training import (
+    CAMPAIGN_ID as UPSTREAM_CAMPAIGN_ID,
+    load_prepared_relative_qkv_batches,
+    load_relative_qkv_checkpoint,
+    stream_receiver_attention,
+)
+from .run_archive import verify_run_bundle
+from .training import set_deterministic_seed
+
+
+ANALYSIS_CAMPAIGN_ID = "cmp_20260825_six_core_attention_routing_niches"
+EXPECTED_ALIASES = tuple(CANCER_ALIASES)
+EXPECTED_CORE_NUMBERS = tuple(CORE_NUMBERS)
+EXPECTED_TOTAL_CELLS = 117_996
+EXPECTED_TOTAL_DIRECTED_EDGES = 26_961_152
+EXPECTED_GENE_SCHEMA_SHA256 = (
+    "046eb86c7ea8f1fe6977598a0190132340400fc61802fcde63ab5ac0e9502b03"
+)
+EXPECTED_METADATA_SCHEMA_SHA256 = (
+    "0f49df16640e047f0129ac36895f002e00c53dc56badef37e14fd45fcbca6fae"
+)
+EXPECTED_COHORT_MANIFEST_SHA256 = (
+    "9c4ea4c9445f5230c5f823b4b1cd7a5b230767b43daa7018c99dc27bbf9613ad"
+)
+EXPECTED_GRAPH_MANIFEST_SHA256 = (
+    "20caa27c4d0a816a01475eda321e1910505b3b7849bc8eaa22a56e3cbfd1b48d"
+)
+EXPECTED_DATASET_FINGERPRINT = (
+    "45fe649d1de0f3df3af0f4a1ae69d17249711359d55dde7d1acf45ed1881e77d"
+)
+EXPECTED_SPLIT_FINGERPRINT = (
+    "956931f2cee4d48d33768fa7c6d034e43e4aaf2b40247b527f0755d860805ead"
+)
+EXPECTED_PREPROCESSING_VERSION = "cancer_6core_equal_core_log1p_metadata_v1"
+EXPECTED_VARIANT = "relative_qkv_gat_256_l4_h8_radial_stratified_k200_r500"
+EXPECTED_CORE_MAP_SHA256 = (
+    "b790074a513fb8af48d991925e08559dd0fe64866509dc97f33c97c56b29e92f"
+)
+EXPECTED_RECONCILIATION_SHA256 = (
+    "9a5fe243d385fb4bf3e2621f2f1b5f31ac749f6571c2592716d9222f2624233c"
+)
+EXPECTED_POLYGON_SHA256 = {
+    "SO_1": "72b89055b30639ec9477b2f1ea9c16a08eeb2b88fd2bb21609da11e1ba2e1ee0",
+    "SO_2": "bc1457eca09583557fc36696daa87f0a628d0fa37c0ba073b8ea2abf47f8172e",
+}
+
+LIMITATION = (
+    "These regions are model-defined attention-routing niches. They describe "
+    "stable spatial patterns in how the trained model routes information "
+    "during masked-expression reconstruction. They do not by themselves "
+    "establish direct molecular signaling or biological causality."
+)
+
+REQUIRED_ANALYSIS_OUTPUTS = (
+    "six_core_attention_niche_map.png",
+    "six_core_attention_niche_map.pdf",
+    "six_core_attention_niche_map.svg",
+    "six_core_mutual_attention_network_overlay.png",
+    "six_core_mutual_attention_network_overlay.pdf",
+    *(
+        f"core_{core:02d}_attention_niche_map.png"
+        for core in EXPECTED_CORE_NUMBERS
+    ),
+    "cell_attention_niche_assignments.parquet",
+    "mutual_attention_edges.parquet",
+    "directed_attention_edges.parquet",
+    "attention_niche_summary.csv",
+    "attention_niche_colors.json",
+    "attention_niche_regions.geojson",
+    "analysis_manifest.yaml",
+    "analysis_qc_report.md",
+    "README.md",
+)
+
+PROHIBITED_INTERPRETATION_IDENTIFIER_COLUMNS = frozenset(
+    {
+        "original_cell_identifier",
+        "source_slide",
+        "fov",
+        "cell_ID",
+        "patient_id",
+    }
+)
+
+
+class AttentionNichePipelineError(RuntimeError):
+    """Raised when a locked input, extraction, or output invariant fails."""
+
+
+def _validate_interpretation_identifier_minimization(frame: pd.DataFrame) -> None:
+    """Fail closed if a public interpretation table exposes source identifiers."""
+
+    exposed = sorted(
+        PROHIBITED_INTERPRETATION_IDENTIFIER_COLUMNS.intersection(frame.columns)
+    )
+    if exposed:
+        raise AttentionNichePipelineError(
+            "Interpretation export contains prohibited source identifiers: "
+            + ", ".join(exposed)
+        )
+
+
+def _validated_locked_analysis_parameters(
+    metadata: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Validate the complete prespecified primary-analysis identity."""
+
+    expected: dict[str, Any] = {
+        "execution_role": "posthoc_readout_no_training",
+        "upstream_campaign_id": UPSTREAM_CAMPAIGN_ID,
+        "discover_completed_catalog_verified_last_checkpoints": True,
+        "core_aliases": list(EXPECTED_ALIASES),
+        "core_numbers": list(EXPECTED_CORE_NUMBERS),
+        "final_graph_layer": True,
+        "analysis_mask_seed": 2026082501,
+        "analysis_mask_views": 10,
+        "analysis_mask_derivation_fields": [
+            "analysis_mask_seed",
+            "core_alias",
+            "mask_view_index",
+        ],
+        "all_genes_visible_sensitivity": True,
+        "uniform_routing_threshold": 1.0,
+        "consensus_mutual_score_threshold": 1.0,
+        "support_threshold": 0.60,
+        "primary_top_neighbors": 8,
+        "top_neighbor_sensitivity": [5, 8, 10],
+        "primary_leiden_resolution": 1.0,
+        "leiden_resolution_sensitivity": [0.5, 1.0, 1.5],
+        "leiden_seed": 2026082502,
+        "color_seed": 2026082503,
+        "polygon_coordinate_alignment_rule": (
+            "centroid_tolerance_or_polygon_covers_coordinate"
+        ),
+        "polygon_centroid_tolerance_um": 5.0,
+        "spatial_max_gap_um": 75.0,
+        "micro_niche_cell_threshold": 20,
+        "minimum_free_disk_gib": 40.0,
+        "checkpoint_mutation_allowed": False,
+        "required_analysis_outputs": list(REQUIRED_ANALYSIS_OUTPUTS),
+    }
+    drift = {
+        name: {"expected": value, "observed": metadata.get(name)}
+        for name, value in expected.items()
+        if metadata.get(name) != value
+    }
+    if drift:
+        raise AttentionNichePipelineError(
+            "Resolved locked analysis metadata drifted: "
+            + ", ".join(sorted(drift))
+        )
+    return {
+        "analysis_mask_seed": int(expected["analysis_mask_seed"]),
+        "analysis_mask_views": int(expected["analysis_mask_views"]),
+        "uniform_routing_threshold": float(
+            expected["uniform_routing_threshold"]
+        ),
+        "consensus_mutual_score_threshold": float(
+            expected["consensus_mutual_score_threshold"]
+        ),
+        "support_threshold": float(expected["support_threshold"]),
+        "primary_top_neighbors": int(expected["primary_top_neighbors"]),
+        "primary_leiden_resolution": float(
+            expected["primary_leiden_resolution"]
+        ),
+        "leiden_seed": int(expected["leiden_seed"]),
+        "color_seed": int(expected["color_seed"]),
+        "polygon_coordinate_alignment_rule": str(
+            expected["polygon_coordinate_alignment_rule"]
+        ),
+        "polygon_centroid_tolerance_um": float(
+            expected["polygon_centroid_tolerance_um"]
+        ),
+        "spatial_max_gap_um": float(expected["spatial_max_gap_um"]),
+        "micro_niche_cell_threshold": int(
+            expected["micro_niche_cell_threshold"]
+        ),
+        "minimum_free_disk_gib": float(expected["minimum_free_disk_gib"]),
+    }
+
+
+def _utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+def _canonical_json(value: object) -> str:
+    return json.dumps(
+        value,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=True,
+        allow_nan=False,
+    )
+
+
+def _canonical_sha256(value: object) -> str:
+    return hashlib.sha256(_canonical_json(value).encode("utf-8")).hexdigest()
+
+
+def _array_sha256(name: str, values: np.ndarray) -> str:
+    array = np.ascontiguousarray(np.asarray(values))
+    digest = hashlib.sha256()
+    digest.update(name.encode("utf-8"))
+    digest.update(str(array.dtype).encode("ascii"))
+    digest.update(_canonical_json(list(array.shape)).encode("ascii"))
+    digest.update(memoryview(array).cast("B"))
+    return digest.hexdigest()
+
+
+def _load_json(path: Path, label: str) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise AttentionNichePipelineError(f"Cannot read {label}: {path}") from exc
+    if not isinstance(value, dict):
+        raise AttentionNichePipelineError(f"{label} must be a mapping: {path}")
+    return value
+
+
+def _write_json_atomic(path: Path, value: object) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() or path.is_symlink():
+        raise FileExistsError(f"Refusing to overwrite analysis output: {path}")
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.tmp-", dir=path.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            json.dump(
+                value,
+                handle,
+                indent=2,
+                sort_keys=True,
+                ensure_ascii=True,
+                allow_nan=False,
+            )
+            handle.write("\n")
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def _write_yaml_atomic(path: Path, value: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() or path.is_symlink():
+        raise FileExistsError(f"Refusing to overwrite analysis output: {path}")
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.tmp-", dir=path.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            yaml.safe_dump(dict(value), handle, sort_keys=True, allow_unicode=False)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+@dataclass(frozen=True, slots=True)
+class CheckpointMember:
+    """One immutable eligible completed model member."""
+
+    seed: int
+    run_id: str
+    run_alias: str
+    attempt: int
+    completed_global_epochs: int
+    checkpoint_path: Path
+    checkpoint_sha256: str
+    model_state_sha256: str
+    parameter_count: int
+    bundle_path: Path
+    success_marker_content_sha256: str
+    catalog_artifact_id: int
+    catalog_retention_class: str
+    catalog_verification_status: str
+
+    def manifest_record(self, project_root: Path) -> dict[str, Any]:
+        def relative(path: Path) -> str:
+            try:
+                return str(path.resolve().relative_to(project_root.resolve()))
+            except ValueError:
+                return str(path.resolve())
+
+        value = asdict(self)
+        value["checkpoint_path"] = relative(self.checkpoint_path)
+        value["bundle_path"] = relative(self.bundle_path)
+        return value
+
+
+def discover_completed_checkpoint_members(
+    database: str | Path,
+    *,
+    project_root: str | Path,
+) -> tuple[CheckpointMember, ...]:
+    """Discover successful catalog-verified final checkpoints, fail closed."""
+
+    root = Path(project_root).resolve()
+    source = Path(database).resolve(strict=True)
+    connection = sqlite3.connect(f"file:{source}?mode=ro", uri=True)
+    connection.row_factory = sqlite3.Row
+    try:
+        rows = connection.execute(
+            """
+            SELECT r.run_id, r.seed, r.attempt, r.artifact_path, r.config_json,
+                   a.artifact_id, a.path AS checkpoint_path,
+                   a.sha256 AS checkpoint_sha256, a.status AS artifact_status,
+                   c.role, c.retention_class, c.verification_status,
+                   ra.alias_id AS preferred_alias
+            FROM runs AS r
+            JOIN artifacts AS a ON a.run_id = r.run_id
+            JOIN checkpoint_catalog AS c
+              ON c.artifact_id = a.artifact_id AND c.run_id = r.run_id
+            LEFT JOIN run_aliases AS ra
+              ON ra.run_id = r.run_id AND ra.preferred = 1
+            WHERE r.campaign_id = ?
+              AND r.status = 'completed'
+              AND c.role = 'last'
+              AND c.verification_status = 'verified'
+              AND a.status = 'present'
+            ORDER BY r.seed, r.attempt
+            """,
+            (UPSTREAM_CAMPAIGN_ID,),
+        ).fetchall()
+    finally:
+        connection.close()
+    if not rows:
+        raise AttentionNichePipelineError(
+            "No completed catalog-verified upstream last checkpoints were found."
+        )
+
+    members: list[CheckpointMember] = []
+    observed_seeds: set[int] = set()
+    reference_bindings: dict[str, Any] | None = None
+    for row in rows:
+        run_id = str(row["run_id"])
+        seed = int(row["seed"])
+        if seed in observed_seeds:
+            raise AttentionNichePipelineError(
+                f"More than one completed final checkpoint exists for model seed {seed}."
+            )
+        observed_seeds.add(seed)
+        bundle = Path(str(row["artifact_path"])).resolve(strict=True)
+        verify_run_bundle(bundle)
+        checkpoint = Path(str(row["checkpoint_path"])).resolve(strict=True)
+        expected_checkpoint = bundle / "checkpoints" / "last.ckpt"
+        if checkpoint != expected_checkpoint.resolve(strict=True):
+            raise AttentionNichePipelineError(
+                f"Catalog last checkpoint is not the canonical bundle last.ckpt: {run_id}."
+            )
+        if any(token in checkpoint.name.casefold() for token in ("smoke", "test")):
+            raise AttentionNichePipelineError("A smoke/test checkpoint passed discovery.")
+        marker = _load_json(bundle / "_SUCCESS", f"success marker for {run_id}")
+        if marker.get("run_id") != run_id or marker.get("status") != "success":
+            raise AttentionNichePipelineError(f"Invalid success marker for {run_id}.")
+        observed_checkpoint_sha = sha256_file(checkpoint)
+        if observed_checkpoint_sha != str(row["checkpoint_sha256"]):
+            raise AttentionNichePipelineError(
+                f"Checkpoint checksum disagrees with the catalog for {run_id}."
+            )
+        try:
+            payload = torch.load(checkpoint, map_location="cpu", weights_only=True)
+        except (OSError, RuntimeError, ValueError, TypeError) as exc:
+            raise AttentionNichePipelineError(
+                f"Checkpoint is not loadable: {checkpoint}."
+            ) from exc
+        if not isinstance(payload, Mapping):
+            raise AttentionNichePipelineError("Checkpoint payload is not a mapping.")
+        resolved = payload.get("resolved_config")
+        if not isinstance(resolved, Mapping):
+            raise AttentionNichePipelineError("Checkpoint lacks its resolved config.")
+        dataset = resolved.get("dataset")
+        classification = resolved.get("classification")
+        if not isinstance(dataset, Mapping) or not isinstance(classification, Mapping):
+            raise AttentionNichePipelineError("Checkpoint data/classification receipt is absent.")
+        bindings = {
+            "dataset_fingerprint": dataset.get("dataset_fingerprint"),
+            "split_fingerprint": dataset.get("split_fingerprint"),
+            "preprocessing_version": dataset.get("preprocessing_version"),
+            "cohort_manifest_file_sha256": dataset.get(
+                "cohort_manifest_file_sha256"
+            ),
+            "graph_manifest_file_sha256": dataset.get("graph_manifest_file_sha256"),
+            "core_aliases": list(dataset.get("core_aliases", ())),
+            "original_core_numbers": dict(dataset.get("original_core_numbers", {})),
+            "scientific_variant": classification.get("scientific_variant"),
+        }
+        expected_bindings = {
+            "dataset_fingerprint": EXPECTED_DATASET_FINGERPRINT,
+            "split_fingerprint": EXPECTED_SPLIT_FINGERPRINT,
+            "preprocessing_version": EXPECTED_PREPROCESSING_VERSION,
+            "cohort_manifest_file_sha256": EXPECTED_COHORT_MANIFEST_SHA256,
+            "graph_manifest_file_sha256": EXPECTED_GRAPH_MANIFEST_SHA256,
+            "core_aliases": list(EXPECTED_ALIASES),
+            "original_core_numbers": {
+                alias: number
+                for alias, number in zip(
+                    EXPECTED_ALIASES, EXPECTED_CORE_NUMBERS, strict=True
+                )
+            },
+            "scientific_variant": EXPECTED_VARIANT,
+        }
+        if bindings != expected_bindings:
+            raise AttentionNichePipelineError(
+                f"Checkpoint {run_id} does not match the locked data/model variant."
+            )
+        if reference_bindings is None:
+            reference_bindings = bindings
+        elif bindings != reference_bindings:
+            raise AttentionNichePipelineError(
+                "Eligible checkpoint preprocessing/graph bindings disagree."
+            )
+        if (
+            payload.get("run_id") != run_id
+            or int(payload.get("model_seed", -1)) != seed
+            or payload.get("campaign_id") != UPSTREAM_CAMPAIGN_ID
+            or not isinstance(payload.get("completed_global_epochs"), int)
+            or not isinstance(payload.get("model_state_checksum"), str)
+            or payload.get("plateau", {}).get("should_stop") is not True
+        ):
+            raise AttentionNichePipelineError(
+                f"Checkpoint completion/model identity is invalid for {run_id}."
+            )
+        members.append(
+            CheckpointMember(
+                seed=seed,
+                run_id=run_id,
+                run_alias=str(row["preferred_alias"] or run_id),
+                attempt=int(row["attempt"]),
+                completed_global_epochs=int(payload["completed_global_epochs"]),
+                checkpoint_path=checkpoint,
+                checkpoint_sha256=observed_checkpoint_sha,
+                model_state_sha256=str(payload["model_state_checksum"]),
+                parameter_count=int(payload.get("parameter_count", -1)),
+                bundle_path=bundle,
+                success_marker_content_sha256=str(marker.get("content_sha256", "")),
+                catalog_artifact_id=int(row["artifact_id"]),
+                catalog_retention_class=str(row["retention_class"]),
+                catalog_verification_status=str(row["verification_status"]),
+            )
+        )
+        del payload
+    ordered = tuple(sorted(members, key=lambda item: item.seed))
+    if len(ordered) == 1:
+        label = "single-model, mask-consensus map"
+    else:
+        label = f"{len(ordered)}-model ensemble-consensus map"
+    if len(ordered) > 5:
+        raise AttentionNichePipelineError("More than five eligible seeds are unexpected.")
+    # The label is computed here so callers cannot accidentally call one model
+    # an ensemble; it is also recomputed in the published manifest.
+    _ = label
+    return ordered
+
+
+@dataclass(frozen=True, slots=True)
+class PreparedInputContract:
+    cohort_dir: Path
+    graph_dir: Path
+    raw_dir: Path
+    core_map_path: Path
+    reconciliation_path: Path
+    cohort_manifest: Mapping[str, Any] = field(repr=False)
+    graph_manifest: Mapping[str, Any] = field(repr=False)
+    core_records: Mapping[str, Mapping[str, Any]] = field(repr=False)
+    gene_names: tuple[str, ...] = field(repr=False)
+    metadata_names: tuple[str, ...] = field(repr=False)
+    pre_analysis_file_receipts: Mapping[str, Mapping[str, Any]] = field(repr=False)
+
+
+def _file_receipt(
+    path: Path,
+    *,
+    root: Path,
+    data_root: Path | None = None,
+) -> dict[str, Any]:
+    stat = path.stat()
+    try:
+        display = str(path.resolve().relative_to(root.resolve()))
+        root_kind = "project_root"
+    except ValueError:
+        if data_root is not None:
+            try:
+                display = str(path.resolve().relative_to(data_root.resolve()))
+                root_kind = "BAGM_DATA_ROOT"
+            except ValueError:
+                display = str(path.resolve())
+                root_kind = "absolute_external"
+        else:
+            display = str(path.resolve())
+            root_kind = "absolute_external"
+    return {
+        "path": display,
+        "root_kind": root_kind,
+        "size_bytes": int(stat.st_size),
+        "mtime_ns": int(stat.st_mtime_ns),
+        "sha256": sha256_file(path),
+    }
+
+
+def _polygon_paths(raw_dir: Path) -> tuple[Path, Path]:
+    result: list[Path] = []
+    for slide in ("SO_1", "SO_2"):
+        candidates = sorted(raw_dir.glob(f"*{slide}*-polygons.csv"))
+        resolved: list[Path] = []
+        for candidate in candidates:
+            nested = candidate / candidate.name
+            path = nested if nested.is_file() else candidate
+            if path.is_file():
+                resolved.append(path)
+        if len(resolved) != 1:
+            raise AttentionNichePipelineError(
+                f"Expected one polygon CSV for {slide}; found {len(resolved)}."
+            )
+        result.append(resolved[0].resolve())
+    return result[0], result[1]
+
+
+def verify_prepared_input_contract(
+    *,
+    paths: ProjectPaths,
+    cohort_dir: str | Path,
+    graph_dir: str | Path,
+    raw_dir: str | Path,
+    core_map_path: str | Path,
+    reconciliation_path: str | Path,
+) -> PreparedInputContract:
+    """Strictly verify prepared schemas, graph caches, and source polygons."""
+
+    cohort_root = Path(cohort_dir).resolve(strict=True)
+    graph_root = Path(graph_dir).resolve(strict=True)
+    raw_root = Path(raw_dir).resolve(strict=True)
+    map_path = Path(core_map_path).resolve(strict=True)
+    policy_path = Path(reconciliation_path).resolve(strict=True)
+    cohort_manifest_path = cohort_root / "manifest.json"
+    graph_manifest_path = graph_root / "manifest.json"
+    if sha256_file(cohort_manifest_path) != EXPECTED_COHORT_MANIFEST_SHA256:
+        raise AttentionNichePipelineError("Prepared cohort manifest checksum drifted.")
+    if sha256_file(graph_manifest_path) != EXPECTED_GRAPH_MANIFEST_SHA256:
+        raise AttentionNichePipelineError("Prepared graph manifest checksum drifted.")
+    if sha256_file(map_path) != EXPECTED_CORE_MAP_SHA256:
+        raise AttentionNichePipelineError("Core-map checksum drifted.")
+    if sha256_file(policy_path) != EXPECTED_RECONCILIATION_SHA256:
+        raise AttentionNichePipelineError("Reconciliation-policy checksum drifted.")
+    cohort_manifest = _load_json(cohort_manifest_path, "cohort manifest")
+    graph_manifest = _load_json(graph_manifest_path, "graph manifest")
+    source_binding = cohort_manifest.get("source", {})
+    if (
+        not isinstance(source_binding, Mapping)
+        or source_binding.get("core_map_sha256") != EXPECTED_CORE_MAP_SHA256
+        or source_binding.get("reconciliation_sha256")
+        != EXPECTED_RECONCILIATION_SHA256
+    ):
+        raise AttentionNichePipelineError(
+            "Prepared cohort source-map/reconciliation bindings drifted."
+        )
+    aliases = tuple(cohort_manifest.get("cohort", {}).get("aliases", ()))
+    core_numbers = tuple(
+        cohort_manifest.get("cohort", {}).get("original_core_numbers", ())
+    )
+    if aliases != EXPECTED_ALIASES or core_numbers != EXPECTED_CORE_NUMBERS:
+        raise AttentionNichePipelineError("Prepared cohort core order drifted.")
+    genes = tuple(cohort_manifest.get("features", {}).get("gene_names", ()))
+    metadata_names = tuple(
+        cohort_manifest.get("features", {}).get("measured_metadata_names", ())
+    )
+    if (
+        len(genes) != 1_000
+        or len(set(genes)) != 1_000
+        or _canonical_sha256(list(genes)) != EXPECTED_GENE_SCHEMA_SHA256
+        or _canonical_sha256(list(metadata_names)) != EXPECTED_METADATA_SCHEMA_SHA256
+    ):
+        raise AttentionNichePipelineError("Prepared gene/metadata order drifted.")
+
+    # The canonical loader rehashes every cohort, graph, orientation, and
+    # relative-geometry file and checks symmetry, order, and cross-core QC.
+    batches = load_prepared_relative_qkv_batches(
+        cohort_dir=cohort_root,
+        graph_dir=graph_root,
+    )
+    if tuple(batch.alias for batch in batches) != EXPECTED_ALIASES:
+        raise AttentionNichePipelineError("Loaded batch order is not the locked order.")
+    if sum(batch.n_nodes for batch in batches) != EXPECTED_TOTAL_CELLS:
+        raise AttentionNichePipelineError("Prepared cell total drifted.")
+    if sum(batch.n_edges for batch in batches) != EXPECTED_TOTAL_DIRECTED_EDGES:
+        raise AttentionNichePipelineError("Prepared directed-edge total drifted.")
+    del batches
+
+    graph_records = graph_manifest.get("cores")
+    if not isinstance(graph_records, list):
+        raise AttentionNichePipelineError("Graph manifest core records are absent.")
+    by_alias = {
+        str(record.get("alias")): record
+        for record in graph_records
+        if isinstance(record, Mapping)
+    }
+    if tuple(by_alias) != EXPECTED_ALIASES:
+        raise AttentionNichePipelineError("Graph record aliases/order drifted.")
+    for alias, number in zip(EXPECTED_ALIASES, EXPECTED_CORE_NUMBERS, strict=True):
+        graph_qc = by_alias[alias].get("graph", {}).get("qc", {})
+        if (
+            int(graph_qc.get("cross_group_edges", -1)) != 0
+            or int(graph_qc.get("self_loops", -1)) != 0
+            or graph_qc.get("directed_edge_pairs_are_symmetric") is not True
+            or graph_qc.get("receiver_major_canonical_order") is not True
+            or int(graph_qc.get("n_nodes", -1)) <= 0
+            or int(graph_qc.get("n_directed_edges", -1)) <= 0
+        ):
+            raise AttentionNichePipelineError(f"Graph QC failed for core {number}.")
+
+    routes = resolve_cancer_core_routes(map_path, policy_path)
+    cohort_records = cohort_manifest.get("cores")
+    if not isinstance(cohort_records, list):
+        raise AttentionNichePipelineError("Prepared cohort core receipts are absent.")
+    cohort_by_alias = {
+        str(record.get("alias")): record
+        for record in cohort_records
+        if isinstance(record, Mapping)
+    }
+    if tuple(cohort_by_alias) != EXPECTED_ALIASES:
+        raise AttentionNichePipelineError("Prepared cohort core receipts drifted.")
+    for route in routes:
+        record = cohort_by_alias[route.alias]
+        if (
+            record.get("route_sha256") != route.route_sha256
+            or record.get("source_slide") != route.slide
+            or int(record.get("original_core_number", -1)) != route.core_number
+        ):
+            raise AttentionNichePipelineError(
+                f"Prepared route binding drifted for {route.alias}."
+            )
+
+    polygon_so1, polygon_so2 = _polygon_paths(raw_root)
+    for slide, polygon in (("SO_1", polygon_so1), ("SO_2", polygon_so2)):
+        if sha256_file(polygon) != EXPECTED_POLYGON_SHA256[slide]:
+            raise AttentionNichePipelineError(
+                f"Source segmentation polygon checksum drifted for {slide}."
+            )
+    raw_source_files: list[Path] = []
+    for slide in ("SO_1", "SO_2"):
+        expression_path = discover_slide_raw_path(raw_root, slide, "expression")
+        metadata_path = discover_slide_raw_path(raw_root, slide, "metadata")
+        source_receipt = next(
+            record["source_checksums"]
+            for record in cohort_records
+            if record["source_slide"] == slide
+        )
+        if (
+            sha256_file(expression_path) != source_receipt["expression_sha256"]
+            or sha256_file(metadata_path) != source_receipt["metadata_sha256"]
+        ):
+            raise AttentionNichePipelineError(
+                f"Raw expression/metadata checksum drifted for {slide}."
+            )
+        raw_source_files.extend((expression_path.resolve(), metadata_path.resolve()))
+    tracked_files: list[Path] = [
+        cohort_manifest_path,
+        graph_manifest_path,
+        map_path,
+        policy_path,
+        polygon_so1,
+        polygon_so2,
+        cohort_root / "cohort_statistics.npz",
+        *raw_source_files,
+    ]
+    tracked_files.extend(sorted((cohort_root / "cores").glob("*.npz")))
+    for alias in EXPECTED_ALIASES:
+        tracked_files.extend(
+            graph_root / "cores" / alias / name
+            for name in ("edge_index.npy", "orientation.npz", "relative_geometry.npy")
+        )
+    receipts = {
+        str(path.resolve()): _file_receipt(
+            path,
+            root=paths.project_root,
+            data_root=paths.data_root,
+        )
+        for path in tracked_files
+    }
+    return PreparedInputContract(
+        cohort_dir=cohort_root,
+        graph_dir=graph_root,
+        raw_dir=raw_root,
+        core_map_path=map_path,
+        reconciliation_path=policy_path,
+        cohort_manifest=cohort_manifest,
+        graph_manifest=graph_manifest,
+        core_records=by_alias,
+        gene_names=genes,
+        metadata_names=metadata_names,
+        pre_analysis_file_receipts=receipts,
+    )
+
+
+def verify_inputs_unchanged(
+    receipts: Mapping[str, Mapping[str, Any]],
+    *,
+    project_root: Path,
+    data_root: Path | None = None,
+) -> dict[str, Any]:
+    drift: list[dict[str, Any]] = []
+    post: dict[str, Any] = {}
+    for absolute, before in receipts.items():
+        path = Path(absolute)
+        after = _file_receipt(path, root=project_root, data_root=data_root)
+        post[absolute] = after
+        if (
+            after["size_bytes"] != before.get("size_bytes")
+            or after["sha256"] != before.get("sha256")
+        ):
+            drift.append({"path": after["path"], "before": dict(before), "after": after})
+    if drift:
+        raise AttentionNichePipelineError(
+            f"{len(drift)} immutable prepared/source inputs changed during analysis."
+        )
+    return {"unchanged": True, "file_count": len(post), "post_receipts": post}
+
+
+def _load_one_core_batch(
+    *,
+    alias: str,
+    cohort_dir: Path,
+    graph_dir: Path,
+) -> tuple[PooledRelativeQKVCoreBatch, np.ndarray, np.ndarray]:
+    if alias not in EXPECTED_ALIASES:
+        raise AttentionNichePipelineError(f"Unknown core alias: {alias}")
+    with np.load(cohort_dir / "cores" / f"{alias}.npz", allow_pickle=False) as data:
+        target = np.array(data["target_expression"], dtype=np.float32, copy=True)
+        covariates = np.array(data["node_covariates"], dtype=np.float32, copy=True)
+        coordinates = np.array(data["coordinates_um"], dtype=np.float64, copy=True)
+        counts = np.array(data["expression_counts"], dtype=np.int32, copy=True)
+    edge_map = np.load(
+        graph_dir / "cores" / alias / "edge_index.npy", mmap_mode="r"
+    )
+    geometry_map = np.load(
+        graph_dir / "cores" / alias / "relative_geometry.npy", mmap_mode="r"
+    )
+    batch = PooledRelativeQKVCoreBatch(
+        alias=alias,
+        target_expression=torch.from_numpy(target),
+        edge_index=torch.from_numpy(edge_map),
+        relative_geometry=torch.from_numpy(geometry_map),
+        node_covariates=torch.from_numpy(covariates),
+    )
+    return batch, coordinates, counts
+
+
+def _load_and_verify_raw_core_identity(
+    *,
+    alias: str,
+    cohort_dir: Path,
+    raw_dir: Path,
+    core_map_path: Path,
+    reconciliation_path: Path,
+    prepared_coordinates: np.ndarray,
+    prepared_counts: np.ndarray,
+    prepared_covariates: np.ndarray,
+    expected_genes: Sequence[str],
+) -> tuple[pd.DataFrame, np.ndarray, dict[str, Any]]:
+    """Recover original keys/metadata and prove prepared-node alignment.
+
+    The immutable prepared arrays intentionally omit routing identifiers.  This
+    function replays the repository's public, slide-qualified raw loader using
+    the locked route and then compares every count, coordinate, transformed
+    expression value, and transformed metadata value with the prepared-node
+    order.  It returns only keys plus measured allow-listed metadata.
+    """
+
+    routes = resolve_cancer_core_routes(core_map_path, reconciliation_path)
+    matches = [route for route in routes if route.alias == alias]
+    if len(matches) != 1:
+        raise AttentionNichePipelineError(
+            f"The locked core mapping does not resolve exactly one route for {alias}."
+        )
+    route = matches[0]
+    raw_core = load_selected_core(
+        raw_dir,
+        CoreSelection(
+            slide=route.slide,
+            fovs=route.fovs,
+            label_policy="user_attested_cancer_reconciliation_v1",
+        ),
+        chunksize=8_192,
+        expected_biological_probes=len(expected_genes),
+        qc_policy="all",
+    )
+    if tuple(raw_core.gene_names) != tuple(expected_genes):
+        raise AttentionNichePipelineError(f"Raw gene order drifted for {alias}.")
+    if not np.array_equal(raw_core.expression, prepared_counts):
+        raise AttentionNichePipelineError(
+            f"Raw counts no longer align with prepared-node order for {alias}."
+        )
+    if not np.array_equal(raw_core.coordinates_um, prepared_coordinates):
+        raise AttentionNichePipelineError(
+            f"Raw physical coordinates no longer align for {alias}."
+        )
+
+    with np.load(cohort_dir / "cohort_statistics.npz", allow_pickle=False) as data:
+        expression_mean = np.asarray(data["expression_mean"], dtype=np.float64)
+        expression_scale = np.asarray(data["expression_scale"], dtype=np.float64)
+        metadata_median = np.asarray(data["metadata_median"], dtype=np.float64)
+        metadata_mean = np.asarray(data["metadata_mean"], dtype=np.float64)
+        metadata_scale = np.asarray(data["metadata_scale"], dtype=np.float64)
+        missing_indices = np.asarray(
+            data["metadata_missing_indicator_indices"], dtype=np.int64
+        )
+    reconstructed_target = (
+        np.log1p(raw_core.expression.astype(np.float64, copy=False))
+        - expression_mean
+    ) / expression_scale
+    with np.load(cohort_dir / "cores" / f"{alias}.npz", allow_pickle=False) as data:
+        prepared_target = np.asarray(data["target_expression"], dtype=np.float32)
+    if not np.array_equal(
+        reconstructed_target.astype(np.float32, copy=False), prepared_target
+    ):
+        raise AttentionNichePipelineError(
+            f"Expression normalization no longer matches training for {alias}."
+        )
+
+    measured_metadata = np.asarray(raw_core.metadata, dtype=np.float64)
+    missing = np.isnan(measured_metadata)
+    imputed = np.where(missing, metadata_median, measured_metadata)
+    if np.any(imputed < 0):
+        raise AttentionNichePipelineError(
+            f"Raw metadata violates the locked log1p transformation for {alias}."
+        )
+    transformed_metadata = (np.log1p(imputed) - metadata_mean) / metadata_scale
+    if len(missing_indices):
+        transformed_metadata = np.concatenate(
+            [
+                transformed_metadata,
+                missing[:, missing_indices].astype(np.float64),
+            ],
+            axis=1,
+        )
+    if not np.array_equal(
+        transformed_metadata.astype(np.float32, copy=False), prepared_covariates
+    ):
+        raise AttentionNichePipelineError(
+            f"Metadata preprocessing no longer matches training for {alias}."
+        )
+
+    keys = raw_core.keys.copy()
+    if tuple(keys.columns) != ("slide", "fov", "cell_ID"):
+        raise AttentionNichePipelineError("Original cell-key schema drifted.")
+    keys["source_slide"] = keys["slide"].astype(str)
+    keys["fov"] = keys["fov"].astype(np.int32)
+    keys["cell_ID"] = keys["cell_ID"].astype(np.int32)
+    keys["source_qc_passed"] = np.asarray(raw_core.qc_passed, dtype=np.bool_)
+    measured = np.asarray(raw_core.metadata, dtype=np.float32)
+    receipt = {
+        "alias": alias,
+        "core_number": int(route.core_number),
+        "source_slide": route.slide,
+        "cell_count": int(len(keys)),
+        "gene_order_sha256": _canonical_sha256(list(raw_core.gene_names)),
+        "raw_counts_aligned": True,
+        "coordinates_um_aligned": True,
+        "target_expression_transform_reproduced": True,
+        "metadata_transform_reproduced": True,
+        "original_key_checksum_sha256": _canonical_sha256(
+            keys[["source_slide", "fov", "cell_ID"]].to_dict(orient="records")
+        ),
+        "measured_metadata_names": list(ALLOWED_METADATA_COLUMNS),
+    }
+    return keys, measured, receipt
+
+
+def _attention_normalization_error(
+    attention: np.ndarray,
+    receiver: np.ndarray,
+) -> float:
+    values = np.asarray(attention, dtype=np.float32)
+    receivers = np.asarray(receiver, dtype=np.int64)
+    if values.ndim != 2 or len(values) != len(receivers) or len(receivers) == 0:
+        raise AttentionNichePipelineError("Attention shard shape is invalid.")
+    changes = np.r_[0, np.flatnonzero(receivers[1:] != receivers[:-1]) + 1]
+    if np.any(receivers[1:] < receivers[:-1]):
+        raise AttentionNichePipelineError("Attention shard is not receiver-major.")
+    sums = np.add.reduceat(values, changes, axis=0)
+    return float(np.max(np.abs(sums - 1.0)))
+
+
+def _stream_one_view(
+    *,
+    model: torch.nn.Module,
+    batch: PooledRelativeQKVCoreBatch,
+    mask: np.ndarray,
+    edge_index: np.ndarray,
+    indegree: np.ndarray,
+    routing_target: np.ndarray,
+    channel_targets: Mapping[str, np.ndarray] | None,
+    amp: bool,
+) -> dict[str, Any]:
+    from .attention_routing_niches import validate_attention_shard
+
+    edge_count = edge_index.shape[1]
+    coverage = np.zeros(edge_count, dtype=np.bool_)
+    max_attention_sum_error = 0.0
+    max_logit_composition_error = 0.0
+    max_softmax_reconstruction_error = 0.0
+    shard_count = 0
+    strict_receipt_digest = hashlib.sha256()
+
+    def consume(
+        receiver_start: int,
+        receiver_stop: int,
+        edge_ids: np.ndarray,
+        attention: np.ndarray,
+        content: np.ndarray,
+        bias: np.ndarray,
+        combined: np.ndarray,
+    ) -> None:
+        nonlocal max_attention_sum_error
+        nonlocal max_logit_composition_error
+        nonlocal max_softmax_reconstruction_error
+        nonlocal shard_count
+        ids = np.asarray(edge_ids, dtype=np.int64)
+        arrays = {
+            "attention": np.asarray(attention, dtype=np.float32),
+            "content_qk": np.asarray(content, dtype=np.float32),
+            "positional_bias": np.asarray(bias, dtype=np.float32),
+            "combined_logit": np.asarray(combined, dtype=np.float32),
+        }
+        shapes = {value.shape for value in arrays.values()}
+        if (
+            len(shapes) != 1
+            or arrays["attention"].ndim != 2
+            or arrays["attention"].shape[0] != len(ids)
+            or np.any(ids < 0)
+            or np.any(ids >= edge_count)
+            or bool(coverage[ids].any())
+            or not all(np.isfinite(value).all() for value in arrays.values())
+        ):
+            raise AttentionNichePipelineError("Streamed attention channels misalign.")
+        coverage[ids] = True
+        source = edge_index[0, ids]
+        receiver = edge_index[1, ids]
+        if (
+            np.any(source == receiver)
+            or np.any(receiver < receiver_start)
+            or np.any(receiver >= receiver_stop)
+        ):
+            raise AttentionNichePipelineError("Streamed edge identity is invalid.")
+        attention_error = _attention_normalization_error(
+            arrays["attention"], receiver
+        )
+        composition_error = float(
+            np.max(
+                np.abs(
+                    arrays["combined_logit"]
+                    - (arrays["content_qk"] + arrays["positional_bias"])
+                )
+            )
+        )
+        max_attention_sum_error = max(max_attention_sum_error, attention_error)
+        max_logit_composition_error = max(
+            max_logit_composition_error, composition_error
+        )
+        if attention_error > 2e-6:
+            raise AttentionNichePipelineError(
+                f"Attention normalization error {attention_error:.3g} exceeds tolerance."
+            )
+        if composition_error > 2e-4:
+            raise AttentionNichePipelineError(
+                f"Combined-logit composition error {composition_error:.3g} exceeds tolerance."
+            )
+        strict_audit = validate_attention_shard(
+            edge_index[:, ids],
+            arrays["attention"],
+            arrays["content_qk"],
+            arrays["positional_bias"],
+            arrays["combined_logit"],
+            n_nodes=int(indegree.shape[0]),
+            source_indices=source,
+            receiver_indices=receiver,
+            expected_receiver_in_degrees=indegree,
+            normalization_tolerance=2e-6,
+            decomposition_atol=2e-4,
+            decomposition_rtol=1e-6,
+            softmax_atol=2e-6,
+            softmax_rtol=1e-5,
+        )
+        max_softmax_reconstruction_error = max(
+            max_softmax_reconstruction_error,
+            strict_audit.maximum_softmax_deviation,
+        )
+        strict_receipt_digest.update(strict_audit.receipt_sha256.encode("ascii"))
+        routing_target[ids] = (
+            indegree[receiver] * arrays["attention"].mean(axis=1)
+        )
+        if channel_targets is not None:
+            for name, target in channel_targets.items():
+                target[ids] += arrays[name]
+        shard_count += 1
+
+    layer = stream_receiver_attention(
+        model,
+        batch,
+        mask,
+        layer=-1,
+        amp=amp,
+        consumer=consume,
+    )
+    if layer != int(model.graph_layers) - 1:
+        raise AttentionNichePipelineError("Extraction did not use the final graph layer.")
+    if not bool(coverage.all()) or not np.isfinite(routing_target).all():
+        raise AttentionNichePipelineError("Attention stream did not cover every edge once.")
+    return {
+        "layer_number": int(layer),
+        "shard_count": int(shard_count),
+        "max_attention_sum_error": max_attention_sum_error,
+        "max_logit_composition_error": max_logit_composition_error,
+        "max_softmax_reconstruction_error": max_softmax_reconstruction_error,
+        "strict_attention_shard_receipts_sha256": strict_receipt_digest.hexdigest(),
+        "strict_attention_shard_count": int(shard_count),
+        "edge_coverage": int(coverage.sum()),
+    }
+
+
+def _fixed_size_list(array: np.ndarray) -> pa.Array:
+    values = np.ascontiguousarray(array, dtype=np.float32)
+    if values.ndim != 2:
+        raise AttentionNichePipelineError("Per-head list array must be two-dimensional.")
+    flat = pa.array(values.reshape(-1), type=pa.float32())
+    return pa.FixedSizeListArray.from_arrays(flat, list_size=values.shape[1])
+
+
+def _write_directed_core_table(
+    path: Path,
+    *,
+    alias: str,
+    core_number: int,
+    seeds: Sequence[int],
+    edge_index: np.ndarray,
+    coordinates: np.ndarray,
+    indegree: np.ndarray,
+    routing_samples: np.ndarray,
+    all_visible_routing: np.ndarray,
+    channel_mask_means: Mapping[str, np.ndarray],
+    row_group_size: int = 100_000,
+) -> dict[str, Any]:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        raise FileExistsError(f"Refusing to overwrite directed table: {path}")
+    source_all = edge_index[0]
+    receiver_all = edge_index[1]
+    writer: pq.ParquetWriter | None = None
+    schema: pa.Schema | None = None
+    row_count = 0
+    try:
+        for start in range(0, edge_index.shape[1], row_group_size):
+            stop = min(start + row_group_size, edge_index.shape[1])
+            source = source_all[start:stop]
+            receiver = receiver_all[start:stop]
+            sample = np.asarray(routing_samples[:, :, start:stop], dtype=np.float32)
+            seed_values = np.median(sample, axis=1)
+            view_values = np.median(sample, axis=0)
+            visible = np.asarray(all_visible_routing[:, start:stop], dtype=np.float32)
+            delta = coordinates[source] - coordinates[receiver]
+            columns: dict[str, Any] = {
+                "core_number": np.full(stop - start, core_number, dtype=np.int16),
+                "core_alias": np.full(stop - start, alias),
+                "edge_index_position": np.arange(start, stop, dtype=np.int64),
+                "source_cell_index": source.astype(np.int64, copy=False),
+                "receiver_cell_index": receiver.astype(np.int64, copy=False),
+                "receiver_in_degree": indegree[receiver].astype(np.int32),
+                "distance_um": np.linalg.norm(delta, axis=1).astype(np.float32),
+                "head_mean_attention_mean": (
+                    sample / indegree[receiver][None, None, :]
+                ).mean(axis=(0, 1)).astype(np.float32),
+                "degree_adjusted_routing_median": np.median(
+                    sample, axis=(0, 1)
+                ).astype(np.float32),
+                "degree_adjusted_routing_mean": sample.mean(axis=(0, 1)).astype(
+                    np.float32
+                ),
+                "degree_adjusted_routing_sd": sample.std(axis=(0, 1)).astype(
+                    np.float32
+                ),
+                "degree_adjusted_routing_per_seed_mask_view": _fixed_size_list(
+                    np.moveaxis(sample, 2, 0).reshape(stop - start, -1)
+                ),
+                "seed_aggregated_mean": seed_values.mean(axis=0).astype(np.float32),
+                "seed_aggregated_sd": (
+                    np.full(stop - start, np.nan, dtype=np.float32)
+                    if len(seeds) == 1
+                    else seed_values.std(axis=0, ddof=1).astype(np.float32)
+                ),
+                "mask_view_aggregated_mean": view_values.mean(axis=0).astype(
+                    np.float32
+                ),
+                "mask_view_aggregated_sd": view_values.std(axis=0, ddof=1).astype(
+                    np.float32
+                ),
+                "all_visible_routing_median": np.median(visible, axis=0).astype(
+                    np.float32
+                ),
+                "all_visible_degree_adjusted_routing_per_seed": _fixed_size_list(
+                    visible.T
+                ),
+            }
+            for seed_position, seed in enumerate(seeds):
+                for channel_name in (
+                    "attention",
+                    "content_qk",
+                    "positional_bias",
+                    "combined_logit",
+                ):
+                    columns[
+                        f"{channel_name}_per_head_mask_mean_seed_{seed:03d}"
+                    ] = _fixed_size_list(
+                        channel_mask_means[channel_name][
+                            seed_position, start:stop
+                        ]
+                    )
+            table = pa.table(columns)
+            if writer is None:
+                schema = table.schema
+                writer = pq.ParquetWriter(
+                    path,
+                    schema,
+                    compression="zstd",
+                    compression_level=6,
+                    use_dictionary=["core_alias"],
+                    write_statistics=True,
+                )
+            elif table.schema != schema:
+                raise AttentionNichePipelineError("Directed Parquet schema drifted.")
+            writer.write_table(table, row_group_size=len(table))
+            row_count += len(table)
+    finally:
+        if writer is not None:
+            writer.close()
+    if row_count != edge_index.shape[1]:
+        raise AttentionNichePipelineError("Directed Parquet row coverage drifted.")
+    return {
+        "path": str(path),
+        "row_count": row_count,
+        "sha256": sha256_file(path),
+        "size_bytes": path.stat().st_size,
+        "per_head_values": (
+            "mask-view means retained separately for every model seed; nominal "
+            "head indices are not averaged across seeds"
+        ),
+        "directional_routing_values": (
+            "exact seed-major then mask-view-major degree-adjusted routing values "
+            "retained for every directed edge"
+        ),
+    }
+
+
+def _write_mutual_core_table(
+    path: Path,
+    *,
+    alias: str,
+    core_number: int,
+    coordinates: np.ndarray,
+    consensus: Any,
+    retained_graph: Any,
+    row_group_size: int = 100_000,
+) -> dict[str, Any]:
+    """Write every reciprocal pair, retaining direction and selection status."""
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists():
+        raise FileExistsError(f"Refusing to overwrite mutual table: {path}")
+    pair_count = int(consensus.pairs.pair_count)
+    retained = np.zeros(pair_count, dtype=np.bool_)
+    endpoint_selection_count = np.zeros(pair_count, dtype=np.int8)
+    retained[retained_graph.pair_positions] = True
+    endpoint_selection_count[retained_graph.pair_positions] = np.asarray(
+        retained_graph.endpoint_selection_count, dtype=np.int8
+    )
+    seed_sd = consensus.seed_standard_deviation_after_view_median
+    mask_sd = consensus.mask_view_standard_deviation_after_seed_median
+    writer: pq.ParquetWriter | None = None
+    schema: pa.Schema | None = None
+    row_count = 0
+    try:
+        for start in range(0, pair_count, row_group_size):
+            stop = min(start + row_group_size, pair_count)
+            pairs = consensus.pairs.pair_cells[start:stop]
+            first = pairs[:, 0]
+            second = pairs[:, 1]
+            distance = np.linalg.norm(
+                coordinates[first] - coordinates[second], axis=1
+            ).astype(np.float32)
+            columns: dict[str, Any] = {
+                "core_number": np.full(stop - start, core_number, dtype=np.int16),
+                "core_alias": np.full(stop - start, alias),
+                "mutual_pair_position": np.arange(start, stop, dtype=np.int64),
+                "cell_i_index": first.astype(np.int64, copy=False),
+                "cell_j_index": second.astype(np.int64, copy=False),
+                "distance_um": distance,
+                "M_ij": np.asarray(
+                    consensus.consensus_mutual_score[start:stop], dtype=np.float32
+                ),
+                "support_P_ij": np.asarray(
+                    consensus.support_fraction[start:stop], dtype=np.float32
+                ),
+                "i_to_j_degree_adjusted_routing": np.asarray(
+                    consensus.i_to_j_directional_median[start:stop],
+                    dtype=np.float32,
+                ),
+                "j_to_i_degree_adjusted_routing": np.asarray(
+                    consensus.j_to_i_directional_median[start:stop],
+                    dtype=np.float32,
+                ),
+                "seed_mean_after_mask_median": np.asarray(
+                    consensus.seed_mean_after_view_median[start:stop],
+                    dtype=np.float32,
+                ),
+                "seed_spread_sd_after_mask_median": (
+                    np.full(stop - start, np.nan, dtype=np.float32)
+                    if seed_sd is None
+                    else np.asarray(seed_sd[start:stop], dtype=np.float32)
+                ),
+                "mask_view_mean_after_seed_median": np.asarray(
+                    consensus.mask_view_mean_after_seed_median[start:stop],
+                    dtype=np.float32,
+                ),
+                "mask_view_spread_sd_after_seed_median": (
+                    np.full(stop - start, np.nan, dtype=np.float32)
+                    if mask_sd is None
+                    else np.asarray(mask_sd[start:stop], dtype=np.float32)
+                ),
+                "mutual_score_per_seed_mask_median": _fixed_size_list(
+                    np.asarray(
+                        consensus.per_seed_view_median[:, start:stop].T,
+                        dtype=np.float32,
+                    )
+                ),
+                "mutual_score_per_mask_seed_median": _fixed_size_list(
+                    np.asarray(
+                        consensus.per_mask_view_seed_median[:, start:stop].T,
+                        dtype=np.float32,
+                    )
+                ),
+                "i_to_j_edge_index_position": np.asarray(
+                    consensus.pairs.i_to_j_edge_ids[start:stop], dtype=np.int64
+                ),
+                "j_to_i_edge_index_position": np.asarray(
+                    consensus.pairs.j_to_i_edge_ids[start:stop], dtype=np.int64
+                ),
+                "retained_primary": retained[start:stop],
+                "endpoint_selection_count": endpoint_selection_count[start:stop],
+            }
+            table = pa.table(columns)
+            if writer is None:
+                schema = table.schema
+                writer = pq.ParquetWriter(
+                    path,
+                    schema,
+                    compression="zstd",
+                    compression_level=6,
+                    use_dictionary=["core_alias"],
+                    write_statistics=True,
+                )
+            elif table.schema != schema:
+                raise AttentionNichePipelineError("Mutual Parquet schema drifted.")
+            writer.write_table(table, row_group_size=len(table))
+            row_count += len(table)
+    finally:
+        if writer is not None:
+            writer.close()
+    if row_count != pair_count:
+        raise AttentionNichePipelineError("Mutual Parquet row coverage drifted.")
+    return {
+        "path": str(path),
+        "row_count": int(row_count),
+        "retained_row_count": int(retained.sum()),
+        "sha256": sha256_file(path),
+        "size_bytes": path.stat().st_size,
+    }
+
+
+def _incident_median(
+    n_nodes: int,
+    edge_pairs: np.ndarray,
+    values: np.ndarray,
+    *,
+    default: float,
+) -> np.ndarray:
+    """Median incident-edge value per node without dense node-edge scans."""
+
+    pairs = np.asarray(edge_pairs, dtype=np.int64)
+    edge_values = np.asarray(values, dtype=np.float64)
+    if pairs.shape != (len(edge_values), 2):
+        raise AttentionNichePipelineError("Incident value arrays are misaligned.")
+    result = np.full(int(n_nodes), float(default), dtype=np.float64)
+    if not len(pairs):
+        return result
+    endpoints = np.concatenate((pairs[:, 0], pairs[:, 1]))
+    repeated_values = np.concatenate((edge_values, edge_values))
+    order = np.argsort(endpoints, kind="stable")
+    ordered_endpoints = endpoints[order]
+    ordered_values = repeated_values[order]
+    starts = np.r_[
+        0, np.flatnonzero(ordered_endpoints[1:] != ordered_endpoints[:-1]) + 1
+    ]
+    for start, stop in zip(
+        starts, np.r_[starts[1:], len(ordered_endpoints)], strict=True
+    ):
+        result[int(ordered_endpoints[start])] = float(
+            np.median(ordered_values[start:stop])
+        )
+    return result
+
+
+def _integer_partition(labels: Sequence[object] | np.ndarray) -> np.ndarray:
+    values = np.asarray(labels, dtype=object)
+    unique = sorted({str(value) for value in values.tolist()})
+    mapping = {label: position for position, label in enumerate(unique)}
+    return np.asarray([mapping[str(value)] for value in values], dtype=np.int64)
+
+
+def _write_dataframe_parquet_atomic(path: Path, frame: pd.DataFrame) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() or path.is_symlink():
+        raise FileExistsError(f"Refusing to overwrite analysis output: {path}")
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.tmp-", suffix=".parquet", dir=path.parent
+    )
+    os.close(descriptor)
+    temporary = Path(temporary_name)
+    try:
+        frame.to_parquet(temporary, index=False, compression="zstd")
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def _write_dataframe_csv_atomic(path: Path, frame: pd.DataFrame) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() or path.is_symlink():
+        raise FileExistsError(f"Refusing to overwrite analysis output: {path}")
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.tmp-", suffix=".csv", dir=path.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8", newline="") as handle:
+            frame.to_csv(handle, index=False)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def _descriptive_niche_summaries(
+    *,
+    alias: str,
+    core_number: int,
+    final_niche_ids: np.ndarray,
+    micro_niche: np.ndarray,
+    hub_scores: np.ndarray,
+    confidence: np.ndarray,
+    counts: np.ndarray,
+    gene_names: Sequence[str],
+    measured_metadata: np.ndarray,
+    metadata_names: Sequence[str],
+    retained_pairs: np.ndarray,
+    retained_scores: np.ndarray,
+    regions: Sequence[Any],
+) -> pd.DataFrame:
+    """Build concise, explicitly descriptive per-niche summaries."""
+
+    niche_ids = np.asarray(final_niche_ids, dtype=object)
+    ordered_ids = sorted({str(value) for value in niche_ids.tolist()})
+    code_by_id = {niche_id: position for position, niche_id in enumerate(ordered_ids)}
+    codes = np.asarray([code_by_id[str(value)] for value in niche_ids], dtype=np.int64)
+    region_by_id = {region.niche_id: region for region in regions}
+    log_counts = np.log1p(np.asarray(counts, dtype=np.float32))
+    core_gene_sum = log_counts.sum(axis=0, dtype=np.float64)
+    rows: list[dict[str, Any]] = []
+    pairs = np.asarray(retained_pairs, dtype=np.int64)
+    scores = np.asarray(retained_scores, dtype=np.float64)
+    for niche_id in ordered_ids:
+        niche_code = code_by_id[niche_id]
+        selected = codes == niche_code
+        indices = np.flatnonzero(selected)
+        n_cells = int(len(indices))
+        inside_sum = log_counts[selected].sum(axis=0, dtype=np.float64)
+        rest_count = len(codes) - n_cells
+        if rest_count > 0:
+            delta = inside_sum / n_cells - (core_gene_sum - inside_sum) / rest_count
+            gene_index = np.arange(len(delta), dtype=np.int64)
+            marker_order = np.lexsort((gene_index, -delta))[:5]
+            marker_summary: dict[str, Any] = {
+                "status": "computed_descriptive_only",
+                "scale": "within_niche_minus_rest_of_core_mean_log1p_raw_count",
+                "genes": [
+                    {
+                        "gene": str(gene_names[position]),
+                        "mean_difference": float(delta[position]),
+                    }
+                    for position in marker_order
+                ],
+            }
+        else:
+            marker_summary = {
+                "status": "not_computed",
+                "reason": "niche_contains_entire_core",
+            }
+        medians = np.nanmedian(measured_metadata[selected], axis=0)
+        metadata_summary = {
+            str(name): (None if not np.isfinite(value) else float(value))
+            for name, value in zip(metadata_names, medians, strict=True)
+        }
+        if len(pairs):
+            inside_edge = selected[pairs[:, 0]] & selected[pairs[:, 1]]
+            boundary_edge = selected[pairs[:, 0]] ^ selected[pairs[:, 1]]
+        else:
+            inside_edge = np.zeros(0, dtype=np.bool_)
+            boundary_edge = np.zeros(0, dtype=np.bool_)
+        region = region_by_id.get(niche_id)
+        if region is None:
+            raise AttentionNichePipelineError(
+                f"Dissolved region is absent for {niche_id}."
+            )
+        rows.append(
+            {
+                "core_number": int(core_number),
+                "core_alias": alias,
+                "niche_id": niche_id,
+                "number_of_cells": n_cells,
+                "physical_area_um2": float(region.area_um2),
+                "micro_niche": bool(np.all(micro_niche[selected])),
+                "median_hub_score": float(np.median(hub_scores[selected])),
+                "maximum_hub_score": float(np.max(hub_scores[selected])),
+                "median_internal_mutual_routing_score": (
+                    float(np.median(scores[inside_edge]))
+                    if bool(inside_edge.any())
+                    else np.nan
+                ),
+                "boundary_edge_score": (
+                    float(np.median(scores[boundary_edge]))
+                    if bool(boundary_edge.any())
+                    else np.nan
+                ),
+                "confidence": float(np.median(confidence[selected])),
+                "descriptive_marker_gene_summary_json": _canonical_json(
+                    marker_summary
+                ),
+                "descriptive_metadata_summary_json": _canonical_json(
+                    metadata_summary
+                ),
+                "biological_niche_name_assigned": False,
+            }
+        )
+    return pd.DataFrame.from_records(rows)
+
+
+@dataclass(frozen=True, slots=True)
+class CoreJobSpec:
+    alias: str
+    core_number: int
+    local_device: int
+    output_dir: Path
+    cohort_dir: Path
+    graph_dir: Path
+    raw_dir: Path
+    core_map_path: Path
+    reconciliation_path: Path
+    members: tuple[CheckpointMember, ...]
+    analysis_mask_seed: int = 2026082501
+    mask_views: int = 10
+    leiden_seed: int = 2026082502
+    color_seed: int = 2026082503
+    uniform_routing_threshold: float = 1.0
+    score_threshold: float = 1.0
+    support_threshold: float = 0.60
+    primary_top_k: int = 8
+    primary_resolution: float = 1.0
+    polygon_coordinate_alignment_rule: str = (
+        "centroid_tolerance_or_polygon_covers_coordinate"
+    )
+    polygon_centroid_tolerance_um: float = 5.0
+    max_spatial_gap_um: float = 75.0
+    micro_niche_threshold: int = 20
+    amp: bool = False
+    deterministic_replay: bool = True
+
+
+def _extract_routing_samples(
+    *,
+    spec: CoreJobSpec,
+    batch: PooledRelativeQKVCoreBatch,
+    edge_index: np.ndarray,
+    indegree: np.ndarray,
+    store_head_channels: bool,
+) -> tuple[
+    np.ndarray,
+    np.ndarray,
+    dict[str, np.ndarray] | None,
+    list[dict[str, Any]],
+    dict[str, dict[str, Any]],
+    dict[str, Any],
+]:
+    # Import after process spawn so each child installs its own CUDA context.
+    from .attention_routing_niches import make_analysis_mask_view
+
+    seed_count = len(spec.members)
+    edge_count = batch.n_edges
+    routing = np.empty(
+        (seed_count, spec.mask_views, edge_count), dtype=np.float32
+    )
+    visible = np.empty((seed_count, edge_count), dtype=np.float32)
+    channel_sums: dict[str, np.ndarray] | None = None
+    head_count: int | None = None
+    mask_receipts: dict[str, dict[str, Any]] = {}
+    checkpoint_receipts: list[dict[str, Any]] = []
+    audit = {
+        "view_count": 0,
+        "all_visible_view_count": 0,
+        "max_attention_sum_error": 0.0,
+        "max_logit_composition_error": 0.0,
+        "max_softmax_reconstruction_error": 0.0,
+        "strict_attention_shard_count": 0,
+        "strict_view_receipts": [],
+        "total_streamed_edge_observations": 0,
+        "layer_numbers": [],
+    }
+    replay_records: list[dict[str, Any]] = []
+    set_deterministic_seed(
+        spec.analysis_mask_seed,
+        deterministic=True,
+        warn_only=False,
+    )
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
+    device = torch.device(f"cuda:{spec.local_device}")
+    torch.cuda.set_device(device)
+    torch.cuda.reset_peak_memory_stats(device)
+    for seed_position, member in enumerate(spec.members):
+        loaded = load_relative_qkv_checkpoint(
+            member.checkpoint_path,
+            num_genes=batch.n_genes,
+            node_covariate_dim=int(batch.node_covariates.shape[1]),
+            device=device,
+        )
+        model = loaded.model
+        model.eval()
+        if model.training or any(parameter.requires_grad for parameter in model.parameters()):
+            raise AttentionNichePipelineError("Loaded inference model is not frozen/eval.")
+        if loaded.checkpoint_sha256 != member.checkpoint_sha256:
+            raise AttentionNichePipelineError("Checkpoint hash changed before extraction.")
+        observed_heads = int(model.blocks[-1].attention_heads)
+        if head_count is None:
+            head_count = observed_heads
+            if store_head_channels:
+                channel_sums = {
+                    name: np.zeros(
+                        (seed_count, edge_count, observed_heads), dtype=np.float32
+                    )
+                    for name in (
+                        "attention",
+                        "content_qk",
+                        "positional_bias",
+                        "combined_logit",
+                    )
+                }
+        elif observed_heads != head_count:
+            raise AttentionNichePipelineError("Attention-head count differs across seeds.")
+        checkpoint_receipts.append(
+            {
+                "seed": member.seed,
+                "run_id": member.run_id,
+                "checkpoint_sha256": loaded.checkpoint_sha256,
+                "model_state_sha256": member.model_state_sha256,
+                "completed_global_epochs": member.completed_global_epochs,
+                "parameter_count": member.parameter_count,
+                "eval_mode": True,
+                "gradients_disabled": True,
+                "attention_heads": observed_heads,
+                "graph_layers": int(model.graph_layers),
+            }
+        )
+        for view_index in range(spec.mask_views):
+            mask_view = make_analysis_mask_view(
+                n_cells=batch.n_nodes,
+                n_genes=batch.n_genes,
+                core_alias=spec.alias,
+                mask_view_index=view_index,
+                analysis_mask_seed=spec.analysis_mask_seed,
+            )
+            key = str(view_index)
+            raw_mask_receipt = mask_view.to_receipt()
+            current_receipt = {
+                "view_index": int(view_index),
+                "derived_seed": int(mask_view.derived_seed),
+                "mask_realization_sha256": str(
+                    raw_mask_receipt["mask_realization_sha256"]
+                ),
+                "receipt_sha256": str(mask_view.receipt_sha256),
+                "masked_entry_count": int(mask_view.masked_gene_counts.sum()),
+                "masked_count_min": int(mask_view.masked_gene_counts.min()),
+                "masked_count_max": int(mask_view.masked_gene_counts.max()),
+                "zero_mask_cells": int((mask_view.masked_gene_counts == 0).sum()),
+                "full_mask_cells": int(
+                    (mask_view.masked_gene_counts == batch.n_genes).sum()
+                ),
+            }
+            previous = mask_receipts.setdefault(key, current_receipt)
+            if previous != current_receipt:
+                raise AttentionNichePipelineError(
+                    "Analysis masks differ across model seeds."
+                )
+            channel_targets = (
+                {
+                    name: values[seed_position]
+                    for name, values in channel_sums.items()
+                }
+                if channel_sums is not None
+                else None
+            )
+            view_audit = _stream_one_view(
+                model=model,
+                batch=batch,
+                mask=mask_view.mask,
+                edge_index=edge_index,
+                indegree=indegree,
+                routing_target=routing[seed_position, view_index],
+                channel_targets=channel_targets,
+                amp=spec.amp,
+            )
+            audit["view_count"] += 1
+            audit["total_streamed_edge_observations"] += edge_count
+            audit["max_attention_sum_error"] = max(
+                audit["max_attention_sum_error"],
+                view_audit["max_attention_sum_error"],
+            )
+            audit["max_logit_composition_error"] = max(
+                audit["max_logit_composition_error"],
+                view_audit["max_logit_composition_error"],
+            )
+            audit["max_softmax_reconstruction_error"] = max(
+                audit["max_softmax_reconstruction_error"],
+                view_audit["max_softmax_reconstruction_error"],
+            )
+            audit["strict_attention_shard_count"] += view_audit[
+                "strict_attention_shard_count"
+            ]
+            audit["strict_view_receipts"].append(
+                {
+                    "seed": int(member.seed),
+                    "mask_view_index": int(view_index),
+                    "all_genes_visible": False,
+                    "sha256": view_audit[
+                        "strict_attention_shard_receipts_sha256"
+                    ],
+                }
+            )
+            audit["layer_numbers"].append(view_audit["layer_number"])
+            if spec.deterministic_replay and seed_position == 0:
+                replay_mask = make_analysis_mask_view(
+                    n_cells=batch.n_nodes,
+                    n_genes=batch.n_genes,
+                    core_alias=spec.alias,
+                    mask_view_index=view_index,
+                    analysis_mask_seed=spec.analysis_mask_seed,
+                )
+                replay_routing = np.empty(edge_count, dtype=np.float32)
+                replay_audit = _stream_one_view(
+                    model=model,
+                    batch=batch,
+                    mask=replay_mask.mask,
+                    edge_index=edge_index,
+                    indegree=indegree,
+                    routing_target=replay_routing,
+                    channel_targets=None,
+                    amp=spec.amp,
+                )
+                if (
+                    replay_mask.receipt_sha256 != mask_view.receipt_sha256
+                    or not np.array_equal(
+                        replay_routing, routing[seed_position, view_index]
+                    )
+                ):
+                    raise AttentionNichePipelineError(
+                        "Deterministic inference replay changed mask or routing values."
+                    )
+                replay_records.append(
+                    {
+                        "view_index": int(view_index),
+                        "mask_receipt_sha256": replay_mask.receipt_sha256,
+                        "routing_sha256": _array_sha256(
+                            f"routing_replay_view_{view_index}", replay_routing
+                        ),
+                        "strict_attention_shard_receipts_sha256": replay_audit[
+                            "strict_attention_shard_receipts_sha256"
+                        ],
+                        "exact_array_equal": True,
+                        "max_attention_sum_error": replay_audit[
+                            "max_attention_sum_error"
+                        ],
+                        "max_softmax_reconstruction_error": replay_audit[
+                            "max_softmax_reconstruction_error"
+                        ],
+                    }
+                )
+        all_visible_mask = np.zeros(
+            (batch.n_nodes, batch.n_genes), dtype=np.bool_
+        )
+        visible_audit = _stream_one_view(
+            model=model,
+            batch=batch,
+            mask=all_visible_mask,
+            edge_index=edge_index,
+            indegree=indegree,
+            routing_target=visible[seed_position],
+            channel_targets=None,
+            amp=spec.amp,
+        )
+        audit["all_visible_view_count"] += 1
+        audit["total_streamed_edge_observations"] += edge_count
+        audit["max_attention_sum_error"] = max(
+            audit["max_attention_sum_error"],
+            visible_audit["max_attention_sum_error"],
+        )
+        audit["max_logit_composition_error"] = max(
+            audit["max_logit_composition_error"],
+            visible_audit["max_logit_composition_error"],
+        )
+        audit["max_softmax_reconstruction_error"] = max(
+            audit["max_softmax_reconstruction_error"],
+            visible_audit["max_softmax_reconstruction_error"],
+        )
+        audit["strict_attention_shard_count"] += visible_audit[
+            "strict_attention_shard_count"
+        ]
+        audit["strict_view_receipts"].append(
+            {
+                "seed": int(member.seed),
+                "mask_view_index": None,
+                "all_genes_visible": True,
+                "sha256": visible_audit[
+                    "strict_attention_shard_receipts_sha256"
+                ],
+            }
+        )
+        audit["layer_numbers"].append(visible_audit["layer_number"])
+        del loaded, model
+        torch.cuda.empty_cache()
+    if channel_sums is not None:
+        for values in channel_sums.values():
+            values /= float(spec.mask_views)
+    audit["peak_cuda_allocated_gib"] = float(
+        torch.cuda.max_memory_allocated(device) / (1024**3)
+    )
+    audit["peak_cuda_reserved_gib"] = float(
+        torch.cuda.max_memory_reserved(device) / (1024**3)
+    )
+    audit["routing_samples_sha256"] = _array_sha256("routing_samples", routing)
+    audit["all_visible_routing_sha256"] = _array_sha256(
+        "all_visible_routing", visible
+    )
+    audit["deterministic_inference_replay"] = {
+        "seed": int(spec.members[0].seed),
+        "view_count": len(replay_records),
+        "all_ten_mask_views_replayed": len(replay_records) == spec.mask_views == 10,
+        "exact_array_equal": bool(
+            len(replay_records) == spec.mask_views
+            and all(record["exact_array_equal"] for record in replay_records)
+        ),
+        "records": replay_records,
+        "replay_records_sha256": _canonical_sha256(replay_records),
+    }
+    if len(set(audit["layer_numbers"])) != 1:
+        raise AttentionNichePipelineError("Extraction layer drifted across views/seeds.")
+    return (
+        routing,
+        visible,
+        channel_sums,
+        checkpoint_receipts,
+        mask_receipts,
+        audit,
+    )
+
+
+def _run_core_job(spec: CoreJobSpec) -> dict[str, Any]:
+    """Run one complete core on one assigned CUDA device."""
+
+    from .attention_niche_geometry import (
+        construct_local_contiguity_graph,
+        deterministic_niche_colors,
+        dissolve_niche_regions,
+        dissolved_regions_geojson,
+        load_aligned_cosmx_polygons,
+        niche_adjacency_from_cells,
+        split_preliminary_niches,
+        verify_niche_connectedness,
+    )
+    from .attention_routing_niches import (
+        build_consensus_routing_partition,
+        build_seed_specific_partitions,
+        match_seed_partitions_to_consensus,
+        mutual_routing_hub_scores,
+        partition_similarity,
+        retain_top_k_mutual_edges,
+        summarize_mutual_routing_consensus,
+        summarize_parameter_sensitivity,
+        weighted_leiden_partition,
+    )
+
+    started_at = _utc_now()
+    started_monotonic = time.monotonic()
+    core_dir = spec.output_dir
+    core_dir.mkdir(parents=True, exist_ok=False)
+    batch, coordinates, counts = _load_one_core_batch(
+        alias=spec.alias,
+        cohort_dir=spec.cohort_dir,
+        graph_dir=spec.graph_dir,
+    )
+    edge_index = np.asarray(batch.edge_index.cpu().numpy(), dtype=np.int64)
+    if edge_index.shape != (2, batch.n_edges):
+        raise AttentionNichePipelineError("Prepared edge_index shape drifted.")
+    if np.any(edge_index[0] == edge_index[1]):
+        raise AttentionNichePipelineError("Prepared graph contains self edges.")
+    indegree = np.bincount(edge_index[1], minlength=batch.n_nodes).astype(
+        np.int64, copy=False
+    )
+    if np.any(indegree <= 0):
+        raise AttentionNichePipelineError(
+            f"At least one {spec.alias} receiver has zero incoming degree."
+        )
+
+    with (spec.cohort_dir / "manifest.json").open("r", encoding="utf-8") as handle:
+        cohort_manifest = json.load(handle)
+    gene_names = tuple(cohort_manifest["features"]["gene_names"])
+    identity, measured_metadata, identity_receipt = _load_and_verify_raw_core_identity(
+        alias=spec.alias,
+        cohort_dir=spec.cohort_dir,
+        raw_dir=spec.raw_dir,
+        core_map_path=spec.core_map_path,
+        reconciliation_path=spec.reconciliation_path,
+        prepared_coordinates=coordinates,
+        prepared_counts=counts,
+        prepared_covariates=np.asarray(batch.node_covariates.numpy()),
+        expected_genes=gene_names,
+    )
+    if len(identity) != batch.n_nodes:
+        raise AttentionNichePipelineError("Original identity row count drifted.")
+
+    polygon_so1, polygon_so2 = _polygon_paths(spec.raw_dir)
+    polygon_alignment = load_aligned_cosmx_polygons(
+        {"SO_1": polygon_so1, "SO_2": polygon_so2},
+        identity[["slide", "fov", "cell_ID"]],
+        prepared_coordinates_um=coordinates,
+        centroid_tolerance_um=spec.polygon_centroid_tolerance_um,
+    )
+    if (
+        polygon_alignment.centroid_alignment is None
+        or polygon_alignment.centroid_alignment.alignment_rule
+        != spec.polygon_coordinate_alignment_rule
+    ):
+        raise AttentionNichePipelineError(
+            "Polygon-coordinate alignment rule drifted from the locked analysis."
+        )
+    local_graph = construct_local_contiguity_graph(
+        coordinates,
+        polygons_um=polygon_alignment.polygons_um,
+        max_gap_um=spec.max_spatial_gap_um,
+        fallback_k=6,
+    )
+
+    routing, visible, channel_sums, checkpoint_receipts, mask_receipts, extraction_audit = (
+        _extract_routing_samples(
+            spec=spec,
+            batch=batch,
+            edge_index=edge_index,
+            indegree=indegree,
+            store_head_channels=True,
+        )
+    )
+    if channel_sums is None:
+        raise AttentionNichePipelineError("Per-head attention channels were not retained.")
+    directed_path = core_dir / "directed_attention_edges.parquet"
+    directed_receipt = _write_directed_core_table(
+        directed_path,
+        alias=spec.alias,
+        core_number=spec.core_number,
+        seeds=[member.seed for member in spec.members],
+        edge_index=edge_index,
+        coordinates=coordinates,
+        indegree=indegree,
+        routing_samples=routing,
+        all_visible_routing=visible,
+        channel_mask_means=channel_sums,
+    )
+    del channel_sums
+
+    consensus = summarize_mutual_routing_consensus(
+        edge_index,
+        routing,
+        n_nodes=batch.n_nodes,
+        seed_ids=tuple(member.seed for member in spec.members),
+        mask_view_ids=tuple(range(spec.mask_views)),
+        uniform_threshold=spec.uniform_routing_threshold,
+        require_all_edges_reciprocal=True,
+    )
+    primary = build_consensus_routing_partition(
+        consensus,
+        n_nodes=batch.n_nodes,
+        top_k=spec.primary_top_k,
+        score_threshold=spec.score_threshold,
+        support_threshold=spec.support_threshold,
+        resolution=spec.primary_resolution,
+        random_seed=spec.leiden_seed,
+        core_alias=spec.alias,
+    )
+    connected = split_preliminary_niches(
+        spec.core_number,
+        primary.leiden.labels,
+        local_graph.adjacency,
+        micro_niche_threshold=spec.micro_niche_threshold,
+    )
+    verify_niche_connectedness(connected.final_niche_ids, local_graph.adjacency)
+    niche_adjacency = niche_adjacency_from_cells(
+        connected.final_niche_ids, local_graph.adjacency
+    )
+    colors = deterministic_niche_colors(
+        spec.core_number,
+        niche_adjacency,
+        color_seed=spec.color_seed,
+    )
+    color_by_cell = np.asarray(
+        [colors[str(value)] for value in connected.final_niche_ids], dtype=object
+    )
+    regions = dissolve_niche_regions(
+        polygon_alignment.polygons_um,
+        connected.final_niche_ids,
+    )
+
+    # Match each seed-specific, spatially split partition to the equally split
+    # consensus.  A single-model analysis instead estimates assignment
+    # agreement over the ten individual mask views and leaves seed agreement
+    # unavailable.
+    consensus_connected_labels = _integer_partition(connected.final_niche_ids)
+    seed_partitions = build_seed_specific_partitions(
+        consensus,
+        n_nodes=batch.n_nodes,
+        top_k=spec.primary_top_k,
+        score_threshold=spec.score_threshold,
+        support_threshold=spec.support_threshold,
+        resolution=spec.primary_resolution,
+        random_seed=spec.leiden_seed,
+        core_alias=spec.alias,
+        require_ten_mask_views=True,
+    )
+    seed_connected_rows: list[np.ndarray] = []
+    for seed_partition in seed_partitions:
+        seed_connected = split_preliminary_niches(
+            spec.core_number,
+            seed_partition.graph_partition.leiden.labels,
+            local_graph.adjacency,
+            micro_niche_threshold=spec.micro_niche_threshold,
+        )
+        seed_connected_rows.append(_integer_partition(seed_connected.final_niche_ids))
+    if len(spec.members) > 1:
+        assignment_agreement = match_seed_partitions_to_consensus(
+            consensus_connected_labels,
+            np.stack(seed_connected_rows),
+            seed_ids=tuple(member.seed for member in spec.members),
+        )
+        agreement_axis = "model_seed"
+        seed_assignment_agreement = np.asarray(
+            assignment_agreement.cell_assignment_agreement, dtype=np.float64
+        )
+        mask_assignment_agreement = np.full(batch.n_nodes, np.nan)
+        agreement_for_confidence = seed_assignment_agreement
+    else:
+        mask_connected_rows: list[np.ndarray] = []
+        for view_position in range(spec.mask_views):
+            view_scores = consensus.mutual_samples[0, view_position]
+            view_support = (
+                view_scores > spec.uniform_routing_threshold
+            ).astype(np.float64)
+            view_graph = retain_top_k_mutual_edges(
+                consensus.pairs.pair_cells,
+                view_scores,
+                view_support,
+                n_nodes=batch.n_nodes,
+                top_k=spec.primary_top_k,
+                score_threshold=spec.score_threshold,
+                support_threshold=spec.support_threshold,
+            )
+            view_leiden = weighted_leiden_partition(
+                batch.n_nodes,
+                view_graph.edge_pairs,
+                view_graph.weights,
+                resolution=spec.primary_resolution,
+                random_seed=spec.leiden_seed,
+                core_alias=spec.alias,
+            )
+            view_connected = split_preliminary_niches(
+                spec.core_number,
+                view_leiden.labels,
+                local_graph.adjacency,
+                micro_niche_threshold=spec.micro_niche_threshold,
+            )
+            mask_connected_rows.append(
+                _integer_partition(view_connected.final_niche_ids)
+            )
+        assignment_agreement = match_seed_partitions_to_consensus(
+            consensus_connected_labels,
+            np.stack(mask_connected_rows),
+            seed_ids=tuple(range(spec.mask_views)),
+        )
+        agreement_axis = "mask_view"
+        seed_assignment_agreement = np.full(batch.n_nodes, np.nan)
+        mask_assignment_agreement = np.asarray(
+            assignment_agreement.cell_assignment_agreement, dtype=np.float64
+        )
+        agreement_for_confidence = mask_assignment_agreement
+
+    retained = primary.retained_graph
+    hub_scores = mutual_routing_hub_scores(
+        batch.n_nodes, retained.edge_pairs, retained.weights
+    )
+    incident_support = _incident_median(
+        batch.n_nodes,
+        retained.edge_pairs,
+        retained.support_fraction,
+        default=0.0,
+    )
+    retained_positions = retained.pair_positions
+    mask_spread_values = consensus.mask_view_standard_deviation_after_seed_median
+    if mask_spread_values is None:
+        incident_mask_spread = np.zeros(batch.n_nodes, dtype=np.float64)
+    else:
+        incident_mask_spread = _incident_median(
+            batch.n_nodes,
+            retained.edge_pairs,
+            mask_spread_values[retained_positions],
+            default=0.0,
+        )
+    seed_spread_values = consensus.seed_standard_deviation_after_view_median
+    if seed_spread_values is None:
+        incident_seed_spread = np.full(batch.n_nodes, np.nan)
+        variation_reliability = 1.0 / (1.0 + incident_mask_spread)
+    else:
+        incident_seed_spread = _incident_median(
+            batch.n_nodes,
+            retained.edge_pairs,
+            seed_spread_values[retained_positions],
+            default=0.0,
+        )
+        variation_reliability = 1.0 / (
+            1.0 + incident_seed_spread + incident_mask_spread
+        )
+    confidence = np.cbrt(
+        np.clip(agreement_for_confidence, 0.0, 1.0)
+        * np.clip(incident_support, 0.0, 1.0)
+        * np.clip(variation_reliability, 0.0, 1.0)
+    )
+
+    # Locked parameter sensitivity uses the same spatial split and never
+    # substitutes a visually preferred setting for top-8/resolution-1.0.
+    sensitivity_partitions: dict[tuple[int, float], np.ndarray] = {}
+    sensitivity_details: list[dict[str, Any]] = []
+    for top_k in (5, 8, 10):
+        top_graph = retain_top_k_mutual_edges(
+            consensus.pairs.pair_cells,
+            consensus.consensus_mutual_score,
+            consensus.support_fraction,
+            n_nodes=batch.n_nodes,
+            top_k=top_k,
+            score_threshold=spec.score_threshold,
+            support_threshold=spec.support_threshold,
+        )
+        for resolution in (0.5, 1.0, 1.5):
+            if top_k == spec.primary_top_k and resolution == spec.primary_resolution:
+                preliminary = primary.leiden
+                final_labels = consensus_connected_labels
+                final_niche_count = connected.niche_count
+            else:
+                preliminary = weighted_leiden_partition(
+                    batch.n_nodes,
+                    top_graph.edge_pairs,
+                    top_graph.weights,
+                    resolution=resolution,
+                    random_seed=spec.leiden_seed,
+                    core_alias=spec.alias,
+                )
+                sensitivity_connected = split_preliminary_niches(
+                    spec.core_number,
+                    preliminary.labels,
+                    local_graph.adjacency,
+                    micro_niche_threshold=spec.micro_niche_threshold,
+                )
+                final_labels = _integer_partition(
+                    sensitivity_connected.final_niche_ids
+                )
+                final_niche_count = sensitivity_connected.niche_count
+            sensitivity_partitions[(top_k, resolution)] = final_labels
+            sensitivity_details.append(
+                {
+                    "core_number": spec.core_number,
+                    "core_alias": spec.alias,
+                    "top_k": top_k,
+                    "resolution": resolution,
+                    "retained_edge_count": top_graph.edge_count,
+                    "preliminary_community_count": preliminary.community_count,
+                    "final_connected_niche_count": final_niche_count,
+                }
+            )
+    sensitivity_comparisons = summarize_parameter_sensitivity(
+        sensitivity_partitions,
+        primary_top_k=spec.primary_top_k,
+        primary_resolution=spec.primary_resolution,
+    )
+    comparison_by_key = {
+        (row.top_k, row.resolution): row for row in sensitivity_comparisons
+    }
+    for record in sensitivity_details:
+        comparison = comparison_by_key[(record["top_k"], record["resolution"])]
+        record.update(asdict(comparison))
+
+    visible_consensus = summarize_mutual_routing_consensus(
+        edge_index,
+        visible[:, None, :],
+        n_nodes=batch.n_nodes,
+        seed_ids=tuple(member.seed for member in spec.members),
+        mask_view_ids=(-1,),
+        uniform_threshold=spec.uniform_routing_threshold,
+        require_all_edges_reciprocal=True,
+    )
+    visible_partition = build_consensus_routing_partition(
+        visible_consensus,
+        n_nodes=batch.n_nodes,
+        top_k=spec.primary_top_k,
+        score_threshold=spec.score_threshold,
+        support_threshold=spec.support_threshold,
+        resolution=spec.primary_resolution,
+        random_seed=spec.leiden_seed,
+        core_alias=spec.alias,
+    )
+    visible_connected = split_preliminary_niches(
+        spec.core_number,
+        visible_partition.leiden.labels,
+        local_graph.adjacency,
+        micro_niche_threshold=spec.micro_niche_threshold,
+    )
+    visible_similarity = partition_similarity(
+        consensus_connected_labels,
+        _integer_partition(visible_connected.final_niche_ids),
+    )
+
+    # Recompute the deterministic downstream primary partition independently
+    # from the immutable routing samples and compare exact identities.
+    replay_primary = build_consensus_routing_partition(
+        consensus,
+        n_nodes=batch.n_nodes,
+        top_k=spec.primary_top_k,
+        score_threshold=spec.score_threshold,
+        support_threshold=spec.support_threshold,
+        resolution=spec.primary_resolution,
+        random_seed=spec.leiden_seed,
+        core_alias=spec.alias,
+    )
+    replay_connected = split_preliminary_niches(
+        spec.core_number,
+        replay_primary.leiden.labels,
+        local_graph.adjacency,
+        micro_niche_threshold=spec.micro_niche_threshold,
+    )
+    replay_colors = deterministic_niche_colors(
+        spec.core_number,
+        niche_adjacency_from_cells(
+            replay_connected.final_niche_ids, local_graph.adjacency
+        ),
+        color_seed=spec.color_seed,
+    )
+    if (
+        not np.array_equal(
+            replay_primary.retained_graph.edge_pairs, retained.edge_pairs
+        )
+        or not np.array_equal(replay_primary.leiden.labels, primary.leiden.labels)
+        or not np.array_equal(
+            replay_connected.final_niche_ids, connected.final_niche_ids
+        )
+        or replay_colors != colors
+    ):
+        raise AttentionNichePipelineError(
+            "Deterministic downstream replay changed graph, assignments, or colors."
+        )
+
+    niche_by_cell_agreement = np.empty(batch.n_nodes, dtype=np.float64)
+    for niche_code, niche_agreement in zip(
+        assignment_agreement.consensus_community_ids,
+        assignment_agreement.niche_assignment_agreement,
+        strict=True,
+    ):
+        niche_by_cell_agreement[consensus_connected_labels == niche_code] = float(
+            niche_agreement
+        )
+    map_label = (
+        "single-model, mask-consensus map"
+        if len(spec.members) == 1
+        else f"{len(spec.members)}-model ensemble-consensus map"
+    )
+    assignments = pd.DataFrame(
+        {
+            "core_number": np.full(batch.n_nodes, spec.core_number, dtype=np.int16),
+            "core_alias": np.full(batch.n_nodes, spec.alias),
+            "cell_index": np.arange(batch.n_nodes, dtype=np.int64),
+            "source_qc_passed": identity["source_qc_passed"].to_numpy(dtype=bool),
+            "x_um": coordinates[:, 0],
+            "y_um": coordinates[:, 1],
+            "coordinate_unit": np.full(batch.n_nodes, "micrometres"),
+            "preliminary_leiden_community": primary.leiden.labels,
+            "final_connected_niche_id": connected.final_niche_ids,
+            "final_niche_id": connected.final_niche_ids,
+            "micro_niche": connected.micro_niche,
+            "niche_color": color_by_cell,
+            "mutual_routing_hub_score": hub_scores,
+            "S_i": hub_scores,
+            "assignment_confidence": confidence,
+            "assignment_agreement_axis": np.full(batch.n_nodes, agreement_axis),
+            "seed_assignment_agreement": seed_assignment_agreement,
+            "mask_view_assignment_agreement": mask_assignment_agreement,
+            "niche_assignment_agreement": niche_by_cell_agreement,
+            "incident_retained_edge_support_median": incident_support,
+            "incident_seed_spread_median": incident_seed_spread,
+            "incident_mask_view_spread_median": incident_mask_spread,
+            "variation_reliability": variation_reliability,
+            "model_seeds_used": np.full(
+                batch.n_nodes,
+                _canonical_json([member.seed for member in spec.members]),
+            ),
+            "analysis_mask_views_used": np.full(
+                batch.n_nodes, _canonical_json(list(range(spec.mask_views)))
+            ),
+            "map_label": np.full(batch.n_nodes, map_label),
+        }
+    )
+    _validate_interpretation_identifier_minimization(assignments)
+    assignment_path = core_dir / "cell_attention_niche_assignments.parquet"
+    _write_dataframe_parquet_atomic(assignment_path, assignments)
+
+    mutual_path = core_dir / "mutual_attention_edges.parquet"
+    mutual_receipt = _write_mutual_core_table(
+        mutual_path,
+        alias=spec.alias,
+        core_number=spec.core_number,
+        coordinates=coordinates,
+        consensus=consensus,
+        retained_graph=retained,
+    )
+    summaries = _descriptive_niche_summaries(
+        alias=spec.alias,
+        core_number=spec.core_number,
+        final_niche_ids=connected.final_niche_ids,
+        micro_niche=connected.micro_niche,
+        hub_scores=hub_scores,
+        confidence=confidence,
+        counts=counts,
+        gene_names=gene_names,
+        measured_metadata=measured_metadata,
+        metadata_names=ALLOWED_METADATA_COLUMNS,
+        retained_pairs=retained.edge_pairs,
+        retained_scores=retained.weights,
+        regions=regions,
+    )
+    summary_path = core_dir / "attention_niche_summary.csv"
+    _write_dataframe_csv_atomic(summary_path, summaries)
+    sensitivity_path = core_dir / "attention_niche_parameter_sensitivity.csv"
+    _write_dataframe_csv_atomic(
+        sensitivity_path, pd.DataFrame.from_records(sensitivity_details)
+    )
+
+    properties_by_niche = {
+        str(row.niche_id): {
+            "micro_niche": bool(row.micro_niche),
+            "confidence": float(row.confidence),
+        }
+        for row in summaries.itertuples()
+    }
+    geojson = dissolved_regions_geojson(
+        regions,
+        core_number=spec.core_number,
+        colors=colors,
+        properties_by_niche=properties_by_niche,
+    )
+    geojson_path = core_dir / "attention_niche_regions.geojson"
+    _write_json_atomic(geojson_path, geojson)
+    colors_path = core_dir / "attention_niche_colors.json"
+    _write_json_atomic(colors_path, colors)
+
+    import resource
+
+    peak_host_rss_gib = float(
+        resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024 / (1024**3)
+    )
+    elapsed_seconds = time.monotonic() - started_monotonic
+    receipt = {
+        "schema": "six_core_attention_niche_core_receipt_v1",
+        "status": "complete",
+        "started_at": started_at,
+        "completed_at": _utc_now(),
+        "elapsed_seconds": elapsed_seconds,
+        "core_number": spec.core_number,
+        "core_alias": spec.alias,
+        "local_cuda_device": spec.local_device,
+        "peak_host_rss_gib": peak_host_rss_gib,
+        "map_label": map_label,
+        "cell_count": batch.n_nodes,
+        "directed_edge_count": batch.n_edges,
+        "reciprocal_pair_count": consensus.pairs.pair_count,
+        "eligible_mutual_pair_count": retained.eligible_pair_count,
+        "retained_mutual_edge_count": retained.edge_count,
+        "preliminary_community_count": primary.leiden.community_count,
+        "final_connected_niche_count": connected.niche_count,
+        "micro_niche_count": int(summaries["micro_niche"].sum()),
+        "confidence": {
+            "minimum": float(np.min(confidence)),
+            "median": float(np.median(confidence)),
+            "mean": float(np.mean(confidence)),
+            "maximum": float(np.max(confidence)),
+            "low_below_0_60_count": int((confidence < 0.60).sum()),
+            "agreement_axis": agreement_axis,
+        },
+        "identity_and_preprocessing": identity_receipt,
+        "polygon_alignment": {
+            "cell_count": polygon_alignment.n_cells,
+            "source_rows_scanned": polygon_alignment.source_rows_scanned,
+            "selected_vertex_rows": polygon_alignment.selected_vertex_rows,
+            "repaired_polygon_count": int(polygon_alignment.repaired.sum()),
+            "centroid_median_distance_um": (
+                None
+                if polygon_alignment.centroid_alignment is None
+                else polygon_alignment.centroid_alignment.median_distance_um
+            ),
+            "centroid_maximum_distance_um": (
+                None
+                if polygon_alignment.centroid_alignment is None
+                else polygon_alignment.centroid_alignment.maximum_distance_um
+            ),
+            "alignment_rule": (
+                None
+                if polygon_alignment.centroid_alignment is None
+                else polygon_alignment.centroid_alignment.alignment_rule
+            ),
+            "centroid_tolerance_um": (
+                None
+                if polygon_alignment.centroid_alignment is None
+                else polygon_alignment.centroid_alignment.tolerance_um
+            ),
+            "centroid_tolerance_exceeded_count": (
+                None
+                if polygon_alignment.centroid_alignment is None
+                else len(
+                    polygon_alignment.centroid_alignment.centroid_tolerance_exceeded_indices
+                )
+            ),
+            "containment_accepted_count": (
+                None
+                if polygon_alignment.centroid_alignment is None
+                else len(
+                    polygon_alignment.centroid_alignment.containment_accepted_indices
+                )
+            ),
+            "coordinate_outside_polygon_count": (
+                None
+                if polygon_alignment.centroid_alignment is None
+                else len(
+                    polygon_alignment.centroid_alignment.coordinate_outside_polygon_indices
+                )
+            ),
+            "alignment_mismatch_count": (
+                None
+                if polygon_alignment.centroid_alignment is None
+                else len(polygon_alignment.centroid_alignment.mismatch_indices)
+            ),
+        },
+        "local_spatial_contiguity": {
+            "method": local_graph.method,
+            "max_gap_um": local_graph.max_gap_um,
+            "edge_count": local_graph.edge_count,
+            "nonisolated_fraction": local_graph.nonisolated_fraction,
+            "polygon_nonisolated_fraction": local_graph.polygon_nonisolated_fraction,
+            "polygon_edge_count": local_graph.polygon_edge_count,
+            "fallback_reason": local_graph.fallback_reason,
+            "every_final_niche_connected": True,
+        },
+        "checkpoint_receipts": checkpoint_receipts,
+        "mask_receipts": mask_receipts,
+        "extraction_audit": extraction_audit,
+        "consensus_receipt_sha256": consensus.receipt_sha256,
+        "retained_graph_receipt_sha256": retained.receipt_sha256,
+        "leiden_receipt": dict(primary.leiden.receipt),
+        "assignment_agreement_receipt_sha256": (
+            assignment_agreement.receipt_sha256
+        ),
+        "all_genes_visible_sensitivity": {
+            "retained_mutual_edge_count": visible_partition.retained_graph.edge_count,
+            "preliminary_community_count": visible_partition.leiden.community_count,
+            "final_connected_niche_count": visible_connected.niche_count,
+            "routing_samples_sha256": extraction_audit[
+                "all_visible_routing_sha256"
+            ],
+            "consensus_receipt_sha256": visible_consensus.receipt_sha256,
+            "retained_graph_receipt_sha256": (
+                visible_partition.retained_graph.receipt_sha256
+            ),
+            "assignment_sha256": _array_sha256(
+                "all_visible_final_connected_niche_ids",
+                np.asarray(visible_connected.final_niche_ids, dtype="U16"),
+            ),
+            **asdict(visible_similarity),
+        },
+        "deterministic_replay": {
+            "inference_view_replayed": bool(spec.deterministic_replay),
+            "downstream_assignment_exact": True,
+            "assignment_sha256": _array_sha256(
+                "final_connected_niche_ids",
+                np.asarray(connected.final_niche_ids, dtype="U16"),
+            ),
+            "color_mapping_sha256": _canonical_sha256(colors),
+        },
+        "directed_table": directed_receipt,
+        "mutual_table": mutual_receipt,
+        "outputs": {
+            "assignments": str(assignment_path),
+            "mutual_edges": str(mutual_path),
+            "directed_edges": str(directed_path),
+            "summary": str(summary_path),
+            "sensitivity": str(sensitivity_path),
+            "regions": str(geojson_path),
+            "colors": str(colors_path),
+        },
+    }
+    receipt_path = core_dir / "core_analysis_receipt.json"
+    _write_json_atomic(receipt_path, receipt)
+    receipt["receipt_path"] = str(receipt_path)
+    del routing, visible
+    return receipt
+
+
+def _combine_parquet_files(
+    sources: Sequence[Path],
+    destination: Path,
+    *,
+    source_contracts: Sequence[Mapping[str, Any]] | None = None,
+    remove_sources_after_write: bool = False,
+    staging_root: Path | None = None,
+) -> dict[str, Any]:
+    if destination.exists():
+        raise FileExistsError(f"Refusing to overwrite combined table: {destination}")
+    if source_contracts is not None and len(source_contracts) != len(sources):
+        raise AttentionNichePipelineError(
+            "Parquet source contracts do not align with source files."
+        )
+    if remove_sources_after_write and staging_root is None:
+        raise AttentionNichePipelineError(
+            "Removing consolidated shards requires an explicit staging root."
+        )
+    writer: pq.ParquetWriter | None = None
+    schema: pa.Schema | None = None
+    row_count = 0
+    removed_source_bytes = 0
+    removed_source_count = 0
+    try:
+        for source_position, source in enumerate(sources):
+            contract = (
+                None
+                if source_contracts is None
+                else source_contracts[source_position]
+            )
+            parquet_file = pq.ParquetFile(source)
+            source_row_count = 0
+            try:
+                for batch in parquet_file.iter_batches(batch_size=100_000):
+                    table = pa.Table.from_batches([batch])
+                    if contract is not None:
+                        names = set(table.column_names)
+                        position_column = str(contract["position_column"])
+                        required = {"core_number", "core_alias", position_column}
+                        if not required.issubset(names):
+                            raise AttentionNichePipelineError(
+                                f"Core shard {source} lacks contract columns."
+                            )
+                        core_numbers = table["core_number"].to_numpy(
+                            zero_copy_only=False
+                        )
+                        core_aliases = table["core_alias"].to_pylist()
+                        positions = table[position_column].to_numpy(
+                            zero_copy_only=False
+                        )
+                        expected_positions = np.arange(
+                            source_row_count,
+                            source_row_count + len(table),
+                            dtype=np.int64,
+                        )
+                        if (
+                            not np.all(
+                                core_numbers == int(contract["core_number"])
+                            )
+                            or any(
+                                str(value) != str(contract["core_alias"])
+                                for value in core_aliases
+                            )
+                            or not np.array_equal(
+                                np.asarray(positions, dtype=np.int64),
+                                expected_positions,
+                            )
+                        ):
+                            raise AttentionNichePipelineError(
+                                f"Core shard identity/order contract failed: {source}."
+                            )
+                    if writer is None:
+                        schema = table.schema
+                        writer = pq.ParquetWriter(
+                            destination,
+                            schema,
+                            compression="zstd",
+                            compression_level=6,
+                            write_statistics=True,
+                        )
+                    elif table.schema != schema:
+                        raise AttentionNichePipelineError(
+                            f"Parquet schema differs in {source}."
+                        )
+                    writer.write_table(table, row_group_size=len(table))
+                    source_row_count += len(table)
+                    row_count += len(table)
+            finally:
+                parquet_file.close()
+            if contract is not None and source_row_count != int(
+                contract["row_count"]
+            ):
+                raise AttentionNichePipelineError(
+                    f"Core shard row coverage failed: {source}."
+                )
+            if remove_sources_after_write:
+                assert staging_root is not None
+                resolved_source = source.resolve()
+                resolved_staging = staging_root.resolve()
+                if (
+                    source.is_symlink()
+                    or resolved_source.parent.parent != resolved_staging
+                    or resolved_source.suffix != ".parquet"
+                ):
+                    raise AttentionNichePipelineError(
+                        f"Refusing to remove unexpected core shard: {source}."
+                    )
+                size_bytes = source.stat().st_size
+                source.unlink()
+                removed_source_bytes += int(size_bytes)
+                removed_source_count += 1
+    finally:
+        if writer is not None:
+            writer.close()
+    if writer is None:
+        raise AttentionNichePipelineError("No Parquet rows were combined.")
+    return {
+        "path": str(destination),
+        "row_count": row_count,
+        "sha256": sha256_file(destination),
+        "size_bytes": destination.stat().st_size,
+        "source_contracts_verified": source_contracts is not None,
+        "source_shards_removed_after_streaming": removed_source_count,
+        "source_shard_bytes_removed_after_streaming": removed_source_bytes,
+    }
+
+
+def _run_device_job_group(specs: Sequence[CoreJobSpec]) -> list[dict[str, Any]]:
+    """Run a deterministic sequence of cores in one spawned GPU process."""
+
+    return [_run_core_job(spec) for spec in specs]
+
+
+def _relative_to_root(path: Path, root: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(root.resolve()))
+    except ValueError:
+        return str(path.resolve())
+
+
+def _portable_file_receipts(
+    receipts: Mapping[str, Mapping[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    """Index immutable-input receipts by their recorded portable path."""
+
+    portable: dict[str, dict[str, Any]] = {}
+    for receipt in receipts.values():
+        record = dict(receipt)
+        path = str(record.get("path", "")).strip()
+        if not path:
+            raise AttentionNichePipelineError(
+                "An immutable-input receipt has no portable path."
+            )
+        if path in portable:
+            raise AttentionNichePipelineError(
+                f"Immutable-input receipt path is duplicated: {path}."
+            )
+        portable[path] = record
+    return portable
+
+
+def _portable_core_receipts(
+    receipts: Sequence[Mapping[str, Any]],
+) -> list[dict[str, Any]]:
+    """Remove scratch-only paths while retaining per-core evidence.
+
+    Per-core Parquet and geometry files are temporary staging products.  Their
+    row counts and checksums remain in this receipt, while canonical paths are
+    expressed as bundle-relative outputs plus an explicit core filter.
+    """
+
+    portable = json.loads(_canonical_json(list(receipts)))
+    for receipt in portable:
+        core_number = int(receipt["core_number"])
+        transient_outputs = receipt.pop("outputs", {})
+        receipt.pop("receipt_path", None)
+        for table_key in ("directed_table", "mutual_table"):
+            table_receipt = receipt.get(table_key)
+            if isinstance(table_receipt, dict):
+                table_receipt.pop("path", None)
+                table_receipt["temporary_core_shard_retained"] = False
+        receipt["temporary_core_outputs"] = {
+            "retained": False,
+            "files_consolidated": sorted(str(key) for key in transient_outputs),
+        }
+        receipt["canonical_outputs"] = {
+            "assignments": {
+                "path": "cell_attention_niche_assignments.parquet",
+                "filter": f"core_number == {core_number}",
+            },
+            "mutual_edges": {
+                "path": "mutual_attention_edges.parquet",
+                "filter": f"core_number == {core_number}",
+            },
+            "directed_edges": {
+                "path": "directed_attention_edges.parquet",
+                "filter": f"core_number == {core_number}",
+            },
+            "summary": {
+                "path": "attention_niche_summary.csv",
+                "filter": f"core_number == {core_number}",
+            },
+            "sensitivity": {
+                "path": "attention_niche_parameter_sensitivity.csv",
+                "filter": f"core_number == {core_number}",
+            },
+            "regions": {
+                "path": "attention_niche_regions.geojson",
+                "filter": f"properties.core_number == {core_number}",
+            },
+            "colors": {"path": "attention_niche_colors.json"},
+        }
+    return portable
+
+
+def _remove_verified_core_work_tree(
+    work_root: Path,
+    *,
+    output_root: Path,
+) -> dict[str, Any]:
+    """Remove only the known analysis-owned staging tree after consolidation."""
+
+    expected = (
+        output_root / "diagnostics" / "attention_niche_core_work"
+    ).resolve()
+    observed = work_root.resolve()
+    if observed != expected or work_root.is_symlink() or not work_root.is_dir():
+        raise AttentionNichePipelineError(
+            "Refusing to remove an unexpected attention-niche staging path."
+        )
+    files = [path for path in work_root.rglob("*") if path.is_file()]
+    size_bytes = int(sum(path.stat().st_size for path in files))
+    file_count = len(files)
+    shutil.rmtree(work_root)
+    diagnostics = output_root / "diagnostics"
+    if diagnostics.is_dir() and not any(diagnostics.iterdir()):
+        diagnostics.rmdir()
+    return {
+        "removed_after_verified_consolidation": True,
+        "file_count": file_count,
+        "size_bytes": size_bytes,
+    }
+
+
+def _filesystem_snapshot(path: Path, *, stage: str) -> dict[str, Any]:
+    usage = shutil.disk_usage(path)
+    return {
+        "stage": stage,
+        "total_gib": float(usage.total / (1024**3)),
+        "used_gib": float(usage.used / (1024**3)),
+        "free_gib": float(usage.free / (1024**3)),
+    }
+
+
+def _required_analysis_free_disk_gib(
+    *,
+    model_seed_count: int,
+    minimum_free_disk_gib: float,
+) -> dict[str, float]:
+    """Conservative disk estimate for streamed core-shard consolidation."""
+
+    seed_count = int(model_seed_count)
+    if seed_count <= 0:
+        raise AttentionNichePipelineError("At least one model seed is required.")
+    minimum = float(minimum_free_disk_gib)
+    if not math.isfinite(minimum) or minimum <= 0:
+        raise AttentionNichePipelineError("Minimum free disk must be positive.")
+    head_count = 8
+    channel_count = 4
+    mask_view_count = 10
+    # Directed rows retain scalar identities/statistics, exact SxR head-mean
+    # routing, all-visible per-seed routing, and per-seed/per-head mask means
+    # for all four diagnostic channels. Mutual rows retain exact pair identity,
+    # direction, support, axis summaries, and per-seed/per-view medians.
+    directed_bytes_per_edge = (
+        96
+        + seed_count * mask_view_count * 4
+        + seed_count * 4
+        + seed_count * channel_count * head_count * 4
+    )
+    mutual_bytes_per_pair = 144 + seed_count * 4 + mask_view_count * 4
+    raw_table_gib = (
+        EXPECTED_TOTAL_DIRECTED_EDGES * directed_bytes_per_edge
+        + (EXPECTED_TOTAL_DIRECTED_EDGES // 2) * mutual_bytes_per_pair
+    ) / (1024**3)
+    # Core shards are removed immediately after their verified batches are
+    # appended, so peak is one compressed representation plus plotting/region
+    # outputs and a generous filesystem/codec margin rather than two complete
+    # table copies.
+    estimated_peak_gib = raw_table_gib * 1.25 + 12.0
+    required = max(minimum, estimated_peak_gib)
+    return {
+        "minimum_configured_gib": minimum,
+        "estimated_raw_table_gib": float(raw_table_gib),
+        "estimated_peak_with_margin_gib": float(estimated_peak_gib),
+        "required_free_gib": float(required),
+    }
+
+
+def _checkpoint_post_receipts(
+    members: Sequence[CheckpointMember], *, root: Path
+) -> dict[str, Any]:
+    records: list[dict[str, Any]] = []
+    for member in members:
+        observed = sha256_file(member.checkpoint_path)
+        marker = _load_json(
+            member.bundle_path / "_SUCCESS",
+            f"post-analysis success marker for {member.run_id}",
+        )
+        unchanged = (
+            observed == member.checkpoint_sha256
+            and marker.get("content_sha256")
+            == member.success_marker_content_sha256
+        )
+        records.append(
+            {
+                "seed": member.seed,
+                "run_id": member.run_id,
+                "path": _relative_to_root(member.checkpoint_path, root),
+                "pre_sha256": member.checkpoint_sha256,
+                "post_sha256": observed,
+                "success_marker_content_sha256": marker.get("content_sha256"),
+                "unchanged": unchanged,
+            }
+        )
+    if not all(record["unchanged"] for record in records):
+        raise AttentionNichePipelineError(
+            "At least one trained checkpoint or success marker changed during analysis."
+        )
+    return {"unchanged": True, "members": records}
+
+
+def _markdown_core_table(core_receipts: Sequence[Mapping[str, Any]]) -> str:
+    lines = [
+        "| Core | Cells | Directed edges | Retained mutual edges | Preliminary communities | Final connected niches | Median confidence |",
+        "|---:|---:|---:|---:|---:|---:|---:|",
+    ]
+    for receipt in sorted(core_receipts, key=lambda value: int(value["core_number"])):
+        lines.append(
+            "| {core} | {cells:,} | {directed:,} | {retained:,} | {preliminary:,} | {final:,} | {confidence:.4f} |".format(
+                core=int(receipt["core_number"]),
+                cells=int(receipt["cell_count"]),
+                directed=int(receipt["directed_edge_count"]),
+                retained=int(receipt["retained_mutual_edge_count"]),
+                preliminary=int(receipt["preliminary_community_count"]),
+                final=int(receipt["final_connected_niche_count"]),
+                confidence=float(receipt["confidence"]["median"]),
+            )
+        )
+    return "\n".join(lines)
+
+
+def run_attention_niche_pipeline(
+    *,
+    config_path: str | Path,
+    run_id: str,
+    run_scratch: str | Path,
+    database: str | Path,
+    paths: ProjectPaths | None = None,
+) -> dict[str, Any]:
+    """Execute and publish every in-scratch six-core analysis artifact."""
+
+    import importlib.metadata
+    import multiprocessing
+    import resource
+    import subprocess
+
+    from .attention_niche_visualization import (
+        render_attention_niche_visualizations,
+    )
+    from .configuration import load_yaml_mapping, validate_experiment_config
+
+    selected_paths = paths or current_paths()
+    root = selected_paths.project_root.resolve()
+    output_root = Path(run_scratch).resolve()
+    expected_output = (selected_paths.scratch_root / "active_runs" / run_id).resolve()
+    if output_root != expected_output or not output_root.is_dir():
+        raise AttentionNichePipelineError(
+            "Analysis output must be the worker-owned active run directory."
+        )
+    config = load_yaml_mapping(Path(config_path))
+    validate_experiment_config(config)
+    campaign = config.get("campaign", {})
+    metadata = config.get("metadata", {})
+    evaluation = config.get("evaluation", {})
+    if (
+        not isinstance(campaign, Mapping)
+        or campaign.get("campaign_id") != ANALYSIS_CAMPAIGN_ID
+        or not isinstance(metadata, Mapping)
+        or not isinstance(evaluation, Mapping)
+        or evaluation.get("protocol") != "posthoc_attention_routing_niche_v1"
+        or evaluation.get("artifact_contract") != "analysis_only"
+    ):
+        raise AttentionNichePipelineError("Resolved analysis configuration drifted.")
+    analysis_parameters = _validated_locked_analysis_parameters(metadata)
+
+    dataset = config.get("dataset", {})
+    if not isinstance(dataset, Mapping):
+        raise AttentionNichePipelineError("Resolved dataset configuration is absent.")
+
+    def rooted(value: object, *, label: str) -> Path:
+        path = Path(str(value))
+        if path.is_absolute():
+            candidate = path
+        elif path.parts and path.parts[0] == "data":
+            candidate = selected_paths.data_root.joinpath(*path.parts[1:])
+        else:
+            candidate = root / path
+        try:
+            return candidate.resolve(strict=True)
+        except FileNotFoundError as exc:
+            raise AttentionNichePipelineError(
+                f"Configured {label} does not exist: {candidate}."
+            ) from exc
+
+    cohort_dir = rooted(dataset.get("prepared_artifact"), label="prepared cohort")
+    graph_dir = rooted(
+        dataset.get("prepared_graph_artifact"), label="prepared graph"
+    )
+    raw_dir = selected_paths.data_root / "raw"
+    core_map_path = selected_paths.data_root / "clinical" / "fov_core_map.csv"
+    reconciliation_path = rooted(
+        dataset.get("clinical_reconciliation_policy"),
+        label="clinical reconciliation policy",
+    )
+    members = discover_completed_checkpoint_members(
+        database,
+        project_root=root,
+    )
+    input_contract = verify_prepared_input_contract(
+        paths=selected_paths,
+        cohort_dir=cohort_dir,
+        graph_dir=graph_dir,
+        raw_dir=raw_dir,
+        core_map_path=core_map_path,
+        reconciliation_path=reconciliation_path,
+    )
+    disk_plan = _required_analysis_free_disk_gib(
+        model_seed_count=len(members),
+        minimum_free_disk_gib=analysis_parameters["minimum_free_disk_gib"],
+    )
+    disk_snapshots = [_filesystem_snapshot(output_root, stage="preflight")]
+    if disk_snapshots[-1]["free_gib"] < disk_plan["required_free_gib"]:
+        raise AttentionNichePipelineError(
+            "Insufficient free disk for the seed-aware streamed analysis plan: "
+            f"{disk_snapshots[-1]['free_gib']:.2f} GiB available, "
+            f"{disk_plan['required_free_gib']:.2f} GiB required."
+        )
+
+    if not torch.cuda.is_available() or torch.cuda.device_count() < 1:
+        raise AttentionNichePipelineError("Full analysis requires at least one CUDA GPU.")
+    launcher = config.get("launcher", {})
+    requested_count = (
+        int(launcher.get("requested_gpu_count", torch.cuda.device_count()))
+        if isinstance(launcher, Mapping)
+        else torch.cuda.device_count()
+    )
+    visible_device_count = torch.cuda.device_count()
+    if visible_device_count != requested_count:
+        raise AttentionNichePipelineError(
+            "Worker CUDA visibility does not match launcher.requested_gpu_count "
+            f"({visible_device_count} != {requested_count})."
+        )
+    gpu_records = []
+    for device_index in range(visible_device_count):
+        properties = torch.cuda.get_device_properties(device_index)
+        gpu_records.append(
+            {
+                "local_device": device_index,
+                "name": properties.name,
+                "total_memory_gib": properties.total_memory / (1024**3),
+                "capability": list(properties.major_minor)
+                if hasattr(properties, "major_minor")
+                else [properties.major, properties.minor],
+            }
+        )
+
+    work_root = output_root / "diagnostics" / "attention_niche_core_work"
+    work_root.mkdir(parents=True, exist_ok=False)
+    mask_seed = analysis_parameters["analysis_mask_seed"]
+    mask_views = analysis_parameters["analysis_mask_views"]
+    specs_by_device: list[list[CoreJobSpec]] = [
+        [] for _ in range(visible_device_count)
+    ]
+    for core_position, (alias, core_number) in enumerate(
+        zip(EXPECTED_ALIASES, EXPECTED_CORE_NUMBERS, strict=True)
+    ):
+        local_device = core_position % visible_device_count
+        specs_by_device[local_device].append(
+            CoreJobSpec(
+                alias=alias,
+                core_number=core_number,
+                local_device=local_device,
+                output_dir=work_root / f"core_{core_number:02d}",
+                cohort_dir=cohort_dir,
+                graph_dir=graph_dir,
+                raw_dir=raw_dir,
+                core_map_path=core_map_path,
+                reconciliation_path=reconciliation_path,
+                members=members,
+                analysis_mask_seed=mask_seed,
+                mask_views=mask_views,
+                leiden_seed=analysis_parameters["leiden_seed"],
+                color_seed=analysis_parameters["color_seed"],
+                uniform_routing_threshold=analysis_parameters[
+                    "uniform_routing_threshold"
+                ],
+                score_threshold=analysis_parameters[
+                    "consensus_mutual_score_threshold"
+                ],
+                support_threshold=analysis_parameters["support_threshold"],
+                primary_top_k=analysis_parameters["primary_top_neighbors"],
+                primary_resolution=analysis_parameters[
+                    "primary_leiden_resolution"
+                ],
+                polygon_coordinate_alignment_rule=analysis_parameters[
+                    "polygon_coordinate_alignment_rule"
+                ],
+                polygon_centroid_tolerance_um=analysis_parameters[
+                    "polygon_centroid_tolerance_um"
+                ],
+                max_spatial_gap_um=analysis_parameters["spatial_max_gap_um"],
+                micro_niche_threshold=analysis_parameters[
+                    "micro_niche_cell_threshold"
+                ],
+                amp=False,
+                deterministic_replay=True,
+            )
+        )
+    parallel_schedule = {
+        str(device): [spec.alias for spec in specs]
+        for device, specs in enumerate(specs_by_device)
+        if specs
+    }
+    core_receipts: list[dict[str, Any]] = []
+    context = multiprocessing.get_context("spawn")
+    with ProcessPoolExecutor(
+        max_workers=sum(bool(specs) for specs in specs_by_device),
+        mp_context=context,
+    ) as executor:
+        futures = {
+            executor.submit(_run_device_job_group, tuple(specs)): device
+            for device, specs in enumerate(specs_by_device)
+            if specs
+        }
+        for future in as_completed(futures):
+            device = futures[future]
+            try:
+                core_receipts.extend(future.result())
+            except BaseException as exc:
+                raise AttentionNichePipelineError(
+                    f"Core job group failed on local CUDA device {device}."
+                ) from exc
+    core_receipts.sort(key=lambda value: int(value["core_number"]))
+    if tuple(int(value["core_number"]) for value in core_receipts) != EXPECTED_CORE_NUMBERS:
+        raise AttentionNichePipelineError("Parallel core execution did not cover six cores.")
+    disk_snapshots.append(
+        _filesystem_snapshot(output_root, stage="core_shards_complete")
+    )
+
+    assignment_sources = [
+        Path(receipt["outputs"]["assignments"]) for receipt in core_receipts
+    ]
+    mutual_sources = [
+        Path(receipt["outputs"]["mutual_edges"]) for receipt in core_receipts
+    ]
+    directed_sources = [
+        Path(receipt["outputs"]["directed_edges"]) for receipt in core_receipts
+    ]
+    assignment_contracts = [
+        {
+            "core_number": receipt["core_number"],
+            "core_alias": receipt["core_alias"],
+            "row_count": receipt["cell_count"],
+            "position_column": "cell_index",
+        }
+        for receipt in core_receipts
+    ]
+    mutual_contracts = [
+        {
+            "core_number": receipt["core_number"],
+            "core_alias": receipt["core_alias"],
+            "row_count": receipt["reciprocal_pair_count"],
+            "position_column": "mutual_pair_position",
+        }
+        for receipt in core_receipts
+    ]
+    directed_contracts = [
+        {
+            "core_number": receipt["core_number"],
+            "core_alias": receipt["core_alias"],
+            "row_count": receipt["directed_edge_count"],
+            "position_column": "edge_index_position",
+        }
+        for receipt in core_receipts
+    ]
+    combined_receipts = {
+        "assignments": _combine_parquet_files(
+            assignment_sources,
+            output_root / "cell_attention_niche_assignments.parquet",
+            source_contracts=assignment_contracts,
+            remove_sources_after_write=True,
+            staging_root=work_root,
+        ),
+        "mutual_edges": _combine_parquet_files(
+            mutual_sources,
+            output_root / "mutual_attention_edges.parquet",
+            source_contracts=mutual_contracts,
+            remove_sources_after_write=True,
+            staging_root=work_root,
+        ),
+        "directed_edges": _combine_parquet_files(
+            directed_sources,
+            output_root / "directed_attention_edges.parquet",
+            source_contracts=directed_contracts,
+            remove_sources_after_write=True,
+            staging_root=work_root,
+        ),
+    }
+    disk_snapshots.append(
+        _filesystem_snapshot(output_root, stage="canonical_tables_complete")
+    )
+    assignments = pd.read_parquet(
+        output_root / "cell_attention_niche_assignments.parquet"
+    )
+    summaries = pd.concat(
+        [pd.read_csv(receipt["outputs"]["summary"]) for receipt in core_receipts],
+        ignore_index=True,
+    )
+    _write_dataframe_csv_atomic(
+        output_root / "attention_niche_summary.csv", summaries
+    )
+    sensitivity = pd.concat(
+        [
+            pd.read_csv(receipt["outputs"]["sensitivity"])
+            for receipt in core_receipts
+        ],
+        ignore_index=True,
+    )
+    _write_dataframe_csv_atomic(
+        output_root / "attention_niche_parameter_sensitivity.csv", sensitivity
+    )
+    colors: dict[str, str] = {}
+    features: list[dict[str, Any]] = []
+    overlay_frames: list[pd.DataFrame] = []
+    for receipt in core_receipts:
+        current_colors = _load_json(
+            Path(receipt["outputs"]["colors"]), "per-core niche colors"
+        )
+        overlap = set(colors).intersection(current_colors)
+        if overlap:
+            raise AttentionNichePipelineError("Core-scoped niche IDs collided.")
+        colors.update({str(key): str(value) for key, value in current_colors.items()})
+        current_geojson = _load_json(
+            Path(receipt["outputs"]["regions"]), "per-core niche regions"
+        )
+        features.extend(current_geojson.get("features", []))
+    for core_number in EXPECTED_CORE_NUMBERS:
+        overlay_frames.append(
+            pd.read_parquet(
+                output_root / "mutual_attention_edges.parquet",
+                columns=[
+                    "core_number",
+                    "cell_i_index",
+                    "cell_j_index",
+                    "M_ij",
+                    "support_P_ij",
+                    "retained_primary",
+                ],
+                filters=[
+                    ("core_number", "=", core_number),
+                    ("retained_primary", "=", True),
+                ],
+            )
+        )
+    palette_by_core: dict[int, set[str]] = {}
+    for niche_id, color in colors.items():
+        core_number = int(niche_id[1:3])
+        palette_by_core.setdefault(core_number, set()).add(color.lower())
+    for first_core, first_palette in palette_by_core.items():
+        for second_core, second_palette in palette_by_core.items():
+            if first_core < second_core and first_palette.intersection(second_palette):
+                raise AttentionNichePipelineError(
+                    "A categorical niche color was reused across cores."
+                )
+    _write_json_atomic(output_root / "attention_niche_colors.json", colors)
+    regions_geojson = {
+        "type": "FeatureCollection",
+        "coordinate_unit": "um",
+        "features": sorted(
+            features,
+            key=lambda value: (
+                int(value["properties"]["core_number"]),
+                str(value["properties"]["final_niche_id"]),
+            ),
+        ),
+    }
+    _write_json_atomic(
+        output_root / "attention_niche_regions.geojson", regions_geojson
+    )
+    overlay_edges = pd.concat(overlay_frames, ignore_index=True)
+    visualization = render_attention_niche_visualizations(
+        assignments,
+        regions_geojson,
+        overlay_edges,
+        output_root,
+        dpi=300,
+        individual_dpi=450,
+        include_overlay=True,
+        max_edges_per_core=1_000,
+        max_edges_total=4_000,
+        invert_y=True,
+        low_confidence_threshold=0.60,
+        allow_cross_core_color_reuse=False,
+    )
+    disk_snapshots.append(
+        _filesystem_snapshot(output_root, stage="visualizations_complete")
+    )
+
+    input_post = verify_inputs_unchanged(
+        input_contract.pre_analysis_file_receipts,
+        project_root=root,
+        data_root=selected_paths.data_root,
+    )
+    checkpoint_post = _checkpoint_post_receipts(members, root=root)
+    expected_counts = {
+        int(receipt["core_number"]): int(receipt["cell_count"])
+        for receipt in core_receipts
+    }
+    observed_cores = tuple(sorted(assignments["core_number"].unique().tolist()))
+    if observed_cores != tuple(sorted(EXPECTED_CORE_NUMBERS)):
+        raise AttentionNichePipelineError("Combined assignments have wrong cores.")
+    for core_number, expected_count in expected_counts.items():
+        selected = assignments.loc[assignments["core_number"] == core_number]
+        if (
+            len(selected) != expected_count
+            or selected["cell_index"].nunique() != expected_count
+            or not np.array_equal(
+                np.sort(selected["cell_index"].to_numpy(dtype=np.int64)),
+                np.arange(expected_count, dtype=np.int64),
+            )
+        ):
+            raise AttentionNichePipelineError(
+                f"Assignment coverage failed for core {core_number}."
+            )
+    if len(assignments) != EXPECTED_TOTAL_CELLS:
+        raise AttentionNichePipelineError("Combined assignment total drifted.")
+    if combined_receipts["directed_edges"]["row_count"] != EXPECTED_TOTAL_DIRECTED_EDGES:
+        raise AttentionNichePipelineError("Combined directed-edge total drifted.")
+    if combined_receipts["mutual_edges"]["row_count"] * 2 != EXPECTED_TOTAL_DIRECTED_EDGES:
+        raise AttentionNichePipelineError("Reciprocal-pair total drifted.")
+    core_qc_passed = all(
+        receipt["local_spatial_contiguity"]["every_final_niche_connected"]
+        and receipt["extraction_audit"]["max_attention_sum_error"] <= 2e-6
+        and receipt["extraction_audit"]["max_softmax_reconstruction_error"]
+        <= 2e-6
+        and receipt["extraction_audit"]["strict_attention_shard_count"] > 0
+        and len(receipt["extraction_audit"]["strict_view_receipts"])
+        == len(members) * (mask_views + 1)
+        and receipt["extraction_audit"]["deterministic_inference_replay"][
+            "exact_array_equal"
+        ]
+        and receipt["extraction_audit"]["deterministic_inference_replay"][
+            "all_ten_mask_views_replayed"
+        ]
+        and receipt["deterministic_replay"]["downstream_assignment_exact"]
+        for receipt in core_receipts
+    )
+    if not core_qc_passed:
+        raise AttentionNichePipelineError("One or more core QC gates failed.")
+    if visualization.receipt.get("core_order") != list(EXPECTED_CORE_NUMBERS):
+        raise AttentionNichePipelineError("Visualization core order drifted.")
+
+    exact_core_set = observed_cores == tuple(sorted(EXPECTED_CORE_NUMBERS))
+    exact_assignment_coverage = len(assignments) == EXPECTED_TOTAL_CELLS and all(
+        len(assignments.loc[assignments["core_number"] == core_number])
+        == expected_count
+        for core_number, expected_count in expected_counts.items()
+    )
+    strict_attention_alignment = all(
+        receipt["extraction_audit"]["strict_attention_shard_count"] > 0
+        and receipt["extraction_audit"]["max_softmax_reconstruction_error"]
+        <= 2e-6
+        for receipt in core_receipts
+    )
+    exact_reciprocal_coverage = all(
+        int(receipt["reciprocal_pair_count"]) * 2
+        == int(receipt["directed_edge_count"])
+        for receipt in core_receipts
+    )
+    connected_niches = all(
+        receipt["local_spatial_contiguity"]["every_final_niche_connected"]
+        for receipt in core_receipts
+    )
+    deterministic_colors = all(
+        receipt["deterministic_replay"]["downstream_assignment_exact"]
+        and len(receipt["deterministic_replay"]["color_mapping_sha256"]) == 64
+        for receipt in core_receipts
+    )
+    panel_receipt = visualization.receipt
+    panel_labels = (
+        panel_receipt.get("core_order") == list(EXPECTED_CORE_NUMBERS)
+        and panel_receipt.get("in_panel_core_labels")
+        == [f"Core {core}" for core in EXPECTED_CORE_NUMBERS]
+        and panel_receipt.get("panel_titles_include_core_number") is True
+        and panel_receipt.get("equal_physical_aspect") is True
+    )
+    micrometre_geometry = (
+        assignments["coordinate_unit"].eq("micrometres").all()
+        and np.isfinite(assignments[["x_um", "y_um"]].to_numpy()).all()
+        and panel_receipt.get("coordinate_unit") == "micrometres"
+        and all(
+            value.get("present") and value.get("unit") == "µm"
+            for value in panel_receipt.get("scale_bars", {}).values()
+        )
+    )
+    deterministic_analysis_replay = all(
+        receipt["extraction_audit"]["deterministic_inference_replay"][
+            "all_ten_mask_views_replayed"
+        ]
+        and receipt["extraction_audit"]["deterministic_inference_replay"][
+            "exact_array_equal"
+        ]
+        and receipt["deterministic_replay"]["downstream_assignment_exact"]
+        for receipt in core_receipts
+    )
+    qc_checks = {
+        "exact_six_core_set": bool(exact_core_set),
+        "every_eligible_cell_exactly_once": bool(exact_assignment_coverage),
+        "no_cross_core_edges": bool(
+            exact_core_set
+            and all(
+                receipt["core_alias"] in EXPECTED_ALIASES
+                for receipt in core_receipts
+            )
+            and all(
+                table["source_contracts_verified"]
+                for table in combined_receipts.values()
+            )
+        ),
+        "attention_edge_index_alignment": bool(strict_attention_alignment),
+        "attention_receiver_head_normalization": bool(
+            all(
+                receipt["extraction_audit"]["max_attention_sum_error"] <= 2e-6
+                for receipt in core_receipts
+            )
+        ),
+        "attention_matches_combined_logit_softmax": bool(
+            strict_attention_alignment
+        ),
+        "reciprocal_pairs_and_receiver_degree_adjustment": bool(
+            exact_reciprocal_coverage
+        ),
+        "one_directional_edges_rejected": bool(exact_reciprocal_coverage),
+        "every_final_niche_spatially_connected": bool(connected_niches),
+        "disconnected_regions_have_distinct_ids": bool(connected_niches),
+        "deterministic_stable_colors": bool(deterministic_colors),
+        "panel_core_labels_and_order": bool(panel_labels),
+        "micrometre_coordinates_and_scale_bars": bool(micrometre_geometry),
+        "deterministic_masks_inference_and_assignments": bool(
+            deterministic_analysis_replay
+        ),
+        "checkpoints_unchanged": bool(checkpoint_post["unchanged"]),
+        "input_data_unchanged": bool(input_post["unchanged"]),
+    }
+    if not all(qc_checks.values()):
+        failed = sorted(name for name, passed in qc_checks.items() if not passed)
+        raise AttentionNichePipelineError(
+            "Final analysis QC failed: " + ", ".join(failed)
+        )
+    qc_fraction = float(sum(qc_checks.values()) / len(qc_checks))
+    map_label = (
+        "single-model, mask-consensus map"
+        if len(members) == 1
+        else f"{len(members)}-model ensemble-consensus map"
+    )
+    required_outputs = list(REQUIRED_ANALYSIS_OUTPUTS)
+    reproducibility_command = (
+        "PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark "
+        "--database state/tracking/bagm.sqlite3 enqueue-experiment "
+        f"--campaign-id {ANALYSIS_CAMPAIGN_ID} "
+        "--config experiments/campaigns/"
+        "cmp_20260825_six_core_attention_routing_niches/analysis_config.yaml "
+        "--priority 0 --max-attempts 1 "
+        f"--gpu {str(launcher.get('requested_gpu', '0'))} && "
+        "PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark "
+        "--database state/tracking/bagm.sqlite3 worker "
+        "--worker-id attention-niche-multigpu "
+        f"--gpu {str(launcher.get('requested_gpu', '0'))} --once"
+    )
+    try:
+        git_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=root,
+            text=True,
+            capture_output=True,
+            check=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise AttentionNichePipelineError("Cannot record the analysis Git commit.") from exc
+    package_versions: dict[str, str] = {}
+    for package in (
+        "torch",
+        "numpy",
+        "pandas",
+        "pyarrow",
+        "scipy",
+        "igraph",
+        "leidenalg",
+        "shapely",
+        "matplotlib",
+    ):
+        try:
+            package_versions[package] = importlib.metadata.version(package)
+        except importlib.metadata.PackageNotFoundError:
+            package_versions[package] = "not-installed"
+
+    # Write narrative files before their presence is included in the manifest
+    # gate.  Complete tables remain machine-readable beside this concise view.
+    core_table = _markdown_core_table(core_receipts)
+    readme = f"""# Six-core model-defined attention-routing niche map
+
+Status: complete. Map type: `{map_label}`. Primary parameters were locked at
+ten analysis masks, mutual score `Mij > 1.0`, support `Pij >= 0.60`, per-cell
+top-8 undirected union, weighted Leiden resolution `1.0`, and fixed Leiden seed
+`2026082502` before plots were inspected.
+
+{core_table}
+
+The primary combined map is `six_core_attention_niche_map.png`; vector versions,
+per-core high-resolution maps, the strongest-edge overlay, full directed and
+mutual routing exports, assignments, dissolved regions, colors, sensitivity
+results, and QC evidence are in this immutable run bundle.
+
+The directed export retains exact seed-by-mask head-mean routing for every
+directed edge and per-seed/per-head mask-mean attention, content QK score,
+positional bias, and combined logit. Gray cell outlines in the maps mark
+assignment confidence below 0.60; cell fill remains the assigned niche color.
+
+Reproduce as a new registered immutable run:
+
+```bash
+{reproducibility_command}
+```
+
+> {LIMITATION}
+"""
+    descriptor, temporary_readme = tempfile.mkstemp(
+        prefix=".README.md.tmp-", dir=output_root
+    )
+    with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+        handle.write(readme)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temporary_readme, output_root / "README.md")
+    maximum_attention_error = max(
+        float(receipt["extraction_audit"]["max_attention_sum_error"])
+        for receipt in core_receipts
+    )
+    maximum_softmax_error = max(
+        float(
+            receipt["extraction_audit"][
+                "max_softmax_reconstruction_error"
+            ]
+        )
+        for receipt in core_receipts
+    )
+    strict_shard_count = sum(
+        int(receipt["extraction_audit"]["strict_attention_shard_count"])
+        for receipt in core_receipts
+    )
+    qc_lines = [
+        "# Attention-routing niche analysis QC",
+        "",
+        f"Overall QC pass fraction: `{qc_fraction:.6f}` ({sum(qc_checks.values())}/{len(qc_checks)}).",
+        "",
+        core_table,
+        "",
+        "## Explicit checks",
+        "",
+        *[
+            f"- {'PASS' if passed else 'FAIL'} — `{name}`"
+            for name, passed in qc_checks.items()
+        ],
+        "",
+        "## Extraction and reproducibility evidence",
+        "",
+        f"- Strict receiver-complete attention shards audited: `{strict_shard_count:,}`.",
+        f"- Maximum receiver/head normalization error: `{maximum_attention_error:.3g}`.",
+        f"- Maximum reconstructed-softmax error: `{maximum_softmax_error:.3g}`.",
+        "- All ten analysis-mask views were regenerated and re-extracted for "
+        "the fixed reference model in every core with exact routing-array equality.",
+        "- Mask receipts were identical across all model seeds; the complete "
+        "consensus partition and color mapping were independently rebuilt exactly.",
+        "- Canonical Parquet consolidation verified every core number, alias, "
+        "row count, and complete edge/pair/cell position range before removing "
+        "temporary source shards.",
+        "- Input and checkpoint hashes were checked before and after analysis.",
+        "",
+        "## Scope",
+        "",
+        "This is a transductive post-hoc model-behavior analysis. Seed and mask "
+        "agreement quantify computational stability, not independent biological "
+        "replication. The all-genes-visible replay is a masking sensitivity check, "
+        "not a mechanism-breaking null.",
+        "",
+        "## Interpretation limit",
+        "",
+        f"> {LIMITATION}",
+        "",
+    ]
+    descriptor, temporary_qc = tempfile.mkstemp(
+        prefix=".analysis_qc_report.md.tmp-", dir=output_root
+    )
+    with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+        handle.write("\n".join(qc_lines))
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temporary_qc, output_root / "analysis_qc_report.md")
+
+    checksummed_before_manifest = [
+        value
+        for value in required_outputs
+        if value not in {"analysis_manifest.yaml"}
+    ] + ["attention_niche_parameter_sensitivity.csv"]
+    artifact_records = _artifact_checksums(
+        output_root, checksummed_before_manifest
+    )
+    portable_core_receipts = _portable_core_receipts(core_receipts)
+    portable_combined_receipts = json.loads(_canonical_json(combined_receipts))
+    for table_receipt in portable_combined_receipts.values():
+        table_receipt["path"] = _relative_to_root(
+            Path(table_receipt["path"]), output_root
+        )
+    portable_visualization_receipt = json.loads(
+        _canonical_json(dict(visualization.receipt))
+    )
+    portable_visualization_receipt["output_paths"] = [
+        _relative_to_root(Path(path), output_root)
+        for path in portable_visualization_receipt.get("output_paths", [])
+    ]
+    portable_input_post = json.loads(_canonical_json(input_post))
+    post_receipts = portable_input_post.get("post_receipts", {})
+    if not isinstance(post_receipts, Mapping):
+        raise AttentionNichePipelineError(
+            "Post-analysis immutable-input receipts are malformed."
+        )
+    portable_input_post["post_receipts"] = _portable_file_receipts(post_receipts)
+    staging_cleanup = _remove_verified_core_work_tree(
+        work_root,
+        output_root=output_root,
+    )
+    disk_snapshots.append(
+        _filesystem_snapshot(output_root, stage="post_staging_cleanup")
+    )
+    analysis_manifest = {
+        "schema": "six_core_attention_routing_niche_analysis_v1",
+        "status": "complete",
+        "run_id": run_id,
+        "campaign_id": ANALYSIS_CAMPAIGN_ID,
+        "map_label": map_label,
+        "terminology": "model-defined attention-routing niches",
+        "git_commit": git_commit,
+        "created_at": _utc_now(),
+        "limitation": LIMITATION,
+        "core_order": list(EXPECTED_CORE_NUMBERS),
+        "core_aliases": list(EXPECTED_ALIASES),
+        "model_seeds": [member.seed for member in members],
+        "checkpoint_members": [member.manifest_record(root) for member in members],
+        "analysis_parameters": {
+            "analysis_mask_seed": mask_seed,
+            "mask_views": list(range(mask_views)),
+            "all_genes_visible_sensitivity": True,
+            "final_graph_layer": True,
+            "float32_no_autocast": True,
+            "uniform_support_event_threshold_strict": analysis_parameters[
+                "uniform_routing_threshold"
+            ],
+            "mutual_score_retention_threshold_strict": analysis_parameters[
+                "consensus_mutual_score_threshold"
+            ],
+            "support_threshold": analysis_parameters["support_threshold"],
+            "primary_top_k": analysis_parameters["primary_top_neighbors"],
+            "top_k_sensitivity": list(metadata["top_neighbor_sensitivity"]),
+            "primary_leiden_resolution": analysis_parameters[
+                "primary_leiden_resolution"
+            ],
+            "leiden_resolution_sensitivity": list(
+                metadata["leiden_resolution_sensitivity"]
+            ),
+            "leiden_seed": analysis_parameters["leiden_seed"],
+            "color_seed": analysis_parameters["color_seed"],
+            "micro_niche_threshold_cells": analysis_parameters[
+                "micro_niche_cell_threshold"
+            ],
+            "polygon_coordinate_alignment_rule": analysis_parameters[
+                "polygon_coordinate_alignment_rule"
+            ],
+            "polygon_centroid_tolerance_um": analysis_parameters[
+                "polygon_centroid_tolerance_um"
+            ],
+            "maximum_local_gap_um": analysis_parameters["spatial_max_gap_um"],
+        },
+        "resource_execution": {
+            "host": socket.gethostname(),
+            "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
+            "torch_cuda_version": torch.version.cuda,
+            "cudnn_version": torch.backends.cudnn.version(),
+            "gpu_devices": gpu_records,
+            "parallel_schedule": parallel_schedule,
+            "disk_preflight_plan": disk_plan,
+            "filesystem_snapshots": disk_snapshots,
+            "observed_max_filesystem_used_gib_at_sampled_stages": float(
+                max(snapshot["used_gib"] for snapshot in disk_snapshots)
+            ),
+            "observed_min_filesystem_free_gib_at_sampled_stages": float(
+                min(snapshot["free_gib"] for snapshot in disk_snapshots)
+            ),
+            "parent_peak_host_rss_gib": float(
+                resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+                * 1024
+                / (1024**3)
+            ),
+            "per_core_peak_host_rss_gib": {
+                str(receipt["core_number"]): receipt["peak_host_rss_gib"]
+                for receipt in core_receipts
+            },
+            "per_core_peak_cuda_allocated_gib": {
+                str(receipt["core_number"]): receipt["extraction_audit"][
+                    "peak_cuda_allocated_gib"
+                ]
+                for receipt in core_receipts
+            },
+            "per_core_peak_cuda_reserved_gib": {
+                str(receipt["core_number"]): receipt["extraction_audit"][
+                    "peak_cuda_reserved_gib"
+                ]
+                for receipt in core_receipts
+            },
+            "failures": [],
+        },
+        "package_versions": package_versions,
+        "input_contract": {
+            "cohort_manifest_sha256": EXPECTED_COHORT_MANIFEST_SHA256,
+            "graph_manifest_sha256": EXPECTED_GRAPH_MANIFEST_SHA256,
+            "dataset_fingerprint": EXPECTED_DATASET_FINGERPRINT,
+            "split_fingerprint": EXPECTED_SPLIT_FINGERPRINT,
+            "gene_order_sha256": EXPECTED_GENE_SCHEMA_SHA256,
+            "metadata_order_sha256": EXPECTED_METADATA_SCHEMA_SHA256,
+            "preprocessing_version": EXPECTED_PREPROCESSING_VERSION,
+            "pre_analysis_file_receipts": _portable_file_receipts(
+                input_contract.pre_analysis_file_receipts
+            ),
+            "post_analysis": portable_input_post,
+        },
+        "checkpoint_post_analysis": checkpoint_post,
+        "core_receipts": portable_core_receipts,
+        "combined_tables": portable_combined_receipts,
+        "visualization_receipt": portable_visualization_receipt,
+        "qc_checks": qc_checks,
+        "qc_pass_fraction": qc_fraction,
+        "artifacts": artifact_records,
+        "reproduction_command": reproducibility_command,
+        "ephemeral_core_shards_retained": False,
+        "staging_cleanup": staging_cleanup,
+    }
+    _write_yaml_atomic(output_root / "analysis_manifest.yaml", analysis_manifest)
+    _artifact_checksums(output_root, required_outputs)
+
+    peak_vram_gib = max(
+        float(receipt["extraction_audit"]["peak_cuda_allocated_gib"])
+        for receipt in core_receipts
+    )
+    final_metrics = {
+        "analysis/attention_niche_qc_pass_fraction": qc_fraction,
+        "analysis/total_cells": float(len(assignments)),
+        "analysis/retained_mutual_edges": float(
+            sum(int(receipt["retained_mutual_edge_count"]) for receipt in core_receipts)
+        ),
+        "analysis/final_connected_niches": float(
+            sum(int(receipt["final_connected_niche_count"]) for receipt in core_receipts)
+        ),
+    }
+    _write_json_atomic(output_root / "metrics" / "final.json", final_metrics)
+    history_record = {
+        "step": 0,
+        **final_metrics,
+        "analysis_complete": True,
+    }
+    descriptor, temporary_history = tempfile.mkstemp(
+        prefix=".history.jsonl.tmp-", dir=output_root / "metrics"
+    )
+    with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+        handle.write(_canonical_json(history_record) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temporary_history, output_root / "metrics" / "history.jsonl")
+    descriptor, temporary_events = tempfile.mkstemp(
+        prefix=".events.jsonl.tmp-", dir=output_root / "metrics"
+    )
+    with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+        for name, value in final_metrics.items():
+            handle.write(
+                _canonical_json({"name": name, "value": value, "step": 0})
+                + "\n"
+            )
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(temporary_events, output_root / "metrics" / "events.jsonl")
+    summary = {
+        "run_id": run_id,
+        "status": "success",
+        "analysis_kind": "six_core_attention_routing_niche_map",
+        "map_label": map_label,
+        "primary_metric_name": "analysis/attention_niche_qc_pass_fraction",
+        "primary_metric_value": qc_fraction,
+        "metrics": final_metrics,
+        "model_seed_count": len(members),
+        "model_seeds": [member.seed for member in members],
+        "core_numbers": list(EXPECTED_CORE_NUMBERS),
+        "peak_vram_gib": peak_vram_gib,
+        "parameter_count": members[0].parameter_count,
+        "limitation": LIMITATION,
+    }
+    _write_json_atomic(output_root / "summary.json", summary)
+    return summary
+
+
+def _artifact_checksums(root: Path, relative_paths: Sequence[str]) -> dict[str, Any]:
+    records: dict[str, Any] = {}
+    for relative in relative_paths:
+        path = root / relative
+        if not path.is_file():
+            raise AttentionNichePipelineError(f"Required output is absent: {relative}")
+        records[relative] = {
+            "sha256": sha256_file(path),
+            "size_bytes": path.stat().st_size,
+        }
+    return records
+
+
+__all__ = [
+    "ANALYSIS_CAMPAIGN_ID",
+    "AttentionNichePipelineError",
+    "CheckpointMember",
+    "CoreJobSpec",
+    "EXPECTED_ALIASES",
+    "EXPECTED_CORE_NUMBERS",
+    "LIMITATION",
+    "PreparedInputContract",
+    "discover_completed_checkpoint_members",
+    "run_attention_niche_pipeline",
+    "verify_inputs_unchanged",
+    "verify_prepared_input_contract",
+]

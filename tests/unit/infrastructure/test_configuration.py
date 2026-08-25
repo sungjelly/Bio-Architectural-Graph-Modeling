@@ -157,7 +157,38 @@ def test_qkv_gat_requires_canonical_family_and_edge_features(
     no_edges = deepcopy(resolved)
     no_edges["features"]["use_edge_features"] = False
     with pytest.raises(ConfigurationError, match="requires edge features on"):
-        validate_experiment_config(no_edges)
+            validate_experiment_config(no_edges)
+
+
+def test_registered_attention_niche_analysis_config_is_analysis_only() -> None:
+    project_root = Path(__file__).resolve().parents[3]
+    config = compose_config(
+        project_root
+        / "experiments/campaigns/"
+        "cmp_20260825_six_core_attention_routing_niches/analysis_config.yaml",
+        config_root=project_root / "configs",
+    )
+
+    validate_experiment_config(config)
+    assert config["evaluation"]["artifact_contract"] == "analysis_only"
+    assert config["evaluation"]["canonical_prediction_split"] == "analysis"
+
+    invalid = deepcopy(config)
+    invalid["metadata"]["analysis_mask_derivation_fields"].append("model_seed")
+    with pytest.raises(ConfigurationError, match="analysis-only relative-QKV"):
+        validate_experiment_config(invalid)
+
+    drifted_primary = deepcopy(config)
+    drifted_primary["metadata"]["primary_top_neighbors"] = 10
+    with pytest.raises(ConfigurationError, match="locked metadata drifted"):
+        validate_experiment_config(drifted_primary)
+
+    drifted_polygon_rule = deepcopy(config)
+    drifted_polygon_rule["metadata"]["polygon_coordinate_alignment_rule"] = (
+        "centroid_only"
+    )
+    with pytest.raises(ConfigurationError, match="locked metadata drifted"):
+        validate_experiment_config(drifted_polygon_rule)
 
 
 def test_qkv_gat_matched_self_requires_canonical_family_and_no_edges(

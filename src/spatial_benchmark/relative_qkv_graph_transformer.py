@@ -341,6 +341,8 @@ class RelativeGeometryQKVModelOutput(ModelOutput):
     full_node_embedding: Optional[Tensor] = None
     selected_node_embedding: Optional[Tensor] = None
     diagnostics: Optional[RelativeGeometryQKVDiagnostics] = None
+    node_encoder_embedding: Optional[Tensor] = None
+    final_graph_embedding: Optional[Tensor] = None
 
 
 def _resolve_explanation_layer(
@@ -543,6 +545,7 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
         prediction: Tensor,
         selected_embedding: Tensor,
         full_embedding: Tensor,
+        node_encoder_embedding: Optional[Tensor],
         edge_index: Optional[Tensor],
         attention: Optional[Tensor],
         content_logits: Optional[Tensor],
@@ -577,6 +580,12 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
         return RelativeGeometryQKVModelOutput(
             prediction=prediction,
             node_embedding=selected_embedding,
+            node_encoder_embedding=node_encoder_embedding,
+            final_graph_embedding=(
+                selected_embedding
+                if node_encoder_embedding is not None
+                else None
+            ),
             attention_weights=attention,
             edge_index=edge_index,
             content_logits=content_logits,
@@ -603,6 +612,7 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
         attention_receivers: Optional[Tensor | Sequence[int]] = None,
         explanation_layer: int = -1,
         return_diagnostics: Optional[bool] = None,
+        return_intermediate_embeddings: bool = False,
     ) -> RelativeGeometryQKVModelOutput:
         if return_diagnostics is not None:
             if return_explanations and not return_diagnostics:
@@ -632,6 +642,11 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
             gene_mask,
             node_covariates,
             target_nodes,
+        )
+        node_encoder_embedding = (
+            _select_targets(node_embedding, targets)
+            if return_intermediate_embeddings
+            else None
         )
         receiver_mask = self._explanation_receiver_mask(
             attention_receivers,
@@ -679,6 +694,7 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
             prediction=prediction,
             selected_embedding=selected_embedding,
             full_embedding=node_embedding,
+            node_encoder_embedding=node_encoder_embedding,
             edge_index=diagnostic_edges,
             attention=final_attention,
             content_logits=final_content,
@@ -1023,6 +1039,7 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
         attention_receivers: Optional[Tensor | Sequence[int]] = None,
         explanation_layer: int = -1,
         return_diagnostics: Optional[bool] = None,
+        return_intermediate_embeddings: bool = False,
     ) -> RelativeGeometryQKVModelOutput:
         if return_diagnostics is not None:
             if return_explanations and not return_diagnostics:
@@ -1057,6 +1074,11 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
             gene_mask,
             node_covariates,
             target_nodes,
+        )
+        node_encoder_embedding = (
+            _select_targets(node_embedding, targets)
+            if return_intermediate_embeddings
+            else None
         )
         layout = self._receiver_layout(prepared_edges, num_nodes=num_nodes)
         receiver_mask = self._explanation_receiver_mask(
@@ -1109,6 +1131,7 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
             prediction=prediction,
             selected_embedding=selected_embedding,
             full_embedding=node_embedding,
+            node_encoder_embedding=node_encoder_embedding,
             edge_index=diagnostic_edges,
             attention=final_attention,
             content_logits=final_content,

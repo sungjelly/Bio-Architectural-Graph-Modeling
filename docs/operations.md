@@ -214,6 +214,25 @@ Production prediction finalization requires a stable, untracked
 validation-mask evaluation with HMAC sample keys and keeps the complete native
 NPZ as restricted provenance. Never put the salt in Git or a report.
 
+## Multi-GPU matrix launcher
+
+`scripts/sweeps/launch_matrix.py` schedules independent jobs across the GPUs
+allocated to the process. Its default selection uses `BAGM_GPU_IDS` when set,
+then `CUDA_VISIBLE_DEVICES`, and otherwise discovers the indices reported by
+`nvidia-smi`. Override the selection explicitly with `--gpus` for an individual
+invocation:
+
+```bash
+export BAGM_GPU_IDS=0,1,2,3
+PYTHONPATH=src /venv/main/bin/python scripts/sweeps/launch_matrix.py \
+  --prepared <prepared-artifact> \
+  --matrix <matrix.yaml> \
+  --output-root <output-root>
+```
+
+Host-level allocation does not rewrite immutable historical campaign
+contracts or receipts that recorded the hardware on which they ran.
+
 ## Disk, retention, and backup
 
 The worker refuses new work below `--min-free-gb`. Monitor canonical artifacts,

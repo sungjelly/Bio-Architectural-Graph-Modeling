@@ -188,6 +188,47 @@ def _job_succeeded(exit_code: int, job: Job) -> bool:
     return exit_code == 0 and _is_complete(job.output, job.authorization)
 
 
+def _parse_gpu_selection(selection: str) -> list[str]:
+    devices = [part.strip() for part in selection.split(",") if part.strip()]
+    if not devices:
+        raise ValueError("At least one GPU must be selected.")
+    if len(set(devices)) != len(devices):
+        raise ValueError("GPU selection must not contain duplicate devices.")
+    return devices
+
+
+def _default_gpu_selection(
+    environ: Mapping[str, str] | None = None,
+) -> str:
+    values = os.environ if environ is None else environ
+    for variable in ("BAGM_GPU_IDS", "CUDA_VISIBLE_DEVICES"):
+        configured = values.get(variable, "").strip()
+        if configured:
+            _parse_gpu_selection(configured)
+            return configured
+
+    try:
+        result = subprocess.run(
+            [
+                "nvidia-smi",
+                "--query-gpu=index",
+                "--format=csv,noheader,nounits",
+            ],
+            check=True,
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+    except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired):
+        return "0"
+    detected = [
+        line.strip()
+        for line in result.stdout.splitlines()
+        if line.strip().isdigit()
+    ]
+    return ",".join(detected) if detected else "0"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--prepared", required=True, type=Path)
@@ -203,8 +244,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--gpus",
-        default="0,1,2,3,4,5,6,7",
-        help="Comma-separated physical GPU indices allocated to this task.",
+        default=_default_gpu_selection(),
+        help=(
+            "Comma-separated physical GPU indices allocated to this task. "
+            "Defaults to BAGM_GPU_IDS, CUDA_VISIBLE_DEVICES, or nvidia-smi "
+            "discovery, in that order."
+        ),
     )
     parser.add_argument("--poll-seconds", type=float, default=2.0)
     args = parser.parse_args(argv)
@@ -267,9 +312,7 @@ def main(argv: list[str] | None = None) -> int:
         if not _is_complete(job.output, job.authorization)
     ]
     skipped = len(jobs) - len(pending)
-    devices = [part.strip() for part in args.gpus.split(",") if part.strip()]
-    if not devices:
-        raise ValueError("At least one GPU must be selected.")
+    devices = _parse_gpu_selection(args.gpus)
 
     active: dict[str, tuple[subprocess.Popen[str], Job, Any]] = {}
     failures: list[dict[str, Any]] = []

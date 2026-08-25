@@ -191,6 +191,55 @@ last checkpoint at the confirmed plateau epoch, never a selected best
 epoch. This is training-loss convergence monitoring, not validation or model
 selection.
 
+## Live training observability contract
+
+Objective: every newly started relative-QKV seed process must expose one durable,
+append-only monitoring record and one flushed stdout line immediately after each
+complete global epoch. This is operational instrumentation only; it must not
+change masks, optimization, checkpoints, plateau decisions, or scientific
+claims. A credible alternative explanation for an apparently short epoch is
+asynchronous GPU work or omitted staging time, so the recorded value is defined
+as wall-clock time around all six complete-core optimizer steps and their 60
+mask views, ending only after the loss and gradient values have been transferred
+to CPU. Logging time and 25-epoch checkpoint serialization are excluded.
+
+The primary live metric is the equal-core arithmetic mean masked Huber loss on
+standardized `log1p` targets; lower is better. The same record also exposes
+per-core masked Huber losses, mean and maximum pre-clipping gradient norm,
+learning rate, optimizer-step count, epoch duration, rolling duration, ETA to
+the current audit boundary, throughput counts, and process-cumulative peak CUDA
+allocation. Fixed-mask held-in Huber, MAE, MSE, and R2 remain post-training
+diagnostics; there is no validation or test metric to monitor in this fitted
+cohort.
+
+Acceptance requires exactly one callback for every newly completed epoch,
+finite non-negative timing and resource values, six aligned per-core losses,
+durable events in `metrics/events.jsonl`, and a human-readable
+`[bagm-training]` stdout line. A callback or durable-write failure must fail the
+run rather than silently train without monitoring. Timing is diagnostic and is
+excluded from deterministic history/checkpoint checksums so resume equivalence
+remains testable. Focused verification commands are:
+
+```bash
+PYTHONPATH=src /venv/main/bin/python -m pytest -q \
+  tests/unit/spatial_benchmark/test_pooled_relative_qkv_training.py \
+  tests/unit/spatial_benchmark/test_relative_qkv_runner.py
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark doctor
+```
+
+For a newly started run, monitor the concise stream or the full structured
+events from the repository root:
+
+```bash
+export RUN_ID=r_YYYYMMDDTHHMMSSZ_...
+tail -f "scratch/active_runs/${RUN_ID}/logs/stdout.log"
+tail -f "scratch/active_runs/${RUN_ID}/metrics/events.jsonl"
+```
+
+Processes already running when this instrumentation is installed are not
+retroactively modified; the feature applies when the training entry point is
+started in a fresh process.
+
 ## Hardware preflight
 
 The binding execution preflight used seed 0 and the complete largest graph, `CAN-23`

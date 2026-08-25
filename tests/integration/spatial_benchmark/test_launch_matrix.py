@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -16,6 +17,46 @@ assert SPEC is not None and SPEC.loader is not None
 launch_matrix = importlib.util.module_from_spec(SPEC)
 sys.modules[SPEC.name] = launch_matrix
 SPEC.loader.exec_module(launch_matrix)
+
+
+def test_gpu_selection_prefers_explicit_host_allocation(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("BAGM_GPU_IDS", "0,1,2,3")
+    monkeypatch.setenv("CUDA_VISIBLE_DEVICES", "7")
+
+    assert launch_matrix._default_gpu_selection() == "0,1,2,3"
+    assert launch_matrix._parse_gpu_selection("0,1,2,3") == [
+        "0",
+        "1",
+        "2",
+        "3",
+    ]
+
+
+def test_gpu_selection_discovers_devices_when_environment_is_unset(
+    monkeypatch,
+) -> None:
+    monkeypatch.delenv("BAGM_GPU_IDS", raising=False)
+    monkeypatch.delenv("CUDA_VISIBLE_DEVICES", raising=False)
+    monkeypatch.setattr(
+        launch_matrix.subprocess,
+        "run",
+        lambda *args, **kwargs: subprocess.CompletedProcess(
+            args[0], 0, stdout="0\n1\n2\n3\n", stderr=""
+        ),
+    )
+
+    assert launch_matrix._default_gpu_selection() == "0,1,2,3"
+
+
+def test_gpu_selection_rejects_duplicates() -> None:
+    try:
+        launch_matrix._parse_gpu_selection("0,1,1")
+    except ValueError as exc:
+        assert "duplicate" in str(exc)
+    else:
+        raise AssertionError("duplicate GPU IDs were accepted")
 
 
 def test_post_exit_completion_preserves_locked_authorization(

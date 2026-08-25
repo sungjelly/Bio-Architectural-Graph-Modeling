@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import sys
 
 import pytest
 
@@ -237,6 +238,35 @@ def test_relative_six_core_protocol_rejects_other_models(
             },
             paths=_paths(tmp_path),
         )
+
+
+def test_attention_niche_posthoc_protocol_uses_analysis_runner(
+    tmp_path: Path,
+) -> None:
+    command = command_for_config(
+        {
+            "evaluation": {
+                "protocol": "posthoc_attention_routing_niche_v1",
+                "artifact_contract": "analysis_only",
+            },
+            "model": {"name": "relative-qkv-gat"},
+            "campaign": {
+                "campaign_id": "cmp_20260825_six_core_attention_routing_niches"
+            },
+        },
+        paths=_paths(tmp_path),
+    )
+
+    assert command == [
+        sys.executable,
+        str(tmp_path / "scripts/analysis/run_attention_routing_niches.py"),
+        "--config",
+        "{run_scratch}/config.resolved.yaml",
+        "--run-id",
+        "{run_id}",
+        "--run-scratch",
+        "{run_scratch}",
+    ]
 
 
 def test_self_hurdle_protocol_uses_graphless_hurdle_runner(

@@ -91,6 +91,7 @@ SUPPORTED_MODEL_NAMES = frozenset(
     }
 )
 PRIMARY_METRIC_DIRECTIONS = {
+    "analysis/attention_niche_qc_pass_fraction": "maximize",
     "fit/partial_gene/log1p_cp10k_masked_huber": "minimize",
     "fit/partial_gene/masked_huber": "minimize",
     "fit/uniform_per_cell/masked_huber": "minimize",
@@ -737,6 +738,9 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
     canonical_prediction_split = str(
         evaluation.get("canonical_prediction_split", "validation")
     ).strip().lower()
+    artifact_contract = str(
+        evaluation.get("artifact_contract", "predictive")
+    ).strip().lower()
     held_in_fit_protocols = {
         "held_in_full_core_fixed_budget",
         "held_in_pooled_10core_fixed_budget",
@@ -744,7 +748,124 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
         "held_in_pooled_6core_relative_qkv_joint_plateau",
         "held_in_pooled_6core_relative_qkv_seed_plateau",
     }
-    if protocol in held_in_fit_protocols:
+    if protocol == "posthoc_attention_routing_niche_v1":
+        metadata = config.get("metadata", {})
+        campaign = config.get("campaign", {})
+        if (
+            artifact_contract != "analysis_only"
+            or canonical_prediction_split != "analysis"
+            or list(evaluation.get("splits", [])) != ["analysis"]
+            or primary != "analysis/attention_niche_qc_pass_fraction"
+            or model_name != "relative-qkv-gat"
+            or not isinstance(campaign, Mapping)
+            or campaign.get("campaign_id")
+            != "cmp_20260825_six_core_attention_routing_niches"
+            or not isinstance(metadata, Mapping)
+            or metadata.get("checkpoint_mutation_allowed") is not False
+            or metadata.get("analysis_mask_views") != 10
+            or metadata.get("analysis_mask_derivation_fields")
+            != ["analysis_mask_seed", "core_alias", "mask_view_index"]
+        ):
+            raise ConfigurationError(
+                "posthoc_attention_routing_niche_v1 requires the registered "
+                "analysis-only relative-QKV contract with ten model-seed-"
+                "independent mask views and immutable checkpoints."
+            )
+        required_outputs = metadata.get("required_analysis_outputs")
+        if (
+            not isinstance(required_outputs, list)
+            or not required_outputs
+            or any(
+                not isinstance(value, str)
+                or not value.strip()
+                or Path(value).is_absolute()
+                or ".." in Path(value).parts
+                for value in required_outputs
+            )
+            or len(set(required_outputs)) != len(required_outputs)
+        ):
+            raise ConfigurationError(
+                "posthoc analysis requires unique safe required_analysis_outputs."
+            )
+        locked_required_outputs = [
+            "six_core_attention_niche_map.png",
+            "six_core_attention_niche_map.pdf",
+            "six_core_attention_niche_map.svg",
+            "six_core_mutual_attention_network_overlay.png",
+            "six_core_mutual_attention_network_overlay.pdf",
+            *[
+                f"core_{core:02d}_attention_niche_map.png"
+                for core in (1, 9, 13, 15, 21, 23)
+            ],
+            "cell_attention_niche_assignments.parquet",
+            "mutual_attention_edges.parquet",
+            "directed_attention_edges.parquet",
+            "attention_niche_summary.csv",
+            "attention_niche_colors.json",
+            "attention_niche_regions.geojson",
+            "analysis_manifest.yaml",
+            "analysis_qc_report.md",
+            "README.md",
+        ]
+        locked_metadata = {
+            "execution_role": "posthoc_readout_no_training",
+            "upstream_campaign_id": (
+                "cmp_20260824_cancer_6core_relative_qkv_multiseed"
+            ),
+            "discover_completed_catalog_verified_last_checkpoints": True,
+            "core_aliases": [
+                "CAN-01",
+                "CAN-09",
+                "CAN-13",
+                "CAN-15",
+                "CAN-21",
+                "CAN-23",
+            ],
+            "core_numbers": [1, 9, 13, 15, 21, 23],
+            "final_graph_layer": True,
+            "analysis_mask_seed": 2026082501,
+            "analysis_mask_views": 10,
+            "analysis_mask_derivation_fields": [
+                "analysis_mask_seed",
+                "core_alias",
+                "mask_view_index",
+            ],
+            "all_genes_visible_sensitivity": True,
+            "uniform_routing_threshold": 1.0,
+            "consensus_mutual_score_threshold": 1.0,
+            "support_threshold": 0.60,
+            "primary_top_neighbors": 8,
+            "top_neighbor_sensitivity": [5, 8, 10],
+            "primary_leiden_resolution": 1.0,
+            "leiden_resolution_sensitivity": [0.5, 1.0, 1.5],
+            "leiden_seed": 2026082502,
+            "color_seed": 2026082503,
+            "polygon_coordinate_alignment_rule": (
+                "centroid_tolerance_or_polygon_covers_coordinate"
+            ),
+            "polygon_centroid_tolerance_um": 5.0,
+            "spatial_max_gap_um": 75.0,
+            "micro_niche_cell_threshold": 20,
+            "minimum_free_disk_gib": 40.0,
+            "checkpoint_mutation_allowed": False,
+            "required_analysis_outputs": locked_required_outputs,
+        }
+        drifted_metadata = sorted(
+            name
+            for name, expected_value in locked_metadata.items()
+            if metadata.get(name) != expected_value
+        )
+        if drifted_metadata:
+            raise ConfigurationError(
+                "posthoc attention-routing locked metadata drifted: "
+                + ", ".join(drifted_metadata)
+            )
+    elif artifact_contract != "predictive":
+        raise ConfigurationError(
+            "evaluation.artifact_contract=analysis_only is restricted to the "
+            "registered attention-routing post-hoc protocol."
+        )
+    elif protocol in held_in_fit_protocols:
         if canonical_prediction_split != "fit":
             raise ConfigurationError(
                 f"{protocol} requires "

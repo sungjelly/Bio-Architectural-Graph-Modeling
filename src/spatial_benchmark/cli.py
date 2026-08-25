@@ -220,6 +220,26 @@ def build_parser() -> argparse.ArgumentParser:
     checkpoint_export.add_argument("--links", action="store_true")
     _checkpoint_filter_arguments(checkpoint_export)
 
+    embedding_analysis = subparsers.add_parser(
+        "analyze-embedding-clusters",
+        help=(
+            "Extract intrinsic/contextual node embeddings and run joint "
+            "six-core Leiden clustering."
+        ),
+    )
+    embedding_analysis.add_argument("--run-id")
+    embedding_analysis.add_argument("--checkpoint", type=Path)
+    embedding_analysis.add_argument("--n-neighbors", type=int, default=30)
+    embedding_analysis.add_argument(
+        "--leiden-resolution", type=float, default=1.0
+    )
+    embedding_analysis.add_argument("--pca-components", type=int, default=50)
+    embedding_analysis.add_argument(
+        "--random-seed", type=int, default=20260825
+    )
+    embedding_analysis.add_argument("--device", default="cuda:0")
+    embedding_analysis.add_argument("--output-dir", type=Path)
+
     summarize = subparsers.add_parser("summarize-variants")
     summarize.add_argument("--campaign-id")
 
@@ -591,6 +611,23 @@ def _dispatch(
             promoted_only=arguments.promoted_only,
             duplicates_only=arguments.duplicates_only,
             symlink_view=arguments.links,
+        )
+    if command == "analyze-embedding-clusters":
+        from spatial_benchmark.relative_qkv_embedding_clustering import (
+            run_embedding_cluster_analysis,
+        )
+
+        return run_embedding_cluster_analysis(
+            registry=registry,
+            paths=paths,
+            run_id=arguments.run_id,
+            checkpoint=arguments.checkpoint,
+            n_neighbors=arguments.n_neighbors,
+            leiden_resolution=arguments.leiden_resolution,
+            pca_components=arguments.pca_components,
+            random_seed=arguments.random_seed,
+            device=arguments.device,
+            output_dir=arguments.output_dir,
         )
     if command == "summarize-variants":
         return {

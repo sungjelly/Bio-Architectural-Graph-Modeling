@@ -33,7 +33,11 @@ from .checkpoint_catalog import (
     index_checkpoint_catalog,
     run_semantics_from_configuration,
 )
-from .configuration import ConfigurationError, validate_experiment_config
+from .configuration import (
+    ConfigurationError,
+    load_yaml_mapping,
+    validate_experiment_config,
+)
 from .identifiers import (
     canonical_json,
     canonical_sha256,
@@ -206,6 +210,14 @@ class MissingDatasetError(QueueWorkerError):
     """Raised when a registered protected dataset reference is unavailable."""
 
 
+def _analysis_only_artifact_contract(configuration: Mapping[str, Any]) -> bool:
+    evaluation = configuration.get("evaluation", {})
+    return bool(
+        isinstance(evaluation, Mapping)
+        and evaluation.get("artifact_contract") == "analysis_only"
+    )
+
+
 def command_for_config(
     configuration: Mapping[str, Any],
     *,
@@ -241,6 +253,33 @@ def command_for_config(
 
     evaluation = _section(configuration, "evaluation")
     protocol = str(evaluation.get("protocol", "")).strip().lower()
+    if protocol == "posthoc_attention_routing_niche_v1":
+        model = _section(configuration, "model")
+        campaign = _section(configuration, "campaign")
+        if (
+            str(model.get("name", "")).strip().lower() != "relative-qkv-gat"
+            or campaign.get("campaign_id")
+            != "cmp_20260825_six_core_attention_routing_niches"
+            or evaluation.get("artifact_contract") != "analysis_only"
+        ):
+            raise ConfigurationError(
+                "posthoc_attention_routing_niche_v1 requires the registered "
+                "relative-QKV analysis-only campaign."
+            )
+        script = (
+            selected_paths.project_root
+            / "scripts/analysis/run_attention_routing_niches.py"
+        )
+        return [
+            sys.executable,
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-id",
+            "{run_id}",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
     if protocol == "grouped_core_adjacency_ablation_v1":
         model = _section(configuration, "model")
         model_name = str(model.get("name", "")).strip().lower()
@@ -656,6 +695,7 @@ class QueueWorker:
             metric_name, metric_value = _primary_metric(
                 scratch_summary, configuration
             )
+            analysis_only = _analysis_only_artifact_contract(configuration)
             archive.write_manifest(
                 {
                     "run_id": run_id,
@@ -667,18 +707,26 @@ class QueueWorker:
                     "schema_version": 1,
                     "primary_metric_name": metric_name,
                     "primary_metric_value": metric_value,
-                    "artifact_roles": {
-                        "primary_checkpoint": str(
-                            _section(configuration, "trainer").get(
-                                "primary_checkpoint_role", "best"
-                            )
-                        ),
-                        "canonical_predictions": str(
-                            _section(configuration, "evaluation").get(
-                                "canonical_prediction_split", "validation"
-                            )
-                        ),
-                    },
+                    "artifact_roles": (
+                        {
+                            "analysis_outputs": "conclusion_bearing_posthoc_readout",
+                            "primary_checkpoint": None,
+                            "canonical_predictions": None,
+                        }
+                        if analysis_only
+                        else {
+                            "primary_checkpoint": str(
+                                _section(configuration, "trainer").get(
+                                    "primary_checkpoint_role", "best"
+                                )
+                            ),
+                            "canonical_predictions": str(
+                                _section(configuration, "evaluation").get(
+                                    "canonical_prediction_split", "validation"
+                                )
+                            ),
+                        }
+                    ),
                     "checkpoint_catalog": {
                         "schema_version": 1,
                         "semantic_alias": run_semantics["semantic_alias"],
@@ -715,12 +763,13 @@ class QueueWorker:
                 ),
                 artifacts=artifact_records,
             )
-            index_checkpoint_catalog(
-                self.registry,
-                self.paths,
-                run_reference=run_id,
-                verify=True,
-            )
+            if not analysis_only:
+                index_checkpoint_catalog(
+                    self.registry,
+                    self.paths,
+                    run_reference=run_id,
+                    verify=True,
+                )
             archive.mark_success()
             success_marked = True
             verify_run_bundle(artifact_path)
@@ -1099,6 +1148,12 @@ class QueueWorker:
         ):
             run_id = str(record["run_id"])
             artifact_path = Path(str(record["artifact_path"]))
+            published_configuration = load_yaml_mapping(
+                artifact_path / "config.resolved.yaml"
+            )
+            analysis_only = _analysis_only_artifact_contract(
+                published_configuration
+            )
             archive = RunArchive.from_published(run_id, paths=self.paths)
             markers = [
                 marker
@@ -1107,24 +1162,26 @@ class QueueWorker:
             ]
             if not markers:
                 verify_unmarked_run_bundle(artifact_path)
-                index_checkpoint_catalog(
-                    self.registry,
-                    self.paths,
-                    run_reference=run_id,
-                    verify=True,
-                )
+                if not analysis_only:
+                    index_checkpoint_catalog(
+                        self.registry,
+                        self.paths,
+                        run_reference=run_id,
+                        verify=True,
+                    )
                 archive.mark_success()
             elif markers != ["_SUCCESS"]:
                 raise ArtifactFinalizationError(
                     f"Finalizing run {run_id} has incompatible markers: {markers}"
                 )
             else:
-                index_checkpoint_catalog(
-                    self.registry,
-                    self.paths,
-                    run_reference=run_id,
-                    verify=True,
-                )
+                if not analysis_only:
+                    index_checkpoint_catalog(
+                        self.registry,
+                        self.paths,
+                        run_reference=run_id,
+                        verify=True,
+                    )
             verify_run_bundle(artifact_path)
             self.registry.complete_run_and_job(
                 job_id=str(record["job_id"]),

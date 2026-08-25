@@ -227,6 +227,44 @@ def test_global_epoch_has_six_optimizer_steps_and_ten_views_per_core() -> None:
     assert len(set(model.step_start_weights)) > 1
 
 
+def test_epoch_callback_observes_each_completed_epoch_without_changing_history(
+) -> None:
+    batches = _core_batches()
+    model = _TinyRelativeModel(3)
+    observed: list[tuple[object, tuple[object, ...], float]] = []
+
+    def observe(epoch: object, core_steps: tuple[object, ...], duration: float) -> None:
+        observed.append((epoch, core_steps, duration))
+
+    result = fit_pooled_relative_qkv_segment(
+        model,
+        batches,
+        _config(model_seed=3),
+        epoch_callback=observe,
+    )
+
+    assert len(observed) == 1
+    epoch, core_steps, duration = observed[0]
+    assert epoch == result.global_history[0]
+    assert core_steps == result.core_history
+    assert np.isfinite(duration)
+    assert duration >= 0.0
+    assert "duration" not in asdict(result.global_history[0])
+
+
+def test_epoch_callback_failure_stops_training() -> None:
+    def fail(*_args: object) -> None:
+        raise RuntimeError("monitor write failed")
+
+    with pytest.raises(RuntimeError, match="monitor write failed"):
+        fit_pooled_relative_qkv_segment(
+            _TinyRelativeModel(3),
+            _core_batches(),
+            _config(model_seed=3),
+            epoch_callback=fail,
+        )
+
+
 def test_only_one_complete_core_is_staged_and_sources_remain_on_cpu() -> None:
     batches = _core_batches()
     model = _TinyRelativeModel(3, dropout=0.0)

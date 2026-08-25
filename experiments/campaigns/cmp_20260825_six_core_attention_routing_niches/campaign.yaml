@@ -1,0 +1,43 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260825_six_core_attention_routing_niches
+display_name: Six-core model-defined attention-routing niche map
+status: pilot
+outcome: pending
+definition: experiments/campaigns/cmp_20260825_six_core_attention_routing_niches/README.md
+analysis_config: experiments/campaigns/cmp_20260825_six_core_attention_routing_niches/analysis_config.yaml
+upstream_campaign_id: cmp_20260824_cancer_6core_relative_qkv_multiseed
+analysis:
+  estimand: final_layer_reciprocal_degree_adjusted_attention_routing_partition
+  lifecycle_stage: post_hoc_locked_readout
+  study_axis: model_routing_niche_analysis
+  primary_top_neighbors: 8
+  top_neighbor_sensitivity: [5, 8, 10]
+  primary_leiden_resolution: 1.0
+  leiden_resolution_sensitivity: [0.5, 1.0, 1.5]
+  consensus_score_threshold: 1.0
+  uniform_routing_threshold: 1.0
+  support_threshold: 0.60
+  analysis_mask_seed: 2026082501
+  analysis_mask_views: 10
+  leiden_seed: 2026082502
+  color_seed: 2026082503
+  polygon_coordinate_alignment_rule: centroid_tolerance_or_polygon_covers_coordinate
+  polygon_centroid_tolerance_um: 5.0
+  final_graph_layer: true
+  all_genes_visible_sensitivity: true
+  minimum_free_disk_gib: 40.0
+cohort:
+  aliases: [CAN-01, CAN-09, CAN-13, CAN-15, CAN-21, CAN-23]
+  core_numbers: [1, 9, 13, 15, 21, 23]
+  fit_scope: all_cells_six_cancer_cores_transductive
+  independent_core_count: 6
+  validation_or_test_partition_present: false
+checkpoint_policy:
+  require_success_marker: true
+  require_catalog_verification: true
+  require_role: last
+  reject_smoke_and_periodic_checkpoints: true
+  include_all_completed_model_seeds_at_extraction_start: true
+  modify_or_resume_checkpoints: false
+claim_limit: model_defined_attention_routing_niches_not_biological_or_causal
+automatic_enqueue: false
