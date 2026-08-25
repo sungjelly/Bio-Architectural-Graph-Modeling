@@ -182,6 +182,23 @@ def test_polygon_path_omits_only_zero_area_interior_ring() -> None:
 
     assert np.count_nonzero(path.codes == MatplotlibPath.MOVETO) == 1
     assert np.count_nonzero(path.codes == MatplotlibPath.CLOSEPOLY) == 1
+    receipt = visualization._omitted_zero_area_interior_ring_receipt(
+        {
+            23: [
+                {
+                    **polygon,
+                    "position": 1416,
+                    "color": "#123456",
+                }
+            ]
+        }
+    )
+    assert receipt["count"] == 1
+    assert receipt["identifiers"] == [
+        "C23|C23-N1417|feature=1416|polygon=0|ring=1"
+    ]
+    assert receipt["signed_area_um2"] == 0.0
+    assert receipt["scientific_geometry_modified"] is False
 
 
 def test_prepare_assignments_keeps_confidence_distinct_from_assignment_agreement(

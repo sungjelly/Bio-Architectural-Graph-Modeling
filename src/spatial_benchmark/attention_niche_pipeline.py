@@ -10,9 +10,12 @@ niches are model-defined spatial partitions, not biological or causal claims.
 from __future__ import annotations
 
 from concurrent.futures import ProcessPoolExecutor, as_completed
+import ctypes
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
+import errno
 import hashlib
+import fcntl
 import json
 import math
 import os
@@ -21,6 +24,7 @@ import platform
 import shutil
 import socket
 import sqlite3
+import stat
 import tempfile
 import time
 from typing import Any, Iterable, Mapping, Sequence
@@ -44,6 +48,7 @@ from .data import (
     load_selected_core,
 )
 from .fingerprints import sha256_file
+from .identifiers import scientific_id
 from .paths import ProjectPaths, current_paths
 from .pooled_relative_qkv_training import PooledRelativeQKVCoreBatch
 from .relative_qkv_post_training import (
@@ -52,7 +57,7 @@ from .relative_qkv_post_training import (
     load_relative_qkv_checkpoint,
     stream_receiver_attention,
 )
-from .run_archive import verify_run_bundle
+from .run_archive import RunArchive, verify_run_bundle
 from .training import set_deterministic_seed
 
 
@@ -129,6 +134,33 @@ PROHIBITED_INTERPRETATION_IDENTIFIER_COLUMNS = frozenset(
         "patient_id",
     }
 )
+RENDER_RECOVERY_SOURCE_RUN_ID = (
+    "r_20260825T081845Z_0da9fbf2_s000_f00_a01_dc19543d"
+)
+RENDER_RECOVERY_SOURCE_QUEUE_JOB_ID = "q_07ee75463aae7b7f890e"
+RENDER_RECOVERY_FAILED_CONTENT_SHA256 = (
+    "403887f52f7b7132409e2efdd2b3c4bef22751fa82f4f9a99c1fccd06254087c"
+)
+RENDER_RECOVERY_FAILURE_SIGNATURE = (
+    "spatial_benchmark.attention_niche_visualization."
+    "AttentionNicheVisualizationError: core region 'C01-N1785' ring 3 has "
+    "zero signed area."
+)
+RENDER_RECOVERY_MODE = "verified_failed_run_render_only_v1"
+RENDER_RECOVERY_SCIENTIFIC_ID = "sci_0da9fbf2afff6323"
+RENDER_RECOVERY_OMITTED_RING_SHA256 = (
+    "a93450935e8d0a435f4f4fd911cae8d104afabfda77410783de5b6f1a7d03331"
+)
+RENDER_RECOVERY_CANONICAL_OUTPUTS = (
+    "cell_attention_niche_assignments.parquet",
+    "mutual_attention_edges.parquet",
+    "directed_attention_edges.parquet",
+    "attention_niche_summary.csv",
+    "attention_niche_colors.json",
+    "attention_niche_regions.geojson",
+    "attention_niche_parameter_sensitivity.csv",
+)
+_LINUX_FICLONE = 0x40049409
 
 
 class AttentionNichePipelineError(RuntimeError):
@@ -307,6 +339,600 @@ def _write_yaml_atomic(path: Path, value: Mapping[str, Any]) -> None:
         os.replace(temporary, path)
     finally:
         temporary.unlink(missing_ok=True)
+
+
+def _write_text_atomic(path: Path, value: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    if path.exists() or path.is_symlink():
+        raise FileExistsError(f"Refusing to overwrite analysis output: {path}")
+    descriptor, temporary_name = tempfile.mkstemp(
+        prefix=f".{path.name}.tmp-", dir=path.parent
+    )
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            handle.write(value)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temporary, path)
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+@dataclass(frozen=True, slots=True)
+class RenderRecoveryRequest:
+    """Explicit, immutable identity of the one approved render-only recovery."""
+
+    mode: str
+    source_run_id: str
+    source_queue_job_id: str
+    source_failed_marker_content_sha256: str
+    expected_renderer_failure_signature: str
+    minimum_figure_headroom_gib: float
+
+
+@dataclass(frozen=True, slots=True)
+class VerifiedRenderRecoverySource:
+    """Verified failed source bundle and its immutable lineage documents."""
+
+    root: Path
+    resolved_config: Mapping[str, Any] = field(repr=False)
+    bundle_verification: Mapping[str, Any] = field(repr=False)
+    failed_marker: Mapping[str, Any] = field(repr=False)
+    failed_marker_file_sha256: str
+    artifact_checksum_manifest_sha256: str
+    artifact_files: Mapping[str, Mapping[str, Any]] = field(repr=False)
+    registry_artifacts: Mapping[str, Mapping[str, Any]] = field(repr=False)
+    stderr_sha256: str
+    scientific_config_sha256: str
+    queue_job: Mapping[str, Any] = field(repr=False)
+    source_git_identity: Mapping[str, Any] = field(repr=False)
+    source_git_provenance: Mapping[str, Mapping[str, Any]] = field(repr=False)
+
+
+def _validated_render_recovery_request(
+    launcher: Mapping[str, Any],
+) -> RenderRecoveryRequest | None:
+    """Return the locked recovery request, or ``None`` for a normal extraction."""
+
+    if "recovery" not in launcher:
+        return None
+    raw = launcher.get("recovery")
+    if not isinstance(raw, Mapping):
+        raise AttentionNichePipelineError(
+            "launcher.recovery must be an explicit mapping."
+        )
+    expected = {
+        "mode": RENDER_RECOVERY_MODE,
+        "source_run_id": RENDER_RECOVERY_SOURCE_RUN_ID,
+        "source_queue_job_id": RENDER_RECOVERY_SOURCE_QUEUE_JOB_ID,
+        "source_failed_marker_content_sha256": (
+            RENDER_RECOVERY_FAILED_CONTENT_SHA256
+        ),
+        "expected_renderer_failure_signature": (
+            RENDER_RECOVERY_FAILURE_SIGNATURE
+        ),
+        "minimum_figure_headroom_gib": 2.0,
+    }
+    if set(raw) != set(expected):
+        raise AttentionNichePipelineError(
+            "launcher.recovery has missing or unrecognized fields."
+        )
+    drift = {
+        key: {"expected": expected_value, "observed": raw.get(key)}
+        for key, expected_value in expected.items()
+        if raw.get(key) != expected_value
+    }
+    if drift:
+        raise AttentionNichePipelineError(
+            "Render-only recovery identity drifted: "
+            + ", ".join(sorted(drift))
+        )
+    return RenderRecoveryRequest(
+        mode=str(expected["mode"]),
+        source_run_id=str(expected["source_run_id"]),
+        source_queue_job_id=str(expected["source_queue_job_id"]),
+        source_failed_marker_content_sha256=str(
+            expected["source_failed_marker_content_sha256"]
+        ),
+        expected_renderer_failure_signature=str(
+            expected["expected_renderer_failure_signature"]
+        ),
+        minimum_figure_headroom_gib=float(
+            expected["minimum_figure_headroom_gib"]
+        ),
+    )
+
+
+def _scientific_config_without_recovery_runtime(
+    config: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Remove only the approved recovery selector and runtime launcher."""
+
+    normalized = json.loads(_canonical_json(dict(config)))
+    if not isinstance(normalized, dict):  # pragma: no cover - defensive
+        raise AttentionNichePipelineError("Resolved configuration is malformed.")
+    normalized.pop("launcher", None)
+    metadata = normalized.get("metadata")
+    if not isinstance(metadata, dict):
+        raise AttentionNichePipelineError(
+            "Resolved configuration metadata is malformed."
+        )
+    return normalized
+
+
+def _verify_render_recovery_source_identity(
+    *,
+    request: RenderRecoveryRequest,
+    database: str | Path,
+    paths: ProjectPaths,
+    current_config: Mapping[str, Any],
+) -> VerifiedRenderRecoverySource:
+    """Verify registry identity, full failed bundle, config, and traceback."""
+
+    database_path = Path(database).resolve(strict=True)
+    connection = sqlite3.connect(f"file:{database_path}?mode=ro", uri=True)
+    connection.row_factory = sqlite3.Row
+    try:
+        row = connection.execute(
+            """
+            SELECT run_id, campaign_id, status, artifact_path,
+                   failure_category, config_json
+            FROM runs
+            WHERE run_id = ?
+            """,
+            (request.source_run_id,),
+        ).fetchone()
+        artifact_rows = connection.execute(
+            """
+            SELECT path, sha256, size_bytes, status
+            FROM artifacts
+            WHERE run_id = ?
+            ORDER BY path
+            """,
+            (request.source_run_id,),
+        ).fetchall()
+        queue_rows = connection.execute(
+            """
+            SELECT job_id, run_id, campaign_id, status, failure_category,
+                   requested_gpu, canonical_config_json
+            FROM queue_jobs
+            WHERE run_id = ?
+            ORDER BY job_id
+            """,
+            (request.source_run_id,),
+        ).fetchall()
+    finally:
+        connection.close()
+    if row is None:
+        raise AttentionNichePipelineError(
+            f"Recovery source is absent from the registry: {request.source_run_id}."
+        )
+    if (
+        str(row["run_id"]) != request.source_run_id
+        or str(row["campaign_id"]) != ANALYSIS_CAMPAIGN_ID
+        or str(row["status"]) != "failed"
+        or str(row["failure_category"]) != "nonzero_exit"
+    ):
+        raise AttentionNichePipelineError(
+            "Recovery source registry identity/status is not the locked failure."
+        )
+    if len(queue_rows) != 1:
+        raise AttentionNichePipelineError(
+            "Recovery source must have exactly one failed queue job."
+        )
+    queue_row = queue_rows[0]
+    if (
+        str(queue_row["job_id"]) != request.source_queue_job_id
+        or str(queue_row["run_id"]) != request.source_run_id
+        or str(queue_row["campaign_id"]) != ANALYSIS_CAMPAIGN_ID
+        or str(queue_row["status"]) != "failed"
+        or str(queue_row["failure_category"]) != "nonzero_exit"
+        or str(queue_row["requested_gpu"]) != "0,2,3"
+    ):
+        raise AttentionNichePipelineError(
+            "Recovery source queue-job identity/status is not the locked failure."
+        )
+
+    expected_root = RunArchive.artifact_path_for(request.source_run_id, paths)
+    source_root = Path(str(row["artifact_path"]))
+    try:
+        source_root = source_root.resolve(strict=True)
+        canonical_root = expected_root.resolve(strict=True)
+    except OSError as exc:
+        raise AttentionNichePipelineError(
+            "Recovery source artifact bundle is not available."
+        ) from exc
+    if source_root != canonical_root or source_root.is_symlink():
+        raise AttentionNichePipelineError(
+            "Recovery source is not the canonical immutable archive path."
+        )
+
+    bundle_verification = verify_run_bundle(
+        source_root,
+        require_success_contract=False,
+    )
+    if (
+        bundle_verification.get("valid") is not True
+        or bundle_verification.get("status") != "failed"
+        or int(bundle_verification.get("tombstoned_file_count", -1)) != 0
+    ):
+        raise AttentionNichePipelineError(
+            "Full recovery-source bundle verification did not pass intact."
+        )
+
+    marker_path = source_root / "_FAILED"
+    marker = _load_json(marker_path, "recovery source failed marker")
+    if (
+        marker.get("run_id") != request.source_run_id
+        or marker.get("status") != "failed"
+        or marker.get("content_sha256")
+        != request.source_failed_marker_content_sha256
+    ):
+        raise AttentionNichePipelineError(
+            "Recovery source _FAILED marker identity or digest drifted."
+        )
+
+    checksum_manifest_path = source_root / "provenance/artifact_checksums.json"
+    checksum_manifest = _load_json(
+        checksum_manifest_path,
+        "recovery source artifact checksum manifest",
+    )
+    artifact_files = checksum_manifest.get("files")
+    if not isinstance(artifact_files, Mapping):
+        raise AttentionNichePipelineError(
+            "Recovery source checksum manifest has no file mapping."
+        )
+    normalized_artifact_files: dict[str, Mapping[str, Any]] = {
+        str(relative): dict(receipt)
+        for relative, receipt in artifact_files.items()
+        if isinstance(receipt, Mapping)
+    }
+    if len(normalized_artifact_files) != len(artifact_files):
+        raise AttentionNichePipelineError(
+            "Recovery source checksum manifest contains malformed receipts."
+        )
+
+    try:
+        source_config = yaml.safe_load(
+            (source_root / "config.resolved.yaml").read_text(encoding="utf-8")
+        )
+        registry_config = json.loads(str(row["config_json"]))
+        queue_config = json.loads(str(queue_row["canonical_config_json"]))
+        source_manifest = yaml.safe_load(
+            (source_root / "manifest.yaml").read_text(encoding="utf-8")
+        )
+        source_summary = json.loads(
+            (source_root / "summary.json").read_text(encoding="utf-8")
+        )
+    except (OSError, ValueError, yaml.YAMLError) as exc:
+        raise AttentionNichePipelineError(
+            "Recovery source configuration/lifecycle documents are malformed."
+        ) from exc
+    if (
+        not isinstance(source_config, Mapping)
+        or not isinstance(registry_config, Mapping)
+        or not isinstance(queue_config, Mapping)
+        or source_config != registry_config
+        or source_config != queue_config
+        or not isinstance(source_manifest, Mapping)
+        or source_manifest.get("run_id") != request.source_run_id
+        or source_manifest.get("status") != "failed"
+        or not isinstance(source_summary, Mapping)
+        or source_summary.get("run_id") != request.source_run_id
+        or source_summary.get("status") != "failed"
+    ):
+        raise AttentionNichePipelineError(
+            "Recovery source registry, config, manifest, or summary identity drifted."
+        )
+    source_launcher = source_config.get("launcher")
+    if not isinstance(source_launcher, Mapping) or "recovery" in source_launcher:
+        raise AttentionNichePipelineError(
+            "A render-recovery run cannot itself be used as the recovery source."
+        )
+    source_scientific = _scientific_config_without_recovery_runtime(source_config)
+    current_scientific = _scientific_config_without_recovery_runtime(current_config)
+    if (
+        source_scientific != current_scientific
+        or scientific_id(source_config) != RENDER_RECOVERY_SCIENTIFIC_ID
+        or scientific_id(current_config) != RENDER_RECOVERY_SCIENTIFIC_ID
+    ):
+        raise AttentionNichePipelineError(
+            "Recovery and source scientific configurations differ outside the "
+            "approved recovery/launcher fields or scientific ID drifted."
+        )
+
+    stderr_path = source_root / "logs/stderr.log"
+    try:
+        stderr = stderr_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise AttentionNichePipelineError(
+            "Recovery source stderr cannot be read."
+        ) from exc
+    if (
+        not stderr.rstrip().endswith(request.expected_renderer_failure_signature)
+        or "render_attention_niche_visualizations(" not in stderr
+        or "AttentionNicheVisualizationError" not in stderr
+    ):
+        raise AttentionNichePipelineError(
+            "Recovery source does not have the exact approved renderer failure."
+        )
+
+    forbidden_source_visuals = (
+        "six_core_attention_niche_map.png",
+        "six_core_attention_niche_map.pdf",
+        "six_core_attention_niche_map.svg",
+        "six_core_mutual_attention_network_overlay.png",
+        "six_core_mutual_attention_network_overlay.pdf",
+        *(f"core_{core:02d}_attention_niche_map.png" for core in EXPECTED_CORE_NUMBERS),
+    )
+    if any((source_root / relative).exists() for relative in forbidden_source_visuals):
+        raise AttentionNichePipelineError(
+            "Recovery source unexpectedly contains a completed visualization."
+        )
+
+    registry_artifacts: dict[str, Mapping[str, Any]] = {}
+    for artifact_row in artifact_rows:
+        artifact_path = Path(str(artifact_row["path"]))
+        if not artifact_path.is_absolute():
+            artifact_path = paths.project_root / artifact_path
+        try:
+            relative = artifact_path.resolve(strict=False).relative_to(
+                source_root
+            ).as_posix()
+        except ValueError as exc:
+            raise AttentionNichePipelineError(
+                "A registered recovery-source artifact is outside its bundle."
+            ) from exc
+        if relative in registry_artifacts:
+            raise AttentionNichePipelineError(
+                f"Duplicate registered recovery-source artifact: {relative}."
+            )
+        registry_artifacts[relative] = {
+            "sha256": str(artifact_row["sha256"] or ""),
+            "size_bytes": int(artifact_row["size_bytes"] or 0),
+            "status": str(artifact_row["status"]),
+        }
+    if (
+        len(registry_artifacts) != len(artifact_rows)
+        or any(
+            receipt.get("status") != "present"
+            for receipt in registry_artifacts.values()
+        )
+    ):
+        raise AttentionNichePipelineError(
+            "Every registered recovery-source artifact must remain present."
+        )
+    for relative, expected in normalized_artifact_files.items():
+        registered = registry_artifacts.get(relative)
+        if (
+            not isinstance(registered, Mapping)
+            or registered.get("status") != "present"
+            or registered.get("sha256") != expected.get("sha256")
+            or int(registered.get("size_bytes", -1)) != int(expected.get("size", -2))
+        ):
+            raise AttentionNichePipelineError(
+                f"Registered recovery-source artifact receipt drifted: {relative}."
+            )
+    for relative in RENDER_RECOVERY_CANONICAL_OUTPUTS:
+        source_file = source_root / relative
+        expected = normalized_artifact_files.get(relative)
+        registered = registry_artifacts.get(relative)
+        if (
+            source_file.is_symlink()
+            or not source_file.is_file()
+            or not isinstance(expected, Mapping)
+            or expected.get("type") != "file"
+            or not isinstance(registered, Mapping)
+            or registered.get("status") != "present"
+            or registered.get("sha256") != expected.get("sha256")
+            or int(registered.get("size_bytes", -1)) != int(expected.get("size", -2))
+        ):
+            raise AttentionNichePipelineError(
+                f"Canonical recovery source is absent or not registry-bound: {relative}."
+            )
+
+    provenance_receipts: dict[str, Mapping[str, Any]] = {}
+    for relative in (
+        "provenance/git.json",
+        "provenance/uncommitted_changes.patch",
+        "provenance/untracked_files.json",
+    ):
+        expected = normalized_artifact_files.get(relative)
+        if not isinstance(expected, Mapping) or expected.get("type") != "file":
+            raise AttentionNichePipelineError(
+                f"Source Git/dirty provenance is not checksum-bound: {relative}."
+            )
+        provenance_receipts[relative] = dict(expected)
+    source_git_identity = _load_json(
+        source_root / "provenance/git.json",
+        "source Git identity",
+    )
+    if (
+        len(str(source_git_identity.get("commit", ""))) != 40
+        or not isinstance(source_git_identity.get("dirty"), bool)
+        or len(str(source_git_identity.get("dirty_fingerprint", ""))) != 64
+        or int(source_git_identity.get("untracked_file_count", -1)) < 0
+    ):
+        raise AttentionNichePipelineError("Source Git identity is malformed.")
+
+    return VerifiedRenderRecoverySource(
+        root=source_root,
+        resolved_config=dict(source_config),
+        bundle_verification=dict(bundle_verification),
+        failed_marker=dict(marker),
+        failed_marker_file_sha256=sha256_file(marker_path),
+        artifact_checksum_manifest_sha256=sha256_file(checksum_manifest_path),
+        artifact_files=normalized_artifact_files,
+        registry_artifacts=registry_artifacts,
+        stderr_sha256=sha256_file(stderr_path),
+        scientific_config_sha256=_canonical_sha256(source_scientific),
+        queue_job={
+            "job_id": str(queue_row["job_id"]),
+            "run_id": str(queue_row["run_id"]),
+            "status": str(queue_row["status"]),
+            "failure_category": str(queue_row["failure_category"]),
+            "requested_gpu": str(queue_row["requested_gpu"]),
+        },
+        source_git_identity=source_git_identity,
+        source_git_provenance=provenance_receipts,
+    )
+
+
+def _materialize_ficlone_reflink(
+    source: str | Path,
+    destination: str | Path,
+    *,
+    expected_sha256: str,
+) -> dict[str, Any]:
+    """Clone one regular file with Linux FICLONE and no fallback path."""
+
+    if platform.system() != "Linux" or not hasattr(os, "O_NOFOLLOW"):
+        raise AttentionNichePipelineError(
+            "Render recovery requires Linux FICLONE with O_NOFOLLOW."
+        )
+    source_path = Path(source)
+    destination_path = Path(destination)
+    if source_path.is_symlink():
+        raise AttentionNichePipelineError(
+            f"Refusing a symlink recovery source: {source_path}."
+        )
+    try:
+        source_lstat = source_path.lstat()
+    except OSError as exc:
+        raise AttentionNichePipelineError(
+            f"Cannot stat recovery source: {source_path}."
+        ) from exc
+    if not stat.S_ISREG(source_lstat.st_mode):
+        raise AttentionNichePipelineError(
+            f"Recovery source is not a regular file: {source_path}."
+        )
+    if destination_path.exists() or destination_path.is_symlink():
+        raise FileExistsError(
+            f"Refusing to overwrite recovery output: {destination_path}"
+        )
+    if (
+        len(expected_sha256) != 64
+        or any(character not in "0123456789abcdef" for character in expected_sha256)
+    ):
+        raise AttentionNichePipelineError("Expected reflink checksum is malformed.")
+    destination_path.parent.mkdir(parents=True, exist_ok=True)
+    source_fd = -1
+    destination_fd, temporary_name = tempfile.mkstemp(
+        prefix=f".{destination_path.name}.ficlone-",
+        dir=destination_path.parent,
+    )
+    temporary_path = Path(temporary_name)
+    published = False
+    try:
+        source_fd = os.open(
+            source_path,
+            os.O_RDONLY | os.O_CLOEXEC | os.O_NOFOLLOW,
+        )
+        os.fchmod(destination_fd, stat.S_IMODE(source_lstat.st_mode))
+        fcntl.ioctl(destination_fd, _LINUX_FICLONE, source_fd)
+        os.fsync(destination_fd)
+        os.close(destination_fd)
+        destination_fd = -1
+        os.close(source_fd)
+        source_fd = -1
+
+        source_stat = source_path.stat()
+        temporary_stat = temporary_path.stat()
+        observed_sha256 = sha256_file(temporary_path)
+        checks = {
+            "same_filesystem": source_stat.st_dev == temporary_stat.st_dev,
+            "distinct_inode": source_stat.st_ino != temporary_stat.st_ino,
+            "source_link_count_one": source_stat.st_nlink == 1,
+            "destination_link_count_one": temporary_stat.st_nlink == 1,
+            "size_equal": source_stat.st_size == temporary_stat.st_size,
+            "checksum_equal": observed_sha256 == expected_sha256,
+        }
+        if not all(checks.values()):
+            failed = sorted(name for name, passed in checks.items() if not passed)
+            raise AttentionNichePipelineError(
+                "FICLONE materialization verification failed: "
+                + ", ".join(failed)
+            )
+
+        library = ctypes.CDLL(None, use_errno=True)
+        renameat2 = getattr(library, "renameat2", None)
+        if renameat2 is None:
+            raise AttentionNichePipelineError(
+                "Linux renameat2 is required for no-replace reflink publication."
+            )
+        renameat2.argtypes = [
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_int,
+            ctypes.c_char_p,
+            ctypes.c_uint,
+        ]
+        renameat2.restype = ctypes.c_int
+        result = renameat2(
+            -100,
+            os.fsencode(temporary_path),
+            -100,
+            os.fsencode(destination_path),
+            1,
+        )
+        if result != 0:
+            error_number = ctypes.get_errno()
+            if error_number in {errno.EEXIST, errno.ENOTEMPTY}:
+                raise FileExistsError(
+                    f"Refusing to overwrite recovery output: {destination_path}"
+                )
+            raise OSError(
+                error_number,
+                os.strerror(error_number),
+                destination_path,
+            )
+        published = True
+        directory_fd = os.open(
+            destination_path.parent,
+            os.O_RDONLY | os.O_DIRECTORY | os.O_CLOEXEC,
+        )
+        try:
+            os.fsync(directory_fd)
+        finally:
+            os.close(directory_fd)
+    except AttentionNichePipelineError:
+        if published:
+            destination_path.unlink(missing_ok=True)
+        raise
+    except OSError as exc:
+        if published:
+            destination_path.unlink(missing_ok=True)
+        raise AttentionNichePipelineError(
+            f"Linux FICLONE publication failed; no copy fallback is permitted "
+            f"for {source_path}."
+        ) from exc
+    finally:
+        if destination_fd >= 0:
+            os.close(destination_fd)
+        if source_fd >= 0:
+            os.close(source_fd)
+        temporary_path.unlink(missing_ok=True)
+
+    destination_stat = destination_path.stat()
+    return {
+        "method": "linux_ficlone_reflink",
+        "temporary_destination": "same_directory_o_excl_o_nofollow",
+        "publication": "renameat2_rename_noreplace_after_temp_verification",
+        "parent_directory_fsynced": True,
+        "copy_fallback_permitted": False,
+        "source_type": "regular_file_not_symlink",
+        "destination_type": "regular_file_not_symlink",
+        "source_device": int(source_stat.st_dev),
+        "destination_device": int(destination_stat.st_dev),
+        "source_inode": int(source_stat.st_ino),
+        "destination_inode": int(destination_stat.st_ino),
+        "distinct_inode": True,
+        "source_link_count": int(source_stat.st_nlink),
+        "destination_link_count": int(destination_stat.st_nlink),
+        "size_bytes": int(destination_stat.st_size),
+        "sha256": observed_sha256,
+    }
 
 
 @dataclass(frozen=True, slots=True)
@@ -2935,6 +3561,1532 @@ def _markdown_core_table(core_receipts: Sequence[Mapping[str, Any]]) -> str:
     return "\n".join(lines)
 
 
+def _verified_recovery_core_receipts(
+    source: VerifiedRenderRecoverySource,
+    *,
+    members: Sequence[CheckpointMember],
+    mask_views: int,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    """Verify all six completed extraction/QC receipts from the failed source."""
+
+    receipt_root = source.root / "diagnostics" / "attention_niche_core_work"
+    receipt_paths = sorted(receipt_root.glob("core_*/core_analysis_receipt.json"))
+    expected_paths = [
+        receipt_root / f"core_{core:02d}" / "core_analysis_receipt.json"
+        for core in EXPECTED_CORE_NUMBERS
+    ]
+    if receipt_paths != expected_paths:
+        raise AttentionNichePipelineError(
+            "Recovery source does not contain exactly the six expected core receipts."
+        )
+
+    expected_checkpoint_records = [
+        {
+            "seed": member.seed,
+            "run_id": member.run_id,
+            "completed_global_epochs": member.completed_global_epochs,
+            "checkpoint_sha256": member.checkpoint_sha256,
+            "model_state_sha256": member.model_state_sha256,
+            "parameter_count": member.parameter_count,
+        }
+        for member in members
+    ]
+    receipts: list[dict[str, Any]] = []
+    maximum_attention_error = 0.0
+    maximum_softmax_error = 0.0
+    strict_shard_count = 0
+    total_cells = 0
+    total_directed = 0
+    total_reciprocal = 0
+    for alias, core_number, receipt_path in zip(
+        EXPECTED_ALIASES,
+        EXPECTED_CORE_NUMBERS,
+        receipt_paths,
+        strict=True,
+    ):
+        receipt = _load_json(receipt_path, f"Core {core_number} source receipt")
+        if (
+            receipt.get("schema") != "six_core_attention_niche_core_receipt_v1"
+            or receipt.get("status") != "complete"
+            or receipt.get("core_alias") != alias
+            or int(receipt.get("core_number", -1)) != core_number
+            or receipt.get("map_label")
+            != f"{len(members)}-model ensemble-consensus map"
+        ):
+            raise AttentionNichePipelineError(
+                f"Core {core_number} recovery receipt identity is invalid."
+            )
+
+        checkpoint_receipts = receipt.get("checkpoint_receipts")
+        if not isinstance(checkpoint_receipts, list):
+            raise AttentionNichePipelineError(
+                f"Core {core_number} checkpoint receipts are absent."
+            )
+        observed_checkpoint_records: list[dict[str, Any]] = []
+        for checkpoint in checkpoint_receipts:
+            if (
+                not isinstance(checkpoint, Mapping)
+                or checkpoint.get("eval_mode") is not True
+                or checkpoint.get("gradients_disabled") is not True
+                or int(checkpoint.get("attention_heads", -1)) != 8
+                or int(checkpoint.get("graph_layers", -1)) != 4
+            ):
+                raise AttentionNichePipelineError(
+                    f"Core {core_number} checkpoint execution receipt failed."
+                )
+            observed_checkpoint_records.append(
+                {
+                    "seed": int(checkpoint["seed"]),
+                    "run_id": str(checkpoint["run_id"]),
+                    "completed_global_epochs": int(
+                        checkpoint["completed_global_epochs"]
+                    ),
+                    "checkpoint_sha256": str(checkpoint["checkpoint_sha256"]),
+                    "model_state_sha256": str(checkpoint["model_state_sha256"]),
+                    "parameter_count": int(checkpoint["parameter_count"]),
+                }
+            )
+        if observed_checkpoint_records != expected_checkpoint_records:
+            raise AttentionNichePipelineError(
+                f"Core {core_number} checkpoint receipts do not match discovery."
+            )
+
+        identity = receipt.get("identity_and_preprocessing")
+        if (
+            not isinstance(identity, Mapping)
+            or identity.get("alias") != alias
+            or int(identity.get("core_number", -1)) != core_number
+            or identity.get("gene_order_sha256") != EXPECTED_GENE_SCHEMA_SHA256
+            or identity.get("target_expression_transform_reproduced") is not True
+            or identity.get("metadata_transform_reproduced") is not True
+            or identity.get("raw_counts_aligned") is not True
+            or identity.get("coordinates_um_aligned") is not True
+        ):
+            raise AttentionNichePipelineError(
+                f"Core {core_number} preprocessing identity receipt failed."
+            )
+
+        masks = receipt.get("mask_receipts")
+        if (
+            not isinstance(masks, Mapping)
+            or set(masks) != {str(index) for index in range(mask_views)}
+            or any(
+                not isinstance(mask, Mapping)
+                or int(mask.get("view_index", -1)) != index
+                or len(str(mask.get("mask_realization_sha256", ""))) != 64
+                or len(str(mask.get("receipt_sha256", ""))) != 64
+                for index, mask in (
+                    (index, masks[str(index)]) for index in range(mask_views)
+                )
+            )
+        ):
+            raise AttentionNichePipelineError(
+                f"Core {core_number} ten-view mask receipts failed."
+            )
+
+        extraction = receipt.get("extraction_audit")
+        deterministic = receipt.get("deterministic_replay")
+        contiguity = receipt.get("local_spatial_contiguity")
+        geometry = receipt.get("serialized_region_geometry_validation")
+        if not all(
+            isinstance(value, Mapping)
+            for value in (extraction, deterministic, contiguity, geometry)
+        ):
+            raise AttentionNichePipelineError(
+                f"Core {core_number} source QC mappings are absent."
+            )
+        assert isinstance(extraction, Mapping)
+        assert isinstance(deterministic, Mapping)
+        assert isinstance(contiguity, Mapping)
+        assert isinstance(geometry, Mapping)
+        inference_replay = extraction.get("deterministic_inference_replay")
+        strict_views = extraction.get("strict_view_receipts")
+        layer_numbers = extraction.get("layer_numbers")
+        expected_view_keys = {
+            (member.seed, False, view)
+            for member in members
+            for view in range(mask_views)
+        } | {(member.seed, True, None) for member in members}
+        observed_view_keys = {
+            (
+                int(view["seed"]),
+                bool(view["all_genes_visible"]),
+                None
+                if view.get("mask_view_index") is None
+                else int(view["mask_view_index"]),
+            )
+            for view in strict_views
+            if isinstance(view, Mapping)
+        } if isinstance(strict_views, list) else set()
+        if (
+            float(extraction.get("max_attention_sum_error", math.inf)) > 2e-6
+            or float(
+                extraction.get("max_softmax_reconstruction_error", math.inf)
+            )
+            > 2e-6
+            or float(extraction.get("max_logit_composition_error", math.inf))
+            > 2e-6
+            or int(extraction.get("strict_attention_shard_count", 0)) <= 0
+            or not isinstance(layer_numbers, list)
+            or not layer_numbers
+            or set(int(value) for value in layer_numbers) != {3}
+            or len(layer_numbers) != len(members) * (mask_views + 1)
+            or not isinstance(strict_views, list)
+            or len(strict_views) != len(members) * (mask_views + 1)
+            or observed_view_keys != expected_view_keys
+            or not isinstance(inference_replay, Mapping)
+            or inference_replay.get("exact_array_equal") is not True
+            or inference_replay.get("all_ten_mask_views_replayed") is not True
+            or deterministic.get("inference_view_replayed") is not True
+            or deterministic.get("downstream_assignment_exact") is not True
+            or contiguity.get("every_final_niche_connected") is not True
+            or int(geometry.get("invalid_after_repair", -1)) != 0
+            or float(geometry.get("maximum_reported_area_error_um2", math.inf))
+            > 1e-4
+            or int(geometry.get("feature_count", -1))
+            != int(receipt.get("final_connected_niche_count", -2))
+        ):
+            raise AttentionNichePipelineError(
+                f"Core {core_number} source extraction/spatial QC failed."
+            )
+
+        cell_count = int(receipt.get("cell_count", -1))
+        directed_count = int(receipt.get("directed_edge_count", -1))
+        reciprocal_count = int(receipt.get("reciprocal_pair_count", -1))
+        retained_count = int(receipt.get("retained_mutual_edge_count", -1))
+        directed_table = receipt.get("directed_table")
+        mutual_table = receipt.get("mutual_table")
+        if (
+            cell_count <= 0
+            or directed_count <= 0
+            or reciprocal_count * 2 != directed_count
+            or retained_count <= 0
+            or not isinstance(directed_table, Mapping)
+            or int(directed_table.get("row_count", -1)) != directed_count
+            or len(str(directed_table.get("sha256", ""))) != 64
+            or not isinstance(mutual_table, Mapping)
+            or int(mutual_table.get("row_count", -1)) != reciprocal_count
+            or int(mutual_table.get("retained_row_count", -1)) != retained_count
+            or len(str(mutual_table.get("sha256", ""))) != 64
+        ):
+            raise AttentionNichePipelineError(
+                f"Core {core_number} table/count receipts failed."
+            )
+
+        core_dir = receipt_path.parent
+        for basename in (
+            "attention_niche_summary.csv",
+            "attention_niche_parameter_sensitivity.csv",
+            "attention_niche_colors.json",
+            "attention_niche_regions.geojson",
+        ):
+            small_output = core_dir / basename
+            relative = small_output.relative_to(source.root).as_posix()
+            expected = source.artifact_files.get(relative)
+            if (
+                small_output.is_symlink()
+                or not small_output.is_file()
+                or not isinstance(expected, Mapping)
+                or expected.get("type") != "file"
+            ):
+                raise AttentionNichePipelineError(
+                    f"Core {core_number} retained diagnostic is not bundle-bound."
+                )
+        receipt_relative = receipt_path.relative_to(source.root).as_posix()
+        expected_receipt = source.artifact_files.get(receipt_relative)
+        if (
+            not isinstance(expected_receipt, Mapping)
+            or expected_receipt.get("sha256") != sha256_file(receipt_path)
+        ):
+            raise AttentionNichePipelineError(
+                f"Core {core_number} receipt checksum is not bundle-bound."
+            )
+
+        receipt["source_receipt_relative_path"] = receipt_relative
+        receipt["source_receipt_sha256"] = str(expected_receipt["sha256"])
+        receipts.append(receipt)
+        maximum_attention_error = max(
+            maximum_attention_error,
+            float(extraction["max_attention_sum_error"]),
+        )
+        maximum_softmax_error = max(
+            maximum_softmax_error,
+            float(extraction["max_softmax_reconstruction_error"]),
+        )
+        strict_shard_count += int(extraction["strict_attention_shard_count"])
+        total_cells += cell_count
+        total_directed += directed_count
+        total_reciprocal += reciprocal_count
+
+    if (
+        total_cells != EXPECTED_TOTAL_CELLS
+        or total_directed != EXPECTED_TOTAL_DIRECTED_EDGES
+        or total_reciprocal * 2 != EXPECTED_TOTAL_DIRECTED_EDGES
+    ):
+        raise AttentionNichePipelineError(
+            "Recovery source six-core totals drifted."
+        )
+    return receipts, {
+        "verified": True,
+        "core_count": len(receipts),
+        "total_cells": total_cells,
+        "total_directed_edges": total_directed,
+        "total_reciprocal_pairs": total_reciprocal,
+        "strict_attention_shard_count": strict_shard_count,
+        "maximum_attention_sum_error": maximum_attention_error,
+        "maximum_softmax_reconstruction_error": maximum_softmax_error,
+        "checkpoint_receipts_match_current_discovery": True,
+        "all_ten_masks_replayed_per_core": True,
+        "all_final_niches_connected": True,
+    }
+
+
+@dataclass(frozen=True, slots=True)
+class RecoveryCanonicalData:
+    """Validated immutable source products used only for rendering."""
+
+    assignments: pd.DataFrame = field(repr=False)
+    summaries: pd.DataFrame = field(repr=False)
+    sensitivity: pd.DataFrame = field(repr=False)
+    colors: Mapping[str, str] = field(repr=False)
+    regions: Mapping[str, Any] = field(repr=False)
+    retained_overlay_edges: pd.DataFrame = field(repr=False)
+    audit: Mapping[str, Any] = field(repr=False)
+
+
+def _parquet_core_position_audit(
+    path: Path,
+    *,
+    position_column: str,
+    expected_counts: Mapping[int, int],
+) -> dict[str, Any]:
+    """Use row-group statistics to verify core-scoped contiguous table blocks."""
+
+    parquet = pq.ParquetFile(path)
+    names = parquet.schema_arrow.names
+    if "core_number" not in names or position_column not in names:
+        raise AttentionNichePipelineError(
+            f"Canonical Parquet lacks core/position columns: {path.name}."
+        )
+    core_index = names.index("core_number")
+    position_index = names.index(position_column)
+    intervals: dict[int, list[tuple[int, int, int]]] = {
+        core: [] for core in expected_counts
+    }
+    for row_group_index in range(parquet.metadata.num_row_groups):
+        row_group = parquet.metadata.row_group(row_group_index)
+        core_statistics = row_group.column(core_index).statistics
+        position_statistics = row_group.column(position_index).statistics
+        if (
+            core_statistics is None
+            or not core_statistics.has_min_max
+            or int(core_statistics.min) != int(core_statistics.max)
+            or position_statistics is None
+            or not position_statistics.has_min_max
+        ):
+            raise AttentionNichePipelineError(
+                f"Canonical Parquet row-group statistics are insufficient: {path.name}."
+            )
+        core = int(core_statistics.min)
+        if core not in intervals:
+            raise AttentionNichePipelineError(
+                f"Unexpected core in canonical Parquet: {path.name}."
+            )
+        start = int(position_statistics.min)
+        stop = int(position_statistics.max)
+        if stop - start + 1 != int(row_group.num_rows):
+            raise AttentionNichePipelineError(
+                f"Non-contiguous position row group in {path.name}."
+            )
+        intervals[core].append((start, stop, int(row_group.num_rows)))
+    for core, expected_count in expected_counts.items():
+        ordered = sorted(intervals[core])
+        cursor = 0
+        observed_rows = 0
+        for start, stop, rows in ordered:
+            if start != cursor:
+                raise AttentionNichePipelineError(
+                    f"Position coverage drifted for Core {core} in {path.name}."
+                )
+            cursor = stop + 1
+            observed_rows += rows
+        if cursor != expected_count or observed_rows != expected_count:
+            raise AttentionNichePipelineError(
+                f"Row count drifted for Core {core} in {path.name}."
+            )
+    return {
+        "path": path.name,
+        "row_count": int(parquet.metadata.num_rows),
+        "row_group_count": int(parquet.metadata.num_row_groups),
+        "position_column": position_column,
+        "core_counts": {str(core): int(count) for core, count in expected_counts.items()},
+        "core_scoped_contiguous_positions": True,
+    }
+
+
+def _stream_validate_recovery_edge_alignment(
+    root: Path,
+    *,
+    input_contract: PreparedInputContract,
+    core_receipts: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Stream scalar exports and prove exact canonical graph-edge alignment."""
+
+    aliases = {
+        int(receipt["core_number"]): str(receipt["core_alias"])
+        for receipt in core_receipts
+    }
+    node_counts = {
+        int(receipt["core_number"]): int(receipt["cell_count"])
+        for receipt in core_receipts
+    }
+    directed_counts = {
+        int(receipt["core_number"]): int(receipt["directed_edge_count"])
+        for receipt in core_receipts
+    }
+    reciprocal_counts = {
+        int(receipt["core_number"]): int(receipt["reciprocal_pair_count"])
+        for receipt in core_receipts
+    }
+    edges: dict[int, np.ndarray] = {}
+    indegrees: dict[int, np.ndarray] = {}
+    for core_number, alias in aliases.items():
+        edge_path = input_contract.graph_dir / "cores" / alias / "edge_index.npy"
+        edge_index = np.load(edge_path, mmap_mode="r", allow_pickle=False)
+        if edge_index.shape != (2, directed_counts[core_number]):
+            raise AttentionNichePipelineError(
+                f"Immutable edge_index shape drifted for Core {core_number}."
+            )
+        edges[core_number] = edge_index
+        indegrees[core_number] = np.bincount(
+            np.asarray(edge_index[1], dtype=np.int64),
+            minlength=node_counts[core_number],
+        )
+
+    observed_directed = {core: 0 for core in aliases}
+    directed = pq.ParquetFile(root / "directed_attention_edges.parquet")
+    directed_columns = [
+        "core_number",
+        "core_alias",
+        "edge_index_position",
+        "source_cell_index",
+        "receiver_cell_index",
+        "receiver_in_degree",
+        "head_mean_attention_mean",
+        "degree_adjusted_routing_mean",
+    ]
+    maximum_degree_adjustment_absolute_error = 0.0
+    for batch in directed.iter_batches(
+        batch_size=250_000,
+        columns=directed_columns,
+        use_threads=False,
+    ):
+        frame = batch.to_pandas()
+        for core_number in frame["core_number"].unique().tolist():
+            core = int(core_number)
+            if core not in edges:
+                raise AttentionNichePipelineError(
+                    "Directed recovery export contains an unexpected core."
+                )
+            selected = frame.loc[frame["core_number"] == core]
+            positions = selected["edge_index_position"].to_numpy(dtype=np.int64)
+            sources = selected["source_cell_index"].to_numpy(dtype=np.int64)
+            receivers = selected["receiver_cell_index"].to_numpy(dtype=np.int64)
+            receiver_degrees = selected["receiver_in_degree"].to_numpy(
+                dtype=np.int64
+            )
+            head_mean_attention = selected[
+                "head_mean_attention_mean"
+            ].to_numpy(dtype=np.float64)
+            degree_adjusted_mean = selected[
+                "degree_adjusted_routing_mean"
+            ].to_numpy(dtype=np.float64)
+            expected_degree_adjusted = receiver_degrees * head_mean_attention
+            maximum_degree_adjustment_absolute_error = max(
+                maximum_degree_adjustment_absolute_error,
+                float(
+                    np.max(
+                        np.abs(degree_adjusted_mean - expected_degree_adjusted),
+                        initial=0.0,
+                    )
+                ),
+            )
+            expected_positions = np.arange(
+                observed_directed[core],
+                observed_directed[core] + len(selected),
+                dtype=np.int64,
+            )
+            if (
+                not selected["core_alias"].eq(aliases[core]).all()
+                or not np.array_equal(positions, expected_positions)
+                or np.any(positions < 0)
+                or np.any(positions >= directed_counts[core])
+                or not np.array_equal(sources, edges[core][0, positions])
+                or not np.array_equal(receivers, edges[core][1, positions])
+                or not np.array_equal(
+                    receiver_degrees,
+                    indegrees[core][receivers],
+                )
+                or not np.allclose(
+                    degree_adjusted_mean,
+                    expected_degree_adjusted,
+                    rtol=5e-6,
+                    atol=1e-6,
+                )
+                or np.any(sources < 0)
+                or np.any(sources >= node_counts[core])
+                or np.any(receivers < 0)
+                or np.any(receivers >= node_counts[core])
+                or np.any(sources == receivers)
+            ):
+                raise AttentionNichePipelineError(
+                    f"Directed edge_index/degree alignment failed for Core {core}."
+                )
+            observed_directed[core] += len(selected)
+    if observed_directed != directed_counts:
+        raise AttentionNichePipelineError(
+            "Directed scalar alignment did not cover every canonical edge."
+        )
+
+    observed_mutual = {core: 0 for core in aliases}
+    mutually_covered_directed_positions = {
+        core: np.zeros(directed_counts[core], dtype=np.bool_)
+        for core in aliases
+    }
+    mutual = pq.ParquetFile(root / "mutual_attention_edges.parquet")
+    mutual_columns = [
+        "core_number",
+        "core_alias",
+        "mutual_pair_position",
+        "cell_i_index",
+        "cell_j_index",
+        "i_to_j_edge_index_position",
+        "j_to_i_edge_index_position",
+    ]
+    for batch in mutual.iter_batches(
+        batch_size=250_000,
+        columns=mutual_columns,
+        use_threads=False,
+    ):
+        frame = batch.to_pandas()
+        for core_number in frame["core_number"].unique().tolist():
+            core = int(core_number)
+            if core not in edges:
+                raise AttentionNichePipelineError(
+                    "Mutual recovery export contains an unexpected core."
+                )
+            selected = frame.loc[frame["core_number"] == core]
+            pair_positions = selected["mutual_pair_position"].to_numpy(
+                dtype=np.int64
+            )
+            cells_i = selected["cell_i_index"].to_numpy(dtype=np.int64)
+            cells_j = selected["cell_j_index"].to_numpy(dtype=np.int64)
+            forward = selected["i_to_j_edge_index_position"].to_numpy(
+                dtype=np.int64
+            )
+            reverse = selected["j_to_i_edge_index_position"].to_numpy(
+                dtype=np.int64
+            )
+            expected_pair_positions = np.arange(
+                observed_mutual[core],
+                observed_mutual[core] + len(selected),
+                dtype=np.int64,
+            )
+            if (
+                not selected["core_alias"].eq(aliases[core]).all()
+                or not np.array_equal(pair_positions, expected_pair_positions)
+                or np.any(pair_positions < 0)
+                or np.any(pair_positions >= reciprocal_counts[core])
+                or np.any(cells_i < 0)
+                or np.any(cells_j >= node_counts[core])
+                or np.any(cells_i >= cells_j)
+                or np.any(forward < 0)
+                or np.any(reverse < 0)
+                or np.any(forward >= directed_counts[core])
+                or np.any(reverse >= directed_counts[core])
+                or np.any(forward == reverse)
+                or np.unique(np.concatenate((forward, reverse))).size
+                != 2 * len(selected)
+                or not np.array_equal(edges[core][0, forward], cells_i)
+                or not np.array_equal(edges[core][1, forward], cells_j)
+                or not np.array_equal(edges[core][0, reverse], cells_j)
+                or not np.array_equal(edges[core][1, reverse], cells_i)
+                or np.any(mutually_covered_directed_positions[core][forward])
+                or np.any(mutually_covered_directed_positions[core][reverse])
+            ):
+                raise AttentionNichePipelineError(
+                    f"Mutual reciprocal-edge alignment failed for Core {core}."
+                )
+            mutually_covered_directed_positions[core][forward] = True
+            mutually_covered_directed_positions[core][reverse] = True
+            observed_mutual[core] += len(selected)
+    if observed_mutual != reciprocal_counts:
+        raise AttentionNichePipelineError(
+            "Mutual scalar alignment did not cover every reciprocal pair."
+        )
+    if not all(
+        bool(coverage.all())
+        for coverage in mutually_covered_directed_positions.values()
+    ):
+        raise AttentionNichePipelineError(
+            "At least one directed edge lacks exactly one reciprocal-pair record."
+        )
+    return {
+        "directed_scalar_columns_streamed": directed_columns,
+        "mutual_scalar_columns_streamed": mutual_columns,
+        "directed_rows_verified": int(sum(observed_directed.values())),
+        "mutual_rows_verified": int(sum(observed_mutual.values())),
+        "edge_index_source_receiver_alignment_exact": True,
+        "edge_positions_complete_unique_and_ordered": True,
+        "receiver_indegree_exact": True,
+        "degree_adjustment_uses_receiver_indegree": True,
+        "maximum_degree_adjustment_absolute_error": (
+            maximum_degree_adjustment_absolute_error
+        ),
+        "core_local_endpoint_bounds_exact": True,
+        "every_mutual_pair_has_two_reversed_exported_edges": True,
+        "every_directed_edge_covered_by_exactly_one_mutual_pair": True,
+        "mutual_pair_positions_complete_unique_and_ordered": True,
+        "one_directional_edges_rejected": True,
+    }
+
+
+def _validated_recovery_canonical_data(
+    output_root: Path,
+    *,
+    core_receipts: Sequence[Mapping[str, Any]],
+    input_contract: PreparedInputContract,
+) -> RecoveryCanonicalData:
+    """Validate canonical tables/regions and read only retained overlay columns."""
+
+    expected_cells = {
+        int(receipt["core_number"]): int(receipt["cell_count"])
+        for receipt in core_receipts
+    }
+    expected_directed = {
+        int(receipt["core_number"]): int(receipt["directed_edge_count"])
+        for receipt in core_receipts
+    }
+    expected_reciprocal = {
+        int(receipt["core_number"]): int(receipt["reciprocal_pair_count"])
+        for receipt in core_receipts
+    }
+    expected_retained = {
+        int(receipt["core_number"]): int(receipt["retained_mutual_edge_count"])
+        for receipt in core_receipts
+    }
+    assignments_path = output_root / "cell_attention_niche_assignments.parquet"
+    mutual_path = output_root / "mutual_attention_edges.parquet"
+    directed_path = output_root / "directed_attention_edges.parquet"
+    assignments = pd.read_parquet(assignments_path)
+    required_assignment_columns = {
+        "core_number",
+        "core_alias",
+        "cell_index",
+        "original_cell_identifier",
+        "x_um",
+        "y_um",
+        "coordinate_unit",
+        "preliminary_leiden_community",
+        "final_connected_niche_id",
+        "final_niche_id",
+        "micro_niche",
+        "niche_color",
+        "assignment_confidence",
+        "mutual_routing_hub_score",
+        "S_i",
+        "model_seeds_used",
+        "analysis_mask_views_used",
+        "map_label",
+    }
+    if not required_assignment_columns.issubset(assignments.columns):
+        raise AttentionNichePipelineError(
+            "Recovery assignment table lacks required canonical columns."
+        )
+    if (
+        len(assignments) != EXPECTED_TOTAL_CELLS
+        or tuple(sorted(assignments["core_number"].unique().tolist()))
+        != tuple(sorted(EXPECTED_CORE_NUMBERS))
+        or assignments.duplicated(["core_number", "cell_index"]).any()
+        or assignments["original_cell_identifier"].duplicated().any()
+        or not assignments["coordinate_unit"].eq("micrometres").all()
+        or not np.isfinite(assignments[["x_um", "y_um"]].to_numpy()).all()
+        or not assignments["final_connected_niche_id"].equals(
+            assignments["final_niche_id"]
+        )
+        or not np.allclose(
+            assignments["S_i"].to_numpy(dtype=np.float64),
+            assignments["mutual_routing_hub_score"].to_numpy(dtype=np.float64),
+            rtol=0.0,
+            atol=0.0,
+        )
+        or not np.isfinite(
+            assignments["assignment_confidence"].to_numpy(dtype=np.float64)
+        ).all()
+        or not assignments["assignment_confidence"].between(0.0, 1.0).all()
+        or set(assignments["model_seeds_used"].astype(str)) != {"[0,1,2,3]"}
+        or set(assignments["analysis_mask_views_used"].astype(str))
+        != {"[0,1,2,3,4,5,6,7,8,9]"}
+        or set(assignments["map_label"].astype(str))
+        != {"4-model ensemble-consensus map"}
+    ):
+        raise AttentionNichePipelineError("Recovery assignment coverage/QC failed.")
+    for alias, core_number in zip(
+        EXPECTED_ALIASES, EXPECTED_CORE_NUMBERS, strict=True
+    ):
+        selected = assignments.loc[assignments["core_number"] == core_number]
+        if (
+            len(selected) != expected_cells[core_number]
+            or not selected["core_alias"].eq(alias).all()
+            or not np.array_equal(
+                np.sort(selected["cell_index"].to_numpy(dtype=np.int64)),
+                np.arange(expected_cells[core_number], dtype=np.int64),
+            )
+        ):
+            raise AttentionNichePipelineError(
+                f"Recovery assignment coverage failed for Core {core_number}."
+            )
+
+    directed_audit = _parquet_core_position_audit(
+        directed_path,
+        position_column="edge_index_position",
+        expected_counts=expected_directed,
+    )
+    mutual_audit = _parquet_core_position_audit(
+        mutual_path,
+        position_column="mutual_pair_position",
+        expected_counts=expected_reciprocal,
+    )
+    directed_names = set(pq.ParquetFile(directed_path).schema_arrow.names)
+    if not {
+        "source_cell_index",
+        "receiver_cell_index",
+        "receiver_in_degree",
+        "distance_um",
+        "degree_adjusted_routing_per_seed_mask_view",
+    }.issubset(directed_names):
+        raise AttentionNichePipelineError(
+            "Recovery directed table lacks direction/degree routing fields."
+        )
+
+    retained_columns = [
+        "core_number",
+        "cell_i_index",
+        "cell_j_index",
+        "M_ij",
+        "support_P_ij",
+        "retained_primary",
+    ]
+    retained_table = pq.read_table(
+        mutual_path,
+        columns=retained_columns,
+        filters=[("retained_primary", "=", True)],
+    )
+    retained = retained_table.to_pandas()
+    retained_counts = {
+        int(core): int(count)
+        for core, count in retained.groupby("core_number", sort=True).size().items()
+    }
+    if (
+        retained_counts != expected_retained
+        or not retained["retained_primary"].all()
+        or not (retained["cell_i_index"] < retained["cell_j_index"]).all()
+        or not (retained["M_ij"] > 1.0).all()
+        or not (retained["support_P_ij"] >= 0.60).all()
+        or retained.duplicated(
+            ["core_number", "cell_i_index", "cell_j_index"]
+        ).any()
+    ):
+        raise AttentionNichePipelineError(
+            "Filtered retained mutual-edge validation failed."
+        )
+    for core_number, cell_count in expected_cells.items():
+        selected = retained.loc[retained["core_number"] == core_number]
+        if (
+            selected["cell_i_index"].min() < 0
+            or selected["cell_j_index"].max() >= cell_count
+        ):
+            raise AttentionNichePipelineError(
+                f"Retained mutual endpoint escaped Core {core_number}."
+            )
+
+    summaries = pd.read_csv(output_root / "attention_niche_summary.csv")
+    sensitivity = pd.read_csv(
+        output_root / "attention_niche_parameter_sensitivity.csv"
+    )
+    colors_raw = _load_json(
+        output_root / "attention_niche_colors.json",
+        "recovery niche colors",
+    )
+    colors = {str(key): str(value) for key, value in colors_raw.items()}
+    regions = _load_json(
+        output_root / "attention_niche_regions.geojson",
+        "recovery niche regions",
+    )
+    assignment_niches = set(assignments["final_niche_id"].astype(str))
+    summary_niches = set(summaries["niche_id"].astype(str))
+    region_features = regions.get("features")
+    geometry_validation = regions.get("geometry_validation")
+    if not isinstance(region_features, list) or not isinstance(
+        geometry_validation, Mapping
+    ):
+        raise AttentionNichePipelineError("Recovery region GeoJSON audit is absent.")
+    region_niches = {str(feature.get("id")) for feature in region_features}
+    if (
+        assignment_niches != summary_niches
+        or assignment_niches != set(colors)
+        or assignment_niches != region_niches
+        or len(region_features)
+        != sum(
+            int(receipt["final_connected_niche_count"])
+            for receipt in core_receipts
+        )
+        or regions.get("coordinate_unit") != "um"
+        or int(geometry_validation.get("invalid_after_repair", -1)) != 0
+        or float(
+            geometry_validation.get("maximum_reported_area_error_um2", math.inf)
+        )
+        > 1e-4
+        or not assignments.apply(
+            lambda row: colors.get(str(row["final_niche_id"]))
+            == str(row["niche_color"]),
+            axis=1,
+        ).all()
+        or int(summaries["number_of_cells"].sum()) != EXPECTED_TOTAL_CELLS
+        or bool(summaries["biological_niche_name_assigned"].any())
+    ):
+        raise AttentionNichePipelineError(
+            "Recovery niche/color/summary/region correspondence failed."
+        )
+    primary_sensitivity = sensitivity.loc[sensitivity["is_primary"].astype(bool)]
+    expected_sensitivity_grid = {
+        (core, top_k, resolution)
+        for core in EXPECTED_CORE_NUMBERS
+        for top_k in (5, 8, 10)
+        for resolution in (0.5, 1.0, 1.5)
+    }
+    observed_sensitivity_grid = {
+        (int(row.core_number), int(row.top_k), float(row.resolution))
+        for row in sensitivity.itertuples()
+    }
+    if (
+        tuple(sorted(sensitivity["core_number"].unique().tolist()))
+        != tuple(sorted(EXPECTED_CORE_NUMBERS))
+        or len(sensitivity) != len(expected_sensitivity_grid)
+        or observed_sensitivity_grid != expected_sensitivity_grid
+        or len(primary_sensitivity) != len(EXPECTED_CORE_NUMBERS)
+        or not primary_sensitivity["top_k"].eq(8).all()
+        or not primary_sensitivity["resolution"].eq(1.0).all()
+    ):
+        raise AttentionNichePipelineError(
+            "Recovery parameter-sensitivity contract failed."
+        )
+    edge_alignment = _stream_validate_recovery_edge_alignment(
+        output_root,
+        input_contract=input_contract,
+        core_receipts=core_receipts,
+    )
+    return RecoveryCanonicalData(
+        assignments=assignments,
+        summaries=summaries,
+        sensitivity=sensitivity,
+        colors=colors,
+        regions=regions,
+        retained_overlay_edges=retained,
+        audit={
+            "assignment_rows": int(len(assignments)),
+            "niche_count": int(len(assignment_niches)),
+            "retained_mutual_edge_count": int(len(retained)),
+            "retained_mutual_columns_read": retained_columns,
+            "mutual_table_full_rows_loaded_for_rendering": False,
+            "directed_table_rows_loaded_for_rendering": False,
+            "directed_table": directed_audit,
+            "mutual_table": mutual_audit,
+            "geometry_validation": dict(geometry_validation),
+            "edge_alignment": edge_alignment,
+        },
+    )
+
+
+def _run_attention_niche_render_recovery(
+    *,
+    request: RenderRecoveryRequest,
+    config: Mapping[str, Any],
+    analysis_parameters: Mapping[str, Any],
+    run_id: str,
+    output_root: Path,
+    database: str | Path,
+    selected_paths: ProjectPaths,
+    members: Sequence[CheckpointMember],
+    input_contract: PreparedInputContract,
+) -> dict[str, Any]:
+    """Render a new registered bundle from one fully verified failed run."""
+
+    import importlib.metadata
+    import resource
+    import subprocess
+
+    from .attention_niche_visualization import (
+        render_attention_niche_visualizations,
+    )
+
+    if run_id == request.source_run_id:
+        raise AttentionNichePipelineError(
+            "Render recovery requires a new worker-owned run ID."
+        )
+    source = _verify_render_recovery_source_identity(
+        request=request,
+        database=database,
+        paths=selected_paths,
+        current_config=config,
+    )
+    filesystem_devices = {
+        "source_archive": int(source.root.stat().st_dev),
+        "owned_scratch": int(output_root.stat().st_dev),
+        "final_archive_root": int(selected_paths.artifact_root.stat().st_dev),
+    }
+    if len(set(filesystem_devices.values())) != 1:
+        raise AttentionNichePipelineError(
+            "Recovery source, owned scratch, and final archive must share one "
+            "filesystem for FICLONE and atomic archive publication."
+        )
+    disk_snapshots = [_filesystem_snapshot(output_root, stage="recovery_preflight")]
+    if (
+        disk_snapshots[-1]["free_gib"]
+        < request.minimum_figure_headroom_gib
+    ):
+        raise AttentionNichePipelineError(
+            "Insufficient free disk headroom for render-only recovery figures."
+        )
+
+    core_receipts, source_core_audit = _verified_recovery_core_receipts(
+        source,
+        members=members,
+        mask_views=int(analysis_parameters["analysis_mask_views"]),
+    )
+    canonical = _validated_recovery_canonical_data(
+        source.root,
+        core_receipts=core_receipts,
+        input_contract=input_contract,
+    )
+    visualization = render_attention_niche_visualizations(
+        canonical.assignments,
+        canonical.regions,
+        canonical.retained_overlay_edges,
+        output_root,
+        dpi=300,
+        individual_dpi=450,
+        include_overlay=True,
+        max_edges_per_core=1_000,
+        max_edges_total=4_000,
+        invert_y=True,
+        low_confidence_threshold=0.60,
+        allow_cross_core_color_reuse=False,
+    )
+    disk_snapshots.append(
+        _filesystem_snapshot(output_root, stage="recovery_visualizations_complete")
+    )
+    raw_visualization_receipt = json.loads(
+        _canonical_json(dict(visualization.receipt))
+    )
+    omitted_rings = raw_visualization_receipt.get(
+        "zero_area_interior_rings_omitted_from_render"
+    )
+    if (
+        raw_visualization_receipt.get("schema")
+        != "attention_niche_visualization_receipt_v2"
+        or raw_visualization_receipt.get("region_holes_preserved")
+        != "all_nondegenerate"
+        or raw_visualization_receipt.get("nondegenerate_region_holes_preserved")
+        is not True
+        or not isinstance(omitted_rings, Mapping)
+        or int(omitted_rings.get("count", -1)) != 3
+        or len(omitted_rings.get("identifiers", [])) != 3
+        or omitted_rings.get("identifier_list_sha256")
+        != RENDER_RECOVERY_OMITTED_RING_SHA256
+        or omitted_rings.get("scientific_geometry_modified") is not False
+        or float(omitted_rings.get("signed_area_um2", math.nan)) != 0.0
+        or len(str(omitted_rings.get("identifier_list_sha256", ""))) != 64
+    ):
+        raise AttentionNichePipelineError(
+            "Renderer did not report the exact nondegenerate-hole behavior."
+        )
+    raw_visualization_receipt["output_paths"] = [
+        _relative_to_root(Path(path), output_root)
+        for path in raw_visualization_receipt.get("output_paths", [])
+    ]
+
+    # Only after source validation and rendering succeed do we materialize the
+    # seven canonical scientific products into the new worker-owned bundle.
+    materialization: dict[str, dict[str, Any]] = {}
+    for relative in RENDER_RECOVERY_CANONICAL_OUTPUTS:
+        expected = source.artifact_files[relative]
+        receipt = _materialize_ficlone_reflink(
+            source.root / relative,
+            output_root / relative,
+            expected_sha256=str(expected["sha256"]),
+        )
+        receipt["source_path"] = _relative_to_root(
+            source.root / relative,
+            selected_paths.project_root,
+        )
+        receipt["destination_path"] = relative
+        receipt["source_bundle_checksum_receipt"] = dict(expected)
+        materialization[relative] = receipt
+    if not all(
+        receipt["method"] == "linux_ficlone_reflink"
+        and receipt["distinct_inode"] is True
+        and receipt["source_link_count"] == 1
+        and receipt["destination_link_count"] == 1
+        and receipt["copy_fallback_permitted"] is False
+        for receipt in materialization.values()
+    ):
+        raise AttentionNichePipelineError(
+            "Canonical recovery artifacts were not exclusively reflink materialized."
+        )
+    disk_snapshots.append(
+        _filesystem_snapshot(output_root, stage="reflink_materialization_complete")
+    )
+
+    input_post = verify_inputs_unchanged(
+        input_contract.pre_analysis_file_receipts,
+        project_root=selected_paths.project_root,
+        data_root=selected_paths.data_root,
+    )
+    checkpoint_post = _checkpoint_post_receipts(
+        members,
+        root=selected_paths.project_root,
+    )
+    source_post_verification = verify_run_bundle(
+        source.root,
+        require_success_contract=False,
+    )
+    if (
+        source_post_verification.get("status") != "failed"
+        or source_post_verification.get("valid") is not True
+        or sha256_file(source.root / "_FAILED")
+        != source.failed_marker_file_sha256
+        or sha256_file(source.root / "provenance/artifact_checksums.json")
+        != source.artifact_checksum_manifest_sha256
+    ):
+        raise AttentionNichePipelineError(
+            "Immutable recovery source changed during rendering."
+        )
+    for relative, receipt in materialization.items():
+        destination = output_root / relative
+        source_path = source.root / relative
+        if (
+            destination.is_symlink()
+            or source_path.is_symlink()
+            or destination.stat().st_ino == source_path.stat().st_ino
+            or sha256_file(destination) != receipt["sha256"]
+        ):
+            raise AttentionNichePipelineError(
+                f"Recovery materialization changed after rendering: {relative}."
+            )
+
+    panel_receipt = raw_visualization_receipt
+    panel_outputs = {
+        str(path)
+        for path in panel_receipt.get("output_paths", [])
+    }
+    expected_visual_outputs = {
+        relative
+        for relative in REQUIRED_ANALYSIS_OUTPUTS
+        if Path(relative).suffix.lower() in {".png", ".pdf", ".svg"}
+    }
+    source_geometry = canonical.audit["geometry_validation"]
+    qc_checks = {
+        "verified_failed_source_bundle": bool(
+            source.bundle_verification.get("valid")
+            and source.bundle_verification.get("status") == "failed"
+            and source.bundle_verification.get("tombstoned_file_count") == 0
+        ),
+        "exact_failed_marker_digest": bool(
+            source.failed_marker.get("content_sha256")
+            == request.source_failed_marker_content_sha256
+        ),
+        "source_run_and_queue_failed_identity_verified": bool(
+            source.queue_job.get("status") == "failed"
+            and source.queue_job.get("failure_category") == "nonzero_exit"
+            and source.queue_job.get("job_id") == request.source_queue_job_id
+        ),
+        "all_registered_source_artifacts_present": bool(
+            source.registry_artifacts
+            and all(
+                receipt.get("status") == "present"
+                for receipt in source.registry_artifacts.values()
+            )
+        ),
+        "scientific_config_equal_except_launcher_recovery": True,
+        "expected_renderer_failure_signature": True,
+        "source_six_core_receipts_verified": bool(source_core_audit["verified"]),
+        "source_checkpoint_receipts_match_discovery": bool(
+            source_core_audit["checkpoint_receipts_match_current_discovery"]
+        ),
+        "exact_six_core_set": bool(
+            tuple(sorted(canonical.assignments["core_number"].unique().tolist()))
+            == tuple(sorted(EXPECTED_CORE_NUMBERS))
+        ),
+        "every_eligible_cell_exactly_once": bool(
+            len(canonical.assignments) == EXPECTED_TOTAL_CELLS
+            and not canonical.assignments.duplicated(
+                ["core_number", "cell_index"]
+            ).any()
+        ),
+        "no_cross_core_edges": bool(
+            canonical.audit["edge_alignment"][
+                "core_local_endpoint_bounds_exact"
+            ]
+        ),
+        "attention_edge_index_alignment": bool(
+            source_core_audit["strict_attention_shard_count"] > 0
+            and canonical.audit["edge_alignment"][
+                "edge_index_source_receiver_alignment_exact"
+            ]
+        ),
+        "attention_receiver_head_normalization": bool(
+            source_core_audit["maximum_attention_sum_error"] <= 2e-6
+        ),
+        "attention_matches_combined_logit_softmax": bool(
+            source_core_audit["maximum_softmax_reconstruction_error"] <= 2e-6
+        ),
+        "reciprocal_pairs_and_receiver_degree_adjustment": bool(
+            source_core_audit["total_reciprocal_pairs"] * 2
+            == source_core_audit["total_directed_edges"]
+            and canonical.audit["edge_alignment"]["receiver_indegree_exact"]
+            and canonical.audit["edge_alignment"][
+                "degree_adjustment_uses_receiver_indegree"
+            ]
+            and canonical.audit["edge_alignment"][
+                "every_mutual_pair_has_two_reversed_exported_edges"
+            ]
+            and canonical.audit["edge_alignment"][
+                "every_directed_edge_covered_by_exactly_one_mutual_pair"
+            ]
+        ),
+        "one_directional_edges_rejected": bool(
+            canonical.audit["edge_alignment"]["one_directional_edges_rejected"]
+        ),
+        "every_final_niche_spatially_connected": bool(
+            source_core_audit["all_final_niches_connected"]
+        ),
+        "disconnected_regions_have_distinct_ids": bool(
+            source_core_audit["all_final_niches_connected"]
+        ),
+        "serialized_region_geometries_valid": bool(
+            source_geometry["invalid_after_repair"] == 0
+            and source_geometry["maximum_reported_area_error_um2"] <= 1e-4
+        ),
+        "deterministic_stable_colors": bool(
+            all(
+                receipt["deterministic_replay"]["downstream_assignment_exact"]
+                for receipt in core_receipts
+            )
+        ),
+        "panel_core_labels_and_order": bool(
+            panel_receipt.get("core_order") == list(EXPECTED_CORE_NUMBERS)
+            and panel_receipt.get("in_panel_core_labels")
+            == [f"Core {core}" for core in EXPECTED_CORE_NUMBERS]
+            and panel_receipt.get("panel_titles_include_core_number") is True
+            and panel_receipt.get("equal_physical_aspect") is True
+            and panel_outputs == expected_visual_outputs
+        ),
+        "micrometre_coordinates_and_scale_bars": bool(
+            canonical.assignments["coordinate_unit"].eq("micrometres").all()
+            and panel_receipt.get("coordinate_unit") == "micrometres"
+            and all(
+                value.get("present") and value.get("unit") == "µm"
+                for value in panel_receipt.get("scale_bars", {}).values()
+            )
+        ),
+        "deterministic_masks_inference_and_assignments": bool(
+            source_core_audit["all_ten_masks_replayed_per_core"]
+        ),
+        "all_nondegenerate_region_holes_preserved": bool(
+            panel_receipt["nondegenerate_region_holes_preserved"]
+            and omitted_rings["count"] == 3
+            and omitted_rings["scientific_geometry_modified"] is False
+        ),
+        "canonical_artifacts_are_distinct_inode_ficlone_reflinks": bool(
+            all(
+                receipt["method"] == "linux_ficlone_reflink"
+                and receipt["distinct_inode"]
+                and receipt["copy_fallback_permitted"] is False
+                for receipt in materialization.values()
+            )
+        ),
+        "source_bundle_unchanged_after_rendering": bool(
+            source_post_verification.get("valid")
+            and source_post_verification.get("status") == "failed"
+        ),
+        "checkpoints_unchanged": bool(checkpoint_post["unchanged"]),
+        "input_data_unchanged": bool(input_post["unchanged"]),
+        "render_only_no_attention_reextraction": True,
+    }
+    if not all(qc_checks.values()):
+        failed = sorted(name for name, passed in qc_checks.items() if not passed)
+        raise AttentionNichePipelineError(
+            "Render-only recovery QC failed: " + ", ".join(failed)
+        )
+    qc_fraction = float(sum(qc_checks.values()) / len(qc_checks))
+    if qc_fraction != 1.0:
+        raise AttentionNichePipelineError(
+            "Render-only recovery may publish only with QC fraction 1.0."
+        )
+
+    map_label = f"{len(members)}-model ensemble-consensus map"
+    launcher = config["launcher"]
+    requested_gpu = str(launcher.get("requested_gpu", "0,2,3"))
+    reproduction_command = (
+        "PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark "
+        "--database state/tracking/bagm.sqlite3 enqueue-experiment "
+        f"--campaign-id {ANALYSIS_CAMPAIGN_ID} "
+        "--config experiments/campaigns/"
+        "cmp_20260825_six_core_attention_routing_niches/"
+        "render_recovery_config.yaml --priority 0 --max-attempts 1 "
+        f"--gpu {requested_gpu} && "
+        "PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark "
+        "--database state/tracking/bagm.sqlite3 worker "
+        "--worker-id attention-niche-render-recovery "
+        f"--gpu {requested_gpu} --min-free-gb 25 --once"
+    )
+    try:
+        recovery_git_commit = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            cwd=selected_paths.project_root,
+            text=True,
+            capture_output=True,
+            check=True,
+        ).stdout.strip()
+    except (OSError, subprocess.CalledProcessError) as exc:
+        raise AttentionNichePipelineError(
+            "Cannot record recovery Git commit."
+        ) from exc
+
+    recovery_git_provenance: dict[str, dict[str, Any]] = {}
+    for relative in (
+        "provenance/git.json",
+        "provenance/uncommitted_changes.patch",
+        "provenance/untracked_files.json",
+    ):
+        path = output_root / relative
+        if path.is_symlink() or not path.is_file():
+            raise AttentionNichePipelineError(
+                f"Recovery Git/dirty provenance is absent: {relative}."
+            )
+        recovery_git_provenance[relative] = {
+            "sha256": sha256_file(path),
+            "size_bytes": int(path.stat().st_size),
+        }
+    recovery_git_identity = _load_json(
+        output_root / "provenance/git.json",
+        "recovery Git identity",
+    )
+    if recovery_git_identity.get("commit") != recovery_git_commit:
+        raise AttentionNichePipelineError(
+            "Recovery worker Git provenance does not match the live commit."
+        )
+
+    core_table = _markdown_core_table(core_receipts)
+    omitted_identifiers = ", ".join(
+        str(value) for value in omitted_rings["identifiers"]
+    )
+    readme = f"""# Six-core model-defined attention-routing niche map
+
+Status: complete via a verified render-only recovery. Map type:
+`{map_label}`. The canonical assignments, directed attention values, mutual
+scores, summaries, colors, regions, and sensitivity results were computed by
+failed source run `{request.source_run_id}` and were not recomputed here.
+Checkpoints were loaded read-only for identity and loadability verification;
+the recovery performed no model instantiation, inference, training, state
+mutation, attention extraction, masking, reciprocal-score construction,
+clustering, or confidence estimation.
+Scientific values recomputed: `false`. Visualizations recomputed: `true`.
+Scientific ID: `{RENDER_RECOVERY_SCIENTIFIC_ID}` (unchanged from the source).
+
+{core_table}
+
+The source failed only in the prior renderer, with exact `_FAILED` content
+digest `{request.source_failed_marker_content_sha256}`. Its registry run,
+queue job `{request.source_queue_job_id}`, complete bundle checksums, six core
+receipts, final checkpoints, immutable inputs, and renderer traceback were
+verified before rendering directly from the source archive. Only after all
+figures succeeded were the seven canonical scientific products materialized
+as Linux FICLONE reflinks with distinct inodes into this new run bundle; no
+hard links, symlinks, byte-copy fallback, or source mutation was allowed.
+
+All nondegenerate region holes are preserved in the maps. Three exact-zero-area
+interior rings have no fill effect and were omitted only from Matplotlib paths:
+`{omitted_identifiers}`. Their full renderer receipt and digest are recorded in
+`analysis_manifest.yaml`; the GeoJSON scientific geometry was not modified.
+
+Reproduce as a new registered render-only recovery run:
+
+```bash
+{reproduction_command}
+```
+
+> {LIMITATION}
+"""
+    _write_text_atomic(output_root / "README.md", readme)
+
+    qc_lines = [
+        "# Attention-routing niche render-recovery QC",
+        "",
+        f"Overall QC pass fraction: `{qc_fraction:.6f}` "
+        f"({sum(qc_checks.values())}/{len(qc_checks)}).",
+        "",
+        core_table,
+        "",
+        "## Recovery lineage",
+        "",
+        f"- Failed source run: `{request.source_run_id}`.",
+        f"- Failed source queue job: `{request.source_queue_job_id}`.",
+        "- Full source bundle verification: PASS; no retention tombstones.",
+        f"- Exact `_FAILED` content digest: "
+        f"`{request.source_failed_marker_content_sha256}`.",
+        f"- Scientific ID: `{RENDER_RECOVERY_SCIENTIFIC_ID}` (unchanged).",
+        "- Scientific configuration equality excluding only launcher runtime "
+        "and recovery controls: PASS.",
+        "- Attention extraction/recomputation in this recovery: `false`.",
+        "- Scientific values recomputed: `false`.",
+        "- Visualizations recomputed: `true`.",
+        "- Seven canonical products: FICLONE reflinks, distinct inodes, "
+        "link count one, equal source checksums, and no fallback.",
+        "",
+        "## Source extraction evidence",
+        "",
+        f"- Strict receiver-complete shards: "
+        f"`{source_core_audit['strict_attention_shard_count']:,}`.",
+        f"- Maximum receiver/head normalization error: "
+        f"`{source_core_audit['maximum_attention_sum_error']:.3g}`.",
+        f"- Maximum softmax reconstruction error: "
+        f"`{source_core_audit['maximum_softmax_reconstruction_error']:.3g}`.",
+        "- Checkpoint/model-state receipts match fresh catalog discovery: PASS.",
+        "- All ten masks, downstream assignments, colors, and connected-niche "
+        "checks are inherited from and verified against the source receipts.",
+        "",
+        "## Rendering geometry",
+        "",
+        "- All nondegenerate interior rings were preserved.",
+        f"- Exact-zero interior rings omitted from render paths: "
+        f"`{omitted_rings['count']}`.",
+        f"- Omitted-ring identifier digest: "
+        f"`{omitted_rings['identifier_list_sha256']}`.",
+        "- The source GeoJSON and niche memberships were not modified.",
+        "",
+        "## Explicit checks",
+        "",
+        *[
+            f"- {'PASS' if passed else 'FAIL'} — `{name}`"
+            for name, passed in qc_checks.items()
+        ],
+        "",
+        "## Interpretation limit",
+        "",
+        f"> {LIMITATION}",
+        "",
+    ]
+    _write_text_atomic(
+        output_root / "analysis_qc_report.md",
+        "\n".join(qc_lines),
+    )
+
+    package_versions: dict[str, str] = {}
+    for package in (
+        "torch",
+        "numpy",
+        "pandas",
+        "pyarrow",
+        "scipy",
+        "igraph",
+        "leidenalg",
+        "shapely",
+        "matplotlib",
+    ):
+        try:
+            package_versions[package] = importlib.metadata.version(package)
+        except importlib.metadata.PackageNotFoundError:
+            package_versions[package] = "not-installed"
+
+    required_outputs = list(REQUIRED_ANALYSIS_OUTPUTS)
+    artifact_records = _artifact_checksums(
+        output_root,
+        [
+            value
+            for value in required_outputs
+            if value != "analysis_manifest.yaml"
+        ]
+        + ["attention_niche_parameter_sensitivity.csv"],
+    )
+    portable_input_post = json.loads(_canonical_json(input_post))
+    post_receipts = portable_input_post.get("post_receipts", {})
+    if not isinstance(post_receipts, Mapping):
+        raise AttentionNichePipelineError(
+            "Recovery post-analysis immutable-input receipts are malformed."
+        )
+    portable_input_post["post_receipts"] = _portable_file_receipts(post_receipts)
+    portable_source_verification = dict(source.bundle_verification)
+    portable_source_verification["run_path"] = _relative_to_root(
+        source.root, selected_paths.project_root
+    )
+    portable_source_post = dict(source_post_verification)
+    portable_source_post["run_path"] = _relative_to_root(
+        source.root, selected_paths.project_root
+    )
+    analysis_manifest = {
+        "schema": "six_core_attention_routing_niche_render_recovery_v1",
+        "status": "complete",
+        "run_id": run_id,
+        "campaign_id": ANALYSIS_CAMPAIGN_ID,
+        "execution_mode": RENDER_RECOVERY_MODE,
+        "map_label": map_label,
+        "terminology": "model-defined attention-routing niches",
+        "scientific_id": RENDER_RECOVERY_SCIENTIFIC_ID,
+        "created_at": _utc_now(),
+        "limitation": LIMITATION,
+        "core_order": list(EXPECTED_CORE_NUMBERS),
+        "core_aliases": list(EXPECTED_ALIASES),
+        "model_seeds": [member.seed for member in members],
+        "attention_extraction_performed": False,
+        "analysis_masks_generated_or_replayed": False,
+        "scientific_tables_recomputed": False,
+        "scientific_values_recomputed": False,
+        "clustering_or_confidence_recomputed": False,
+        "visualizations_recomputed": True,
+        "rendered_directly_from_verified_source_before_materialization": True,
+        "source_lineage": {
+            "source_run_id": request.source_run_id,
+            "source_queue_job": dict(source.queue_job),
+            "source_bundle": _relative_to_root(
+                source.root, selected_paths.project_root
+            ),
+            "source_bundle_pre_verification": portable_source_verification,
+            "source_bundle_post_verification": portable_source_post,
+            "failed_marker": dict(source.failed_marker),
+            "failed_marker_file_sha256": source.failed_marker_file_sha256,
+            "artifact_checksum_manifest_sha256": (
+                source.artifact_checksum_manifest_sha256
+            ),
+            "stderr_sha256": source.stderr_sha256,
+            "expected_renderer_failure_signature": (
+                request.expected_renderer_failure_signature
+            ),
+            "scientific_config_sha256": source.scientific_config_sha256,
+            "scientific_id": RENDER_RECOVERY_SCIENTIFIC_ID,
+            "scientific_config_equal_except_launcher": True,
+            "source_git_identity": dict(source.source_git_identity),
+            "source_git_and_dirty_provenance": dict(
+                source.source_git_provenance
+            ),
+        },
+        "recovery_provenance": {
+            "git_commit": recovery_git_commit,
+            "git_identity": recovery_git_identity,
+            "git_and_dirty_provenance": recovery_git_provenance,
+            "source_and_recovery_provenance_are_distinct": True,
+        },
+        "checkpoint_members": [
+            member.manifest_record(selected_paths.project_root)
+            for member in members
+        ],
+        "checkpoint_post_recovery": checkpoint_post,
+        "input_contract": {
+            "cohort_manifest_sha256": EXPECTED_COHORT_MANIFEST_SHA256,
+            "graph_manifest_sha256": EXPECTED_GRAPH_MANIFEST_SHA256,
+            "dataset_fingerprint": EXPECTED_DATASET_FINGERPRINT,
+            "split_fingerprint": EXPECTED_SPLIT_FINGERPRINT,
+            "gene_order_sha256": EXPECTED_GENE_SCHEMA_SHA256,
+            "metadata_order_sha256": EXPECTED_METADATA_SCHEMA_SHA256,
+            "preprocessing_version": EXPECTED_PREPROCESSING_VERSION,
+            "pre_recovery_file_receipts": _portable_file_receipts(
+                input_contract.pre_analysis_file_receipts
+            ),
+            "post_recovery": portable_input_post,
+        },
+        "source_core_receipt_audit": source_core_audit,
+        "source_core_receipts": _portable_core_receipts(core_receipts),
+        "canonical_source_audit": dict(canonical.audit),
+        "canonical_materialization": materialization,
+        "visualization_receipt": raw_visualization_receipt,
+        "filesystem_contract": {
+            "devices": filesystem_devices,
+            "same_filesystem": True,
+            "archive_publication_requires_atomic_rename": True,
+        },
+        "resource_execution": {
+            "host": socket.gethostname(),
+            "cuda_visible_devices": os.environ.get("CUDA_VISIBLE_DEVICES"),
+            "gpu_attention_extraction_performed": False,
+            "peak_vram_gib": 0.0,
+            "filesystem_snapshots": disk_snapshots,
+            "parent_peak_host_rss_gib": float(
+                resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+                * 1024
+                / (1024**3)
+            ),
+        },
+        "package_versions": package_versions,
+        "qc_checks": qc_checks,
+        "qc_pass_fraction": qc_fraction,
+        "artifacts": artifact_records,
+        "reproduction_command": reproduction_command,
+    }
+    _write_yaml_atomic(output_root / "analysis_manifest.yaml", analysis_manifest)
+    _artifact_checksums(output_root, required_outputs)
+
+    final_metrics = {
+        "analysis/attention_niche_qc_pass_fraction": qc_fraction,
+        "analysis/total_cells": float(EXPECTED_TOTAL_CELLS),
+        "analysis/retained_mutual_edges": float(
+            sum(int(receipt["retained_mutual_edge_count"]) for receipt in core_receipts)
+        ),
+        "analysis/final_connected_niches": float(
+            sum(int(receipt["final_connected_niche_count"]) for receipt in core_receipts)
+        ),
+        "analysis/render_only_recovery": 1.0,
+    }
+    _write_json_atomic(output_root / "metrics" / "final.json", final_metrics)
+    _write_text_atomic(
+        output_root / "metrics" / "history.jsonl",
+        _canonical_json(
+            {"step": 0, **final_metrics, "analysis_complete": True}
+        )
+        + "\n",
+    )
+    _write_text_atomic(
+        output_root / "metrics" / "events.jsonl",
+        "".join(
+            _canonical_json({"name": name, "value": value, "step": 0}) + "\n"
+            for name, value in final_metrics.items()
+        ),
+    )
+    summary = {
+        "run_id": run_id,
+        "status": "success",
+        "analysis_kind": "six_core_attention_routing_niche_map",
+        "execution_mode": RENDER_RECOVERY_MODE,
+        "source_run_id": request.source_run_id,
+        "attention_extraction_performed": False,
+        "scientific_tables_recomputed": False,
+        "scientific_values_recomputed": False,
+        "visualizations_recomputed": True,
+        "map_label": map_label,
+        "primary_metric_name": "analysis/attention_niche_qc_pass_fraction",
+        "primary_metric_value": qc_fraction,
+        "metrics": final_metrics,
+        "model_seed_count": len(members),
+        "model_seeds": [member.seed for member in members],
+        "core_numbers": list(EXPECTED_CORE_NUMBERS),
+        "peak_vram_gib": 0.0,
+        "parameter_count": members[0].parameter_count,
+        "limitation": LIMITATION,
+    }
+    _write_json_atomic(output_root / "summary.json", summary)
+    return summary
+
+
 def run_attention_niche_pipeline(
     *,
     config_path: str | Path,
@@ -2979,6 +5131,10 @@ def run_attention_niche_pipeline(
     ):
         raise AttentionNichePipelineError("Resolved analysis configuration drifted.")
     analysis_parameters = _validated_locked_analysis_parameters(metadata)
+    launcher = config.get("launcher", {})
+    if not isinstance(launcher, Mapping):
+        raise AttentionNichePipelineError("Resolved launcher configuration is absent.")
+    recovery_request = _validated_render_recovery_request(launcher)
 
     dataset = config.get("dataset", {})
     if not isinstance(dataset, Mapping):
@@ -3021,6 +5177,18 @@ def run_attention_niche_pipeline(
         core_map_path=core_map_path,
         reconciliation_path=reconciliation_path,
     )
+    if recovery_request is not None:
+        return _run_attention_niche_render_recovery(
+            request=recovery_request,
+            config=config,
+            analysis_parameters=analysis_parameters,
+            run_id=run_id,
+            output_root=output_root,
+            database=database,
+            selected_paths=selected_paths,
+            members=members,
+            input_contract=input_contract,
+        )
     disk_plan = _required_analysis_free_disk_gib(
         model_seed_count=len(members),
         minimum_free_disk_gib=analysis_parameters["minimum_free_disk_gib"],
@@ -3035,7 +5203,6 @@ def run_attention_niche_pipeline(
 
     if not torch.cuda.is_available() or torch.cuda.device_count() < 1:
         raise AttentionNichePipelineError("Full analysis requires at least one CUDA GPU.")
-    launcher = config.get("launcher", {})
     requested_count = (
         int(launcher.get("requested_gpu_count", torch.cuda.device_count()))
         if isinstance(launcher, Mapping)

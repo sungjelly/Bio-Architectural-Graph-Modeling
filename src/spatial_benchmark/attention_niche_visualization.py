@@ -9,6 +9,7 @@ fixed panel order and terminology are part of the analysis contract.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 import math
 import os
 from pathlib import Path
@@ -560,6 +561,46 @@ def _geometry_paths(region: Mapping[str, Any]) -> list[Any]:
         _polygon_path(polygon, context=f"{context} polygon {position}")
         for position, polygon in enumerate(coordinates)
     ]
+
+
+def _omitted_zero_area_interior_ring_receipt(
+    regions_by_core: Mapping[int, Sequence[Mapping[str, Any]]],
+) -> dict[str, Any]:
+    """Describe degenerate interior rings omitted only from Matplotlib paths."""
+
+    identifiers: list[str] = []
+    for core_number in sorted(regions_by_core):
+        for region in regions_by_core[core_number]:
+            polygons = (
+                [region["coordinates"]]
+                if region["geometry_type"] == "Polygon"
+                else region["coordinates"]
+            )
+            for polygon_index, rings in enumerate(polygons):
+                for ring_index, raw_ring in enumerate(rings[1:], start=1):
+                    ring = _ring_array(
+                        raw_ring,
+                        context=(
+                            f"core region {region['niche_id']!r} polygon "
+                            f"{polygon_index} ring {ring_index}"
+                        ),
+                        allow_zero_area=True,
+                    )
+                    if ring is None:
+                        identifiers.append(
+                            f"C{int(core_number):02d}|{region['niche_id']}|"
+                            f"feature={int(region['position'])}|"
+                            f"polygon={polygon_index}|ring={ring_index}"
+                        )
+    identifiers.sort()
+    encoded = "\n".join(identifiers).encode("utf-8")
+    return {
+        "count": len(identifiers),
+        "identifiers": identifiers,
+        "identifier_list_sha256": hashlib.sha256(encoded).hexdigest(),
+        "signed_area_um2": 0.0,
+        "scientific_geometry_modified": False,
+    }
 
 
 def _all_region_points(regions: Sequence[Mapping[str, Any]]) -> np.ndarray:
@@ -1436,6 +1477,9 @@ def _visualization_receipt(
         allow_cross_core_color_reuse=allow_cross_core_color_reuse,
     )
     prepared_regions = _prepare_regions(regions, prepared)
+    omitted_zero_area_rings = _omitted_zero_area_interior_ring_receipt(
+        prepared_regions
+    )
     if include_overlay:
         displayed_edges = select_strongest_mutual_edges(
             mutual_edges,
@@ -1480,7 +1524,7 @@ def _visualization_receipt(
                 (cells["assignment_confidence"] < low_confidence_threshold).sum()
             )
     return {
-        "schema": "attention_niche_visualization_receipt_v1",
+        "schema": "attention_niche_visualization_receipt_v2",
         "status": "complete",
         "terminology": "model-defined attention-routing niches",
         "map_label": _optional_map_label(assignments),
@@ -1508,7 +1552,9 @@ def _visualization_receipt(
         ),
         "low_confidence_cells_per_core": low_confidence_cells,
         "region_geometry_types": ["Polygon", "MultiPolygon"],
-        "region_holes_preserved": True,
+        "region_holes_preserved": "all_nondegenerate",
+        "nondegenerate_region_holes_preserved": True,
+        "zero_area_interior_rings_omitted_from_render": omitted_zero_area_rings,
         "cell_facecolor_matches_niche_fill_color": True,
         "overlay": {
             "included": bool(include_overlay),

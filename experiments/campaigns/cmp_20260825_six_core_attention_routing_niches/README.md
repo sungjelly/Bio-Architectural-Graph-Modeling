@@ -2,7 +2,8 @@
 
 ## Status and scope
 
-Phase: pilot. Outcome: pending full four-model analysis.
+Phase: full. Outcome: pending verified render-only publication of the completed
+four-model analysis.
 
 This post-training analysis constructs a parameter-locked spatial partition from
 the completed Relative-Geometric QKV Graph Transformer fits for Cancer cores
@@ -164,7 +165,11 @@ attention normalization, reciprocal-pair construction, and deterministic
 rerun checksums. Negative controls are rejection of one-directional pairs,
 cross-core edges, smoke checkpoints, incomplete runs, checksum drift, and
 disconnected components sharing an ID. The all-visible replay is a masking
-sensitivity analysis, not an independent null.
+sensitivity analysis, not an independent null. The degree-adjusted reference
+`E=1` is uniform routing over the receiver's available neighbors. No planted or
+mechanism-breaking biological null is included, so this analysis cannot
+establish faithfulness, communication, or a mechanism even when its
+computational QC passes.
 
 The exact training normalization, metadata transform, ordered genes, prepared
 node order, graph, and relative geometry are reloaded and checksum verified;
@@ -211,6 +216,21 @@ memory are recorded. The run requires at least 40 GiB free
 at launch, records a seed-aware table-size estimate and sampled filesystem
 high-water receipts, streams each core into the canonical Parquet files, and
 removes a verified staging shard immediately after it is appended.
+
+The primary metric is `analysis/attention_niche_qc_pass_fraction`, maximized
+with a required target of `1.0`; it is a completeness/correctness gate rather
+than evidence that the regions are biological niches. Checkpoint discovery for
+the full run resolved the following immutable upstream members. Registry-audited
+retention removed only superseded periodic checkpoints from their bundles; the
+protected catalog-verified `last.ckpt` members below remain present and are
+hashed again before and after analysis.
+
+| Seed | Immutable upstream run ID | Epoch | `last.ckpt` SHA-256 | State-dict SHA-256 | Audited periodic-checkpoint tombstones |
+|---:|---|---:|---|---|---:|
+| 0 | `r_20260824T121803Z_16144620_s000_f00_a02_62498796` | 200 | `c5b7fdd6e3192c3146d415f1c77474f9e4483bba090c4fc9c2ac7d79ab554c0c` | `4a8f2ad335d8c61d29f2fe5864cad425239227524fb5b5a26946bdb142b6941f` | 8 |
+| 1 | `r_20260824T124852Z_95591978_s001_f00_a01_266e6db4` | 225 | `3ce4a0e7983a14cba34a32e182800c62ed0184377247443da6bbec72531d0d3c` | `50313eadac8a8fb8228890d667d5393d0b2e8af7278a9f9a517cb5dfa96dc5cc` | 9 |
+| 2 | `r_20260824T124855Z_95591978_s002_f00_a01_3d4cbf7d` | 175 | `91f3f8bfe03ee1624c6ac954a612c65fd6cabc4bf0cce03dc2debf1c44de6411` | `0fb026dbf51fd32af774baf0bdd821b9ffaefce0906702c5c85afa5a530fc23d` | 7 |
+| 3 | `r_20260824T125052Z_95591978_s003_f00_a01_c02388f5` | 200 | `b8943dcb21bac2ea7b3077f1c51e7b6b24b31effe3d23ce471aa05201a3f36d4` | `12be22e276726cccf88fe34900edc0a38555afec332ddcfeef33f441b8d9196f` | 8 |
 
 Required bundle paths are:
 
@@ -305,6 +325,72 @@ Maximum area change in the failed output audit was `1.12e-6 um2`, and repaired
 geometry remained within `1e-4 um2` of the locked summary area. This
 serialization repair does not change niche membership or any routing result.
 
+The next registered full attempt,
+`r_20260825T081845Z_0da9fbf2_s000_f00_a01_dc19543d`, completed all four-model,
+ten-mask attention extraction, all-visible sensitivity, reciprocal scoring,
+consensus construction, parameter sensitivities, clustering, spatial splitting,
+summaries, deterministic colors, and serialized region geometry for all six
+cores. It failed only when Matplotlib constructed the first figure: an
+untranslated shoelace calculation lost the nonzero area of a tiny valid interior
+ring in `C01-N1785` at the large original coordinate offset. The renderer now
+translates every ring to its first vertex before calculating signed area. A
+full read-only traversal then identified three exact-zero interior rings in the
+otherwise valid GEOS geometry (`C23-N695`, `C23-N940`, and `C23-N1417`). These
+zero-area holes have no fill effect and are omitted only from Matplotlib paths;
+their count, identifiers, and digest are recorded in the visualization receipt.
+No exterior ring or nondegenerate hole is omitted, and the scientific GeoJSON
+is not edited.
+
+The failed source bundle is immutable and checksum-bound by `_FAILED` content
+digest `403887f52f7b7132409e2efdd2b3c4bef22751fa82f4f9a99c1fccd06254087c`.
+The archive verifier found all 53 indexed files present and correct; the
+registry has 54 present artifact records and no tombstones. Its scientific ID
+is `sci_0da9fbf2afff6323`. The completed canonical products contain 117,996
+cell assignments, 13,480,576 reciprocal pairs, 26,961,152 directed edges, and
+10,063 connected region features. The source artifact manifest is SHA-256
+`9799ded54f7d27376e377cf3e15e25a8703a0f08ee4b906a632499f80ea8d776`.
+
+### Locked render-only continuation contract
+
+Re-extracting the same deterministic scientific values would add no evidence
+and would require another roughly 21.42 GiB output allocation. A registered
+analysis-only continuation may therefore consume only the exact failed source
+run above. Recovery selection lives under `launcher.recovery`, which preserves
+the scientific configuration and ID; it is never accepted from a free-form
+source path.
+
+Before rendering, the continuation must verify the exact source run, failed
+marker digest, resolved-config checksum, renderer failure signature, archive
+checksums, registry and queue failure status, six complete core receipts,
+streamed table schemas/counts/core coverage, all four checkpoint receipts and
+current hashes, and the prepared-input checksums. It renders directly from the
+read-only source tables and geometry, projecting only retained columns from the
+large mutual-edge table. It streams only scalar identity and degree fields from
+the directed table for exact graph-alignment QC; it never loads that full table
+into memory or modifies it.
+
+Only after every figure renders successfully may the seven canonical scientific
+products be cloned into the new worker-owned scratch bundle with Linux FICLONE.
+Every clone must be a regular non-symlink file on the same filesystem, have a
+distinct inode and link count one, and match source size and SHA-256 exactly.
+The operation fails closed: there is no hard-link, symlink, reference-only, or
+full-copy fallback. Inputs and checkpoints are hashed again afterward, and the
+source bundle is verified unchanged. The new manifest and QC report must state
+`scientific_values_recomputed: false` and `visualizations_recomputed: true`,
+bind both source and continuation provenance, distinguish source-attributed
+scientific QC from continuation-rerun QC, and include the required limitation.
+The source failed bundle is protected from retention until a new registered
+`_SUCCESS` bundle passes archive and registry verification.
+
+A complete read-only continuation preflight passed before enqueueing. It
+reverified all 35 immutable input receipts, all four final checkpoints, the
+53-file failed-bundle checksum contract, all six completed core receipts,
+26,961,152 directed rows, and 13,480,576 mutual rows. Every directed export
+position, source, receiver, and receiver in-degree matched the immutable
+per-core graph; degree adjustment matched receiver in-degree multiplication
+within floating-point tolerance; and every directed edge appeared in exactly
+one reciprocal pair with reversed endpoints. No source artifact was changed.
+
 ## Verification and full commands
 
 Focused tests:
@@ -329,5 +415,22 @@ PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
 
 PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
   --database state/tracking/bagm.sqlite3 worker \
-  --worker-id attention-niche-multigpu --gpu 0,2,3 --once
+  --worker-id attention-niche-multigpu --gpu 0,2,3 \
+  --min-free-gb 40 --once
+```
+
+For the one approved renderer-only continuation of the exact immutable failed
+source documented above:
+
+```bash
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
+  --database state/tracking/bagm.sqlite3 enqueue-experiment \
+  --campaign-id cmp_20260825_six_core_attention_routing_niches \
+  --config experiments/campaigns/cmp_20260825_six_core_attention_routing_niches/render_recovery_config.yaml \
+  --priority 0 --max-attempts 1 --gpu 0,2,3
+
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
+  --database state/tracking/bagm.sqlite3 worker \
+  --worker-id attention-niche-render-recovery --gpu 0,2,3 \
+  --min-free-gb 25 --once
 ```
