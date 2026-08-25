@@ -48,6 +48,7 @@ exports/runs/checkpoints/
 
 # Large data tables, reports, figures, and serialized artifacts
 *.csv
+!experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/selected_gradient_requests_v1.csv
 *.tsv
 *.xlsx
 *.xls

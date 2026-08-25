@@ -946,6 +946,23 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
                 outputs.append(output)
                 continue
 
+            selected_host = explanation_receivers.index_select(0, receiver_host)
+            if not bool(selected_host.any()):
+                # Explanation extraction needs autograd state only for chunks that
+                # contain a requested receiver.  Preserve the ordinary activation-
+                # checkpointed path everywhere else so a handful of selected
+                # derivatives does not retain the full-core edge graph in memory.
+                if use_checkpoint:
+                    output = checkpoint(
+                        chunk_function,
+                        *common,
+                        use_reentrant=False,
+                    )
+                else:
+                    output = chunk_function(*common)
+                outputs.append(output)
+                continue
+
             result = self._attention_partition(
                 block,
                 *common,
@@ -953,14 +970,12 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
             )
             output, attention, content, bias, combined = result
             outputs.append(output)
-            selected_host = explanation_receivers.index_select(0, receiver_host)
             selected_device = selected_host.to(device=node_embedding.device)
-            if bool(selected_host.any()):
-                selected_ids.append(original_ids[selected_host])
-                selected_attention.append(attention[selected_device])
-                selected_content.append(content[selected_device])
-                selected_bias.append(bias[selected_device])
-                selected_combined.append(combined[selected_device])
+            selected_ids.append(original_ids[selected_host])
+            selected_attention.append(attention[selected_device])
+            selected_content.append(content[selected_device])
+            selected_bias.append(bias[selected_device])
+            selected_combined.append(combined[selected_device])
 
         block_output = torch.cat(outputs, dim=0) if outputs else node_embedding
         if explanation_receivers is None:

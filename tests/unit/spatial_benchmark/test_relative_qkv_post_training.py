@@ -10,6 +10,7 @@ import pytest
 torch = pytest.importorskip("torch")
 pytest.importorskip("pyarrow")
 
+import spatial_benchmark.relative_qkv_graph_transformer as relative_qkv_module
 from spatial_benchmark.pooled_relative_qkv_training import (
     PooledRelativeQKVCoreBatch,
     _tree_sha256,
@@ -64,7 +65,10 @@ def _batch() -> PooledRelativeQKVCoreBatch:
     )
 
 
-def _model() -> ReceiverChunkedRelativeGeometryQKVGraphTransformer:
+def _model(
+    *,
+    activation_checkpointing: bool = False,
+) -> ReceiverChunkedRelativeGeometryQKVGraphTransformer:
     torch.manual_seed(91)
     return ReceiverChunkedRelativeGeometryQKVGraphTransformer(
         num_genes=5,
@@ -80,7 +84,7 @@ def _model() -> ReceiverChunkedRelativeGeometryQKVGraphTransformer:
         attention_dropout=0.0,
         receiver_chunk_size=2,
         max_edges_per_chunk=6,
-        activation_checkpointing=False,
+        activation_checkpointing=activation_checkpointing,
     ).eval()
 
 
@@ -339,3 +343,57 @@ def test_selected_autograd_matches_finite_difference() -> None:
     assert masked_row["source_feature_observed"] is False
     assert masked_row["d_attention_d_source_feature"] == 0.0
     assert masked_row["d_prediction_d_source_feature"] == 0.0
+
+
+def test_selected_autograd_checkpointing_matches_uncheckpointed_with_frozen_parameters(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    batch = _batch()
+    uncheckpointed = _model(activation_checkpointing=False)
+    checkpointed = _model(activation_checkpointing=True)
+    checkpointed.load_state_dict(uncheckpointed.state_dict(), strict=True)
+    for model in (uncheckpointed, checkpointed):
+        for parameter in model.parameters():
+            parameter.requires_grad_(False)
+
+    mask = np.zeros((batch.n_nodes, batch.n_genes), dtype=np.bool_)
+    mask[1, 3] = True
+    request = SelectedDerivativeRequest(
+        request_id="edge-0-to-1-checkpoint-equivalence",
+        core_alias=batch.alias,
+        source_node=0,
+        source_feature=2,
+        receiver_node=1,
+        target_feature=3,
+        attention_head=None,
+        layer=-1,
+    )
+    reference = selected_autograd_derivatives(
+        uncheckpointed, batch, mask, [request]
+    )[0]
+    checkpoint_calls = 0
+    original_checkpoint = relative_qkv_module.checkpoint
+
+    def counted_checkpoint(*args: object, **kwargs: object) -> torch.Tensor:
+        nonlocal checkpoint_calls
+        checkpoint_calls += 1
+        return original_checkpoint(*args, **kwargs)
+
+    monkeypatch.setattr(relative_qkv_module, "checkpoint", counted_checkpoint)
+    observed = selected_autograd_derivatives(
+        checkpointed, batch, mask, [request]
+    )[0]
+
+    assert checkpoint_calls == 3
+    numeric_fields = (
+        "attention_value",
+        "prediction_value",
+        "d_attention_d_source_feature",
+        "d_prediction_d_source_feature",
+    )
+    for field in numeric_fields:
+        assert np.isfinite(reference[field])
+        assert np.isfinite(observed[field])
+        assert observed[field] == pytest.approx(reference[field], abs=1e-8, rel=1e-6)
+    assert abs(observed["d_attention_d_source_feature"]) > 1e-8
+    assert abs(observed["d_prediction_d_source_feature"]) > 1e-8

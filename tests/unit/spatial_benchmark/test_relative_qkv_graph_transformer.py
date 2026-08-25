@@ -5,6 +5,7 @@ import inspect
 import pytest
 import torch
 
+import spatial_benchmark.relative_qkv_graph_transformer as relative_qkv_module
 from spatial_benchmark.models import SharedEdgeEncoder
 from spatial_benchmark.relative_qkv_graph_transformer import (
     ReceiverChunkedRelativeGeometryQKVGraphTransformer,
@@ -167,6 +168,45 @@ def test_attention_normalizes_per_receiver_and_explanation_filter_stays_aligned(
             output.attention_weights[selected].sum(dim=0),
             torch.ones(4),
         )
+
+
+def test_selected_explanation_gradients_checkpoint_unselected_receiver_chunks(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    expression, mask, metadata, edge_index, geometry = _inputs()
+    model = _model(
+        ReceiverChunkedRelativeGeometryQKVGraphTransformer,
+        checkpointing=True,
+    )
+    checkpoint_calls = 0
+    original_checkpoint = relative_qkv_module.checkpoint
+
+    def counted_checkpoint(*args: object, **kwargs: object) -> torch.Tensor:
+        nonlocal checkpoint_calls
+        checkpoint_calls += 1
+        return original_checkpoint(*args, **kwargs)
+
+    monkeypatch.setattr(relative_qkv_module, "checkpoint", counted_checkpoint)
+    output = model(
+        expression,
+        mask,
+        edge_index=edge_index,
+        relative_geometry=geometry,
+        node_covariates=metadata,
+        return_explanations=True,
+        attention_receivers=torch.tensor([0]),
+        explanation_layer=-1,
+    )
+    # All first-layer chunks and every final-layer chunk without receiver zero
+    # retain the ordinary activation-checkpointed execution path.
+    assert checkpoint_calls >= 4
+    assert torch.equal(output.edge_index, edge_index[:, :2])
+    loss = output.prediction.square().mean() + output.attention_weights[0, 0]
+    loss.backward()
+    assert all(
+        parameter.grad is not None and torch.isfinite(parameter.grad).all()
+        for parameter in model.parameters()
+    )
 
 
 def test_geometry_changes_logits_only_after_bias_projection_learns() -> None:

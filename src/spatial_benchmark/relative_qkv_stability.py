@@ -342,13 +342,10 @@ def _column_spearman_matrix(reference: np.ndarray, candidate: np.ndarray) -> np.
 def _deterministic_hungarian_permutation(similarity: np.ndarray) -> np.ndarray:
     heads = similarity.shape[0]
     safe_similarity = np.where(np.isnan(similarity), -1.0, similarity)
-    # A base-(H+1) fractional code resolves exact assignment ties
-    # lexicographically by candidate head, beginning with reference head zero.
-    row = np.arange(heads, dtype=np.float64)[:, None]
-    column = np.arange(heads, dtype=np.float64)[None, :]
-    tie_code = column / np.power(float(heads + 1), row + 1.0)
-    cost = -safe_similarity + 1e-12 * tie_code
-    row_index, column_index = linear_sum_assignment(cost)
+    # SciPy's solver is deterministic for a fixed matrix.  Do not perturb the
+    # cost to break ties: even a nominally tiny perturbation can change the
+    # true maximum assignment when genuine similarities differ at that scale.
+    row_index, column_index = linear_sum_assignment(-safe_similarity)
     permutation = np.empty(heads, dtype=np.int64)
     permutation[row_index] = column_index
     return permutation
@@ -756,7 +753,7 @@ def summarize_relationship_ensemble(
         minimum=values.min(axis=0),
         maximum=values.max(axis=0),
         quantile_levels=tuple(float(level) for level in levels.tolist()),
-        quantiles=np.quantile(values, levels, axis=0).T,
+        quantiles=np.quantile(values, levels, axis=0, method="linear").T,
         support_count=support.sum(axis=0).astype(np.int64),
     )
 

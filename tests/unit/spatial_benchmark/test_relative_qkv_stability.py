@@ -3,6 +3,7 @@ from __future__ import annotations
 import numpy as np
 import pytest
 
+import spatial_benchmark.relative_qkv_stability as stability_module
 from spatial_benchmark.relative_qkv_stability import (
     ENSEMBLE_SPREAD_LABEL,
     SEED_UNCERTAINTY_LABEL,
@@ -238,6 +239,14 @@ def test_hungarian_matching_has_deterministic_constant_signature_ties() -> None:
     expected = np.tile(np.arange(3), (5, 1))
     np.testing.assert_array_equal(alignment.reference_to_seed_head, expected)
     assert np.isnan(alignment.signature_spearman[1:]).all()
+
+
+def test_hungarian_matching_never_perturbs_a_small_real_objective_difference() -> None:
+    similarity = np.asarray([[0.0, 2e-13], [0.0, 0.0]], dtype=np.float64)
+    permutation = stability_module._deterministic_hungarian_permutation(similarity)
+
+    np.testing.assert_array_equal(permutation, [1, 0])
+    assert similarity[np.arange(2), permutation].sum() == pytest.approx(2e-13)
 
 
 def test_matched_attention_and_positional_bias_are_compared_after_alignment() -> None:
