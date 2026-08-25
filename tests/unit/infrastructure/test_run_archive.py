@@ -294,6 +294,91 @@ def test_retention_tombstones_must_match_immutable_bundle_manifest(
         )
 
 
+def test_failed_run_retention_accepts_derived_payloads_but_protects_evidence(
+    tmp_path: Path,
+) -> None:
+    archive = RunArchive.create(
+        _run_id("failedret"),
+        paths=_paths(tmp_path),
+        resolved_config={"model": {"name": "g1"}},
+    )
+    derived = archive.write_bytes(
+        "diagnostics/intermediate/directed_attention_edges.parquet", b"derived"
+    )
+    top_level = archive.write_bytes("mutual_attention_edges.parquet", b"edges")
+    final_path = archive.finalize_failure(
+        RuntimeError("synthetic failure"),
+        failure_category="nonzero_exit",
+    )
+    manifest = json.loads(
+        (final_path / "provenance/artifact_checksums.json").read_text(
+            encoding="utf-8"
+        )
+    )["files"]
+    relatives = (
+        derived.relative_to(archive.scratch_path).as_posix(),
+        top_level.relative_to(archive.scratch_path).as_posix(),
+    )
+    tombstones = {relative: manifest[relative] for relative in relatives}
+    for relative in relatives:
+        (final_path / relative).unlink()
+
+    verified = verify_run_bundle(final_path, tombstoned_artifacts=tombstones)
+    assert verified["status"] == "failed"
+    assert verified["tombstoned_file_count"] == 2
+
+    config_relative = "config.resolved.yaml"
+    with pytest.raises(RunValidationError, match="compact audit evidence"):
+        verify_run_bundle(
+            final_path,
+            tombstoned_artifacts={
+                **tombstones,
+                config_relative: manifest[config_relative],
+            },
+        )
+
+    compact = "diagnostics/pre_failure_summary.json"
+    with pytest.raises(RunValidationError, match="compact audit evidence"):
+        verify_run_bundle(
+            final_path,
+            tombstoned_artifacts={
+                **tombstones,
+                compact: {"type": "file", "size": 1, "sha256": "0" * 64},
+            },
+        )
+
+
+def test_successful_run_retention_rejects_diagnostic_tombstone(tmp_path: Path) -> None:
+    run_id = _run_id("successdiag")
+    archive = RunArchive.create(
+        run_id,
+        paths=_paths(tmp_path),
+        manifest={"lifecycle_status_source": "registry_and_completion_marker"},
+        resolved_config={"model": {"name": "g1"}, "seed": 3},
+    )
+    archive.write_summary(
+        {"status": "completed", "primary_metric": "val/loss", "primary_value": 0.2}
+    )
+    archive.write_bytes("checkpoints/best.ckpt", b"checkpoint")
+    _write_success_support(archive)
+    archive.write_predictions("validation", [_prediction(run_id)])
+    diagnostic = archive.write_bytes("diagnostics/intermediate.bin", b"derived")
+    relative = diagnostic.relative_to(archive.scratch_path).as_posix()
+    final_path = archive.finalize_success()
+    manifest = json.loads(
+        (final_path / "provenance/artifact_checksums.json").read_text(
+            encoding="utf-8"
+        )
+    )["files"]
+    (final_path / relative).unlink()
+
+    with pytest.raises(RunValidationError, match="Successful-run"):
+        verify_run_bundle(
+            final_path,
+            tombstoned_artifacts={relative: manifest[relative]},
+        )
+
+
 def test_held_in_protocol_requires_and_accepts_fit_predictions(
     tmp_path: Path,
 ) -> None:

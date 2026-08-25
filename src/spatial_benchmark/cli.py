@@ -1190,7 +1190,6 @@ def _verify_bundles(
                 FROM artifacts a
                 JOIN runs r ON r.run_id = a.run_id
                 WHERE a.status = ?
-                  AND a.kind IN ('checkpoints', 'predictions')
                 """
                 + (" AND a.run_id = ?" if run_id else "")
                 + " ORDER BY a.run_id, a.artifact_id",

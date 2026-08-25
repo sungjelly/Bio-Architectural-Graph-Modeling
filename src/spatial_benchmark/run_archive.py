@@ -1368,17 +1368,45 @@ def _verified_retention_tombstones(
     """Validate registry-supplied tombstones against the immutable manifest."""
 
     verified: dict[str, dict[str, Any]] = {}
+    failed_or_pruned = (root / "_FAILED").is_file() or (root / "_PRUNED").is_file()
+    protected_failed_evidence = {
+        ".bagm-run-owner.json",
+        "config.resolved.yaml",
+        "manifest.yaml",
+        "summary.json",
+        "_FAILED",
+        "_PRUNED",
+        "_SUCCESS",
+    }
+    allowed_failed_derived_payloads = {
+        "directed_attention_edges.parquet",
+        "mutual_attention_edges.parquet",
+    }
     for raw_relative, raw_metadata in (tombstoned_artifacts or {}).items():
         relative = _safe_relative(raw_relative).as_posix()
         if relative in verified:
             raise RunValidationError(
                 f"Duplicate normalized retention tombstone: {relative}"
             )
-        if Path(relative).parts[0] not in {"checkpoints", "predictions"}:
-            raise RunValidationError(
-                "Retention tombstones may cover only checkpoint or prediction "
-                f"payloads, not {relative}."
-            )
+        parts = Path(relative).parts
+        top_level = parts[0]
+        ordinary_payload = top_level in {"checkpoints", "predictions"}
+        if not ordinary_payload:
+            if not failed_or_pruned:
+                raise RunValidationError(
+                    "Successful-run retention tombstones may cover only checkpoint "
+                    f"or prediction payloads, not {relative}."
+                )
+            if (
+                relative in protected_failed_evidence
+                or top_level in {"logs", "metrics", "provenance"}
+                or Path(relative).name not in allowed_failed_derived_payloads
+            ):
+                raise RunValidationError(
+                    "Failed-run retention tombstones may cover only explicitly "
+                    "approved oversized derived edge tables, not compact audit "
+                    f"evidence or other outputs: {relative}."
+                )
         target = root / relative
         if target.exists() or target.is_symlink():
             raise RunValidationError(
@@ -1403,9 +1431,12 @@ def verify_run_bundle(
     """Verify marker exclusivity, required files, symlinks, and all checksums.
 
     ``tombstoned_artifacts`` is accepted only from an audited external
-    registry. Each absent checkpoint or prediction must match the original
-    immutable bundle manifest exactly; it never permits changed or unrecorded
-    missing content.
+    registry. Successful bundles permit checkpoint or prediction tombstones.
+    Failed and pruned bundles may additionally tombstone explicitly approved
+    oversized derived attention-edge tables, but never compact outputs,
+    configuration, log, metric, provenance, summary, or completion-marker
+    evidence. Every absence must match the original immutable bundle manifest
+    exactly; changed or unrecorded missing content is never accepted.
     """
 
     root = Path(run_path)
