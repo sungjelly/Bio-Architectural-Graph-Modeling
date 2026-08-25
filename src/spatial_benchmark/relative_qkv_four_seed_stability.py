@@ -1155,10 +1155,21 @@ def _validate_fixed_attention(
     if not np.isin(selected_receivers, receivers).all():
         raise FourSeedStabilityError("Fixed edge set contains an unselected receiver.")
     for receiver in receivers.tolist():
-        sums = attention_values[selected_receivers == receiver].sum(axis=0)
+        # The exported probabilities are intentionally FP32, but accumulating a
+        # few hundred of them again in host FP32 can cross the 1e-6 audit gate
+        # solely because NumPy and the GPU softmax use different reduction
+        # orders.  Accumulate the already-exported values in FP64 so this check
+        # measures their represented probability mass instead of adding a
+        # second FP32 reduction error.
+        sums = attention_values[selected_receivers == receiver].sum(
+            axis=0,
+            dtype=np.float64,
+        )
         if not np.allclose(sums, np.ones_like(sums), atol=1e-6, rtol=0.0):
+            maximum_error = float(np.max(np.abs(sums - 1.0)))
             raise FourSeedStabilityError(
-                "Fixed receiver attention does not normalize to one per head."
+                "Fixed receiver attention does not normalize to one per head "
+                f"(receiver={receiver}, maximum_abs_error={maximum_error:.17g})."
             )
 
 

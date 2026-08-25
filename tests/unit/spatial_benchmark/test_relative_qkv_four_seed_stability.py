@@ -70,6 +70,57 @@ def test_receiver_probes_follow_locked_floor_formula_for_real_can21_size() -> No
     assert receivers[[21, 42, 49]].tolist() == [1_632, 3_264, 3_808]
 
 
+def test_fixed_attention_normalization_uses_fp64_host_accumulation() -> None:
+    # Simulate FP32 softmax probabilities whose device reduction order differs
+    # from NumPy's host reduction order.  Their represented probability mass is
+    # within the locked 1e-6 gate, while a second FP32 reduction is not.
+    edge_count = 181
+    exponents = (np.arange(edge_count, dtype=np.int64) * 2) % 5
+    numerators = np.power(
+        np.float32(10.0),
+        -exponents.astype(np.float32),
+        dtype=np.float32,
+    )
+    device_order_denominator = np.add.accumulate(
+        numerators,
+        dtype=np.float32,
+    )[-1]
+    attention = (numerators / device_order_denominator).reshape(-1, 1)
+    assert abs(float(attention.sum(dtype=np.float32)) - 1.0) > 1e-6
+    assert abs(float(attention.sum(dtype=np.float64)) - 1.0) < 1e-6
+
+    edge_index = np.vstack(
+        (
+            np.arange(edge_count, dtype=np.int64),
+            np.zeros(edge_count, dtype=np.int64),
+        )
+    )
+    edge_ids = np.arange(edge_count, dtype=np.int64)
+    zeros = np.zeros_like(attention)
+    stability_module._validate_fixed_attention(
+        edge_index=edge_index,
+        edge_ids=edge_ids,
+        attention=attention,
+        content=zeros,
+        bias=zeros,
+        combined=zeros,
+        receivers=np.asarray([0], dtype=np.int64),
+    )
+
+    invalid = attention.copy()
+    invalid[0, 0] += np.float32(1e-3)
+    with pytest.raises(FourSeedStabilityError, match="maximum_abs_error"):
+        stability_module._validate_fixed_attention(
+            edge_index=edge_index,
+            edge_ids=edge_ids,
+            attention=invalid,
+            content=zeros,
+            bias=zeros,
+            combined=zeros,
+            receivers=np.asarray([0], dtype=np.int64),
+        )
+
+
 def test_receiver_centered_logits_ignore_softmax_null_offsets() -> None:
     groups = ("a", "a", "b", "b", "b")
     logits = np.asarray(
