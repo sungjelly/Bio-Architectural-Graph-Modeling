@@ -140,6 +140,50 @@ def test_polygon_and_multipolygon_paths_preserve_holes() -> None:
     assert len(visualization._geometry_paths(multipolygon)) == 2
 
 
+def test_polygon_path_preserves_tiny_valid_ring_at_large_coordinate_offset() -> None:
+    # Regression for C01-N1785: the untranslated shoelace sums cancel even
+    # though the serialized sliver has a small, non-zero signed area.
+    tiny_ring = [
+        [9471.014021, -66.964317],
+        [9471.407064, -67.35736000000097],
+        [9471.407064, -67.35736],
+        [9471.014021, -66.964317],
+    ]
+    polygon = {
+        "niche_id": "C01-N1785",
+        "geometry_type": "Polygon",
+        "coordinates": [_closed_box(9400.0, -100.0, 9500.0, 0.0), tiny_ring],
+    }
+
+    path = visualization._geometry_paths(polygon)[0]
+
+    assert np.count_nonzero(path.codes == MatplotlibPath.MOVETO) == 2
+    assert np.count_nonzero(path.codes == MatplotlibPath.CLOSEPOLY) == 2
+    assert visualization._stable_signed_area_twice(np.asarray(tiny_ring[:-1])) != 0.0
+
+
+def test_polygon_path_omits_only_zero_area_interior_ring() -> None:
+    degenerate_hole = [
+        [6675.234657, 11926.101712],
+        [6675.354938, 11926.462555],
+        [6675.354938000002, 11926.462555000006],
+        [6675.234657, 11926.101712],
+    ]
+    polygon = {
+        "niche_id": "C23-N1417",
+        "geometry_type": "Polygon",
+        "coordinates": [
+            _closed_box(6600.0, 11800.0, 6800.0, 12100.0),
+            degenerate_hole,
+        ],
+    }
+
+    path = visualization._geometry_paths(polygon)[0]
+
+    assert np.count_nonzero(path.codes == MatplotlibPath.MOVETO) == 1
+    assert np.count_nonzero(path.codes == MatplotlibPath.CLOSEPOLY) == 1
+
+
 def test_prepare_assignments_keeps_confidence_distinct_from_assignment_agreement(
 ) -> None:
     assignments, _regions, _edges = _synthetic_inputs()

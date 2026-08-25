@@ -471,7 +471,9 @@ def _prepare_regions(
     return by_core
 
 
-def _ring_array(ring: Any, *, context: str) -> np.ndarray:
+def _ring_array(
+    ring: Any, *, context: str, allow_zero_area: bool = False
+) -> np.ndarray | None:
     try:
         values = np.asarray(ring, dtype=np.float64)
     except (TypeError, ValueError) as error:
@@ -490,13 +492,29 @@ def _ring_array(ring: Any, *, context: str) -> np.ndarray:
     unique = values[:-1]
     if len(unique) < 3:
         raise AttentionNicheVisualizationError(f"{context} has fewer than three vertices.")
-    area_twice = float(
-        np.dot(unique[:, 0], np.roll(unique[:, 1], -1))
-        - np.dot(unique[:, 1], np.roll(unique[:, 0], -1))
-    )
-    if not math.isfinite(area_twice) or abs(area_twice) <= 1e-12:
+    area_twice = _stable_signed_area_twice(unique)
+    if not math.isfinite(area_twice):
+        raise AttentionNicheVisualizationError(f"{context} has zero signed area.")
+    if area_twice == 0.0:
+        if allow_zero_area:
+            return None
         raise AttentionNicheVisualizationError(f"{context} has zero signed area.")
     return unique
+
+
+def _stable_signed_area_twice(vertices: np.ndarray) -> float:
+    """Return shoelace area after translation to avoid cancellation.
+
+    Tissue coordinates can be orders of magnitude larger than tiny valid
+    polygon slivers.  Subtracting one vertex preserves signed area while
+    preventing the two large shoelace sums from rounding to the same float.
+    """
+
+    translated = np.asarray(vertices, dtype=np.float64) - vertices[0]
+    return float(
+        np.dot(translated[:, 0], np.roll(translated[:, 1], -1))
+        - np.dot(translated[:, 1], np.roll(translated[:, 0], -1))
+    )
 
 
 def _polygon_path(rings: Any, *, context: str) -> Any:
@@ -507,11 +525,17 @@ def _polygon_path(rings: Any, *, context: str) -> Any:
     vertices: list[np.ndarray] = []
     codes: list[np.ndarray] = []
     for ring_index, raw_ring in enumerate(rings):
-        ring = _ring_array(raw_ring, context=f"{context} ring {ring_index}")
-        area_twice = float(
-            np.dot(ring[:, 0], np.roll(ring[:, 1], -1))
-            - np.dot(ring[:, 1], np.roll(ring[:, 0], -1))
+        ring = _ring_array(
+            raw_ring,
+            context=f"{context} ring {ring_index}",
+            # GEOS permits a zero-area interior ring in an otherwise valid
+            # polygon.  It has no fill effect, so omit it from the plotting
+            # path while continuing to reject a degenerate exterior.
+            allow_zero_area=ring_index > 0,
         )
+        if ring is None:
+            continue
+        area_twice = _stable_signed_area_twice(ring)
         want_counter_clockwise = ring_index == 0
         if (area_twice > 0) != want_counter_clockwise:
             ring = ring[::-1]
