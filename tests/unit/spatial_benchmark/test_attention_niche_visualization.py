@@ -227,6 +227,14 @@ def test_combined_figure_locks_panel_order_labels_aspect_and_scale_bars() -> Non
     try:
         assert len(figure.axes) == 6
         assert "4-model ensemble-consensus map" in figure._suptitle.get_text()
+        figure.canvas.draw()
+        renderer = figure.canvas.get_renderer()
+        suptitle_bounds = figure._suptitle.get_window_extent(renderer=renderer)
+        assert all(
+            suptitle_bounds.y0
+            > axis.title.get_window_extent(renderer=renderer).y1
+            for axis in figure.axes[:3]
+        )
         assert any("Gray cell outlines" in text.get_text() for text in figure.texts)
         for axis, core_number in zip(
             figure.axes, visualization.CORE_ORDER, strict=True

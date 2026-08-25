@@ -391,6 +391,17 @@ per-core graph; degree adjustment matched receiver in-degree multiplication
 within floating-point tolerance; and every directed edge appeared in exactly
 one reciprocal pair with reversed endpoints. No source artifact was changed.
 
+The first render-continuation attempt,
+`r_20260825T105008Z_0da9fbf2_s000_f00_a01_21554c05`, was deliberately
+interrupted during the second per-core figure after visual inspection of the
+already written combined map found that its two-line figure heading overlapped
+the Core 9 panel title. The attempt had not materialized any canonical
+scientific table. Its partial failed bundle is retained with failure category
+`interrupted`; neither the immutable source run nor any checkpoint was changed.
+The combined figure now reserves a larger top margin, and an automated
+renderer-bounds test requires the complete suptitle to remain above every
+top-row panel title before another registered continuation is launched.
+
 ## Verification and full commands
 
 Focused tests:

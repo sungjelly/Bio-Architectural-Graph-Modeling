@@ -899,7 +899,7 @@ def create_combined_attention_niche_figure(
     )
     prepared_regions = _prepare_regions(regions, prepared)
     with _visualization_context():
-        figure, axes = plt.subplots(2, 3, figsize=(18.0, 11.5))
+        figure, axes = plt.subplots(2, 3, figsize=(18.0, 12.0))
         for axis, core_number in zip(axes.ravel(), CORE_ORDER, strict=True):
             cells = prepared.loc[prepared["core_number"] == core_number]
             _draw_niche_panel(
@@ -916,15 +916,16 @@ def create_combined_attention_niche_figure(
             title += f"\n{map_label}"
         figure.suptitle(
             title,
-            fontsize=16.0,
+            fontsize=15.0,
             fontweight="bold",
-            y=0.985,
+            y=0.992,
+            linespacing=1.12,
         )
         figure.subplots_adjust(
             left=0.035,
             right=0.985,
             bottom=0.035,
-            top=0.935,
+            top=0.89,
             wspace=0.12,
             hspace=0.17,
         )
