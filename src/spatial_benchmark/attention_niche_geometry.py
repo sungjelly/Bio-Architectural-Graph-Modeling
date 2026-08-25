@@ -32,10 +32,12 @@ from shapely.geometry import (
     Point,
     Polygon,
     mapping as geometry_mapping,
+    shape as geometry_shape,
 )
 from shapely.geometry.base import BaseGeometry
 from shapely.ops import unary_union
 from shapely.strtree import STRtree
+from shapely.validation import explain_validity
 
 from spatial_benchmark.data import (
     CELL_KEY_COLUMNS,
@@ -993,6 +995,134 @@ def _rounded_geojson_value(value: Any, precision: int | None) -> Any:
     return value
 
 
+def validate_and_repair_regions_geojson(
+    feature_collection: Mapping[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Return deterministic valid polygonal GeoJSON plus an explicit audit.
+
+    Coordinate rounding can collapse extremely short ring segments after an
+    otherwise valid dissolve. Repair is therefore applied to the serialized
+    coordinate representation, never to cell assignments or niche membership.
+    Degenerate non-polygonal results fail closed rather than being hidden.
+    """
+
+    if feature_collection.get("type") != "FeatureCollection" or not isinstance(
+        feature_collection.get("features"), Sequence
+    ):
+        raise AttentionNicheGeometryError(
+            "Region GeoJSON must be a FeatureCollection with features."
+        )
+    output = {
+        key: value
+        for key, value in feature_collection.items()
+        if key != "features"
+    }
+    features: list[dict[str, Any]] = []
+    invalid_ids: list[str] = []
+    reasons: dict[str, int] = defaultdict(int)
+    maximum_absolute_area_change = 0.0
+    maximum_relative_area_change = 0.0
+    maximum_reported_area_error = 0.0
+    total_area_before = 0.0
+    total_area_after = 0.0
+    observed_ids: set[str] = set()
+    for position, raw_feature in enumerate(feature_collection["features"]):
+        if not isinstance(raw_feature, Mapping) or raw_feature.get("type") != "Feature":
+            raise AttentionNicheGeometryError(
+                f"Region GeoJSON feature {position} is malformed."
+            )
+        feature = dict(raw_feature)
+        feature_id = str(feature.get("id", "")).strip()
+        properties = feature.get("properties")
+        if not feature_id or feature_id in observed_ids or not isinstance(
+            properties, Mapping
+        ):
+            raise AttentionNicheGeometryError(
+                f"Region GeoJSON feature {position} has invalid identity."
+            )
+        observed_ids.add(feature_id)
+        try:
+            geometry = geometry_shape(feature.get("geometry"))
+        except (AttributeError, TypeError, ValueError) as exc:
+            raise AttentionNicheGeometryError(
+                f"Region {feature_id} has unreadable GeoJSON geometry."
+            ) from exc
+        if geometry.is_empty:
+            raise AttentionNicheGeometryError(
+                f"Region {feature_id} has empty GeoJSON geometry."
+            )
+        area_before = float(geometry.area)
+        total_area_before += area_before
+        if not geometry.is_valid:
+            reason = explain_validity(geometry).split("[", 1)[0]
+            reasons[reason] += 1
+            invalid_ids.append(feature_id)
+            geometry = _polygonal_part(make_valid(geometry))
+        geometry = normalize(geometry)
+        if (
+            geometry.is_empty
+            or not geometry.is_valid
+            or not isinstance(geometry, (Polygon, MultiPolygon))
+        ):
+            raise AttentionNicheGeometryError(
+                f"Region {feature_id} could not be serialized as valid polygons."
+            )
+        area_after = float(geometry.area)
+        total_area_after += area_after
+        absolute_change = abs(area_after - area_before)
+        relative_change = absolute_change / max(abs(area_before), 1e-12)
+        maximum_absolute_area_change = max(
+            maximum_absolute_area_change, absolute_change
+        )
+        maximum_relative_area_change = max(
+            maximum_relative_area_change, relative_change
+        )
+        try:
+            reported_area = float(properties["area_um2"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise AttentionNicheGeometryError(
+                f"Region {feature_id} has no finite reported area_um2."
+            ) from exc
+        if not math.isfinite(reported_area):
+            raise AttentionNicheGeometryError(
+                f"Region {feature_id} has no finite reported area_um2."
+            )
+        maximum_reported_area_error = max(
+            maximum_reported_area_error, abs(reported_area - area_after)
+        )
+        current_properties = dict(properties)
+        feature["properties"] = current_properties
+        feature["geometry"] = geometry_mapping(geometry)
+        features.append(feature)
+    output["features"] = features
+    invalid_after = sum(
+        not geometry_shape(feature["geometry"]).is_valid for feature in features
+    )
+    if invalid_after:
+        raise AttentionNicheGeometryError(
+            "Region GeoJSON remains invalid after deterministic repair."
+        )
+    invalid_ids_sha256 = hashlib.sha256(
+        "\n".join(invalid_ids).encode("utf-8")
+    ).hexdigest()
+    return output, {
+        "feature_count": len(features),
+        "invalid_before_repair": len(invalid_ids),
+        "invalid_after_repair": invalid_after,
+        "invalidity_reason_counts": dict(sorted(reasons.items())),
+        "repaired_feature_ids_sha256": invalid_ids_sha256,
+        "repaired_feature_ids_preview": invalid_ids[:20],
+        "maximum_absolute_area_change_um2": maximum_absolute_area_change,
+        "maximum_relative_area_change": maximum_relative_area_change,
+        "maximum_reported_area_error_um2": maximum_reported_area_error,
+        "total_area_before_um2": total_area_before,
+        "total_area_after_um2": total_area_after,
+        "serialized_geometry_types": sorted(
+            {geometry_shape(feature["geometry"]).geom_type for feature in features}
+        ),
+    }
+
+
 def dissolved_regions_geojson(
     regions: Sequence[DissolvedNicheRegion],
     *,
@@ -1060,11 +1190,14 @@ def dissolved_regions_geojson(
                 "geometry": geometry,
             }
         )
-    return {
+    feature_collection = {
         "type": "FeatureCollection",
         "coordinate_unit": "um",
         "features": features,
     }
+    repaired, audit = validate_and_repair_regions_geojson(feature_collection)
+    repaired["geometry_validation"] = audit
+    return repaired
 
 
 def niche_adjacency_from_cells(
@@ -1284,6 +1417,7 @@ __all__ = [
     "region_adjacency",
     "segmentation_polygon_adjacency",
     "split_preliminary_niches",
+    "validate_and_repair_regions_geojson",
     "validate_polygon_centroid_alignment",
     "validate_undirected_adjacency",
     "verify_niche_connectedness",

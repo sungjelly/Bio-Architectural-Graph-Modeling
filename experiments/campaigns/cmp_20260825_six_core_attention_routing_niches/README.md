@@ -277,6 +277,34 @@ audit before release. This lifecycle-only repair changes neither the computed
 routing values nor any scientific parameter. The incomplete attempt remains a
 failed immutable bundle and was not used as a scientific result.
 
+The subsequent full attempt,
+`r_20260825T055100Z_0da9fbf2_s000_f00_a01_ead1d2c2`, completed all six cores,
+canonical consolidation, sensitivity analysis, summaries, colors, and region
+geometry. It then failed before figures and final QC because the renderer
+incorrectly treated the composite `assignment_confidence` and the distinct
+`niche_assignment_agreement` diagnostic as aliases. Only 0.722% of assignment
+rows have numerically equal values in those two fields, so they must remain
+separate; the renderer now consumes the canonical composite confidence.
+
+This failed bundle is immutable and checksum-bound by `_FAILED` content digest
+`99b34e17d2fd1e0d4c52ef564b7ea119242e0fa332f5b40e6a3ee6de008e7b3f`.
+The later registry-audited retention decision
+`cleanup_20260825_relative_qkv_final_only_v2` tombstoned its failed-run directed
+and mutual Parquet files. The remaining receipts retain their checksums and the
+audit result, but the missing values cannot support a continuation. A fresh
+registered full run from the unchanged catalog-verified checkpoints is
+therefore required; the tombstones are not bypassed or reconstructed from
+summaries.
+
+An independent post-failure audit also found that six-decimal GeoJSON rounding
+made 234 of 10,063 serialized region features invalid even though the dissolved
+pre-serialization geometries were valid. GeoJSON generation now validates the
+serialized coordinates, applies `make_valid` only when needed, retains
+Polygon/MultiPolygon parts, and requires every feature to be valid and nonempty.
+Maximum area change in the failed output audit was `1.12e-6 um2`, and repaired
+geometry remained within `1e-4 um2` of the locked summary area. This
+serialization repair does not change niche membership or any routing result.
+
 ## Verification and full commands
 
 Focused tests:

@@ -10,6 +10,7 @@ import pytest
 import spatial_benchmark.attention_niche_pipeline as pipeline
 from spatial_benchmark.attention_niche_pipeline import (
     CoreJobSpec,
+    _bundle_retention_tombstones,
     _combine_parquet_files,
     _incident_median,
     _integer_partition,
@@ -74,6 +75,38 @@ def test_interpretation_assignments_reject_source_identifiers() -> None:
             match="prohibited source identifiers",
         ):
             _validate_interpretation_identifier_minimization(exposed)
+
+
+def test_checkpoint_bundle_tombstones_require_audited_checkpoint_metadata(
+    tmp_path: Path,
+) -> None:
+    bundle = tmp_path / "artifacts" / "runs" / "2026" / "08" / "r_source"
+    bundle.mkdir(parents=True)
+    deleted = bundle / "checkpoints" / "epoch_0025.ckpt"
+    records = [
+        {
+            "path": str(deleted),
+            "sha256": "a" * 64,
+            "size_bytes": 123,
+            "status": "deleted_by_retention",
+        }
+    ]
+
+    assert _bundle_retention_tombstones(
+        bundle, records, project_root=tmp_path
+    ) == {
+        "checkpoints/epoch_0025.ckpt": {
+            "type": "file",
+            "size": 123,
+            "sha256": "a" * 64,
+        }
+    }
+    with pytest.raises(pipeline.AttentionNichePipelineError, match="pending"):
+        _bundle_retention_tombstones(
+            bundle,
+            [{**records[0], "status": "retention_pending"}],
+            project_root=tmp_path,
+        )
 
 
 def test_incident_medians_and_partition_codes_are_deterministic() -> None:

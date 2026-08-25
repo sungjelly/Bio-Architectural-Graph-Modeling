@@ -78,7 +78,6 @@ _ASSIGNMENT_ALIASES: Mapping[str, tuple[str, ...]] = {
     "niche_color": ("niche_color", "niche colour", "niche color"),
     "assignment_confidence": (
         "assignment_confidence",
-        "niche_assignment_agreement",
         "confidence",
         "assignment confidence",
     ),

@@ -327,6 +327,8 @@ class CheckpointMember:
     catalog_artifact_id: int
     catalog_retention_class: str
     catalog_verification_status: str
+    bundle_retention_tombstone_count: int
+    bundle_retention_tombstones_sha256: str
 
     def manifest_record(self, project_root: Path) -> dict[str, Any]:
         def relative(path: Path) -> str:
@@ -339,6 +341,56 @@ class CheckpointMember:
         value["checkpoint_path"] = relative(self.checkpoint_path)
         value["bundle_path"] = relative(self.bundle_path)
         return value
+
+
+def _bundle_retention_tombstones(
+    bundle: Path,
+    records: Sequence[Mapping[str, Any]],
+    *,
+    project_root: Path,
+) -> dict[str, dict[str, Any]]:
+    """Translate audited registry checkpoint deletions for bundle verification."""
+
+    tombstones: dict[str, dict[str, Any]] = {}
+    bundle_root = bundle.resolve(strict=True)
+    for record in records:
+        status = str(record["status"])
+        if status == "retention_pending":
+            raise AttentionNichePipelineError(
+                f"Checkpoint retention is still pending for {record['path']}."
+            )
+        if status != "deleted_by_retention":
+            continue
+        target = Path(str(record["path"]))
+        if not target.is_absolute():
+            target = project_root / target
+        try:
+            relative = target.resolve(strict=False).relative_to(bundle_root).as_posix()
+        except ValueError as exc:
+            raise AttentionNichePipelineError(
+                f"Retention tombstone is outside checkpoint bundle: {target}."
+            ) from exc
+        if not relative.startswith("checkpoints/") or relative in tombstones:
+            raise AttentionNichePipelineError(
+                f"Invalid or duplicate checkpoint tombstone: {relative}."
+            )
+        sha256 = str(record["sha256"] or "")
+        size = record["size_bytes"]
+        if (
+            len(sha256) != 64
+            or any(character not in "0123456789abcdef" for character in sha256)
+            or size is None
+            or int(size) < 0
+        ):
+            raise AttentionNichePipelineError(
+                f"Checkpoint tombstone metadata is incomplete: {relative}."
+            )
+        tombstones[relative] = {
+            "type": "file",
+            "size": int(size),
+            "sha256": sha256,
+        }
+    return tombstones
 
 
 def discover_completed_checkpoint_members(
@@ -375,6 +427,21 @@ def discover_completed_checkpoint_members(
             """,
             (UPSTREAM_CAMPAIGN_ID,),
         ).fetchall()
+        run_ids = [str(row["run_id"]) for row in rows]
+        retention_rows = (
+            connection.execute(
+                """
+                SELECT run_id, path, sha256, size_bytes, status
+                FROM artifacts
+                WHERE run_id IN ({})
+                  AND status IN ('deleted_by_retention', 'retention_pending')
+                ORDER BY run_id, path
+                """.format(",".join("?" for _ in run_ids)),
+                run_ids,
+            ).fetchall()
+            if run_ids
+            else []
+        )
     finally:
         connection.close()
     if not rows:
@@ -385,6 +452,11 @@ def discover_completed_checkpoint_members(
     members: list[CheckpointMember] = []
     observed_seeds: set[int] = set()
     reference_bindings: dict[str, Any] | None = None
+    retention_by_run: dict[str, list[Mapping[str, Any]]] = {}
+    for retention_row in retention_rows:
+        retention_by_run.setdefault(str(retention_row["run_id"]), []).append(
+            retention_row
+        )
     for row in rows:
         run_id = str(row["run_id"])
         seed = int(row["seed"])
@@ -394,7 +466,12 @@ def discover_completed_checkpoint_members(
             )
         observed_seeds.add(seed)
         bundle = Path(str(row["artifact_path"])).resolve(strict=True)
-        verify_run_bundle(bundle)
+        tombstones = _bundle_retention_tombstones(
+            bundle,
+            retention_by_run.get(run_id, []),
+            project_root=root,
+        )
+        verify_run_bundle(bundle, tombstoned_artifacts=tombstones)
         checkpoint = Path(str(row["checkpoint_path"])).resolve(strict=True)
         expected_checkpoint = bundle / "checkpoints" / "last.ckpt"
         if checkpoint != expected_checkpoint.resolve(strict=True):
@@ -490,6 +567,8 @@ def discover_completed_checkpoint_members(
                 catalog_artifact_id=int(row["artifact_id"]),
                 catalog_retention_class=str(row["retention_class"]),
                 catalog_verification_status=str(row["verification_status"]),
+                bundle_retention_tombstone_count=len(tombstones),
+                bundle_retention_tombstones_sha256=_canonical_sha256(tombstones),
             )
         )
         del payload
@@ -2338,6 +2417,16 @@ def _run_core_job(spec: CoreJobSpec) -> dict[str, Any]:
         colors=colors,
         properties_by_niche=properties_by_niche,
     )
+    geometry_validation = geojson.get("geometry_validation")
+    if not isinstance(geometry_validation, Mapping) or (
+        int(geometry_validation.get("feature_count", -1)) != len(regions)
+        or int(geometry_validation.get("invalid_after_repair", -1)) != 0
+        or float(geometry_validation.get("maximum_reported_area_error_um2", math.inf))
+        > 1e-4
+    ):
+        raise AttentionNichePipelineError(
+            f"Serialized region geometry validation failed for {spec.alias}."
+        )
     geojson_path = core_dir / "attention_niche_regions.geojson"
     _write_json_atomic(geojson_path, geojson)
     colors_path = core_dir / "attention_niche_colors.json"
@@ -2368,6 +2457,7 @@ def _run_core_job(spec: CoreJobSpec) -> dict[str, Any]:
         "preliminary_community_count": primary.leiden.community_count,
         "final_connected_niche_count": connected.niche_count,
         "micro_niche_count": int(summaries["micro_niche"].sum()),
+        "serialized_region_geometry_validation": geometry_validation,
         "confidence": {
             "minimum": float(np.min(confidence)),
             "median": float(np.median(confidence)),
@@ -2860,6 +2950,7 @@ def run_attention_niche_pipeline(
     import resource
     import subprocess
 
+    from .attention_niche_geometry import validate_and_repair_regions_geojson
     from .attention_niche_visualization import (
         render_attention_niche_visualizations,
     )
@@ -3190,6 +3281,20 @@ def run_attention_niche_pipeline(
             ),
         ),
     }
+    regions_geojson, combined_geometry_validation = (
+        validate_and_repair_regions_geojson(regions_geojson)
+    )
+    regions_geojson["geometry_validation"] = combined_geometry_validation
+    if (
+        int(combined_geometry_validation["feature_count"])
+        != sum(int(receipt["final_connected_niche_count"]) for receipt in core_receipts)
+        or int(combined_geometry_validation["invalid_after_repair"]) != 0
+        or float(combined_geometry_validation["maximum_reported_area_error_um2"])
+        > 1e-4
+    ):
+        raise AttentionNichePipelineError(
+            "Combined serialized region geometry validation failed."
+        )
     _write_json_atomic(
         output_root / "attention_niche_regions.geojson", regions_geojson
     )
@@ -3246,6 +3351,14 @@ def run_attention_niche_pipeline(
         raise AttentionNichePipelineError("Reciprocal-pair total drifted.")
     core_qc_passed = all(
         receipt["local_spatial_contiguity"]["every_final_niche_connected"]
+        and receipt["serialized_region_geometry_validation"][
+            "invalid_after_repair"
+        ]
+        == 0
+        and receipt["serialized_region_geometry_validation"][
+            "maximum_reported_area_error_um2"
+        ]
+        <= 1e-4
         and receipt["extraction_audit"]["max_attention_sum_error"] <= 2e-6
         and receipt["extraction_audit"]["max_softmax_reconstruction_error"]
         <= 2e-6
@@ -3349,6 +3462,16 @@ def run_attention_niche_pipeline(
         "one_directional_edges_rejected": bool(exact_reciprocal_coverage),
         "every_final_niche_spatially_connected": bool(connected_niches),
         "disconnected_regions_have_distinct_ids": bool(connected_niches),
+        "serialized_region_geometries_valid": bool(
+            combined_geometry_validation["invalid_after_repair"] == 0
+            and combined_geometry_validation["feature_count"]
+            == sum(
+                int(receipt["final_connected_niche_count"])
+                for receipt in core_receipts
+            )
+            and combined_geometry_validation["maximum_reported_area_error_um2"]
+            <= 1e-4
+        ),
         "deterministic_stable_colors": bool(deterministic_colors),
         "panel_core_labels_and_order": bool(panel_labels),
         "micrometre_coordinates_and_scale_bars": bool(micrometre_geometry),
@@ -3652,6 +3775,7 @@ Reproduce as a new registered immutable run:
         "core_receipts": portable_core_receipts,
         "combined_tables": portable_combined_receipts,
         "visualization_receipt": portable_visualization_receipt,
+        "combined_region_geometry_validation": combined_geometry_validation,
         "qc_checks": qc_checks,
         "qc_pass_fraction": qc_fraction,
         "artifacts": artifact_records,

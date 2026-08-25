@@ -140,6 +140,24 @@ def test_polygon_and_multipolygon_paths_preserve_holes() -> None:
     assert len(visualization._geometry_paths(multipolygon)) == 2
 
 
+def test_prepare_assignments_keeps_confidence_distinct_from_assignment_agreement(
+) -> None:
+    assignments, _regions, _edges = _synthetic_inputs()
+    canonical_confidence = assignments["assignment_confidence"].copy()
+    assignments["niche_assignment_agreement"] = 0.73
+
+    prepared = visualization._prepare_assignments(assignments)
+    pd.testing.assert_series_equal(
+        prepared["assignment_confidence"],
+        canonical_confidence,
+        check_names=False,
+    )
+
+    without_composite = assignments.drop(columns="assignment_confidence")
+    prepared_without_composite = visualization._prepare_assignments(without_composite)
+    np.testing.assert_allclose(prepared_without_composite["assignment_confidence"], 1.0)
+
+
 def test_combined_figure_locks_panel_order_labels_aspect_and_scale_bars() -> None:
     assignments, regions, _edges = _synthetic_inputs()
     figure = visualization.create_combined_attention_niche_figure(
