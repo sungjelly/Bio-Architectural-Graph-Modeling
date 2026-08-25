@@ -2,8 +2,9 @@
 
 ## Status and scope
 
-Phase: full. Outcome: pending verified render-only publication of the completed
-four-model analysis.
+Phase: complete. Outcome: negative for the hypothesis of broad coherent
+attention-routing regions; the requested four-model computational map and all
+locked QC deliverables are complete.
 
 This post-training analysis constructs a parameter-locked spatial partition from
 the completed Relative-Geometric QKV Graph Transformer fits for Cancer cores
@@ -446,6 +447,38 @@ bounding-box separation, exact core order/counts/scale bars, and an independent
 archive verification. This is a versioned figure correction, not a new
 scientific result.
 
+That correction completed as registered run
+`r_20260825T120155Z_0da9fbf2_s000_f00_a01_a41036ce` at Git commit
+`967357b7ac04a169f04a14ab502508ae0dee3378`. Its 15/15 QC checks passed, the
+archive and registry verifier reported no issues, and visual inspection
+confirmed the two-line heading remains fully above all first-row panel titles.
+It freshly rendered all eleven figures, while the 21 GB directed table was not
+opened, hashed, copied, or modified. Scientific tables and values were not
+recomputed.
+
+The canonical scientific bundle is:
+
+```text
+artifacts/runs/2026/08/r_20260825T110043Z_0da9fbf2_s000_f00_a01_5e477ab9/
+```
+
+It contains all requested assignment, directed-edge, mutual-edge, niche
+summary, color, region, sensitivity, manifest, QC, README, and original static
+figure files. The corrected final static figures are the versioned supplement:
+
+```text
+artifacts/runs/2026/08/r_20260825T120155Z_0da9fbf2_s000_f00_a01_a41036ce/
+```
+
+Core-to-figure mapping is `CAN-01 -> core_01_attention_niche_map.png`,
+`CAN-09 -> core_09_attention_niche_map.png`,
+`CAN-13 -> core_13_attention_niche_map.png`,
+`CAN-15 -> core_15_attention_niche_map.png`,
+`CAN-21 -> core_21_attention_niche_map.png`, and
+`CAN-23 -> core_23_attention_niche_map.png`. The combined and corrected overlay
+figures use `six_core_attention_niche_map.*` and
+`six_core_mutual_attention_network_overlay.*`, respectively.
+
 ## Verification and full commands
 
 Focused tests:
@@ -489,3 +522,38 @@ PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
   --worker-id attention-niche-render-recovery --gpu 0,2,3 \
   --min-free-gb 25 --once
 ```
+
+To reproduce the versioned final figure suite from the immutable completed
+scientific bundle, without copying or recomputing its tables:
+
+```bash
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
+  --database state/tracking/bagm.sqlite3 enqueue-experiment \
+  --campaign-id cmp_20260825_six_core_attention_routing_niches \
+  --config experiments/campaigns/cmp_20260825_six_core_attention_routing_niches/figure_patch_config.yaml \
+  --priority 0 --max-attempts 1 --gpu 0,2,3
+
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
+  --database state/tracking/bagm.sqlite3 worker \
+  --worker-id attention-niche-visualization-patch --gpu 0,2,3 \
+  --min-free-gb 4 --once
+```
+
+## Final verification status
+
+- Focused attention-niche, configuration, and archive tests: `84 passed` with
+  two upstream Torch JIT deprecation warnings.
+- Canonical scientific run artifact/registry verification: valid, with no
+  issues.
+- Final figure-patch artifact/registry verification: valid, with no issues.
+- Full repository suite: `1,143 passed`, `1 skipped`, and `34 failed`. The
+  failures are confined to unrelated campaigns whose required local fixtures
+  are unavailable: an adjacency-ablation locked smoke materialization,
+  multiscale-synthetic prepared geometry, MyJJu locked materializations, and an
+  external MyJJu audit source. No attention-niche or run-archive test failed.
+- Repository doctor: database integrity, configuration checks, checkpoint
+  catalog, queue state, and worker lock passed. Overall doctor status is false
+  solely because `6.558 GB` free disk is below the repository-wide `25 GB`
+  threshold after preserving the immutable source and conclusion-bearing
+  analysis bundles. No historical artifact was deleted to suppress this
+  warning.
