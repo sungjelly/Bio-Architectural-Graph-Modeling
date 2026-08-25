@@ -436,7 +436,7 @@ The completed cohort-with-graphs manifest checksum is
   --split-id fit_all_so2_cores_15_through_28_transductive_v1 \
   --dataset-id cosmx_so2_14core_pooled_fit_v1 \
   --dataset-version so2_14core_pooled_fit_v1 \
-  --method all_cells_fit_only_transductive --unit spatial_cell \
+  --method all_cells_fit_only_transductive --unit spatial_core \
   --fold-count 1 \
   --fingerprint 385f27e29cc8e598eb6d6545dbc5d01337ed30661254e5848b88876aa9771abd \
   --protected-path "$BAGM_DATA_ROOT/processed/so2_14core_relative_qkv_graphs_v1/cohort_manifest_with_graphs.json" \
