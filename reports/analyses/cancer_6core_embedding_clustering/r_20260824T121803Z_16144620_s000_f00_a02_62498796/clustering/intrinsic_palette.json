@@ -1,0 +1,22 @@
+{
+  "colors": {
+    "I0": "#0072B2",
+    "I1": "#0AF50A",
+    "I10": "#581A97",
+    "I11": "#1AA739",
+    "I12": "#1A7868",
+    "I13": "#E58739",
+    "I14": "#C6E597",
+    "I2": "#F50A0A",
+    "I3": "#0A0AF5",
+    "I4": "#68680A",
+    "I5": "#F539B6",
+    "I6": "#0AF5D6",
+    "I7": "#F5B6B6",
+    "I8": "#F5D60A",
+    "I9": "#781A1A"
+  },
+  "label_prefix": "I",
+  "method": "deterministic_greedy_farthest_point_CIELAB",
+  "representation": "intrinsic"
+}

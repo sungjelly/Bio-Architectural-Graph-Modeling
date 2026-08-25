@@ -1,7 +1,7 @@
 # Project Architecture
 
 Bio-Architectural Graph Modeling is one project rooted at
-`/workspace/Bio-Architectural-Graph-Modeling`. The enclosing `/workspace` may
+`/workspace/BAGM`. The enclosing `/workspace` may
 contain other projects; do not add another wrapper or multi-project hierarchy
 inside this repository. Reusable code lives in the existing
 `spatial_benchmark` package; scientific campaigns compose that code rather

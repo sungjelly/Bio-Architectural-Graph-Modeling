@@ -1,0 +1,626 @@
+{
+  "alias_order": [
+    "CAN-01",
+    "CAN-09",
+    "CAN-13",
+    "CAN-15",
+    "CAN-21",
+    "CAN-23"
+  ],
+  "checkpoint_sha256": "c5b7fdd6e3192c3146d415f1c77474f9e4483bba090c4fc9c2ac7d79ab554c0c",
+  "core_order": [
+    1,
+    9,
+    13,
+    15,
+    21,
+    23
+  ],
+  "cores": [
+    {
+      "alias": "CAN-01",
+      "array_checksums": {
+        "cell_index": "99a634057eab8edb3df65b2d57778d5b73bcb3c917c285b789032299c8567dbb",
+        "coordinates_um": "4aa9232eb446e5fc00734da31fea940eb2022534409a2c60ec744067c01c64bd",
+        "core_number": "bea50b3318c2abe1c54f16b442be03294ea987188bf6655a844eccb8ad49996f",
+        "delta_h": "14a109567c474f286ff7d6976f6f285347d65bf0bc2e43cf2c06ab5f692ed157",
+        "delta_h_l2": "8bfb50a1b1af348528b2f7a5643a258f1c834182b0df00bbc4e51edd919e38ee",
+        "h0": "15ba709c246e0109352b40983ca31b8cadeb71856c7b66835a144afbc1719974",
+        "hL": "7fef4d6f57362774d3bac7d7a67bf3e11dd1533a16f6d58ce53a4d2d92a617dc"
+      },
+      "array_shapes": {
+        "coordinates_um": [
+          8924,
+          2
+        ],
+        "delta_h": [
+          8924,
+          256
+        ],
+        "delta_h_l2": [
+          8924
+        ],
+        "h0": [
+          8924,
+          256
+        ],
+        "hL": [
+          8924,
+          256
+        ]
+      },
+      "cell_count": 8924,
+      "cell_order": "prepared_core_row_order",
+      "coordinate_orientation": "repository_global_frame_invert_y_for_plotting",
+      "coordinate_units": "micrometres",
+      "core_number": 1,
+      "delta_norm_nonnegative": true,
+      "embedding_file": "embeddings/core_1_embeddings.npz",
+      "embedding_file_sha256": "ae33a3155e5af9f67440a6770ce3d9b34aca2b9fc224d98223cc5ea3f76640a3",
+      "expression_post_sha256": "0bb621415573cd7d17eda96776ef4a6082efba7db133492ab6e56de6698f6786",
+      "expression_pre_sha256": "0bb621415573cd7d17eda96776ef4a6082efba7db133492ab6e56de6698f6786",
+      "finite": true,
+      "graph_file_checksums": {
+        "edge_index.npy": "da91cdbcb6a03cc352576161a1804d76d9437508f09813e5aa69a9f905dec158",
+        "orientation.npz": "79e547a5536539429c35d8c370f3bc184375af6fd411639737da655b5030af4a",
+        "relative_geometry.npy": "e0fdc06a7be14aba881753527fd9f8eb394daf447d596f9ad4482bd11baddc2e"
+      },
+      "graph_logical_sha256": "2e7f8a0dd7455b9836a733c2d08a68c0cf6bf1712203db1e7427b4c914f07bbf",
+      "graph_record_sha256": "9991eef20595e4af716601bc08073fc766a60d3a703c596c53cbe655d7afb8ac",
+      "mask_dtype": "bool",
+      "mask_shape": [
+        8924,
+        1000
+      ],
+      "mask_true_count": 0,
+      "metadata_post_sha256": "44255638ba583005f6100f864c81ce48432a543bdba0b4e57187b8263f95e247",
+      "metadata_pre_sha256": "44255638ba583005f6100f864c81ce48432a543bdba0b4e57187b8263f95e247",
+      "metadata_unchanged": true,
+      "prediction_invariance": {
+        "absolute_tolerance": 1e-05,
+        "allclose": true,
+        "exact_equal": false,
+        "maximum_absolute_difference": 2.384185791015625e-06,
+        "note": "The optional outputs do not enter the prediction path; CUDA sparse reductions may vary at floating-point roundoff scale across repeated forwards.",
+        "relative_tolerance": 1e-06,
+        "shape": [
+          8924,
+          1000
+        ]
+      },
+      "prepared_component_checksums": {
+        "coordinates_um": "04328851c7ac330bdcffa9a2a38485a2bc1f577079ab050edec0fb7f40f9f8e5",
+        "expression_counts": "039ea11e72eeb6181ed6d17c45f714f8b8a57a33baaa75e472623bb4d65a2b6e",
+        "node_covariates": "09ea89ccf85079c9247a47a645285c186d0f482512d3a78c1847afde4ef4e150",
+        "target_expression": "d1b08281b8ca6d8913c0cdd6bc051c667b38507dd1d66b26e84f14e44853735f"
+      },
+      "prepared_core_artifact_sha256": "578bc4fbf3b11ac7ae533cf3c2ec30c87a02e5e468a8ebfc607ee8390349cd46",
+      "stable_cell_key": "CAN-01:zero_padded_cell_index"
+    },
+    {
+      "alias": "CAN-09",
+      "array_checksums": {
+        "cell_index": "eeb6fcf56788eb2b770b6fbf706bef83e1ec0882e468f55254fd449877b42bd2",
+        "coordinates_um": "e89ff3f05122bc24d75f8e95282c1a64bf1d33bf85663ea62f002fc3ae9f5522",
+        "core_number": "f09c809d87cdce861ecff6caa6a3eab52e99afb01e6ae2e8259484a30f8c25a4",
+        "delta_h": "7df44d86dda4851be27a014a3a2d65d057f921edab8c971b9586d893d30dc52e",
+        "delta_h_l2": "b8b97e6953e90be4a7906ced3034a2a786f769a42b23569c7ed45178b89d143f",
+        "h0": "8f64d695cb4b097aefb0b6b5b25ece608dfa5bc9bdb88edf7c7897816cdc2141",
+        "hL": "6ff0c277be5e6e44db7b5fc11c4593138fd1a46457bd29ca32a08efe48914068"
+      },
+      "array_shapes": {
+        "coordinates_um": [
+          17223,
+          2
+        ],
+        "delta_h": [
+          17223,
+          256
+        ],
+        "delta_h_l2": [
+          17223
+        ],
+        "h0": [
+          17223,
+          256
+        ],
+        "hL": [
+          17223,
+          256
+        ]
+      },
+      "cell_count": 17223,
+      "cell_order": "prepared_core_row_order",
+      "coordinate_orientation": "repository_global_frame_invert_y_for_plotting",
+      "coordinate_units": "micrometres",
+      "core_number": 9,
+      "delta_norm_nonnegative": true,
+      "embedding_file": "embeddings/core_9_embeddings.npz",
+      "embedding_file_sha256": "bc40e2feaa5c3fca8c98a72bf1622f3c4d65037b122fa928c06b7d82456bda27",
+      "expression_post_sha256": "260082dc27b833dbe4307c9a88506e97d8e051bb747eab8281f7f287f00bd4a6",
+      "expression_pre_sha256": "260082dc27b833dbe4307c9a88506e97d8e051bb747eab8281f7f287f00bd4a6",
+      "finite": true,
+      "graph_file_checksums": {
+        "edge_index.npy": "a1627e089af2ffcef6cf00c7dfbe61b7faa3e14c1f16a575fd821435b667c8cd",
+        "orientation.npz": "2066da5aa5348930cad05b84f3b7b6aff8778db181b4d479c4adebc90e927dc1",
+        "relative_geometry.npy": "2ede917c3f9230fe22c55cc7a6ac6049c1cb8731d396b4175c02f0f85417c564"
+      },
+      "graph_logical_sha256": "dc1039588dc93e52385d80d7421051224dcf68d52118192bb4c2d07b75a1e7a9",
+      "graph_record_sha256": "6f3bd6144abde21854ff4a848a692e633b3c3b9b468a9ef137bdd40a9566d67a",
+      "mask_dtype": "bool",
+      "mask_shape": [
+        17223,
+        1000
+      ],
+      "mask_true_count": 0,
+      "metadata_post_sha256": "ca035fa7d3bdb06b8f9451a9fbcba5266088604a573ad70eba6a3c855ed1e41f",
+      "metadata_pre_sha256": "ca035fa7d3bdb06b8f9451a9fbcba5266088604a573ad70eba6a3c855ed1e41f",
+      "metadata_unchanged": true,
+      "prediction_invariance": {
+        "absolute_tolerance": 1e-05,
+        "allclose": true,
+        "exact_equal": false,
+        "maximum_absolute_difference": 3.814697265625e-06,
+        "note": "The optional outputs do not enter the prediction path; CUDA sparse reductions may vary at floating-point roundoff scale across repeated forwards.",
+        "relative_tolerance": 1e-06,
+        "shape": [
+          17223,
+          1000
+        ]
+      },
+      "prepared_component_checksums": {
+        "coordinates_um": "ba34aa5c8a91e3c827588f3badc7c16dcc8f4cb0c09550a1a1f107647a155d5f",
+        "expression_counts": "154a1fd0c27ce60b2a631f443d738951d6cd65d37b5b86df0ce8a8a4de854d3d",
+        "node_covariates": "9759dddf14406a2aa525d73b901b3e25393a791e2ae9cfe7a00be35a636c477e",
+        "target_expression": "68597527d4bf1ac8d78ccceb0a25788a1a8c15482462705e67e301d7f9d4c8f7"
+      },
+      "prepared_core_artifact_sha256": "3fa84c2067756afdf0821c6fdf9eb39f3f1d4dfa687e693e3c56efc7d95d350c",
+      "stable_cell_key": "CAN-09:zero_padded_cell_index"
+    },
+    {
+      "alias": "CAN-13",
+      "array_checksums": {
+        "cell_index": "07afeb366fcffbf50047cdc25686d09f5941cb81314583699bd4fa98e0dc9b0d",
+        "coordinates_um": "aa1f9d56f81997ccc7c0a0c1454e98d8a63a8833ad2c649063d11f8fc05b2aa2",
+        "core_number": "6a427f2e0e421a34ef22e6f1a75ebf698bedc2094e2ade2210336d21906f51f3",
+        "delta_h": "93c7fe106b18565e470ef1dda51aea6b1a7986a42181401ead1c9c8a55f8463c",
+        "delta_h_l2": "41f23774efab776c9b2a0e819a43003c60131cd7cd7dee41e75e3bbd78c473ee",
+        "h0": "53c7edc55d0f3fc79de227c0d2ffafe6ef152df49816486fff6d6f4ddc8fc678",
+        "hL": "8467b9846eff7ffd081478ea86176474a668c575f146a75eb8546a875c244ea1"
+      },
+      "array_shapes": {
+        "coordinates_um": [
+          5345,
+          2
+        ],
+        "delta_h": [
+          5345,
+          256
+        ],
+        "delta_h_l2": [
+          5345
+        ],
+        "h0": [
+          5345,
+          256
+        ],
+        "hL": [
+          5345,
+          256
+        ]
+      },
+      "cell_count": 5345,
+      "cell_order": "prepared_core_row_order",
+      "coordinate_orientation": "repository_global_frame_invert_y_for_plotting",
+      "coordinate_units": "micrometres",
+      "core_number": 13,
+      "delta_norm_nonnegative": true,
+      "embedding_file": "embeddings/core_13_embeddings.npz",
+      "embedding_file_sha256": "00869756af4a5aeb65681eb2c876bdcf8c626f40371b3cbedc77e8f2ba6a5942",
+      "expression_post_sha256": "f74a76d6e238f6623212482c2a1a425c6fcb60e8cf15a8c44c67fee3c945781a",
+      "expression_pre_sha256": "f74a76d6e238f6623212482c2a1a425c6fcb60e8cf15a8c44c67fee3c945781a",
+      "finite": true,
+      "graph_file_checksums": {
+        "edge_index.npy": "b419b0d32fe944fcc5975909a901511b20fbbb2ec011f6a40d6ea6e31a9bab08",
+        "orientation.npz": "3d9e46e882e149f69a9149097df8385a9a671acfab5b976c0e8d4472ee794167",
+        "relative_geometry.npy": "3af10fa1a26dcbac283090530026c6c4330831f5877b2c2d9561c896c19624ea"
+      },
+      "graph_logical_sha256": "0f9335d0bfc1f0234c5f0734ad1da820bd7b62b490a462752eea6bbb22d83755",
+      "graph_record_sha256": "c1171f60642fef2eb1135f227a9dfd4e240640966fa44f0b169ea34206da3cbe",
+      "mask_dtype": "bool",
+      "mask_shape": [
+        5345,
+        1000
+      ],
+      "mask_true_count": 0,
+      "metadata_post_sha256": "74e7932cfe061a18a24c4ddfcfeb8866fea6687a9a93b94601a2cd1e7fc580cf",
+      "metadata_pre_sha256": "74e7932cfe061a18a24c4ddfcfeb8866fea6687a9a93b94601a2cd1e7fc580cf",
+      "metadata_unchanged": true,
+      "prediction_invariance": {
+        "absolute_tolerance": 1e-05,
+        "allclose": true,
+        "exact_equal": false,
+        "maximum_absolute_difference": 3.337860107421875e-06,
+        "note": "The optional outputs do not enter the prediction path; CUDA sparse reductions may vary at floating-point roundoff scale across repeated forwards.",
+        "relative_tolerance": 1e-06,
+        "shape": [
+          5345,
+          1000
+        ]
+      },
+      "prepared_component_checksums": {
+        "coordinates_um": "f9bbf33854682c10200468773615c5469a43d8d65293254618f8a02bc58cff9c",
+        "expression_counts": "c39c431c6776c018a90b1eadf99b602fcb2f2191e79c998088b36e5a2d6600ee",
+        "node_covariates": "a29e5a7b391d35627242fcd529bf5b927191e1ea7d1e47bd12e1149cf74eb98a",
+        "target_expression": "a2fb4ada9ce1560454ba8994f6154490c20d3a5446389923537167047dcc3745"
+      },
+      "prepared_core_artifact_sha256": "8b3510f93e8a42c5b273cf19c9043a63300cdf747c2e4a619d8cb0532e79226e",
+      "stable_cell_key": "CAN-13:zero_padded_cell_index"
+    },
+    {
+      "alias": "CAN-15",
+      "array_checksums": {
+        "cell_index": "181b7501811168fdd4a4fbb01350d7db5eaaf2c0352811ad461707930f603c08",
+        "coordinates_um": "7ac58b4a48a8d9be8bd960d6f88c05ae6d3424455f40d331c65d075d519bb1ce",
+        "core_number": "e9d54b6df46e160080bcabbb64a44cc1f6d19bb78f2ebc3df93dfcd4e4d74e21",
+        "delta_h": "57ba268cb1ff92c11c4e4b8518971d84922592e4ff0354094dea353c0741b113",
+        "delta_h_l2": "15786cea807c8b7fc463e828191ebe83e9515e744386ba83b1201e888d55e7a7",
+        "h0": "13011f327e39354828993060aff55fe7adcb812801bd355ce83959d0fa970607",
+        "hL": "97b0dc16349304202d242667a19721d9dbe8650701cdebcab85596101b447c5d"
+      },
+      "array_shapes": {
+        "coordinates_um": [
+          38145,
+          2
+        ],
+        "delta_h": [
+          38145,
+          256
+        ],
+        "delta_h_l2": [
+          38145
+        ],
+        "h0": [
+          38145,
+          256
+        ],
+        "hL": [
+          38145,
+          256
+        ]
+      },
+      "cell_count": 38145,
+      "cell_order": "prepared_core_row_order",
+      "coordinate_orientation": "repository_global_frame_invert_y_for_plotting",
+      "coordinate_units": "micrometres",
+      "core_number": 15,
+      "delta_norm_nonnegative": true,
+      "embedding_file": "embeddings/core_15_embeddings.npz",
+      "embedding_file_sha256": "ff89bd5fd5a04f7fe01e26f8db1a2179e30364fa4aa5c09452e270acfe922283",
+      "expression_post_sha256": "cfbdef2fed21f9d5d67004349ad513e297e9eea33c6e1eb6ebcfe4c5c68833b4",
+      "expression_pre_sha256": "cfbdef2fed21f9d5d67004349ad513e297e9eea33c6e1eb6ebcfe4c5c68833b4",
+      "finite": true,
+      "graph_file_checksums": {
+        "edge_index.npy": "687ac4de2e8c1f8c9872d8b89f88d3e961f15122c80b586f9a85df41040b5242",
+        "orientation.npz": "6e32dc8214bfc5472d21cc4922af26f3bd8c0be2f1236378e279269c4695279f",
+        "relative_geometry.npy": "c1d9bbb1a3cb887e97214f9bc3e48d671755bb8b99c32248bfeeda1a836a2cd7"
+      },
+      "graph_logical_sha256": "47da2e3d0a3c28c50dd331748ddb726c441687b7c6b1bb68d2ce67483bf4550b",
+      "graph_record_sha256": "d6b9b535dca78bd6a756719c0cea5f1269737b4a3880ad2c25d166dbc2d6db5b",
+      "mask_dtype": "bool",
+      "mask_shape": [
+        38145,
+        1000
+      ],
+      "mask_true_count": 0,
+      "metadata_post_sha256": "e41092b7fea0362c0ab765679cdf1289b5c478a752dab4e9f380d2873440108e",
+      "metadata_pre_sha256": "e41092b7fea0362c0ab765679cdf1289b5c478a752dab4e9f380d2873440108e",
+      "metadata_unchanged": true,
+      "prediction_invariance": {
+        "absolute_tolerance": 1e-05,
+        "allclose": true,
+        "exact_equal": false,
+        "maximum_absolute_difference": 3.814697265625e-06,
+        "note": "The optional outputs do not enter the prediction path; CUDA sparse reductions may vary at floating-point roundoff scale across repeated forwards.",
+        "relative_tolerance": 1e-06,
+        "shape": [
+          38145,
+          1000
+        ]
+      },
+      "prepared_component_checksums": {
+        "coordinates_um": "8c120469b073294b3db9d98b7b2ffade9663ab379a1d72be2f00105bbb32b623",
+        "expression_counts": "e7e6a69689e5882a73bb032359fd8b4780855a2b6cf55fe3818710f921492b9c",
+        "node_covariates": "fbf434e152eeaa595720457ad71b0de81a6eab70c8b7a7ccbf790d88b06c863b",
+        "target_expression": "81906e89ee7e143ccdd1813abdb35c0c2a08eb1702ba93f91170e5161a669a6f"
+      },
+      "prepared_core_artifact_sha256": "d0199a9c7eb32cb2b75459a0ef1ec74d83c5a30c3ae3c5530d989f5f93d80d93",
+      "stable_cell_key": "CAN-15:zero_padded_cell_index"
+    },
+    {
+      "alias": "CAN-21",
+      "array_checksums": {
+        "cell_index": "28294b8eec69bda1c4b051e9216552b9d05514ca54ef2b1e2f7af4b689c7fad8",
+        "coordinates_um": "6b71e9b4d959f0983d131d45d23792aa0363baf430a572f10e7e1cc4b299059a",
+        "core_number": "cbf52d24ecabae8caeede1c3209614b4a1e6ff74a9245a6434207d851b12aed2",
+        "delta_h": "c839d6bfbdae2e49daf0b829c1e1c891eee3f2a7a8a9aab6b9655ff131cfb157",
+        "delta_h_l2": "d68ce839cfbd52d95caab1ae8aad76cba1aba49025da427b789c98c98906ea21",
+        "h0": "f58ee53ad7fa1fcd546d3b56ea7c39abb2a53bf61efacda959d8796b76841463",
+        "hL": "2ae468b34aabc7ce9a48f7b70029b7d87a65c429139fd24561d1e3d7a51d0db3"
+      },
+      "array_shapes": {
+        "coordinates_um": [
+          4897,
+          2
+        ],
+        "delta_h": [
+          4897,
+          256
+        ],
+        "delta_h_l2": [
+          4897
+        ],
+        "h0": [
+          4897,
+          256
+        ],
+        "hL": [
+          4897,
+          256
+        ]
+      },
+      "cell_count": 4897,
+      "cell_order": "prepared_core_row_order",
+      "coordinate_orientation": "repository_global_frame_invert_y_for_plotting",
+      "coordinate_units": "micrometres",
+      "core_number": 21,
+      "delta_norm_nonnegative": true,
+      "embedding_file": "embeddings/core_21_embeddings.npz",
+      "embedding_file_sha256": "9cc24982c390b2c0d5d66a186d10eecdf8068a831f9e85f59a5182f12eb7b847",
+      "expression_post_sha256": "47c280f33765dc7730e0390ea2d99e0e979c850bf536dd866b47e309a4e50edf",
+      "expression_pre_sha256": "47c280f33765dc7730e0390ea2d99e0e979c850bf536dd866b47e309a4e50edf",
+      "finite": true,
+      "graph_file_checksums": {
+        "edge_index.npy": "837d441f8d51355b383ccdd608705942b806d1fa0830157f2307f521d265e83d",
+        "orientation.npz": "09b26904bd7ac833c6455eefc0b6b3969b635703aa687eb3282d9714f4b26d97",
+        "relative_geometry.npy": "fee71d8789cb02ff1b10317eb6185aac80ef8de9e3f885a9967eb06ce2fdd41d"
+      },
+      "graph_logical_sha256": "8ec23d683ff445afcb342c4e6f0168fe628b915623e99a350a00cee43cbe2eaa",
+      "graph_record_sha256": "7cce9f708dd35dd5f0e80f42fd520052d9664b0d272f9315e305aadac3f12129",
+      "mask_dtype": "bool",
+      "mask_shape": [
+        4897,
+        1000
+      ],
+      "mask_true_count": 0,
+      "metadata_post_sha256": "3f8c7ac5243cc7f75cf834abbea703070bf1761afaf7b7f00258a36e79c70c3c",
+      "metadata_pre_sha256": "3f8c7ac5243cc7f75cf834abbea703070bf1761afaf7b7f00258a36e79c70c3c",
+      "metadata_unchanged": true,
+      "prediction_invariance": {
+        "absolute_tolerance": 1e-05,
+        "allclose": true,
+        "exact_equal": false,
+        "maximum_absolute_difference": 2.384185791015625e-06,
+        "note": "The optional outputs do not enter the prediction path; CUDA sparse reductions may vary at floating-point roundoff scale across repeated forwards.",
+        "relative_tolerance": 1e-06,
+        "shape": [
+          4897,
+          1000
+        ]
+      },
+      "prepared_component_checksums": {
+        "coordinates_um": "34b099a8c913c6d4fdf91e81f361477dd6b4a35725651e2a3cf9246f166f5747",
+        "expression_counts": "0267e69fc8e4e4b0aeece5af0e4a5226624cb1acd0b7c39a0d0713a2c7bb4c76",
+        "node_covariates": "4f939b3959f7f90ce773e486be2d8b651bcf7b04e629924731454384dcb0b751",
+        "target_expression": "5dc33d2553803e478e0722d916cb06689688cbdca4e6faf4933d8eb53ea437a3"
+      },
+      "prepared_core_artifact_sha256": "eacbde2efd3731721a3d4b89314e591c36978e855866d4b0de0ce355957a559e",
+      "stable_cell_key": "CAN-21:zero_padded_cell_index"
+    },
+    {
+      "alias": "CAN-23",
+      "array_checksums": {
+        "cell_index": "914abe1522736a4bc9bb1eb62068dc890deb6fb28c96b13bb51966ee84a43b7f",
+        "coordinates_um": "33c4a7f3d3798a37dc3b3f3f096b6011a25696648a8c1a71fb3d0b66f1200005",
+        "core_number": "5f28d45d57d17371cf754adccdd226f153206127ab7203b403d28559754c8846",
+        "delta_h": "74f784d8dbfb5df92644a217d04d47ac419f632fec5b541484c60efba014d092",
+        "delta_h_l2": "10b64d4cabc4ba6200bde327acf20ed9aa41cc1a3fa44dada46fd7b9f360e349",
+        "h0": "ecb54efb842c199c77775ccf91a9b18ea49d98d7c95c5202ebfc557d0f2ad616",
+        "hL": "896ca93b2f26ef7e12e4629c2eb9ddb4d33c3fc80a58c1c14923ce64b6badf07"
+      },
+      "array_shapes": {
+        "coordinates_um": [
+          43462,
+          2
+        ],
+        "delta_h": [
+          43462,
+          256
+        ],
+        "delta_h_l2": [
+          43462
+        ],
+        "h0": [
+          43462,
+          256
+        ],
+        "hL": [
+          43462,
+          256
+        ]
+      },
+      "cell_count": 43462,
+      "cell_order": "prepared_core_row_order",
+      "coordinate_orientation": "repository_global_frame_invert_y_for_plotting",
+      "coordinate_units": "micrometres",
+      "core_number": 23,
+      "delta_norm_nonnegative": true,
+      "embedding_file": "embeddings/core_23_embeddings.npz",
+      "embedding_file_sha256": "4d2103d4085bd6b68712a075e4f171e9f101ab04111e2b29c55a77037f9b0e59",
+      "expression_post_sha256": "d3c16d37fdda260a62fcae8ac2f8f6c8d659bb0b463179b39ed7358be7abdee1",
+      "expression_pre_sha256": "d3c16d37fdda260a62fcae8ac2f8f6c8d659bb0b463179b39ed7358be7abdee1",
+      "finite": true,
+      "graph_file_checksums": {
+        "edge_index.npy": "e60ef66b9673bb0227eda10cff63e19bacae72577ca83f7b98724ed15f0674f3",
+        "orientation.npz": "aeb28b12203b8c56c5130cd19ce0d98f7e9e497a859fdb2158a27f2bf6b76bf3",
+        "relative_geometry.npy": "147ad19008ada2d3875e5915cbe3e80cfdeb92da9954a8c06dd9b9cac109f211"
+      },
+      "graph_logical_sha256": "4d38c97e7dcab83f3d4b2cf6c0f94ecdd7e73042f3baea2decc697983a04578b",
+      "graph_record_sha256": "ca6810bb927fd43284385ae0bbd7e88a84901863ae2b42d2ca699e85c3ea6565",
+      "mask_dtype": "bool",
+      "mask_shape": [
+        43462,
+        1000
+      ],
+      "mask_true_count": 0,
+      "metadata_post_sha256": "b3ee4c46c3db2a8261dc1cf7fc2fc361b7506ee3ece45e4193bb2b8f68726c7c",
+      "metadata_pre_sha256": "b3ee4c46c3db2a8261dc1cf7fc2fc361b7506ee3ece45e4193bb2b8f68726c7c",
+      "metadata_unchanged": true,
+      "prediction_invariance": {
+        "absolute_tolerance": 1e-05,
+        "allclose": true,
+        "exact_equal": false,
+        "maximum_absolute_difference": 3.814697265625e-06,
+        "note": "The optional outputs do not enter the prediction path; CUDA sparse reductions may vary at floating-point roundoff scale across repeated forwards.",
+        "relative_tolerance": 1e-06,
+        "shape": [
+          43462,
+          1000
+        ]
+      },
+      "prepared_component_checksums": {
+        "coordinates_um": "33a13891dc2e65a67921552f8a479f4dee70848616b70c75caac72bdc2678967",
+        "expression_counts": "1ef63f7906c838586bcd36acc9f3cedbb4974cb585ff249462f5dbd9758cccb1",
+        "node_covariates": "9ff468499da1d6748dc86a2e59912e516e47d9e7e7cb19c472263fe7d0d99b2a",
+        "target_expression": "d9cad06768e1f017b3e0d4cc906e4cd3eb372ba537e15c81276de23eeba4b0c9"
+      },
+      "prepared_core_artifact_sha256": "cc35bd47c85f486a6eb26889af66337fd47409333461db886478da1d706acc36",
+      "stable_cell_key": "CAN-23:zero_padded_cell_index"
+    }
+  ],
+  "embedding_dimension": 256,
+  "files": {
+    "embeddings/core_13_embeddings.npz": {
+      "sha256": "00869756af4a5aeb65681eb2c876bdcf8c626f40371b3cbedc77e8f2ba6a5942",
+      "size_bytes": 15298875
+    },
+    "embeddings/core_15_embeddings.npz": {
+      "sha256": "ff89bd5fd5a04f7fe01e26f8db1a2179e30364fa4aa5c09452e270acfe922283",
+      "size_bytes": 109164460
+    },
+    "embeddings/core_1_embeddings.npz": {
+      "sha256": "ae33a3155e5af9f67440a6770ce3d9b34aca2b9fc224d98223cc5ea3f76640a3",
+      "size_bytes": 25523047
+    },
+    "embeddings/core_21_embeddings.npz": {
+      "sha256": "9cc24982c390b2c0d5d66a186d10eecdf8068a831f9e85f59a5182f12eb7b847",
+      "size_bytes": 14013765
+    },
+    "embeddings/core_23_embeddings.npz": {
+      "sha256": "4d2103d4085bd6b68712a075e4f171e9f101ab04111e2b29c55a77037f9b0e59",
+      "size_bytes": 124318704
+    },
+    "embeddings/core_9_embeddings.npz": {
+      "sha256": "bc40e2feaa5c3fca8c98a72bf1622f3c4d65037b122fa928c06b7d82456bda27",
+      "size_bytes": 49281958
+    }
+  },
+  "inference": {
+    "attention_dropout": 0.0,
+    "batch_correction_added": false,
+    "complete_core_at_a_time": true,
+    "coordinates_supplied_to_node_encoder": false,
+    "device": "cuda:0",
+    "dropout_disabled": true,
+    "dtype": "float32",
+    "model_eval": true,
+    "neighbor_sampling": false,
+    "torch_inference_mode": true
+  },
+  "input_provenance": {
+    "analysis_source": {
+      "commit": "823aad94eb6744399eaa9d8009d51d95733c3a14",
+      "dirty": true,
+      "status_sha256": "4fcd515736fd1fd03d75fd6bb5dad4990c6b34fd2aa8b46f7eab25e24cd2b6a0"
+    },
+    "campaign_id": "cmp_20260824_cancer_6core_relative_qkv_multiseed",
+    "checkpoint": {
+      "canonical_final_path": "artifacts/runs/2026/08/r_20260824T121803Z_16144620_s000_f00_a02_62498796/checkpoints/last.ckpt",
+      "completed_global_epochs": 200,
+      "model_state_sha256": "4a8f2ad335d8c61d29f2fe5864cad425239227524fb5b5a26946bdb142b6941f",
+      "relative_path": "artifacts/runs/2026/08/r_20260824T121803Z_16144620_s000_f00_a02_62498796/checkpoints/last.ckpt",
+      "schema": "cancer_6core_relative_qkv_resume_v1",
+      "sha256": "c5b7fdd6e3192c3146d415f1c77474f9e4483bba090c4fc9c2ac7d79ab554c0c"
+    },
+    "cohort_manifest": {
+      "content_sha256": "4b4e7adf4ad24d030a52c98e5c73bfa6ab6b75bc9d590de20577309c207f3657",
+      "file_sha256": "9c4ea4c9445f5230c5f823b4b1cd7a5b230767b43daa7018c99dc27bbf9613ad",
+      "preprocessing_statistics_sha256": "c26016e8db12ebc64997b1597b1832d03f5f39a493a35bba55020ec1ba9f90d2",
+      "relative_path": "data/processed/cancer_6core_relative_qkv_v1/manifest.json",
+      "statistics_component_checksums": {
+        "expression_mean": "37ca14a1b960f2e985d385a7e1c329834f7370c5aa4ef3ed695dc7e0163da78e",
+        "expression_scale": "9eef982b59c94e111a3277990dcedb62731d5083a663c0fa97aa76320640e118",
+        "metadata_mean": "54d89c870389a8448d4c035cf454cabc1481ccd3928dfa22f141d2625d1a77e8",
+        "metadata_median": "f563f6198c6bcdb3eac1c6735f982f933c09456bc9b09a025978d1c079df0cb2",
+        "metadata_missing_indicator_indices": "ac9fe019db112a198a5820af91e6222433125c7e898b5c15650eb5d5ef503cb9",
+        "metadata_scale": "2980f15cd48fa17eca961cf0c86367042af7dd8739acde4ab37072c69c129fd2"
+      }
+    },
+    "dataset_fingerprint": "45fe649d1de0f3df3af0f4a1ae69d17249711359d55dde7d1acf45ed1881e77d",
+    "graph_manifest": {
+      "content_sha256": "12e5617a01fc4e82f528752d2354bac17af9b967acdaac29f6fda0eafadaecd7",
+      "file_sha256": "20caa27c4d0a816a01475eda321e1910505b3b7849bc8eaa22a56e3cbfd1b48d",
+      "relative_path": "data/processed/cancer_6core_relative_qkv_graphs_v1/manifest.json"
+    },
+    "model_construction": {
+      "activation_checkpointing": true,
+      "attention_dropout": 0.0,
+      "attention_head_dim": 32,
+      "attention_heads": 8,
+      "class": "ReceiverChunkedRelativeGeometryQKVGraphTransformer",
+      "decoder_dim": 1024,
+      "dropout": 0.1,
+      "edge_key_vectors": false,
+      "edge_value_gates": false,
+      "edge_value_vectors": false,
+      "embedding_dim": 256,
+      "exact_receiver_partitioning": true,
+      "family": "relative_geometry_qkv_graph_transformer",
+      "ffn_dim": 1024,
+      "fp32_attention_accumulation": true,
+      "graph_layers": 4,
+      "hidden_dim": 256,
+      "implicit_self_loops": false,
+      "max_edges_per_chunk": 200000,
+      "name": "relative-qkv-gat",
+      "node_covariate_dim": 22,
+      "num_genes": 1000,
+      "positional_bias_final_zero_init": true,
+      "positional_bias_hidden_dim": 128,
+      "receiver_chunk_size": 512,
+      "relative_geometry_dim": 70,
+      "relative_geometry_role": "attention_logit_bias_only",
+      "trainable_edge_identifiers": false,
+      "trainable_node_identifiers": false,
+      "uses_edge_inputs": false,
+      "uses_graph_inputs": true,
+      "uses_relative_position": true
+    },
+    "model_seed": 0,
+    "preprocessing_version": "cancer_6core_equal_core_log1p_metadata_v1",
+    "run_id": "r_20260824T121803Z_16144620_s000_f00_a02_62498796",
+    "selection_policy": "completed_seed_0_fallback_after_no_analysis_or_campaign_primary",
+    "training_source": {
+      "commit": "c077d04ade8d4f605e8f21f82fd18b94aa07cba8",
+      "dirty": true,
+      "dirty_fingerprint": "3bfd77ee199bf96552f181a682cc16d0ccbddbbb93345aea4f1c353baf6ee6d3",
+      "untracked_file_count": 1
+    }
+  },
+  "manifest_content_sha256": "62a03e4f9f88328295bb19ee71e771fc1766a8aacb35f829ff6e5540bf397046",
+  "model_seed": 0,
+  "run_id": "r_20260824T121803Z_16144620_s000_f00_a02_62498796",
+  "schema": "cancer_6core_embedding_extraction_v1",
+  "status": "complete",
+  "total_cells": 117996
+}

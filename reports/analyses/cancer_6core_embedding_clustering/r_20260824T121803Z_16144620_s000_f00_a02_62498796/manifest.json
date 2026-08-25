@@ -1,0 +1,905 @@
+{
+  "analysis_classification": "exploratory_post_hoc_locked_readout",
+  "analysis_source_commit": "823aad94eb6744399eaa9d8009d51d95733c3a14",
+  "campaign_id": "cmp_20260824_cancer_6core_relative_qkv_multiseed",
+  "cell_counts": {
+    "1": 8924,
+    "13": 5345,
+    "15": 38145,
+    "21": 4897,
+    "23": 43462,
+    "9": 17223
+  },
+  "checkpoint_path": "/workspace/BAGM/artifacts/runs/2026/08/r_20260824T121803Z_16144620_s000_f00_a02_62498796/checkpoints/last.ckpt",
+  "checkpoint_sha256": "c5b7fdd6e3192c3146d415f1c77474f9e4483bba090c4fc9c2ac7d79ab554c0c",
+  "cluster_counts": {
+    "contextual": 21,
+    "intrinsic": 15
+  },
+  "cluster_size_ranges": {
+    "contextual": [
+      509,
+      10388
+    ],
+    "intrinsic": [
+      3047,
+      14558
+    ]
+  },
+  "clustering_configuration": {
+    "checkpoint_sha256": "c5b7fdd6e3192c3146d415f1c77474f9e4483bba090c4fc9c2ac7d79ab554c0c",
+    "core_order": [
+      1,
+      9,
+      13,
+      15,
+      21,
+      23
+    ],
+    "distance_metric": "cosine",
+    "extraction_manifest_sha256": "a6cf607dc5a6c0e8f680ab38be695f593944785ac42b1945a150b1f9db94040a",
+    "joint_clustering": true,
+    "leiden_resolution": 1.0,
+    "n_neighbors": 30,
+    "pca_components": 50,
+    "random_seed": 20260825,
+    "run_id": "r_20260824T121803Z_16144620_s000_f00_a02_62498796"
+  },
+  "clustering_manifest_sha256": "c03a6c6f16c2361bb25861957faf8f6aaa5e4ce9b2ecb1119170f40da7258c7d",
+  "combined_figure_checksums": {
+    "figures/contextual_leiden_spatial_6cores.pdf": {
+      "sha256": "09fa94e5029f07b31658e1df058215203bb9f890401cda3e9e651b6f49de9420",
+      "size_bytes": 2534756
+    },
+    "figures/contextual_leiden_spatial_6cores.png": {
+      "sha256": "70f6169860a0a58de5600e6d8c04a04b2cdb78a662a9cd31d63958d5710bfa4b",
+      "size_bytes": 3866419
+    },
+    "figures/delta_h_l2_spatial_6cores.pdf": {
+      "sha256": "0372fb221c8d209b88633b9052369415649253af4e556134f81cfb4388c292f5",
+      "size_bytes": 3030662
+    },
+    "figures/delta_h_l2_spatial_6cores.png": {
+      "sha256": "65741e9b4a58cf30972dcd496ca820e795892aa2e459a73fdea3880d83bd2d00",
+      "size_bytes": 4277429
+    },
+    "figures/intrinsic_leiden_spatial_6cores.pdf": {
+      "sha256": "b15de3d9f212ed404e65323e0ab47fa9f76ba32ea16b438dc54ba9a0ce1fc9b2",
+      "size_bytes": 2902216
+    },
+    "figures/intrinsic_leiden_spatial_6cores.png": {
+      "sha256": "3bcab67195b3f3976b38e0489dfb2e1f9d7af063565d7981fde46a414fde170f",
+      "size_bytes": 4077739
+    }
+  },
+  "core_dominated_gt_90pct": {
+    "contextual": [
+      "C0",
+      "C1",
+      "C3",
+      "C5",
+      "C6",
+      "C7",
+      "C8",
+      "C12",
+      "C13",
+      "C15",
+      "C16",
+      "C18",
+      "C19"
+    ],
+    "intrinsic": [
+      "I1",
+      "I8"
+    ]
+  },
+  "core_order": [
+    1,
+    9,
+    13,
+    15,
+    21,
+    23
+  ],
+  "created_at_utc": "2026-08-25T04:36:32.873188Z",
+  "delta_h_l2": {
+    "biological_influence_or_causal_effect": false,
+    "count": 117996,
+    "description": "contextual representation-change magnitude",
+    "maximum": 33.96233445500407,
+    "mean": 12.344066721632824,
+    "median": 12.268444042543734,
+    "minimum": 7.974563906038692,
+    "p01": 9.40510071598567,
+    "p99": 16.471830191969605,
+    "per_core": [
+      {
+        "core_number": 1,
+        "count": 8924,
+        "maximum": 33.96233445500407,
+        "mean": 12.057489213411417,
+        "median": 11.926805381518587,
+        "minimum": 8.680436298194365,
+        "standard_deviation": 1.3683187408414756
+      },
+      {
+        "core_number": 9,
+        "count": 17223,
+        "maximum": 31.064572284747904,
+        "mean": 12.21158698663726,
+        "median": 12.182202145305027,
+        "minimum": 8.605495590040587,
+        "standard_deviation": 1.1364143540886524
+      },
+      {
+        "core_number": 13,
+        "count": 5345,
+        "maximum": 20.913283738589772,
+        "mean": 12.881821776497947,
+        "median": 12.74182093304969,
+        "minimum": 8.87115789082146,
+        "standard_deviation": 2.0804176548089317
+      },
+      {
+        "core_number": 15,
+        "count": 38145,
+        "maximum": 28.13475380155004,
+        "mean": 12.390481194725194,
+        "median": 12.329085635915918,
+        "minimum": 7.974563906038692,
+        "standard_deviation": 1.6808910592079997
+      },
+      {
+        "core_number": 21,
+        "count": 4897,
+        "maximum": 21.017480517486007,
+        "mean": 12.830533328014504,
+        "median": 12.517040363112713,
+        "minimum": 8.735471562326847,
+        "standard_deviation": 1.9755617466260094
+      },
+      {
+        "core_number": 23,
+        "count": 43462,
+        "maximum": 30.91845772013179,
+        "mean": 12.293726386245195,
+        "median": 12.293259953601066,
+        "minimum": 8.647659469190817,
+        "standard_deviation": 1.2737531430775209
+      }
+    ],
+    "plotting_limits": {
+      "raw_values_clipped_in_saved_data": false,
+      "shared_across_all_six_cores": true,
+      "vmax_global_p99": 16.471830191969605,
+      "vmin_global_p01": 9.40510071598567
+    },
+    "standard_deviation": 1.4941336340696156
+  },
+  "embedding_shapes": {
+    "1": {
+      "h0": [
+        8924,
+        256
+      ],
+      "hL": [
+        8924,
+        256
+      ]
+    },
+    "13": {
+      "h0": [
+        5345,
+        256
+      ],
+      "hL": [
+        5345,
+        256
+      ]
+    },
+    "15": {
+      "h0": [
+        38145,
+        256
+      ],
+      "hL": [
+        38145,
+        256
+      ]
+    },
+    "21": {
+      "h0": [
+        4897,
+        256
+      ],
+      "hL": [
+        4897,
+        256
+      ]
+    },
+    "23": {
+      "h0": [
+        43462,
+        256
+      ],
+      "hL": [
+        43462,
+        256
+      ]
+    },
+    "9": {
+      "h0": [
+        17223,
+        256
+      ],
+      "hL": [
+        17223,
+        256
+      ]
+    }
+  },
+  "extraction_manifest_sha256": "04546b3e75b1519fa743bcfbf30b187ba4d1629939211bc5852979a1521c5945",
+  "files": {
+    "README.md": {
+      "sha256": "4fe62a1b8e190be565ff414f85d8a735a59448ce90b599b7729f049546c239eb",
+      "size_bytes": 2881
+    },
+    "clustering/clustering_manifest.json": {
+      "sha256": "c03a6c6f16c2361bb25861957faf8f6aaa5e4ce9b2ecb1119170f40da7258c7d",
+      "size_bytes": 21021
+    },
+    "clustering/contextual_clustering_parameters.json": {
+      "sha256": "10f6f925881f17bbece2f44f8297d80d6d38cccabe9ca5a5bfeae030f3d44ff3",
+      "size_bytes": 6173
+    },
+    "clustering/contextual_labels.npy": {
+      "sha256": "1c8e925c4a557166c7ecf3b5e9c3364a4ddc6782341336e8023186204681aacd",
+      "size_bytes": 944096
+    },
+    "clustering/contextual_palette.json": {
+      "sha256": "9220cfbbd37e87748285e8f34eb5df760b75fceb3c7d8c1cb84b544d65d0b5db",
+      "size_bytes": 588
+    },
+    "clustering/intrinsic_clustering_parameters.json": {
+      "sha256": "6a17c9b3bc4403a324f7a035f033413125ea83bdad06672a93eb7818cd56afe0",
+      "size_bytes": 6073
+    },
+    "clustering/intrinsic_labels.npy": {
+      "sha256": "e2c63b918291c23499e68c8abeb72c8ecec4806c5112a79648b54a250f6ac4d5",
+      "size_bytes": 944096
+    },
+    "clustering/intrinsic_palette.json": {
+      "sha256": "d7b7898bcfcb39cbb8eca9a46d31086744bc60520fbf50298328f153c22c9a61",
+      "size_bytes": 455
+    },
+    "embeddings/core_13_embeddings.npz": {
+      "sha256": "00869756af4a5aeb65681eb2c876bdcf8c626f40371b3cbedc77e8f2ba6a5942",
+      "size_bytes": 15298875
+    },
+    "embeddings/core_15_embeddings.npz": {
+      "sha256": "ff89bd5fd5a04f7fe01e26f8db1a2179e30364fa4aa5c09452e270acfe922283",
+      "size_bytes": 109164460
+    },
+    "embeddings/core_1_embeddings.npz": {
+      "sha256": "ae33a3155e5af9f67440a6770ce3d9b34aca2b9fc224d98223cc5ea3f76640a3",
+      "size_bytes": 25523047
+    },
+    "embeddings/core_21_embeddings.npz": {
+      "sha256": "9cc24982c390b2c0d5d66a186d10eecdf8068a831f9e85f59a5182f12eb7b847",
+      "size_bytes": 14013765
+    },
+    "embeddings/core_23_embeddings.npz": {
+      "sha256": "4d2103d4085bd6b68712a075e4f171e9f101ab04111e2b29c55a77037f9b0e59",
+      "size_bytes": 124318704
+    },
+    "embeddings/core_9_embeddings.npz": {
+      "sha256": "bc40e2feaa5c3fca8c98a72bf1622f3c4d65037b122fa928c06b7d82456bda27",
+      "size_bytes": 49281958
+    },
+    "embeddings/extraction_manifest.json": {
+      "sha256": "04546b3e75b1519fa743bcfbf30b187ba4d1629939211bc5852979a1521c5945",
+      "size_bytes": 27383
+    },
+    "figures/contextual_leiden_spatial_6cores.pdf": {
+      "sha256": "09fa94e5029f07b31658e1df058215203bb9f890401cda3e9e651b6f49de9420",
+      "size_bytes": 2534756
+    },
+    "figures/contextual_leiden_spatial_6cores.png": {
+      "sha256": "70f6169860a0a58de5600e6d8c04a04b2cdb78a662a9cd31d63958d5710bfa4b",
+      "size_bytes": 3866419
+    },
+    "figures/delta_h_l2_spatial_6cores.pdf": {
+      "sha256": "0372fb221c8d209b88633b9052369415649253af4e556134f81cfb4388c292f5",
+      "size_bytes": 3030662
+    },
+    "figures/delta_h_l2_spatial_6cores.png": {
+      "sha256": "65741e9b4a58cf30972dcd496ca820e795892aa2e459a73fdea3880d83bd2d00",
+      "size_bytes": 4277429
+    },
+    "figures/intrinsic_leiden_spatial_6cores.pdf": {
+      "sha256": "b15de3d9f212ed404e65323e0ab47fa9f76ba32ea16b438dc54ba9a0ce1fc9b2",
+      "size_bytes": 2902216
+    },
+    "figures/intrinsic_leiden_spatial_6cores.png": {
+      "sha256": "3bcab67195b3f3976b38e0489dfb2e1f9d7af063565d7981fde46a414fde170f",
+      "size_bytes": 4077739
+    },
+    "figures/per_core/contextual_leiden_spatial_core_1.pdf": {
+      "sha256": "5e0b3d727e1b4f6c028fb9e4befcf631b2f8be5dcda83d76864ceaf2b6798476",
+      "size_bytes": 508369
+    },
+    "figures/per_core/contextual_leiden_spatial_core_1.png": {
+      "sha256": "8f16f689140eca0ce27efedfc16d0a085cd32a24991722dfce3211c5af0161ab",
+      "size_bytes": 1035921
+    },
+    "figures/per_core/contextual_leiden_spatial_core_13.pdf": {
+      "sha256": "4e054f1fc2ebbe75ead711a893afba16e02b13b49d4751878f96365a72108b56",
+      "size_bytes": 274260
+    },
+    "figures/per_core/contextual_leiden_spatial_core_13.png": {
+      "sha256": "9ba18b57d89ec2b31061e97d1eb02abcc31fce9d9aa3487e5024c8603ac65e8d",
+      "size_bytes": 625826
+    },
+    "figures/per_core/contextual_leiden_spatial_core_15.pdf": {
+      "sha256": "8de7b295544b1dfb180e8108eda92c32f0eda01ded12364dec6bd013b0c02ecb",
+      "size_bytes": 1425778
+    },
+    "figures/per_core/contextual_leiden_spatial_core_15.png": {
+      "sha256": "1273fd410ad67c133b124892506394ea91dc2387029345aae261ec74eb28e357",
+      "size_bytes": 1940209
+    },
+    "figures/per_core/contextual_leiden_spatial_core_21.pdf": {
+      "sha256": "03f2634e44d71c8149860684bbf56fd853b00cbf4da7f3edc2f74e88606df5c4",
+      "size_bytes": 286240
+    },
+    "figures/per_core/contextual_leiden_spatial_core_21.png": {
+      "sha256": "fe4d48c9c96d5a2b8235cea445f6a7a535a2a660c530068bbe7b44722e96fed1",
+      "size_bytes": 600227
+    },
+    "figures/per_core/contextual_leiden_spatial_core_23.pdf": {
+      "sha256": "363ad6cee9001954ba992cb7398465ee014ccdc2f81e3762e7e291b416185803",
+      "size_bytes": 1576156
+    },
+    "figures/per_core/contextual_leiden_spatial_core_23.png": {
+      "sha256": "67317bd183feae40a3d8bfcb2ea2c7fe9cee988a8eb9aa4a140a5db3c117d709",
+      "size_bytes": 2016251
+    },
+    "figures/per_core/contextual_leiden_spatial_core_9.pdf": {
+      "sha256": "ce8566e34d98ec912a8380f0e8034ae68e6e717debe99470c954f2584035f671",
+      "size_bytes": 782009
+    },
+    "figures/per_core/contextual_leiden_spatial_core_9.png": {
+      "sha256": "acd69070cf580276f5b9e02eb4732b4df8586f79e2ad8066008642595112c740",
+      "size_bytes": 1369865
+    },
+    "figures/per_core/delta_h_l2_spatial_core_1.pdf": {
+      "sha256": "a36493f950c9dbbb13adcc04b8acfa2fc7b8e21546316d590fd7c333622b897d",
+      "size_bytes": 624413
+    },
+    "figures/per_core/delta_h_l2_spatial_core_1.png": {
+      "sha256": "e228f3540ef39fb319da48ab1cc9dd2c1b6396060e8b86723706226d309f0f59",
+      "size_bytes": 1161241
+    },
+    "figures/per_core/delta_h_l2_spatial_core_13.pdf": {
+      "sha256": "7663d06f09a59a4c5b4b9a94f489ac66aadb114b9fe6973a916608ce1dc9ae9c",
+      "size_bytes": 405188
+    },
+    "figures/per_core/delta_h_l2_spatial_core_13.png": {
+      "sha256": "18895ea2ae41d4725baeb1506f4c177623bf02a507563e308112bc1f2830db59",
+      "size_bytes": 718549
+    },
+    "figures/per_core/delta_h_l2_spatial_core_15.pdf": {
+      "sha256": "eceb5fd2d427933ad81149c06a9c9625ff957a887e91ada0022f684c541976ae",
+      "size_bytes": 1680299
+    },
+    "figures/per_core/delta_h_l2_spatial_core_15.png": {
+      "sha256": "1671bfc049559f728d51dd8939524351ba26695a49fe15926212a4b1117c499a",
+      "size_bytes": 2102022
+    },
+    "figures/per_core/delta_h_l2_spatial_core_21.pdf": {
+      "sha256": "6d674bb70b4506bf1b52ae3dc04bb47c5df70feab39878938cf5507b1009cf1b",
+      "size_bytes": 368079
+    },
+    "figures/per_core/delta_h_l2_spatial_core_21.png": {
+      "sha256": "151082fa4613ebce96a5b8b432672fcf5693bbe9a6b8cf2eeb76495ab71b3ede",
+      "size_bytes": 650528
+    },
+    "figures/per_core/delta_h_l2_spatial_core_23.pdf": {
+      "sha256": "e15c034b02cfd6d3f856ecf8d0e255b019c1631f88912606d7aabbb5e4cb04e6",
+      "size_bytes": 1699197
+    },
+    "figures/per_core/delta_h_l2_spatial_core_23.png": {
+      "sha256": "3ed0dd2005e54f7375291273d0f01e09c36dd237d5f83a6026a2510471fc911d",
+      "size_bytes": 2174539
+    },
+    "figures/per_core/delta_h_l2_spatial_core_9.pdf": {
+      "sha256": "6fed12a49048886e2d0ee9701dff766abd969a4cfa02482071f49fe7618b8ebb",
+      "size_bytes": 987545
+    },
+    "figures/per_core/delta_h_l2_spatial_core_9.png": {
+      "sha256": "c0199937f3ba753e3bfc7e4a425d55dd7cff8afa34294b15d4b9f1be832351ba",
+      "size_bytes": 1509081
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_1.pdf": {
+      "sha256": "a228d9983763c84e8ec4f3ca308e33ee043b11e44018a388554180dbf34ed852",
+      "size_bytes": 516610
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_1.png": {
+      "sha256": "91a4c8ee4e409a443867cfda714e57f0a7d34ec032083de7156e0792bc16c40f",
+      "size_bytes": 1091113
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_13.pdf": {
+      "sha256": "df5d762dba38ac96d5e2e84b529befc9980cc27ad85aeec06361de514bf02056",
+      "size_bytes": 335940
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_13.png": {
+      "sha256": "6373d4c52005f239c5a0a17128151d66e3097f801791de13b39457a8ee2de470",
+      "size_bytes": 689472
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_15.pdf": {
+      "sha256": "899b05a5371587e4bc9231fa0aaff416d5bda105cd0854c8b1204b312e10531c",
+      "size_bytes": 1705337
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_15.png": {
+      "sha256": "4664b0bd11a4394b87f61fe6a73e50bfc02e249081aed4d6233a7c26861fdf0f",
+      "size_bytes": 1949681
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_21.pdf": {
+      "sha256": "8191795ab0e7341791a69749e28b32b4c50e11608f110948fa9d052f1be36dc4",
+      "size_bytes": 314721
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_21.png": {
+      "sha256": "e3441d12a3b3dd35fca03ee4fabc4e7d1c4f23c047f74138dad3f7c674532b16",
+      "size_bytes": 587027
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_23.pdf": {
+      "sha256": "058404f3b2085d462549ffc4aee06de13bbe85a6b270dd6210e0cc7ac710e253",
+      "size_bytes": 1770545
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_23.png": {
+      "sha256": "eafc93c3c0d583caa059726a251d11d4db6dba020db242407fa289aeedfcb3da",
+      "size_bytes": 2062058
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_9.pdf": {
+      "sha256": "d7dda453ef7cae1ccb683bb10c83c22ccf360972a633540d755c257161bf3d60",
+      "size_bytes": 910817
+    },
+    "figures/per_core/intrinsic_leiden_spatial_core_9.png": {
+      "sha256": "1c500d777c6ba400500cdcdbc4e3f111cdd8d07e2ecceb7679a813483455856d",
+      "size_bytes": 1497897
+    },
+    "tables/cell_embedding_clusters.parquet": {
+      "sha256": "74158625c0565c11d8d33fed51a14923ddcd40b18cf7bb6c1169c05db8827250",
+      "size_bytes": 3310840
+    },
+    "tables/contextual_cluster_core_composition.csv": {
+      "sha256": "78da4f499a6d5cb65a7d910284b710573564e9fd3f6846cb9481cfcf2537df52",
+      "size_bytes": 7285
+    },
+    "tables/contextual_cluster_summary.csv": {
+      "sha256": "e1c3511e9a31f082c4761795f2e73da6e1a03a634954f96bacb90187823050f1",
+      "size_bytes": 1435
+    },
+    "tables/intrinsic_cluster_core_composition.csv": {
+      "sha256": "7586ea123e00134d0dce32172cb081454d5c6eea6e9ece68f95a53cfd9b9b119",
+      "size_bytes": 5729
+    },
+    "tables/intrinsic_cluster_summary.csv": {
+      "sha256": "e96bba4959821c31a05133abd3433fe8fbd4b4ef08d2597a1a9baee03a01b115",
+      "size_bytes": 1079
+    }
+  },
+  "input_provenance": {
+    "analysis_source": {
+      "commit": "823aad94eb6744399eaa9d8009d51d95733c3a14",
+      "dirty": true,
+      "status_sha256": "2c597c5b7a7aa02bbb23de8833ed5c0d9884cbf8cfc9eeec43eb023d7bba9bdc"
+    },
+    "campaign_id": "cmp_20260824_cancer_6core_relative_qkv_multiseed",
+    "checkpoint": {
+      "canonical_final_path": "artifacts/runs/2026/08/r_20260824T121803Z_16144620_s000_f00_a02_62498796/checkpoints/last.ckpt",
+      "completed_global_epochs": 200,
+      "model_state_sha256": "4a8f2ad335d8c61d29f2fe5864cad425239227524fb5b5a26946bdb142b6941f",
+      "relative_path": "artifacts/runs/2026/08/r_20260824T121803Z_16144620_s000_f00_a02_62498796/checkpoints/last.ckpt",
+      "schema": "cancer_6core_relative_qkv_resume_v1",
+      "sha256": "c5b7fdd6e3192c3146d415f1c77474f9e4483bba090c4fc9c2ac7d79ab554c0c"
+    },
+    "cohort_manifest": {
+      "content_sha256": "4b4e7adf4ad24d030a52c98e5c73bfa6ab6b75bc9d590de20577309c207f3657",
+      "file_sha256": "9c4ea4c9445f5230c5f823b4b1cd7a5b230767b43daa7018c99dc27bbf9613ad",
+      "preprocessing_statistics_sha256": "c26016e8db12ebc64997b1597b1832d03f5f39a493a35bba55020ec1ba9f90d2",
+      "relative_path": "data/processed/cancer_6core_relative_qkv_v1/manifest.json",
+      "statistics_component_checksums": {
+        "expression_mean": "37ca14a1b960f2e985d385a7e1c329834f7370c5aa4ef3ed695dc7e0163da78e",
+        "expression_scale": "9eef982b59c94e111a3277990dcedb62731d5083a663c0fa97aa76320640e118",
+        "metadata_mean": "54d89c870389a8448d4c035cf454cabc1481ccd3928dfa22f141d2625d1a77e8",
+        "metadata_median": "f563f6198c6bcdb3eac1c6735f982f933c09456bc9b09a025978d1c079df0cb2",
+        "metadata_missing_indicator_indices": "ac9fe019db112a198a5820af91e6222433125c7e898b5c15650eb5d5ef503cb9",
+        "metadata_scale": "2980f15cd48fa17eca961cf0c86367042af7dd8739acde4ab37072c69c129fd2"
+      }
+    },
+    "dataset_fingerprint": "45fe649d1de0f3df3af0f4a1ae69d17249711359d55dde7d1acf45ed1881e77d",
+    "graph_manifest": {
+      "content_sha256": "12e5617a01fc4e82f528752d2354bac17af9b967acdaac29f6fda0eafadaecd7",
+      "file_sha256": "20caa27c4d0a816a01475eda321e1910505b3b7849bc8eaa22a56e3cbfd1b48d",
+      "relative_path": "data/processed/cancer_6core_relative_qkv_graphs_v1/manifest.json"
+    },
+    "model_construction": {
+      "activation_checkpointing": true,
+      "attention_dropout": 0.0,
+      "attention_head_dim": 32,
+      "attention_heads": 8,
+      "class": "ReceiverChunkedRelativeGeometryQKVGraphTransformer",
+      "decoder_dim": 1024,
+      "dropout": 0.1,
+      "edge_key_vectors": false,
+      "edge_value_gates": false,
+      "edge_value_vectors": false,
+      "embedding_dim": 256,
+      "exact_receiver_partitioning": true,
+      "family": "relative_geometry_qkv_graph_transformer",
+      "ffn_dim": 1024,
+      "fp32_attention_accumulation": true,
+      "graph_layers": 4,
+      "hidden_dim": 256,
+      "implicit_self_loops": false,
+      "max_edges_per_chunk": 200000,
+      "name": "relative-qkv-gat",
+      "node_covariate_dim": 22,
+      "num_genes": 1000,
+      "positional_bias_final_zero_init": true,
+      "positional_bias_hidden_dim": 128,
+      "receiver_chunk_size": 512,
+      "relative_geometry_dim": 70,
+      "relative_geometry_role": "attention_logit_bias_only",
+      "trainable_edge_identifiers": false,
+      "trainable_node_identifiers": false,
+      "uses_edge_inputs": false,
+      "uses_graph_inputs": true,
+      "uses_relative_position": true
+    },
+    "model_seed": 0,
+    "preprocessing_version": "cancer_6core_equal_core_log1p_metadata_v1",
+    "run_id": "r_20260824T121803Z_16144620_s000_f00_a02_62498796",
+    "selection_policy": "completed_seed_0_fallback_after_no_analysis_or_campaign_primary",
+    "training_source": {
+      "commit": "c077d04ade8d4f605e8f21f82fd18b94aa07cba8",
+      "dirty": true,
+      "dirty_fingerprint": "3bfd77ee199bf96552f181a682cc16d0ccbddbbb93345aea4f1c353baf6ee6d3",
+      "untracked_file_count": 1
+    }
+  },
+  "interpretation": {
+    "contextual": "patterns after graph-based neighborhood processing",
+    "delta_h_l2": "magnitude of representation change after contextual processing",
+    "establishes_biological_influence": false,
+    "establishes_causality": false,
+    "establishes_cell_type": false,
+    "establishes_signaling": false,
+    "intrinsic": "cell-own expression and metadata embedding patterns",
+    "marker_and_pathology_validation_separate": true
+  },
+  "manifest_content_sha256": "211cba4b91f7721aea8f574b02c87b569f8b2ab92d03843fc5feb21e6ccb2fb9",
+  "model_construction": {
+    "activation_checkpointing": true,
+    "attention_dropout": 0.0,
+    "attention_head_dim": 32,
+    "attention_heads": 8,
+    "class": "ReceiverChunkedRelativeGeometryQKVGraphTransformer",
+    "decoder_dim": 1024,
+    "dropout": 0.1,
+    "edge_key_vectors": false,
+    "edge_value_gates": false,
+    "edge_value_vectors": false,
+    "embedding_dim": 256,
+    "exact_receiver_partitioning": true,
+    "family": "relative_geometry_qkv_graph_transformer",
+    "ffn_dim": 1024,
+    "fp32_attention_accumulation": true,
+    "graph_layers": 4,
+    "hidden_dim": 256,
+    "implicit_self_loops": false,
+    "max_edges_per_chunk": 200000,
+    "name": "relative-qkv-gat",
+    "node_covariate_dim": 22,
+    "num_genes": 1000,
+    "positional_bias_final_zero_init": true,
+    "positional_bias_hidden_dim": 128,
+    "receiver_chunk_size": 512,
+    "relative_geometry_dim": 70,
+    "relative_geometry_role": "attention_logit_bias_only",
+    "trainable_edge_identifiers": false,
+    "trainable_node_identifiers": false,
+    "uses_edge_inputs": false,
+    "uses_graph_inputs": true,
+    "uses_relative_position": true
+  },
+  "model_seed": 0,
+  "plotting": {
+    "combined_figure_count": 6,
+    "dpi": 300,
+    "files": {
+      "figures/contextual_leiden_spatial_6cores.pdf": {
+        "sha256": "09fa94e5029f07b31658e1df058215203bb9f890401cda3e9e651b6f49de9420",
+        "size_bytes": 2534756
+      },
+      "figures/contextual_leiden_spatial_6cores.png": {
+        "sha256": "70f6169860a0a58de5600e6d8c04a04b2cdb78a662a9cd31d63958d5710bfa4b",
+        "size_bytes": 3866419
+      },
+      "figures/delta_h_l2_spatial_6cores.pdf": {
+        "sha256": "0372fb221c8d209b88633b9052369415649253af4e556134f81cfb4388c292f5",
+        "size_bytes": 3030662
+      },
+      "figures/delta_h_l2_spatial_6cores.png": {
+        "sha256": "65741e9b4a58cf30972dcd496ca820e795892aa2e459a73fdea3880d83bd2d00",
+        "size_bytes": 4277429
+      },
+      "figures/intrinsic_leiden_spatial_6cores.pdf": {
+        "sha256": "b15de3d9f212ed404e65323e0ab47fa9f76ba32ea16b438dc54ba9a0ce1fc9b2",
+        "size_bytes": 2902216
+      },
+      "figures/intrinsic_leiden_spatial_6cores.png": {
+        "sha256": "3bcab67195b3f3976b38e0489dfb2e1f9d7af063565d7981fde46a414fde170f",
+        "size_bytes": 4077739
+      },
+      "figures/per_core/contextual_leiden_spatial_core_1.pdf": {
+        "sha256": "5e0b3d727e1b4f6c028fb9e4befcf631b2f8be5dcda83d76864ceaf2b6798476",
+        "size_bytes": 508369
+      },
+      "figures/per_core/contextual_leiden_spatial_core_1.png": {
+        "sha256": "8f16f689140eca0ce27efedfc16d0a085cd32a24991722dfce3211c5af0161ab",
+        "size_bytes": 1035921
+      },
+      "figures/per_core/contextual_leiden_spatial_core_13.pdf": {
+        "sha256": "4e054f1fc2ebbe75ead711a893afba16e02b13b49d4751878f96365a72108b56",
+        "size_bytes": 274260
+      },
+      "figures/per_core/contextual_leiden_spatial_core_13.png": {
+        "sha256": "9ba18b57d89ec2b31061e97d1eb02abcc31fce9d9aa3487e5024c8603ac65e8d",
+        "size_bytes": 625826
+      },
+      "figures/per_core/contextual_leiden_spatial_core_15.pdf": {
+        "sha256": "8de7b295544b1dfb180e8108eda92c32f0eda01ded12364dec6bd013b0c02ecb",
+        "size_bytes": 1425778
+      },
+      "figures/per_core/contextual_leiden_spatial_core_15.png": {
+        "sha256": "1273fd410ad67c133b124892506394ea91dc2387029345aae261ec74eb28e357",
+        "size_bytes": 1940209
+      },
+      "figures/per_core/contextual_leiden_spatial_core_21.pdf": {
+        "sha256": "03f2634e44d71c8149860684bbf56fd853b00cbf4da7f3edc2f74e88606df5c4",
+        "size_bytes": 286240
+      },
+      "figures/per_core/contextual_leiden_spatial_core_21.png": {
+        "sha256": "fe4d48c9c96d5a2b8235cea445f6a7a535a2a660c530068bbe7b44722e96fed1",
+        "size_bytes": 600227
+      },
+      "figures/per_core/contextual_leiden_spatial_core_23.pdf": {
+        "sha256": "363ad6cee9001954ba992cb7398465ee014ccdc2f81e3762e7e291b416185803",
+        "size_bytes": 1576156
+      },
+      "figures/per_core/contextual_leiden_spatial_core_23.png": {
+        "sha256": "67317bd183feae40a3d8bfcb2ea2c7fe9cee988a8eb9aa4a140a5db3c117d709",
+        "size_bytes": 2016251
+      },
+      "figures/per_core/contextual_leiden_spatial_core_9.pdf": {
+        "sha256": "ce8566e34d98ec912a8380f0e8034ae68e6e717debe99470c954f2584035f671",
+        "size_bytes": 782009
+      },
+      "figures/per_core/contextual_leiden_spatial_core_9.png": {
+        "sha256": "acd69070cf580276f5b9e02eb4732b4df8586f79e2ad8066008642595112c740",
+        "size_bytes": 1369865
+      },
+      "figures/per_core/delta_h_l2_spatial_core_1.pdf": {
+        "sha256": "a36493f950c9dbbb13adcc04b8acfa2fc7b8e21546316d590fd7c333622b897d",
+        "size_bytes": 624413
+      },
+      "figures/per_core/delta_h_l2_spatial_core_1.png": {
+        "sha256": "e228f3540ef39fb319da48ab1cc9dd2c1b6396060e8b86723706226d309f0f59",
+        "size_bytes": 1161241
+      },
+      "figures/per_core/delta_h_l2_spatial_core_13.pdf": {
+        "sha256": "7663d06f09a59a4c5b4b9a94f489ac66aadb114b9fe6973a916608ce1dc9ae9c",
+        "size_bytes": 405188
+      },
+      "figures/per_core/delta_h_l2_spatial_core_13.png": {
+        "sha256": "18895ea2ae41d4725baeb1506f4c177623bf02a507563e308112bc1f2830db59",
+        "size_bytes": 718549
+      },
+      "figures/per_core/delta_h_l2_spatial_core_15.pdf": {
+        "sha256": "eceb5fd2d427933ad81149c06a9c9625ff957a887e91ada0022f684c541976ae",
+        "size_bytes": 1680299
+      },
+      "figures/per_core/delta_h_l2_spatial_core_15.png": {
+        "sha256": "1671bfc049559f728d51dd8939524351ba26695a49fe15926212a4b1117c499a",
+        "size_bytes": 2102022
+      },
+      "figures/per_core/delta_h_l2_spatial_core_21.pdf": {
+        "sha256": "6d674bb70b4506bf1b52ae3dc04bb47c5df70feab39878938cf5507b1009cf1b",
+        "size_bytes": 368079
+      },
+      "figures/per_core/delta_h_l2_spatial_core_21.png": {
+        "sha256": "151082fa4613ebce96a5b8b432672fcf5693bbe9a6b8cf2eeb76495ab71b3ede",
+        "size_bytes": 650528
+      },
+      "figures/per_core/delta_h_l2_spatial_core_23.pdf": {
+        "sha256": "e15c034b02cfd6d3f856ecf8d0e255b019c1631f88912606d7aabbb5e4cb04e6",
+        "size_bytes": 1699197
+      },
+      "figures/per_core/delta_h_l2_spatial_core_23.png": {
+        "sha256": "3ed0dd2005e54f7375291273d0f01e09c36dd237d5f83a6026a2510471fc911d",
+        "size_bytes": 2174539
+      },
+      "figures/per_core/delta_h_l2_spatial_core_9.pdf": {
+        "sha256": "6fed12a49048886e2d0ee9701dff766abd969a4cfa02482071f49fe7618b8ebb",
+        "size_bytes": 987545
+      },
+      "figures/per_core/delta_h_l2_spatial_core_9.png": {
+        "sha256": "c0199937f3ba753e3bfc7e4a425d55dd7cff8afa34294b15d4b9f1be832351ba",
+        "size_bytes": 1509081
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_1.pdf": {
+        "sha256": "a228d9983763c84e8ec4f3ca308e33ee043b11e44018a388554180dbf34ed852",
+        "size_bytes": 516610
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_1.png": {
+        "sha256": "91a4c8ee4e409a443867cfda714e57f0a7d34ec032083de7156e0792bc16c40f",
+        "size_bytes": 1091113
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_13.pdf": {
+        "sha256": "df5d762dba38ac96d5e2e84b529befc9980cc27ad85aeec06361de514bf02056",
+        "size_bytes": 335940
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_13.png": {
+        "sha256": "6373d4c52005f239c5a0a17128151d66e3097f801791de13b39457a8ee2de470",
+        "size_bytes": 689472
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_15.pdf": {
+        "sha256": "899b05a5371587e4bc9231fa0aaff416d5bda105cd0854c8b1204b312e10531c",
+        "size_bytes": 1705337
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_15.png": {
+        "sha256": "4664b0bd11a4394b87f61fe6a73e50bfc02e249081aed4d6233a7c26861fdf0f",
+        "size_bytes": 1949681
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_21.pdf": {
+        "sha256": "8191795ab0e7341791a69749e28b32b4c50e11608f110948fa9d052f1be36dc4",
+        "size_bytes": 314721
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_21.png": {
+        "sha256": "e3441d12a3b3dd35fca03ee4fabc4e7d1c4f23c047f74138dad3f7c674532b16",
+        "size_bytes": 587027
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_23.pdf": {
+        "sha256": "058404f3b2085d462549ffc4aee06de13bbe85a6b270dd6210e0cc7ac710e253",
+        "size_bytes": 1770545
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_23.png": {
+        "sha256": "eafc93c3c0d583caa059726a251d11d4db6dba020db242407fa289aeedfcb3da",
+        "size_bytes": 2062058
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_9.pdf": {
+        "sha256": "d7dda453ef7cae1ccb683bb10c83c22ccf360972a633540d755c257161bf3d60",
+        "size_bytes": 910817
+      },
+      "figures/per_core/intrinsic_leiden_spatial_core_9.png": {
+        "sha256": "1c500d777c6ba400500cdcdbc4e3f111cdd8d07e2ecceb7679a813483455856d",
+        "size_bytes": 1497897
+      }
+    },
+    "lines_between_cells": false,
+    "marker_borders": false,
+    "one_dot_per_cell": true,
+    "per_core_figure_count": 36,
+    "plot_specification": {
+      "contextual_palette": {
+        "C0": "#D55E00",
+        "C1": "#0A0AF5",
+        "C10": "#781A29",
+        "C11": "#D697F5",
+        "C12": "#E50AF5",
+        "C13": "#B6C678",
+        "C14": "#F50A49",
+        "C15": "#1A5868",
+        "C16": "#78580A",
+        "C17": "#68B60A",
+        "C18": "#780A68",
+        "C19": "#8758F5",
+        "C2": "#0AF50A",
+        "C20": "#4997F5",
+        "C3": "#0AC6F5",
+        "C4": "#F529A7",
+        "C5": "#0A580A",
+        "C6": "#0A3997",
+        "C7": "#E5D60A",
+        "C8": "#F5B6B6",
+        "C9": "#0AF5B6"
+      },
+      "coordinate_units": "micrometres",
+      "delta_common_scale": {
+        "colormap": "viridis",
+        "shared_across_all_panels": true,
+        "vmax": 16.471830191969605,
+        "vmin": 9.40510071598567
+      },
+      "equal_aspect": true,
+      "grid_shape": [
+        2,
+        3
+      ],
+      "intrinsic_palette": {
+        "I0": "#0072B2",
+        "I1": "#0AF50A",
+        "I10": "#581A97",
+        "I11": "#1AA739",
+        "I12": "#1A7868",
+        "I13": "#E58739",
+        "I14": "#C6E597",
+        "I2": "#F50A0A",
+        "I3": "#0A0AF5",
+        "I4": "#68680A",
+        "I5": "#F539B6",
+        "I6": "#0AF5D6",
+        "I7": "#F5B6B6",
+        "I8": "#F5D60A",
+        "I9": "#781A1A"
+      },
+      "invert_y_axis": true,
+      "palettes_are_separate": true,
+      "panel_order": [
+        1,
+        9,
+        13,
+        15,
+        21,
+        23
+      ]
+    },
+    "point_layer_rasterized_in_pdf": true
+  },
+  "preprocessing_checksum": "c26016e8db12ebc64997b1597b1832d03f5f39a493a35bba55020ec1ba9f90d2",
+  "run_id": "r_20260824T121803Z_16144620_s000_f00_a02_62498796",
+  "schema": "cancer_6core_embedding_clustering_v1",
+  "source_core_artifacts": [
+    {
+      "alias": "CAN-01",
+      "core_number": 1,
+      "graph_record_sha256": "9991eef20595e4af716601bc08073fc766a60d3a703c596c53cbe655d7afb8ac",
+      "prepared_core_artifact_sha256": "578bc4fbf3b11ac7ae533cf3c2ec30c87a02e5e468a8ebfc607ee8390349cd46"
+    },
+    {
+      "alias": "CAN-09",
+      "core_number": 9,
+      "graph_record_sha256": "6f3bd6144abde21854ff4a848a692e633b3c3b9b468a9ef137bdd40a9566d67a",
+      "prepared_core_artifact_sha256": "3fa84c2067756afdf0821c6fdf9eb39f3f1d4dfa687e693e3c56efc7d95d350c"
+    },
+    {
+      "alias": "CAN-13",
+      "core_number": 13,
+      "graph_record_sha256": "c1171f60642fef2eb1135f227a9dfd4e240640966fa44f0b169ea34206da3cbe",
+      "prepared_core_artifact_sha256": "8b3510f93e8a42c5b273cf19c9043a63300cdf747c2e4a619d8cb0532e79226e"
+    },
+    {
+      "alias": "CAN-15",
+      "core_number": 15,
+      "graph_record_sha256": "d6b9b535dca78bd6a756719c0cea5f1269737b4a3880ad2c25d166dbc2d6db5b",
+      "prepared_core_artifact_sha256": "d0199a9c7eb32cb2b75459a0ef1ec74d83c5a30c3ae3c5530d989f5f93d80d93"
+    },
+    {
+      "alias": "CAN-21",
+      "core_number": 21,
+      "graph_record_sha256": "7cce9f708dd35dd5f0e80f42fd520052d9664b0d272f9315e305aadac3f12129",
+      "prepared_core_artifact_sha256": "eacbde2efd3731721a3d4b89314e591c36978e855866d4b0de0ce355957a559e"
+    },
+    {
+      "alias": "CAN-23",
+      "core_number": 23,
+      "graph_record_sha256": "ca6810bb927fd43284385ae0bbd7e88a84901863ae2b42d2ca699e85c3ea6565",
+      "prepared_core_artifact_sha256": "cc35bd47c85f486a6eb26889af66337fd47409333461db886478da1d706acc36"
+    }
+  ],
+  "status": "complete",
+  "total_cells": 117996,
+  "training_source_commit": "c077d04ade8d4f605e8f21f82fd18b94aa07cba8"
+}

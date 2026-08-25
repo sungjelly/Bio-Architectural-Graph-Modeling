@@ -1,0 +1,282 @@
+analysis_protocol_schema: cancer_6core_relative_qkv_stability_analysis_protocol_v1
+analysis_protocol_id: cmp_20260824_relative_qkv_four_seed_stability_locked_v1
+campaign_id: cmp_20260824_cancer_6core_relative_qkv_multiseed
+issued_at_utc: "2026-08-25"
+role: additive_post_training_analysis_protocol
+changes_training_contract: false
+uses_validation_or_test_selection: false
+fit_scope: all_cells_six_cancer_cores_transductive
+generalization_claim_supported: false
+
+ensemble:
+  active_model_seeds: [0, 1, 2, 3]
+  deferred_model_seeds: [4]
+  expected_active_seed_count: 4
+  seed_4_required_for_this_report: false
+  five_seed_completion_claim_allowed: false
+  uncertainty_label: four_seed_ensemble_spread
+  calibrated_biological_confidence_interval: false
+  checkpoint_role: last_confirmed_training_loss_plateau_epoch
+  common_final_epoch_required: false
+  differing_final_epochs_allowed: true
+  checkpoint_selection_uses_held_in_diagnostics: false
+
+prepared_inputs:
+  cohort_directory: data/processed/cancer_6core_relative_qkv_v1
+  cohort_manifest_sha256: 9c4ea4c9445f5230c5f823b4b1cd7a5b230767b43daa7018c99dc27bbf9613ad
+  graph_directory: data/processed/cancer_6core_relative_qkv_graphs_v1
+  graph_manifest_sha256: 20caa27c4d0a816a01475eda321e1910505b3b7849bc8eaa22a56e3cbfd1b48d
+  core_aliases: [CAN-01, CAN-09, CAN-13, CAN-15, CAN-21, CAN-23]
+  coordinate_role: selection_and_plotting_only
+  coordinates_were_model_inputs: false
+  fixed_inference_mask:
+    base_seed: 2026082491
+    namespace: relative-qkv-held-in-fit-diagnostic
+    identical_across_model_seeds: true
+
+fixed_probe_extraction:
+  layer: -1
+  layer_semantics: final_graph_transformer_layer
+  receiver_probes_per_core: 64
+  receiver_selection:
+    data_dependent: false
+    ordering: canonical_zero_based_node_index
+    formula: floor(q*(n_cells-1)/63), q=0..63
+    includes_first_and_last_node: true
+  edge_scope: every_incoming_directed_edge_of_each_selected_receiver
+  receiver_softmax_scope_preserved: true
+  top_edge_fraction: 0.05
+  top_edge_count_formula: ceil(0.05*eligible_edge_count)
+  top_edge_tie_break: attention_descending_then_canonical_edge_id_ascending
+  mutual_top_edges_per_core_per_seed: 100
+  mutual_candidate_scope: all_reciprocal_pairs_in_core
+  mutual_stability_candidate_set: union_of_each_seed_top_100_pairs_per_core
+  mutual_tie_break: score_descending_then_reciprocal_pair_key_ascending
+  empirical_quantiles: [0.05, 0.25, 0.75, 0.95]
+
+logit_gauge:
+  centering_scope: each_receiver_and_attention_head
+  centering_operation: subtract_mean_over_all_incoming_edges_of_receiver
+  centered_channels:
+    - content_logit
+    - relative_positional_bias
+  attention_probabilities_are_centered: false
+  combined_centered_logit_definition: centered_content_plus_centered_positional_bias
+  receiver_wise_softmax_null_offsets_removed: true
+  centering_applies_to:
+    - head_alignment_signatures
+    - positional_bias_response_correlations
+    - content_logit_vs_positional_bias_contribution_agreement
+    - fixed_edge_content_bias_combined_summaries
+
+statistical_summary_semantics:
+  ensemble_member_count: 4
+  standard_deviation:
+    kind: sample
+    ddof: 1
+  median_method: numpy_median
+  empirical_quantiles:
+    implementation: numpy_quantile
+    method: linear
+    levels: [0.05, 0.25, 0.75, 0.95]
+  selected_gradient_support:
+    definition: absolute_gradient_strictly_greater_than_zero
+    magnitude_threshold: 0.0
+    tiny_finite_nonzero_values_count_as_support: true
+  mutual_pair_support:
+    definition: pair_is_member_of_that_seeds_per_core_top_100
+    score_magnitude_does_not_define_support: true
+  fixed_edge_attention_support:
+    definition: edge_is_member_of_that_seeds_top_5_percent_by_mean_head_attention_over_locked_fixed_probe_edge_set
+    top_fraction: 0.05
+    top_edge_count_formula: ceil(0.05*locked_fixed_probe_edge_count)
+    tie_break: attention_descending_then_canonical_fixed_edge_order
+  support_count_range_inclusive: [0, 4]
+
+stability_metrics:
+  training:
+    - final_training_loss_mean_sd_range
+    - per_seed_training_loss_curves
+  fixed_mask_fit_diagnostic:
+    - masked_huber
+    - masked_mae
+    - masked_mse
+    - masked_r2
+  representation:
+    - linear_cka
+    - orthogonal_procrustes_aligned_similarity_optional
+  head_alignment:
+    reference_seed: 0
+    method: hungarian_assignment
+    signature_source: fixed_probe_final_layer_attention_plus_receiver_head_centered_content_and_positional_bias_channels
+    metrics:
+      - matched_head_attention_spearman
+      - matched_head_top_edge_jaccard
+      - positional_bias_response_correlation
+      - content_logit_vs_positional_bias_contribution_agreement
+  cell_pair_routing:
+    - mutual_attention_routing_score_stability
+  selected_gene_sensitivity:
+    - d_attention_d_observed_source_gene
+    - d_receiver_target_prediction_d_observed_source_gene
+  per_relationship_summaries:
+    - ensemble_mean
+    - ensemble_standard_deviation
+    - median
+    - minimum
+    - maximum
+    - empirical_quantiles
+    - number_of_seeds_supporting_relationship
+
+selected_gradient_requests:
+  request_schema: cancer_6core_relative_qkv_locked_gradient_requests_v1
+  request_table: selected_gradient_requests_v1.csv
+  request_table_sha256: 2ebe0d5fbf59f268d8b60d9b634a4ecf5d2621083ee05257eabb568af0bec4d2
+  request_table_checksum_sidecar: selected_gradient_requests_v1.sha256
+  request_count: 24
+  requests_per_core: 4
+  requests_per_radial_shell_per_core: 1
+  radial_shells: ["(0,50]", "(50,150]", "(150,300]", "(300,500]"]
+  layer: -1
+  attention_head: mean
+  model_or_checkpoint_used_for_selection: false
+  edge_selection:
+    candidate_order: canonical_receiver_major_then_source_major_edge_order
+    candidates: directed_edges_whose_coordinate_distance_is_in_shell
+    index_rule: full_SHA256_integer_modulo_shell_candidate_count
+    hash_namespace: cancer-6core-relative-qkv-model-independent-gradient-probes-v1
+    hash_fields: [role_directed_edge, core_alias, radial_shell]
+    attention_or_gradient_based_selection: false
+  feature_selection:
+    source_requirement: fixed_inference_mask_is_false_observed
+    target_requirement: fixed_inference_mask_is_true_masked
+    target_must_differ_from_source_gene: true
+    start_index_rule: full_SHA256_integer_modulo_1000
+    search_rule: cyclic_in_increasing_gene_index_order
+    hash_fields: [selection_namespace, feature_role, core_alias, radial_shell]
+    fail_if_no_eligible_feature: true
+  required_row_assertions:
+    - directed_edge_present
+    - shell_membership
+    - source_feature_observed
+    - target_feature_masked
+    - source_target_feature_indices_distinct
+  derivative_scope: selected_requests_only_no_exhaustive_jacobian
+  expected_rows_per_seed: 24
+  expected_rows_across_active_seeds: 96
+  derivative_units:
+    source_input_variable: gene_wise_standardized_log1p_raw_count
+    source_input_perturbation_unit: one_standardized_log1p_expression_unit
+    attention_derivative: attention_probability_per_standardized_log1p_source_expression_unit
+    prediction_output_variable: gene_wise_standardized_log1p_raw_count_prediction
+    prediction_derivative: standardized_log1p_target_prediction_units_per_standardized_log1p_source_expression_unit
+    library_size_normalization_used: false
+
+numerical_execution:
+  deterministic_seed: 2026082497
+  deterministic_algorithms: true
+  deterministic_warn_only: false
+  cublas_workspace_config: ":4096:8"
+  attention_and_embedding_extraction:
+    automatic_mixed_precision: true
+    autocast_dtype: float16
+    exact_receiver_wise_softmax: true
+    attention_accumulation_dtype: float32
+    neighbor_sampling: false
+  selected_derivative_execution:
+    automatic_mixed_precision: false
+    dtype: float32
+  receiver_chunk_size: 512
+  maximum_edges_per_chunk: 200000
+  all_incoming_edges_of_receiver_normalized_together: true
+  execution_overrides_allowed: false
+  models_processed_concurrently: 1
+  complete_cores_staged_on_gpu_concurrently: 1
+
+required_output_contract:
+  analysis_schema: cancer_6core_relative_qkv_four_seed_stability_v1
+  manifest_schema: cancer_6core_relative_qkv_four_seed_stability_manifest_v1
+  status: complete
+  publication: atomic_directory_rename_without_replacement
+  active_model_seeds: [0, 1, 2, 3]
+  report_files: [report.json, report.md, manifest.json]
+  parquet_tables:
+    - training_curves
+    - fixed_metrics
+    - fixed_metric_summary
+    - fixed_probe_edges
+    - fixed_edge_summary
+    - mutual_pair_stability
+    - selected_gradients
+    - selected_gradient_stability
+    - node_identity
+  numpy_archives:
+    - node_embeddings
+    - embedding_stability
+    - attention_head_stability
+    - selected_gradient_stability
+  fixed_edge_summary:
+    relationship_identity: core_alias_source_node_receiver_node
+    aligned_seed_channels:
+      - attention_mean_head
+      - receiver_centered_content_logit_mean_head
+      - receiver_centered_positional_bias_mean_head
+      - receiver_centered_combined_logit_mean_head
+    raw_fixed_probe_edge_table_retains_uncentered_logit_channels: true
+    retain_each_seed_value: true
+    required_statistics:
+      - ensemble_mean
+      - ensemble_standard_deviation_ddof_1
+      - median
+      - minimum
+      - maximum
+      - empirical_quantiles_linear
+      - seed_support_count
+  mutual_pair_summary:
+    retain_each_seed_score: true
+    retain_each_seed_top_100_support_indicator: true
+    seed_support_count_uses_top_100_membership: true
+  selected_gradient_summary:
+    raw_rows: 96
+    summary_relationships: 48
+    retain_each_seed_value_in_selected_gradients_table: true
+    seed_support_count_uses_absolute_gradient_greater_than_zero: true
+  node_embedding_shape_semantics: one_row_per_cohort_cell_by_256_features_per_seed
+  head_alignment_shape_semantics: four_seeds_by_eight_reference_heads
+  provenance_copies_locked_protocol_and_request_files: true
+
+reproducibility_gate:
+  protocol_checksum_sidecar: analysis_protocol_selected_gradient_stability_v1.sha256
+  verify_protocol_checksum_before_cuda: true
+  verify_request_checksum_before_cuda: true
+  regenerate_requests_from_prepared_inputs_before_cuda: true
+  require_exact_csv_byte_equality: true
+  require_exact_24_row_order: true
+  overwrite_existing_locked_request_table: false
+  behavior_on_any_drift: fail_without_running_model_inference
+  generate_command: >-
+    CUDA_VISIBLE_DEVICES='' PYTHONPATH=src /venv/main/bin/python
+    scripts/analysis/prepare_relative_qkv_gradient_requests.py
+    --requests-csv /new/path/selected_gradient_requests_v1.csv
+    --requests-sha256 /new/path/selected_gradient_requests_v1.sha256 generate
+  verify_command: >-
+    CUDA_VISIBLE_DEVICES='' PYTHONPATH=src /venv/main/bin/python
+    scripts/analysis/prepare_relative_qkv_gradient_requests.py verify
+
+interpretation_limits:
+  selected_gradient_probe_count: 24
+  selected_gradient_probes_are_sparse: true
+  selected_gradient_probes_are_representative_of_all_edges_or_genes: false
+  tiny_finite_nonzero_gradients_can_count_as_support: true
+  differing_plateau_epochs_allowed: true
+  exposure_duration_can_contribute_to_observed_seed_spread: true
+  local_orientation_representation: axial_tensor
+  opposite_directions_along_same_axis_distinguishable: false
+  measured_polarity_signal_present: false
+  attention_gradients_or_jacobians_establish_causality: false
+
+claim_scope:
+  statement: >-
+    These derivatives are selected local, scale-dependent model sensitivities
+    under a fixed held-in fit mask. They do not establish correlation, direct
+    signaling, a biological mechanism, patient replication, or causality.

@@ -1,0 +1,28 @@
+{
+  "colors": {
+    "C0": "#D55E00",
+    "C1": "#0A0AF5",
+    "C10": "#781A29",
+    "C11": "#D697F5",
+    "C12": "#E50AF5",
+    "C13": "#B6C678",
+    "C14": "#F50A49",
+    "C15": "#1A5868",
+    "C16": "#78580A",
+    "C17": "#68B60A",
+    "C18": "#780A68",
+    "C19": "#8758F5",
+    "C2": "#0AF50A",
+    "C20": "#4997F5",
+    "C3": "#0AC6F5",
+    "C4": "#F529A7",
+    "C5": "#0A580A",
+    "C6": "#0A3997",
+    "C7": "#E5D60A",
+    "C8": "#F5B6B6",
+    "C9": "#0AF5B6"
+  },
+  "label_prefix": "C",
+  "method": "deterministic_greedy_farthest_point_CIELAB",
+  "representation": "contextual"
+}

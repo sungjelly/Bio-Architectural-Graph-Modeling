@@ -1,0 +1,1466 @@
+{
+  "active_model_seeds": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "attention_head_stability": {
+    "content_vs_positional_bias": {
+      "content_absolute_fraction": [
+        [
+          0.47696322020157694,
+          0.5499755642620175,
+          0.4089050248531809,
+          0.3320273782857568,
+          0.2828861116072293,
+          0.4273164477974544,
+          0.6425386017345388,
+          0.8150126272452631
+        ],
+        [
+          0.5122877611415206,
+          0.6830819023677872,
+          0.44595667512814546,
+          0.379165809191435,
+          0.25224420042760015,
+          0.744221895940418,
+          0.34052829857876254,
+          0.5082086466680892
+        ],
+        [
+          0.5035197422181805,
+          0.7413047353271667,
+          0.6515932985869103,
+          0.6334784767320512,
+          0.5289452167207007,
+          0.6774675640994853,
+          0.4538351487129029,
+          0.6942326977227893
+        ],
+        [
+          0.6876396460318412,
+          0.4810629327931232,
+          0.40192637627676775,
+          0.6688337112783357,
+          0.6293357281747356,
+          0.45265072660363886,
+          0.5853698368834258,
+          0.6861902730328788
+        ]
+      ],
+      "same_sign_fraction": [
+        [
+          0.5188836955409232,
+          0.5145963403955284,
+          0.5233530074033639,
+          0.5177350937645707,
+          0.49720810162282647,
+          0.5171778513186176,
+          0.4929321187722471,
+          0.5066812232040303
+        ],
+        [
+          0.5125493273287617,
+          0.5219087259618118,
+          0.5231369338018719,
+          0.5268443019116827,
+          0.48844006232017556,
+          0.5014840844734059,
+          0.48927023984169765,
+          0.49505873790272137
+        ],
+        [
+          0.5180762626090318,
+          0.48732557742826926,
+          0.4933756382700465,
+          0.5131406866591609,
+          0.4915446988047718,
+          0.5003013658126073,
+          0.48024063775829323,
+          0.472564338757918
+        ],
+        [
+          0.4938760192419228,
+          0.5042589244083564,
+          0.5272423322302208,
+          0.5029738550942194,
+          0.4960253829620279,
+          0.5232961459292871,
+          0.486643239739347,
+          0.5198503406002297
+        ]
+      ],
+      "within_seed_spearman": [
+        [
+          0.060130303939935355,
+          0.03249345015556285,
+          0.06429581640321794,
+          0.06156295099594245,
+          -0.014977185196586962,
+          0.060804229810321735,
+          -0.014529868836294521,
+          0.016180486726990025
+        ],
+        [
+          0.03639341183244993,
+          0.05160227882922893,
+          0.06180954301990654,
+          0.08082895747729098,
+          -0.028333699807413522,
+          -0.006346781970215721,
+          -0.037691980038628455,
+          -0.021515826379934697
+        ],
+        [
+          0.0554083702456498,
+          -0.032717914767253546,
+          -0.014600340358550783,
+          0.03542886756041032,
+          -0.02318537895347909,
+          0.014655872081095282,
+          -0.03725761586469753,
+          -0.04741009107041768
+        ],
+        [
+          0.02690079598249362,
+          0.0142372010519305,
+          0.07406821801822155,
+          0.03620615122121088,
+          -0.0036025209898883272,
+          0.05565633209932356,
+          -0.02641973579962326,
+          0.062372928140588195
+        ]
+      ]
+    },
+    "head_top_edge_count": 4397,
+    "head_top_edge_fraction": 0.05,
+    "logit_comparison_gauge": "content and positional-bias logits are centered within each receiver/head before signatures and contribution diagnostics",
+    "matched_attention_spearman": [
+      [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        0.723521108016744,
+        0.5331013765383625,
+        0.8796242402153435,
+        0.8688489302490406,
+        0.862991265542748,
+        0.304876985190746,
+        0.6362975008012913,
+        0.2445621538715188
+      ],
+      [
+        0.6496231330584065,
+        0.15481380076493992,
+        0.4127721985993465,
+        0.587068673392835,
+        0.7109072341480324,
+        0.5102708422160172,
+        0.5678539738464804,
+        0.25278217538008474
+      ],
+      [
+        0.5898705119522548,
+        0.44103046007901914,
+        0.8482668795533204,
+        0.6538030563339152,
+        0.009133821802775598,
+        0.823669618586763,
+        0.7045489976958207,
+        0.49143978883169537
+      ]
+    ],
+    "matched_attention_top_edge_jaccard": [
+      [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        0.2611501505808117,
+        0.1372041898357688,
+        0.3818353236957888,
+        0.33222239054688685,
+        0.23841712434868328,
+        0.11063399848446577,
+        0.21279823472624465,
+        0.08863580094082693
+      ],
+      [
+        0.21901857499306904,
+        0.08353868900936422,
+        0.16894855775621428,
+        0.23096304591265399,
+        0.23459216622209744,
+        0.2246205263890823,
+        0.15725753388603764,
+        0.07230825509084259
+      ],
+      [
+        0.18262506724045185,
+        0.08621541501976285,
+        0.33000604960677554,
+        0.17441239316239315,
+        0.0625906234896085,
+        0.3078524687685901,
+        0.199890844589985,
+        0.165694591728526
+      ]
+    ],
+    "matched_positional_bias_spearman": [
+      [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        0.9832762166267937,
+        0.8130534378940726,
+        0.9716771062558415,
+        0.9908562183140355,
+        0.9486269671479841,
+        0.2075544665528841,
+        0.870214188201373,
+        0.09904606129806925
+      ],
+      [
+        0.9256415159553675,
+        -0.516766483493429,
+        0.8772189338763023,
+        0.7056373706316572,
+        0.9489631546936066,
+        0.6339220798987305,
+        0.77403503181373,
+        0.26382467726778236
+      ],
+      [
+        0.8134592541856124,
+        0.8960786277698282,
+        0.9687828087175057,
+        0.8668940488618841,
+        -0.525560567930846,
+        0.9844828438068871,
+        0.7257483961714202,
+        0.4756315960062636
+      ]
+    ],
+    "matched_signature_spearman": [
+      [
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        0.7461901139576848,
+        0.6325311610867099,
+        0.8803554734136817,
+        0.8496338701734257,
+        0.7785571062818131,
+        0.29545261653976007,
+        0.7718833395292637,
+        0.21248912511578052
+      ],
+      [
+        0.6480618328553676,
+        -0.13481696908850985,
+        0.5164015863179909,
+        0.6103414240200948,
+        0.7552630540935518,
+        0.5231659004478016,
+        0.6796248125964438,
+        0.23165763685440663
+      ],
+      [
+        0.6655366280487173,
+        0.523783675419761,
+        0.8243105315146745,
+        0.729448868704953,
+        -0.01147302821626146,
+        0.8023967399432922,
+        0.7477541944078709,
+        0.47401552571178107
+      ]
+    ],
+    "matching_method": "Hungarian maximum fixed-signature Spearman",
+    "receiver_softmax_null_offsets_removed": true,
+    "reference_seed": 0,
+    "reference_to_seed_head": [
+      [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      [
+        3,
+        0,
+        7,
+        5,
+        4,
+        2,
+        1,
+        6
+      ],
+      [
+        5,
+        6,
+        2,
+        3,
+        1,
+        7,
+        4,
+        0
+      ],
+      [
+        2,
+        6,
+        0,
+        1,
+        4,
+        7,
+        3,
+        5
+      ]
+    ]
+  },
+  "calibrated_biological_confidence_interval": false,
+  "campaign_id": "cmp_20260824_cancer_6core_relative_qkv_multiseed",
+  "causal_claim_supported": false,
+  "deferred_model_seeds": [
+    4
+  ],
+  "differing_final_epochs": {
+    "allowed": true,
+    "common_final_epoch_required": false,
+    "epochs_by_seed": {
+      "0": 200,
+      "1": 225,
+      "2": 175,
+      "3": 200
+    },
+    "exposure_duration_can_contribute_to_seed_spread": true
+  },
+  "embedding_stability": {
+    "linear_cka": [
+      [
+        1.0,
+        0.9750044593145472,
+        0.9719836742014208,
+        0.9812195975700853
+      ],
+      [
+        0.9750044593145472,
+        1.0,
+        0.9702235200332088,
+        0.9750540836669226
+      ],
+      [
+        0.9719836742014208,
+        0.9702235200332088,
+        1.0,
+        0.9712864787362357
+      ],
+      [
+        0.9812195975700853,
+        0.9750540836669226,
+        0.9712864787362357,
+        1.0
+      ]
+    ],
+    "method": "linear CKA and optional orthogonal Procrustes",
+    "orthogonal_procrustes_similarity": [
+      [
+        1.0,
+        0.8993057148140314,
+        0.895494709237059,
+        0.9027677821441878
+      ],
+      [
+        0.8993057148140314,
+        1.0,
+        0.892335330109812,
+        0.8980032026731867
+      ],
+      [
+        0.895494709237059,
+        0.892335330109812,
+        1.0,
+        0.8945515890624409
+      ],
+      [
+        0.9027677821441878,
+        0.8980032026731867,
+        0.8945515890624409,
+        1.0
+      ]
+    ],
+    "seeds": [
+      0,
+      1,
+      2,
+      3
+    ]
+  },
+  "execution": {
+    "analysis_compute_finished_at_utc": "2026-08-25T05:56:42.361717+00:00",
+    "analysis_compute_runtime_seconds": 1030.91206692392,
+    "attention_and_embedding_replay_amp_dtype": "float16",
+    "attention_and_embedding_replay_amp_enabled": true,
+    "bundle_report_finalized_at_utc": "2026-08-25T05:56:42.361764+00:00",
+    "command_argv": [
+      "/workspace/BAGM-relative-qkv-analysis/scripts/analysis/run_relative_qkv_four_seed_stability.py",
+      "--run",
+      "0=/workspace/BAGM/artifacts/runs/2026/08/r_20260824T121803Z_16144620_s000_f00_a02_62498796",
+      "--run",
+      "1=/workspace/BAGM/artifacts/runs/2026/08/r_20260824T124852Z_95591978_s001_f00_a01_266e6db4",
+      "--run",
+      "2=/workspace/BAGM/artifacts/runs/2026/08/r_20260824T124855Z_95591978_s002_f00_a01_3d4cbf7d",
+      "--run",
+      "3=/workspace/BAGM/artifacts/runs/2026/08/r_20260824T125052Z_95591978_s003_f00_a01_c02388f5",
+      "--checkpoint",
+      "0=/workspace/BAGM/artifacts/runs/2026/08/r_20260824T121803Z_16144620_s000_f00_a02_62498796/checkpoints/last.ckpt",
+      "--checkpoint",
+      "1=/workspace/BAGM/artifacts/runs/2026/08/r_20260824T124852Z_95591978_s001_f00_a01_266e6db4/checkpoints/last.ckpt",
+      "--checkpoint",
+      "2=/workspace/BAGM/artifacts/runs/2026/08/r_20260824T124855Z_95591978_s002_f00_a01_3d4cbf7d/checkpoints/last.ckpt",
+      "--checkpoint",
+      "3=/workspace/BAGM/artifacts/runs/2026/08/r_20260824T125052Z_95591978_s003_f00_a01_c02388f5/checkpoints/last.ckpt",
+      "--receipt",
+      "0=/workspace/BAGM/reports/analyses/cancer_6core_relative_qkv/checkpoint_verification/r_20260824T121803Z_16144620_s000_f00_a02_62498796.json",
+      "--receipt",
+      "1=/workspace/BAGM/reports/analyses/cancer_6core_relative_qkv/checkpoint_verification/r_20260824T124852Z_95591978_s001_f00_a01_266e6db4.json",
+      "--receipt",
+      "2=/workspace/BAGM/reports/analyses/cancer_6core_relative_qkv/checkpoint_verification/r_20260824T124855Z_95591978_s002_f00_a01_3d4cbf7d.json",
+      "--receipt",
+      "3=/workspace/BAGM/reports/analyses/cancer_6core_relative_qkv/checkpoint_verification/r_20260824T125052Z_95591978_s003_f00_a01_c02388f5.json",
+      "--cohort-dir",
+      "/workspace/BAGM/data/processed/cancer_6core_relative_qkv_v1",
+      "--graph-dir",
+      "/workspace/BAGM/data/processed/cancer_6core_relative_qkv_graphs_v1",
+      "--protocol",
+      "/workspace/BAGM-relative-qkv-analysis/experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/analysis_protocol_selected_gradient_stability_v1.yaml",
+      "--protocol-sha256",
+      "/workspace/BAGM-relative-qkv-analysis/experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/analysis_protocol_selected_gradient_stability_v1.sha256",
+      "--gradient-requests",
+      "/workspace/BAGM-relative-qkv-analysis/experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/selected_gradient_requests_v1.csv",
+      "--gradient-requests-sha256",
+      "/workspace/BAGM-relative-qkv-analysis/experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/selected_gradient_requests_v1.sha256",
+      "--device",
+      "cuda:0",
+      "--receiver-chunk-size",
+      "512",
+      "--max-edges-per-chunk",
+      "200000",
+      "--output",
+      "/workspace/BAGM/reports/analyses/cancer_6core_relative_qkv/four_seed_stability_v1"
+    ],
+    "cores_staged_on_cuda_concurrently": 1,
+    "cublas_workspace_config": ":4096:8",
+    "cuda_device_order": "PCI_BUS_ID",
+    "cuda_visible_devices": "1",
+    "cudnn_tf32_enabled": false,
+    "deterministic_algorithms_enabled": true,
+    "deterministic_seed": 2026082497,
+    "deterministic_warn_only": false,
+    "device": "cuda:0",
+    "device_compute_capability": [
+      8,
+      6
+    ],
+    "device_multiprocessor_count": 82,
+    "device_name": "NVIDIA GeForce RTX 3090",
+    "device_total_memory_bytes": 25296044032,
+    "device_uuid": "GPU-4f3f6290-223c-18b6-4634-4cabbe8368d5",
+    "extraction_finished_at_utc": "2026-08-25T05:53:27.751054+00:00",
+    "extraction_runtime_seconds": 836.3013918059878,
+    "gpu_binding": {
+      "analysis_pid": 541604,
+      "compute_applications_after_cuda": [
+        {
+          "gpu_uuid": "GPU-4f3f6290-223c-18b6-4634-4cabbe8368d5",
+          "pid": 541604,
+          "process_name": "/venv/main/bin/python"
+        }
+      ],
+      "compute_applications_before_cuda": [],
+      "cuda_device_order": "PCI_BUS_ID",
+      "cuda_visible_devices": "1",
+      "logical_device": "cuda:0",
+      "nvidia_smi_inventory": {
+        "query": "index,uuid,pci.bus_id,name,driver_version,memory.total",
+        "raw_output_sha256": "389e6c5b03eece7e96e96fcb53715e11e3519e66d789d749feb216986c7c0d2f",
+        "records": [
+          {
+            "driver_version": "580.159.03",
+            "index": 0,
+            "memory_total_mib": 24576,
+            "name": "NVIDIA GeForce RTX 3090",
+            "pci_bus_id": "00000000:84:00.0",
+            "uuid": "GPU-7e6c842d-886d-b449-7e05-4863a531de22"
+          },
+          {
+            "driver_version": "580.159.03",
+            "index": 1,
+            "memory_total_mib": 24576,
+            "name": "NVIDIA GeForce RTX 3090",
+            "pci_bus_id": "00000000:85:00.0",
+            "uuid": "GPU-4f3f6290-223c-18b6-4634-4cabbe8368d5"
+          },
+          {
+            "driver_version": "580.159.03",
+            "index": 2,
+            "memory_total_mib": 24576,
+            "name": "NVIDIA GeForce RTX 3090",
+            "pci_bus_id": "00000000:88:00.0",
+            "uuid": "GPU-cbc764d7-1b59-d50e-95b0-c7d2c4f054f7"
+          },
+          {
+            "driver_version": "580.159.03",
+            "index": 3,
+            "memory_total_mib": 24576,
+            "name": "NVIDIA GeForce RTX 3090",
+            "pci_bus_id": "00000000:89:00.0",
+            "uuid": "GPU-5fbcfe4b-9b69-c507-1bf4-2585cee197e3"
+          }
+        ]
+      },
+      "selected_physical_gpu": {
+        "driver_version": "580.159.03",
+        "index": 1,
+        "memory_total_mib": 24576,
+        "name": "NVIDIA GeForce RTX 3090",
+        "pci_bus_id": "00000000:85:00.0",
+        "uuid": "GPU-4f3f6290-223c-18b6-4634-4cabbe8368d5"
+      },
+      "torch_device_uuid": "GPU-4f3f6290-223c-18b6-4634-4cabbe8368d5"
+    },
+    "matmul_tf32_enabled": false,
+    "max_edges_per_chunk": 200000,
+    "models_processed_concurrently": 1,
+    "neighbor_sampling": false,
+    "package_versions": {
+      "numpy": "2.5.2",
+      "pyarrow": "25.0.1",
+      "scipy": "1.18.1",
+      "torch": "2.13.0"
+    },
+    "peak_cuda_memory_allocated_bytes": 16104344576,
+    "platform": "Linux-6.8.0-117-generic-x86_64-with-glibc2.39",
+    "python_executable": "/venv/main/bin/python",
+    "python_version": "3.12.13",
+    "receiver_chunk_size": 512,
+    "receiver_wise_softmax_exact": true,
+    "runtime_scope_note": "report records extraction and CPU analysis through report finalization; publication verification runtime is returned by the command and is not retroactively inserted into the immutable bundle",
+    "selected_derivative_replay_amp_enabled": false,
+    "selected_derivative_replay_dtype": "float32",
+    "source": {
+      "analysis_source_files": {
+        "scripts/analysis/prepare_relative_qkv_gradient_requests.py": {
+          "sha256": "2e0e5200c6a518e71cb2e8b66a67e55c520286a1bf27e5d4816f04998bdacb53",
+          "size_bytes": 3960
+        },
+        "scripts/analysis/run_relative_qkv_four_seed_stability.py": {
+          "sha256": "5f05f6f51731db1d01a1c8843a5021a20bdbb58e59f9fa6e1a37775487165bb2",
+          "size_bytes": 4640
+        },
+        "src/spatial_benchmark/relative_qkv_four_seed_stability.py": {
+          "sha256": "0f7e4f79a884b6f02c010c363fb6f93a2789c90a65f53f247c9d2773e961e2a4",
+          "size_bytes": 241027
+        },
+        "src/spatial_benchmark/relative_qkv_gradient_requests.py": {
+          "sha256": "6c518d4284ecd564b1395adc9f6baf545b36aedd6023ec8088f34e3d1a32796a",
+          "size_bytes": 29222
+        },
+        "src/spatial_benchmark/relative_qkv_graph_transformer.py": {
+          "sha256": "db7f3a18da0155c69bf43874b33d2ad1d888fa860c836dec782064e5dbcab8ba",
+          "size_bytes": 41333
+        },
+        "src/spatial_benchmark/relative_qkv_post_training.py": {
+          "sha256": "273fc377e28844a7408f2bf257a1d0d8a7bdfb8f27f4e13b06807e47662147ca",
+          "size_bytes": 28139
+        },
+        "src/spatial_benchmark/relative_qkv_stability.py": {
+          "sha256": "ecb6751eec050cb8d97ba1735cf8e73c38ddfa7e4d3bef492060cbc6058ec10e",
+          "size_bytes": 38834
+        }
+      },
+      "git_commit": "c4d9f967d17026cf2ec506774f8002ce4aa028eb",
+      "git_dirty": false,
+      "git_status_porcelain_v1": [],
+      "project_root": "/workspace/BAGM-relative-qkv-analysis",
+      "tracked_dirty_diff_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "started_at_utc": "2026-08-25T05:39:31.449687+00:00",
+    "torch_cuda_version": "13.0",
+    "torch_version": "2.13.0+cu130",
+    "working_directory": "/workspace/BAGM-relative-qkv-analysis"
+  },
+  "fit_scope": "all_cells_six_cancer_cores_transductive",
+  "five_seed_campaign_completion_claim_allowed": false,
+  "fixed_held_in_metrics": {
+    "per_seed": [
+      {
+        "completed_global_epochs": 200,
+        "fit/uniform_per_cell/masked_huber": 0.24039614448944727,
+        "fit/uniform_per_cell/masked_mae": 0.3779648045698802,
+        "fit/uniform_per_cell/masked_mse": 0.9483014543851217,
+        "fit/uniform_per_cell/masked_r2": 0.04725501934687296,
+        "run_id": "r_20260824T121803Z_16144620_s000_f00_a02_62498796",
+        "seed": 0
+      },
+      {
+        "completed_global_epochs": 225,
+        "fit/uniform_per_cell/masked_huber": 0.240468367934227,
+        "fit/uniform_per_cell/masked_mae": 0.38724541664123535,
+        "fit/uniform_per_cell/masked_mse": 0.9430896739164988,
+        "fit/uniform_per_cell/masked_r2": 0.05313227574030558,
+        "run_id": "r_20260824T124852Z_95591978_s001_f00_a01_266e6db4",
+        "seed": 1
+      },
+      {
+        "completed_global_epochs": 175,
+        "fit/uniform_per_cell/masked_huber": 0.24111571659644446,
+        "fit/uniform_per_cell/masked_mae": 0.38339437544345856,
+        "fit/uniform_per_cell/masked_mse": 0.9515518148740133,
+        "fit/uniform_per_cell/masked_r2": 0.04346093535423279,
+        "run_id": "r_20260824T124855Z_95591978_s002_f00_a01_3d4cbf7d",
+        "seed": 2
+      },
+      {
+        "completed_global_epochs": 200,
+        "fit/uniform_per_cell/masked_huber": 0.24052120496829352,
+        "fit/uniform_per_cell/masked_mae": 0.38089396556218463,
+        "fit/uniform_per_cell/masked_mse": 0.9467949469884237,
+        "fit/uniform_per_cell/masked_r2": 0.048732111851374306,
+        "run_id": "r_20260824T125052Z_95591978_s003_f00_a01_c02388f5",
+        "seed": 3
+      }
+    ],
+    "role": "held_in_fit_diagnostic_not_validation_or_test",
+    "summary": {
+      "fit/uniform_per_cell/masked_huber": {
+        "calibrated_confidence_interval": false,
+        "empirical_quantiles": {
+          "0.05": 0.24040697800616423,
+          "0.25": 0.24045031207303205,
+          "0.75": 0.24066983287533125,
+          "0.95": 0.2410265398522218
+        },
+        "ensemble_member_count": 4,
+        "maximum": 0.24111571659644446,
+        "mean": 0.24062535849710306,
+        "median": 0.24049478645126027,
+        "minimum": 0.24039614448944727,
+        "range": 0.0007195721069971905,
+        "sample_standard_deviation": 0.00033089984451037104,
+        "spread_label": "four-seed ensemble spread"
+      },
+      "fit/uniform_per_cell/masked_mae": {
+        "calibrated_confidence_interval": false,
+        "empirical_quantiles": {
+          "0.05": 0.37840417871872584,
+          "0.25": 0.3801616753141085,
+          "0.75": 0.38435713574290276,
+          "0.95": 0.3866677604615688
+        },
+        "ensemble_member_count": 4,
+        "maximum": 0.38724541664123535,
+        "mean": 0.3823746405541897,
+        "median": 0.38214417050282157,
+        "minimum": 0.3779648045698802,
+        "range": 0.009280612071355165,
+        "sample_standard_deviation": 0.003932911168375074,
+        "spread_label": "four-seed ensemble spread"
+      },
+      "fit/uniform_per_cell/masked_mse": {
+        "calibrated_confidence_interval": false,
+        "empirical_quantiles": {
+          "0.05": 0.9436454648772875,
+          "0.25": 0.9458686287204425,
+          "0.75": 0.9491140445073446,
+          "0.95": 0.9510642608006795
+        },
+        "ensemble_member_count": 4,
+        "maximum": 0.9515518148740133,
+        "mean": 0.9474344725410144,
+        "median": 0.9475482006867727,
+        "minimum": 0.9430896739164988,
+        "range": 0.008462140957514519,
+        "sample_standard_deviation": 0.0035114305453820276,
+        "spread_label": "four-seed ensemble spread"
+      },
+      "fit/uniform_per_cell/masked_r2": {
+        "calibrated_confidence_interval": false,
+        "empirical_quantiles": {
+          "0.05": 0.044030047953128815,
+          "0.25": 0.04630649834871292,
+          "0.75": 0.049832152823607125,
+          "0.95": 0.05247225115696589
+        },
+        "ensemble_member_count": 4,
+        "maximum": 0.05313227574030558,
+        "mean": 0.048145085573196404,
+        "median": 0.047993565599123635,
+        "minimum": 0.04346093535423279,
+        "range": 0.009671340386072792,
+        "sample_standard_deviation": 0.0039979222426672414,
+        "spread_label": "four-seed ensemble spread"
+      }
+    }
+  },
+  "fixed_input_identity": {
+    "core_aliases": [
+      "CAN-01",
+      "CAN-09",
+      "CAN-13",
+      "CAN-15",
+      "CAN-21",
+      "CAN-23"
+    ],
+    "final_layer": -1,
+    "fixed_directed_edge_count": 87933,
+    "fixed_edge_identity_sha256": "7ab8a03a75d3e6b0d6ea9adfb9de9762611d7a79965f505bd52d9925658caae5",
+    "fixed_masks": {
+      "CAN-01": {
+        "checksum_sha256": "a675760a6ef1ff082ec79881a5306bf4687fc7bb47f020bad0f3e2ef549471f8",
+        "effective_seed": 9062727321619624136,
+        "masked_entry_count": 4391171
+      },
+      "CAN-09": {
+        "checksum_sha256": "695291cbf3c51415ad86c512b57f6f933de7f47b8c52fa08300cc8663f33545a",
+        "effective_seed": 5946514512396399875,
+        "masked_entry_count": 8620279
+      },
+      "CAN-13": {
+        "checksum_sha256": "8a66925cf1203ad9a44b3c4d59bcea9956c8cf417a03ba7dc572a5dc54c6ae5c",
+        "effective_seed": 7877201242438383962,
+        "masked_entry_count": 2658540
+      },
+      "CAN-15": {
+        "checksum_sha256": "4a8ab2923fa13931f2d59c1bed1ca26f8080e5070fa48629869d4af7645a7715",
+        "effective_seed": 1005038933951219292,
+        "masked_entry_count": 19057455
+      },
+      "CAN-21": {
+        "checksum_sha256": "10421f7111fa72db4cf351ea0c6f077ba5f83f16a7a896540a061d142fef3a6b",
+        "effective_seed": 1375311813293012057,
+        "masked_entry_count": 2441455
+      },
+      "CAN-23": {
+        "checksum_sha256": "ec13601a3990a0fe79c5766ee7f40fc4f42f909a2129b61940908c6418f7adfe",
+        "effective_seed": 2399494739613550470,
+        "masked_entry_count": 21742822
+      }
+    },
+    "node_count": 117996,
+    "node_identity_sha256": "8b9e000445a879d8761d72d23392c1a30ebba46182f15b111aca9047337537c2",
+    "receiver_probes_per_core": 64,
+    "receiver_selection": "endpoint-inclusive evenly spaced node indices"
+  },
+  "fixed_probe_edge_stability": {
+    "logit_gauge": "receiver/head centered before mean-head reduction",
+    "quantile_method": "numpy linear interpolation",
+    "row_count": 87933,
+    "score_scope": "per-edge permutation-invariant mean-head scores on locked receivers",
+    "scores": {
+      "attention_mean_head": {
+        "support_definition": "membership in that seed's top 5% mean-head attention values over the locked fixed-probe edge set",
+        "top_edge_count_per_seed": 4397,
+        "top_fraction": 0.05
+      },
+      "receiver_centered_combined_logit_mean_head": {
+        "support_definition": "absolute score strictly greater than zero"
+      },
+      "receiver_centered_content_logit_mean_head": {
+        "support_definition": "absolute score strictly greater than zero"
+      },
+      "receiver_centered_positional_bias_mean_head": {
+        "support_definition": "absolute score strictly greater than zero"
+      }
+    },
+    "standard_deviation_ddof": 1,
+    "summary_table": "tables/fixed_edge_summary.parquet"
+  },
+  "generalization_claim_supported": false,
+  "limitations": [
+    "Four model seeds quantify ensemble spread, not a calibrated confidence interval.",
+    "All diagnostics are held-in and transductive; they do not estimate generalization.",
+    "Attention is computational routing and is not direct signaling or causality.",
+    "Gradients are local, scale-dependent model sensitivities and are not causality.",
+    "Head alignment is derived from fixed held-in probes and may not be unique.",
+    "The axial orientation representation cannot distinguish opposite polarity.",
+    "The 24 selected gradient probes are sparse and are not representative of all edges or genes.",
+    "Any finite nonzero gradient, however small, counts as support under the locked protocol.",
+    "Models stopped at different plateau epochs, so exposure duration can contribute to observed seed spread."
+  ],
+  "members": [
+    {
+      "checkpoint_path": "/workspace/BAGM/artifacts/runs/2026/08/r_20260824T121803Z_16144620_s000_f00_a02_62498796/checkpoints/last.ckpt",
+      "checkpoint_sha256": "c5b7fdd6e3192c3146d415f1c77474f9e4483bba090c4fc9c2ac7d79ab554c0c",
+      "completed_global_epochs": 200,
+      "core_order_seed": 2026082402,
+      "history_sha256": "01a00d8d5c69984254ac7a6abe7e4289aa2de24a8b44ce4269db0d36f33bc78e",
+      "mask_base_seed": 2026082401,
+      "model_construction_sha256": "b81ae9364f7c12d434feff6fe2a5249d09e1aef12300965e359ac6bf2bbcb1ff",
+      "model_state_sha256": "4a8f2ad335d8c61d29f2fe5864cad425239227524fb5b5a26946bdb142b6941f",
+      "parameter_count": 5003016,
+      "run_id": "r_20260824T121803Z_16144620_s000_f00_a02_62498796",
+      "run_root": "/workspace/BAGM/artifacts/runs/2026/08/r_20260824T121803Z_16144620_s000_f00_a02_62498796",
+      "seed": 0,
+      "strict_receipt_content_sha256": "3fc501c7a24c06a68682758e4cc8cbf76444bd17c1bd8f2bc1d06be971cdbf8e",
+      "strict_receipt_file_sha256": "d7181690624d4817580c33eb9ba8560775358b55a3d10844345b3c0dcad73e90",
+      "strict_receipt_path": "/workspace/BAGM/reports/analyses/cancer_6core_relative_qkv/checkpoint_verification/r_20260824T121803Z_16144620_s000_f00_a02_62498796.json",
+      "training_schedule_sha256": "2288eca8ad82fc5cd06c656cc7c2666452b1e18b191a4762111703d0704b3419"
+    },
+    {
+      "checkpoint_path": "/workspace/BAGM/artifacts/runs/2026/08/r_20260824T124852Z_95591978_s001_f00_a01_266e6db4/checkpoints/last.ckpt",
+      "checkpoint_sha256": "3ce4a0e7983a14cba34a32e182800c62ed0184377247443da6bbec72531d0d3c",
+      "completed_global_epochs": 225,
+      "core_order_seed": 2026082402,
+      "history_sha256": "63a876215d6a1131c356925d35c202a6914e27d2103997a34107c93fd95185f5",
+      "mask_base_seed": 2026082401,
+      "model_construction_sha256": "b81ae9364f7c12d434feff6fe2a5249d09e1aef12300965e359ac6bf2bbcb1ff",
+      "model_state_sha256": "50313eadac8a8fb8228890d667d5393d0b2e8af7278a9f9a517cb5dfa96dc5cc",
+      "parameter_count": 5003016,
+      "run_id": "r_20260824T124852Z_95591978_s001_f00_a01_266e6db4",
+      "run_root": "/workspace/BAGM/artifacts/runs/2026/08/r_20260824T124852Z_95591978_s001_f00_a01_266e6db4",
+      "seed": 1,
+      "strict_receipt_content_sha256": "2c6beb769a4af051d6136cafb82c1b719f1896ecda37a600b0cdd54ecf67bda4",
+      "strict_receipt_file_sha256": "28fed53486ef90d5759c8849221b56f367addd1800372b456100bd46dcab6a3e",
+      "strict_receipt_path": "/workspace/BAGM/reports/analyses/cancer_6core_relative_qkv/checkpoint_verification/r_20260824T124852Z_95591978_s001_f00_a01_266e6db4.json",
+      "training_schedule_sha256": "b8fb9328ea0037dcb01b0e302cb1ac1fe5f0869c8a914c30915198a42a37458a"
+    },
+    {
+      "checkpoint_path": "/workspace/BAGM/artifacts/runs/2026/08/r_20260824T124855Z_95591978_s002_f00_a01_3d4cbf7d/checkpoints/last.ckpt",
+      "checkpoint_sha256": "91f3f8bfe03ee1624c6ac954a612c65fd6cabc4bf0cce03dc2debf1c44de6411",
+      "completed_global_epochs": 175,
+      "core_order_seed": 2026082402,
+      "history_sha256": "06ab3e4f3565b3a8464c12bfda89fb2edc4999e04d551b30f6dd52162071a598",
+      "mask_base_seed": 2026082401,
+      "model_construction_sha256": "b81ae9364f7c12d434feff6fe2a5249d09e1aef12300965e359ac6bf2bbcb1ff",
+      "model_state_sha256": "0fb026dbf51fd32af774baf0bdd821b9ffaefce0906702c5c85afa5a530fc23d",
+      "parameter_count": 5003016,
+      "run_id": "r_20260824T124855Z_95591978_s002_f00_a01_3d4cbf7d",
+      "run_root": "/workspace/BAGM/artifacts/runs/2026/08/r_20260824T124855Z_95591978_s002_f00_a01_3d4cbf7d",
+      "seed": 2,
+      "strict_receipt_content_sha256": "68c4909a58a8dd79fcfacf73700e29955042ef26f3030ff289ecc31c757156ca",
+      "strict_receipt_file_sha256": "5ee909a20abb094afc731c05ea3456ef89fb596e71d02a78557e24599724a89b",
+      "strict_receipt_path": "/workspace/BAGM/reports/analyses/cancer_6core_relative_qkv/checkpoint_verification/r_20260824T124855Z_95591978_s002_f00_a01_3d4cbf7d.json",
+      "training_schedule_sha256": "9a0887035be20810a0dd3b898b1f59c89d648cdbc47855befaa5784d26b8b872"
+    },
+    {
+      "checkpoint_path": "/workspace/BAGM/artifacts/runs/2026/08/r_20260824T125052Z_95591978_s003_f00_a01_c02388f5/checkpoints/last.ckpt",
+      "checkpoint_sha256": "b8943dcb21bac2ea7b3077f1c51e7b6b24b31effe3d23ce471aa05201a3f36d4",
+      "completed_global_epochs": 200,
+      "core_order_seed": 2026082402,
+      "history_sha256": "a1709635e9e642a1f9135ed7985f50893ff97dc00cdd65a34fc1bbca9b7a5249",
+      "mask_base_seed": 2026082401,
+      "model_construction_sha256": "b81ae9364f7c12d434feff6fe2a5249d09e1aef12300965e359ac6bf2bbcb1ff",
+      "model_state_sha256": "12be22e276726cccf88fe34900edc0a38555afec332ddcfeef33f441b8d9196f",
+      "parameter_count": 5003016,
+      "run_id": "r_20260824T125052Z_95591978_s003_f00_a01_c02388f5",
+      "run_root": "/workspace/BAGM/artifacts/runs/2026/08/r_20260824T125052Z_95591978_s003_f00_a01_c02388f5",
+      "seed": 3,
+      "strict_receipt_content_sha256": "51e56f2e54a1688bf611195fb79c8f0f3090d3393a37786d1e590cdb089ba2b2",
+      "strict_receipt_file_sha256": "66dca152cbb8efa54fdae7339072a8c5c811886016a7869dd17c805da5ed169a",
+      "strict_receipt_path": "/workspace/BAGM/reports/analyses/cancer_6core_relative_qkv/checkpoint_verification/r_20260824T125052Z_95591978_s003_f00_a01_c02388f5.json",
+      "training_schedule_sha256": "2288eca8ad82fc5cd06c656cc7c2666452b1e18b191a4762111703d0704b3419"
+    }
+  ],
+  "mutual_attention_routing_stability": {
+    "causal_influence": false,
+    "definition": "minimum reciprocal receiver-degree-adjusted mean-head attention",
+    "per_core": {
+      "CAN-01": {
+        "support_count_range": [
+          1,
+          4
+        ],
+        "top_k_per_seed": 100,
+        "union_pair_count": 235
+      },
+      "CAN-09": {
+        "support_count_range": [
+          1,
+          4
+        ],
+        "top_k_per_seed": 100,
+        "union_pair_count": 235
+      },
+      "CAN-13": {
+        "support_count_range": [
+          1,
+          4
+        ],
+        "top_k_per_seed": 100,
+        "union_pair_count": 220
+      },
+      "CAN-15": {
+        "support_count_range": [
+          1,
+          4
+        ],
+        "top_k_per_seed": 100,
+        "union_pair_count": 311
+      },
+      "CAN-21": {
+        "support_count_range": [
+          1,
+          4
+        ],
+        "top_k_per_seed": 100,
+        "union_pair_count": 257
+      },
+      "CAN-23": {
+        "support_count_range": [
+          1,
+          4
+        ],
+        "top_k_per_seed": 100,
+        "union_pair_count": 310
+      }
+    },
+    "selection": "union of each seed's top 100 pairs within each core",
+    "summary_table": "tables/mutual_pair_stability.parquet"
+  },
+  "protocol": {
+    "analysis_protocol": {
+      "analysis_protocol_id": "cmp_20260824_relative_qkv_four_seed_stability_locked_v1",
+      "analysis_protocol_schema": "cancer_6core_relative_qkv_stability_analysis_protocol_v1",
+      "campaign_id": "cmp_20260824_cancer_6core_relative_qkv_multiseed",
+      "changes_training_contract": false,
+      "claim_scope": {
+        "statement": "These derivatives are selected local, scale-dependent model sensitivities under a fixed held-in fit mask. They do not establish correlation, direct signaling, a biological mechanism, patient replication, or causality."
+      },
+      "ensemble": {
+        "active_model_seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "calibrated_biological_confidence_interval": false,
+        "checkpoint_role": "last_confirmed_training_loss_plateau_epoch",
+        "checkpoint_selection_uses_held_in_diagnostics": false,
+        "common_final_epoch_required": false,
+        "deferred_model_seeds": [
+          4
+        ],
+        "differing_final_epochs_allowed": true,
+        "expected_active_seed_count": 4,
+        "five_seed_completion_claim_allowed": false,
+        "seed_4_required_for_this_report": false,
+        "uncertainty_label": "four_seed_ensemble_spread"
+      },
+      "fit_scope": "all_cells_six_cancer_cores_transductive",
+      "fixed_probe_extraction": {
+        "edge_scope": "every_incoming_directed_edge_of_each_selected_receiver",
+        "empirical_quantiles": [
+          0.05,
+          0.25,
+          0.75,
+          0.95
+        ],
+        "layer": -1,
+        "layer_semantics": "final_graph_transformer_layer",
+        "mutual_candidate_scope": "all_reciprocal_pairs_in_core",
+        "mutual_stability_candidate_set": "union_of_each_seed_top_100_pairs_per_core",
+        "mutual_tie_break": "score_descending_then_reciprocal_pair_key_ascending",
+        "mutual_top_edges_per_core_per_seed": 100,
+        "receiver_probes_per_core": 64,
+        "receiver_selection": {
+          "data_dependent": false,
+          "formula": "floor(q*(n_cells-1)/63), q=0..63",
+          "includes_first_and_last_node": true,
+          "ordering": "canonical_zero_based_node_index"
+        },
+        "receiver_softmax_scope_preserved": true,
+        "top_edge_count_formula": "ceil(0.05*eligible_edge_count)",
+        "top_edge_fraction": 0.05,
+        "top_edge_tie_break": "attention_descending_then_canonical_edge_id_ascending"
+      },
+      "generalization_claim_supported": false,
+      "interpretation_limits": {
+        "attention_gradients_or_jacobians_establish_causality": false,
+        "differing_plateau_epochs_allowed": true,
+        "exposure_duration_can_contribute_to_observed_seed_spread": true,
+        "local_orientation_representation": "axial_tensor",
+        "measured_polarity_signal_present": false,
+        "opposite_directions_along_same_axis_distinguishable": false,
+        "selected_gradient_probe_count": 24,
+        "selected_gradient_probes_are_representative_of_all_edges_or_genes": false,
+        "selected_gradient_probes_are_sparse": true,
+        "tiny_finite_nonzero_gradients_can_count_as_support": true
+      },
+      "issued_at_utc": "2026-08-25",
+      "logit_gauge": {
+        "attention_probabilities_are_centered": false,
+        "centered_channels": [
+          "content_logit",
+          "relative_positional_bias"
+        ],
+        "centering_applies_to": [
+          "head_alignment_signatures",
+          "positional_bias_response_correlations",
+          "content_logit_vs_positional_bias_contribution_agreement",
+          "fixed_edge_content_bias_combined_summaries"
+        ],
+        "centering_operation": "subtract_mean_over_all_incoming_edges_of_receiver",
+        "centering_scope": "each_receiver_and_attention_head",
+        "combined_centered_logit_definition": "centered_content_plus_centered_positional_bias",
+        "receiver_wise_softmax_null_offsets_removed": true
+      },
+      "numerical_execution": {
+        "all_incoming_edges_of_receiver_normalized_together": true,
+        "attention_and_embedding_extraction": {
+          "attention_accumulation_dtype": "float32",
+          "autocast_dtype": "float16",
+          "automatic_mixed_precision": true,
+          "exact_receiver_wise_softmax": true,
+          "neighbor_sampling": false
+        },
+        "complete_cores_staged_on_gpu_concurrently": 1,
+        "cublas_workspace_config": ":4096:8",
+        "deterministic_algorithms": true,
+        "deterministic_seed": 2026082497,
+        "deterministic_warn_only": false,
+        "execution_overrides_allowed": false,
+        "maximum_edges_per_chunk": 200000,
+        "models_processed_concurrently": 1,
+        "receiver_chunk_size": 512,
+        "selected_derivative_execution": {
+          "automatic_mixed_precision": false,
+          "dtype": "float32"
+        }
+      },
+      "prepared_inputs": {
+        "cohort_directory": "data/processed/cancer_6core_relative_qkv_v1",
+        "cohort_manifest_sha256": "9c4ea4c9445f5230c5f823b4b1cd7a5b230767b43daa7018c99dc27bbf9613ad",
+        "coordinate_role": "selection_and_plotting_only",
+        "coordinates_were_model_inputs": false,
+        "core_aliases": [
+          "CAN-01",
+          "CAN-09",
+          "CAN-13",
+          "CAN-15",
+          "CAN-21",
+          "CAN-23"
+        ],
+        "fixed_inference_mask": {
+          "base_seed": 2026082491,
+          "identical_across_model_seeds": true,
+          "namespace": "relative-qkv-held-in-fit-diagnostic"
+        },
+        "graph_directory": "data/processed/cancer_6core_relative_qkv_graphs_v1",
+        "graph_manifest_sha256": "20caa27c4d0a816a01475eda321e1910505b3b7849bc8eaa22a56e3cbfd1b48d"
+      },
+      "reproducibility_gate": {
+        "behavior_on_any_drift": "fail_without_running_model_inference",
+        "generate_command": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=src /venv/main/bin/python scripts/analysis/prepare_relative_qkv_gradient_requests.py --requests-csv /new/path/selected_gradient_requests_v1.csv --requests-sha256 /new/path/selected_gradient_requests_v1.sha256 generate",
+        "overwrite_existing_locked_request_table": false,
+        "protocol_checksum_sidecar": "analysis_protocol_selected_gradient_stability_v1.sha256",
+        "regenerate_requests_from_prepared_inputs_before_cuda": true,
+        "require_exact_24_row_order": true,
+        "require_exact_csv_byte_equality": true,
+        "verify_command": "CUDA_VISIBLE_DEVICES='' PYTHONPATH=src /venv/main/bin/python scripts/analysis/prepare_relative_qkv_gradient_requests.py verify",
+        "verify_protocol_checksum_before_cuda": true,
+        "verify_request_checksum_before_cuda": true
+      },
+      "required_output_contract": {
+        "active_model_seeds": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "analysis_schema": "cancer_6core_relative_qkv_four_seed_stability_v1",
+        "fixed_edge_summary": {
+          "aligned_seed_channels": [
+            "attention_mean_head",
+            "receiver_centered_content_logit_mean_head",
+            "receiver_centered_positional_bias_mean_head",
+            "receiver_centered_combined_logit_mean_head"
+          ],
+          "raw_fixed_probe_edge_table_retains_uncentered_logit_channels": true,
+          "relationship_identity": "core_alias_source_node_receiver_node",
+          "required_statistics": [
+            "ensemble_mean",
+            "ensemble_standard_deviation_ddof_1",
+            "median",
+            "minimum",
+            "maximum",
+            "empirical_quantiles_linear",
+            "seed_support_count"
+          ],
+          "retain_each_seed_value": true
+        },
+        "head_alignment_shape_semantics": "four_seeds_by_eight_reference_heads",
+        "manifest_schema": "cancer_6core_relative_qkv_four_seed_stability_manifest_v1",
+        "mutual_pair_summary": {
+          "retain_each_seed_score": true,
+          "retain_each_seed_top_100_support_indicator": true,
+          "seed_support_count_uses_top_100_membership": true
+        },
+        "node_embedding_shape_semantics": "one_row_per_cohort_cell_by_256_features_per_seed",
+        "numpy_archives": [
+          "node_embeddings",
+          "embedding_stability",
+          "attention_head_stability",
+          "selected_gradient_stability"
+        ],
+        "parquet_tables": [
+          "training_curves",
+          "fixed_metrics",
+          "fixed_metric_summary",
+          "fixed_probe_edges",
+          "fixed_edge_summary",
+          "mutual_pair_stability",
+          "selected_gradients",
+          "selected_gradient_stability",
+          "node_identity"
+        ],
+        "provenance_copies_locked_protocol_and_request_files": true,
+        "publication": "atomic_directory_rename_without_replacement",
+        "report_files": [
+          "report.json",
+          "report.md",
+          "manifest.json"
+        ],
+        "selected_gradient_summary": {
+          "raw_rows": 96,
+          "retain_each_seed_value_in_selected_gradients_table": true,
+          "seed_support_count_uses_absolute_gradient_greater_than_zero": true,
+          "summary_relationships": 48
+        },
+        "status": "complete"
+      },
+      "role": "additive_post_training_analysis_protocol",
+      "selected_gradient_requests": {
+        "attention_head": "mean",
+        "derivative_scope": "selected_requests_only_no_exhaustive_jacobian",
+        "derivative_units": {
+          "attention_derivative": "attention_probability_per_standardized_log1p_source_expression_unit",
+          "library_size_normalization_used": false,
+          "prediction_derivative": "standardized_log1p_target_prediction_units_per_standardized_log1p_source_expression_unit",
+          "prediction_output_variable": "gene_wise_standardized_log1p_raw_count_prediction",
+          "source_input_perturbation_unit": "one_standardized_log1p_expression_unit",
+          "source_input_variable": "gene_wise_standardized_log1p_raw_count"
+        },
+        "edge_selection": {
+          "attention_or_gradient_based_selection": false,
+          "candidate_order": "canonical_receiver_major_then_source_major_edge_order",
+          "candidates": "directed_edges_whose_coordinate_distance_is_in_shell",
+          "hash_fields": [
+            "role_directed_edge",
+            "core_alias",
+            "radial_shell"
+          ],
+          "hash_namespace": "cancer-6core-relative-qkv-model-independent-gradient-probes-v1",
+          "index_rule": "full_SHA256_integer_modulo_shell_candidate_count"
+        },
+        "expected_rows_across_active_seeds": 96,
+        "expected_rows_per_seed": 24,
+        "feature_selection": {
+          "fail_if_no_eligible_feature": true,
+          "hash_fields": [
+            "selection_namespace",
+            "feature_role",
+            "core_alias",
+            "radial_shell"
+          ],
+          "search_rule": "cyclic_in_increasing_gene_index_order",
+          "source_requirement": "fixed_inference_mask_is_false_observed",
+          "start_index_rule": "full_SHA256_integer_modulo_1000",
+          "target_must_differ_from_source_gene": true,
+          "target_requirement": "fixed_inference_mask_is_true_masked"
+        },
+        "layer": -1,
+        "model_or_checkpoint_used_for_selection": false,
+        "radial_shells": [
+          "(0,50]",
+          "(50,150]",
+          "(150,300]",
+          "(300,500]"
+        ],
+        "request_count": 24,
+        "request_schema": "cancer_6core_relative_qkv_locked_gradient_requests_v1",
+        "request_table": "selected_gradient_requests_v1.csv",
+        "request_table_checksum_sidecar": "selected_gradient_requests_v1.sha256",
+        "request_table_sha256": "2ebe0d5fbf59f268d8b60d9b634a4ecf5d2621083ee05257eabb568af0bec4d2",
+        "requests_per_core": 4,
+        "requests_per_radial_shell_per_core": 1,
+        "required_row_assertions": [
+          "directed_edge_present",
+          "shell_membership",
+          "source_feature_observed",
+          "target_feature_masked",
+          "source_target_feature_indices_distinct"
+        ]
+      },
+      "stability_metrics": {
+        "cell_pair_routing": [
+          "mutual_attention_routing_score_stability"
+        ],
+        "fixed_mask_fit_diagnostic": [
+          "masked_huber",
+          "masked_mae",
+          "masked_mse",
+          "masked_r2"
+        ],
+        "head_alignment": {
+          "method": "hungarian_assignment",
+          "metrics": [
+            "matched_head_attention_spearman",
+            "matched_head_top_edge_jaccard",
+            "positional_bias_response_correlation",
+            "content_logit_vs_positional_bias_contribution_agreement"
+          ],
+          "reference_seed": 0,
+          "signature_source": "fixed_probe_final_layer_attention_plus_receiver_head_centered_content_and_positional_bias_channels"
+        },
+        "per_relationship_summaries": [
+          "ensemble_mean",
+          "ensemble_standard_deviation",
+          "median",
+          "minimum",
+          "maximum",
+          "empirical_quantiles",
+          "number_of_seeds_supporting_relationship"
+        ],
+        "representation": [
+          "linear_cka",
+          "orthogonal_procrustes_aligned_similarity_optional"
+        ],
+        "selected_gene_sensitivity": [
+          "d_attention_d_observed_source_gene",
+          "d_receiver_target_prediction_d_observed_source_gene"
+        ],
+        "training": [
+          "final_training_loss_mean_sd_range",
+          "per_seed_training_loss_curves"
+        ]
+      },
+      "statistical_summary_semantics": {
+        "empirical_quantiles": {
+          "implementation": "numpy_quantile",
+          "levels": [
+            0.05,
+            0.25,
+            0.75,
+            0.95
+          ],
+          "method": "linear"
+        },
+        "ensemble_member_count": 4,
+        "fixed_edge_attention_support": {
+          "definition": "edge_is_member_of_that_seeds_top_5_percent_by_mean_head_attention_over_locked_fixed_probe_edge_set",
+          "tie_break": "attention_descending_then_canonical_fixed_edge_order",
+          "top_edge_count_formula": "ceil(0.05*locked_fixed_probe_edge_count)",
+          "top_fraction": 0.05
+        },
+        "median_method": "numpy_median",
+        "mutual_pair_support": {
+          "definition": "pair_is_member_of_that_seeds_per_core_top_100",
+          "score_magnitude_does_not_define_support": true
+        },
+        "selected_gradient_support": {
+          "definition": "absolute_gradient_strictly_greater_than_zero",
+          "magnitude_threshold": 0.0,
+          "tiny_finite_nonzero_values_count_as_support": true
+        },
+        "standard_deviation": {
+          "ddof": 1,
+          "kind": "sample"
+        },
+        "support_count_range_inclusive": [
+          0,
+          4
+        ]
+      },
+      "uses_validation_or_test_selection": false
+    },
+    "analysis_protocol_file_sha256": "ec7c57df87083a54a81a661e50319fdb614993992701f48a620efaa80622696e",
+    "analysis_protocol_path": "/workspace/BAGM-relative-qkv-analysis/experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/analysis_protocol_selected_gradient_stability_v1.yaml",
+    "analysis_protocol_sidecar_file_sha256": "f51cd076eef23cccc91f55d868dda234f9bf0ff014dceca223a54f962895fd87",
+    "cohort_manifest_file_sha256": "9c4ea4c9445f5230c5f823b4b1cd7a5b230767b43daa7018c99dc27bbf9613ad",
+    "cohort_manifest_path": "/workspace/BAGM/data/processed/cancer_6core_relative_qkv_v1/manifest.json",
+    "gradient_request_sidecar_file_sha256": "f639752ddb8e2a9ed95cceb2ee0511a084049d3179bbebe2e07da776da569b3a",
+    "gradient_request_table_file_sha256": "2ebe0d5fbf59f268d8b60d9b634a4ecf5d2621083ee05257eabb568af0bec4d2",
+    "gradient_request_table_path": "/workspace/BAGM-relative-qkv-analysis/experiments/campaigns/cmp_20260824_cancer_6core_relative_qkv_multiseed/selected_gradient_requests_v1.csv",
+    "graph_manifest_file_sha256": "20caa27c4d0a816a01475eda321e1910505b3b7849bc8eaa22a56e3cbfd1b48d",
+    "graph_manifest_path": "/workspace/BAGM/data/processed/cancer_6core_relative_qkv_graphs_v1/manifest.json"
+  },
+  "schema": "cancer_6core_relative_qkv_four_seed_stability_v1",
+  "scope": "four_seed_ensemble_spread_seeds_0_1_2_3",
+  "selected_gradient_stability": {
+    "attention_derivative": {
+      "analysis_scope": "selected relationships only; no exhaustive Jacobian",
+      "pairwise_seed_spearman": [
+        [
+          1.0,
+          0.00782608695652174,
+          0.3095652173913043,
+          -0.13304347826086957
+        ],
+        [
+          0.00782608695652174,
+          1.0,
+          0.5652173913043478,
+          0.17217391304347826
+        ],
+        [
+          0.3095652173913043,
+          0.5652173913043478,
+          1.0,
+          0.15043478260869564
+        ],
+        [
+          -0.13304347826086957,
+          0.17217391304347826,
+          0.15043478260869564,
+          1.0
+        ]
+      ],
+      "summary_row_count": 24
+    },
+    "exhaustive_jacobian": false,
+    "prediction_derivative": {
+      "analysis_scope": "selected relationships only; no exhaustive Jacobian",
+      "pairwise_seed_spearman": [
+        [
+          1.0,
+          0.08260869565217391,
+          0.49826086956521737,
+          0.2408695652173913
+        ],
+        [
+          0.08260869565217391,
+          1.0,
+          0.2617391304347826,
+          0.15391304347826087
+        ],
+        [
+          0.49826086956521737,
+          0.2617391304347826,
+          1.0,
+          0.23478260869565218
+        ],
+        [
+          0.2408695652173913,
+          0.15391304347826087,
+          0.23478260869565218,
+          1.0
+        ]
+      ],
+      "summary_row_count": 24
+    },
+    "prediction_derivative_unit": "standardized-log1p target prediction units per standardized-log1p source expression unit",
+    "probe_scope": "24 sparse prespecified requests, not representative of all edges or genes",
+    "request_count": 24,
+    "selection_uses_model_outputs": false,
+    "source_derivative_unit": "one standardized-log1p expression unit",
+    "support_definition": "absolute gradient strictly greater than zero",
+    "tiny_finite_nonzero_gradients_count_as_support": true
+  },
+  "shared_model_and_training_schedule": {
+    "core_order_seed": 2026082402,
+    "mask_base_seed": 2026082401,
+    "model_construction": {
+      "activation_checkpointing": true,
+      "attention_dropout": 0.0,
+      "attention_head_dim": 32,
+      "attention_heads": 8,
+      "class": "ReceiverChunkedRelativeGeometryQKVGraphTransformer",
+      "decoder_dim": 1024,
+      "dropout": 0.1,
+      "edge_key_vectors": false,
+      "edge_value_gates": false,
+      "edge_value_vectors": false,
+      "embedding_dim": 256,
+      "exact_receiver_partitioning": true,
+      "family": "relative_geometry_qkv_graph_transformer",
+      "ffn_dim": 1024,
+      "fp32_attention_accumulation": true,
+      "graph_layers": 4,
+      "hidden_dim": 256,
+      "implicit_self_loops": false,
+      "max_edges_per_chunk": 200000,
+      "name": "relative-qkv-gat",
+      "node_covariate_dim": 22,
+      "num_genes": 1000,
+      "positional_bias_final_zero_init": true,
+      "positional_bias_hidden_dim": 128,
+      "receiver_chunk_size": 512,
+      "relative_geometry_dim": 70,
+      "relative_geometry_role": "attention_logit_bias_only",
+      "trainable_edge_identifiers": false,
+      "trainable_node_identifiers": false,
+      "uses_edge_inputs": false,
+      "uses_graph_inputs": true,
+      "uses_relative_position": true
+    },
+    "model_construction_sha256": "b81ae9364f7c12d434feff6fe2a5249d09e1aef12300965e359ac6bf2bbcb1ff",
+    "parameter_count": 5003016,
+    "shared_prefix_epochs": 175,
+    "shared_prefix_schedule_sha256": "9a0887035be20810a0dd3b898b1f59c89d648cdbc47855befaa5784d26b8b872"
+  },
+  "spread_label": "four-seed ensemble spread",
+  "status": "complete",
+  "training_loss": {
+    "curves_table": "tables/training_curves.parquet",
+    "final_by_seed": {
+      "0": 0.24159236550331117,
+      "1": 0.24217562327782313,
+      "2": 0.24231865033507347,
+      "3": 0.24174215470751126
+    },
+    "final_summary": {
+      "calibrated_confidence_interval": false,
+      "empirical_quantiles": {
+        "0.05": 0.2416148338839412,
+        "0.25": 0.24170470740646124,
+        "0.75": 0.24221138004213572,
+        "0.95": 0.2422971962764859
+      },
+      "ensemble_member_count": 4,
+      "maximum": 0.24231865033507347,
+      "mean": 0.24195719845592975,
+      "median": 0.2419588889926672,
+      "minimum": 0.24159236550331117,
+      "range": 0.0007262848317622916,
+      "sample_standard_deviation": 0.00034530361558390057,
+      "spread_label": "four-seed ensemble spread"
+    },
+    "metric": "equal_core_mean_training_masked_huber"
+  },
+  "uncertainty_label": "seed uncertainty",
+  "validation_or_test_partition_present": false
+}

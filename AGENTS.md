@@ -25,7 +25,7 @@ Use `predictive dependency`, `model-implied sensitivity`, or `candidate mechanis
 ## Repository and Experiment Operations
 
 - This repository contains only Bio-Architectural Graph Modeling. Its project
-  root is `/workspace/Bio-Architectural-Graph-Modeling`; `/workspace` may contain
+  root is `/workspace/BAGM`; `/workspace` may contain
   other projects. Keep BAGM content within this root and do not add another
   internal project wrapper or multi-project hierarchy.
 - Resolve all reusable paths through `spatial_benchmark.paths`. Respect the
