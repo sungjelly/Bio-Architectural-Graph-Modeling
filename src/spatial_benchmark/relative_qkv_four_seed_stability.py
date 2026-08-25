@@ -1793,6 +1793,24 @@ def _mutual_stability_rows(
     return all_rows, per_core_report
 
 
+def _canonical_float32_head_mean(values: np.ndarray) -> np.ndarray:
+    """Return the locked FP32 storage value for a per-row head mean.
+
+    Head channels are stored as FP32.  Accumulate their mean in FP64 and round
+    once to FP32 so table construction and independent verification use the
+    same, numerically stable reduction contract.
+    """
+
+    heads = np.ascontiguousarray(np.asarray(values, dtype=np.float32))
+    if heads.ndim != 2 or heads.shape[1] == 0:
+        raise FourSeedStabilityError(
+            "Fixed-edge head values must have shape [edges, nonzero heads]."
+        )
+    return np.ascontiguousarray(
+        heads.mean(axis=1, dtype=np.float64).astype(np.float32)
+    )
+
+
 def _fixed_edge_table(ordered: Sequence[SeedCompactExtraction]) -> pa.Table:
     tables: list[pa.Table] = []
     for extraction in ordered:
@@ -1803,17 +1821,17 @@ def _fixed_edge_table(ordered: Sequence[SeedCompactExtraction]) -> pa.Table:
             "edge_id": extraction.fixed_edge_number,
             "source_node": extraction.fixed_edge_source,
             "receiver_node": extraction.fixed_edge_receiver,
-            "attention_mean": np.asarray(
-                extraction.attention.mean(axis=1), dtype=np.float32
+            "attention_mean": _canonical_float32_head_mean(
+                extraction.attention
             ),
-            "content_logit_mean": np.asarray(
-                extraction.content_logits.mean(axis=1), dtype=np.float32
+            "content_logit_mean": _canonical_float32_head_mean(
+                extraction.content_logits
             ),
-            "positional_bias_mean": np.asarray(
-                extraction.positional_bias.mean(axis=1), dtype=np.float32
+            "positional_bias_mean": _canonical_float32_head_mean(
+                extraction.positional_bias
             ),
-            "combined_logit_mean": np.asarray(
-                extraction.combined_logits.mean(axis=1), dtype=np.float32
+            "combined_logit_mean": _canonical_float32_head_mean(
+                extraction.combined_logits
             ),
         }
         for prefix, values in (
@@ -3764,11 +3782,12 @@ def verify_four_seed_analysis_bundle(
             ("positional_bias", "positional_bias_mean"),
             ("combined_logit", "combined_logit_mean"),
         ):
-            if not np.allclose(
-                numeric_column(seed_table, mean_column),
-                raw_channels[prefix].mean(axis=1),
-                atol=1e-7,
-                rtol=1e-7,
+            expected_mean = np.asarray(
+                _canonical_float32_head_mean(raw_channels[prefix]),
+                dtype=np.float64,
+            )
+            if not np.array_equal(
+                numeric_column(seed_table, mean_column), expected_mean
             ):
                 raise FourSeedStabilityError(
                     f"Seed {seed} raw fixed-edge {mean_column} drifted."

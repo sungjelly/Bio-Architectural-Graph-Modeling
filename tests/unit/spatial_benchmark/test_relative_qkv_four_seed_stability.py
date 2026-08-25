@@ -121,6 +121,60 @@ def test_fixed_attention_normalization_uses_fp64_host_accumulation() -> None:
         )
 
 
+def test_fixed_edge_head_means_use_one_canonical_round_trip_contract(
+    tmp_path: Path,
+) -> None:
+    cancellation_row = np.asarray(
+        [[16.0, 1e-6, -16.0, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6]],
+        dtype=np.float32,
+    )
+    fp32_mean = cancellation_row.mean(axis=1, dtype=np.float32)
+    fp64_mean = cancellation_row.mean(axis=1, dtype=np.float64)
+    assert not np.allclose(fp32_mean, fp64_mean, atol=1e-7, rtol=1e-7)
+
+    zeros = np.zeros_like(cancellation_row)
+    extraction = SeedCompactExtraction(
+        seed=3,
+        completed_global_epochs=200,
+        embedding_ids=("CAN-01:node:00000000",),
+        embeddings=np.zeros((1, 1), dtype=np.float32),
+        fixed_edge_ids=("CAN-01:layer:final:edge:000000000000",),
+        fixed_edge_core=np.asarray(["CAN-01"]),
+        fixed_edge_number=np.asarray([0], dtype=np.int64),
+        fixed_edge_source=np.asarray([1], dtype=np.int64),
+        fixed_edge_receiver=np.asarray([0], dtype=np.int64),
+        attention=np.full_like(cancellation_row, np.float32(0.125)),
+        content_logits=zeros,
+        positional_bias=zeros,
+        combined_logits=cancellation_row,
+        mutual_score_paths={},
+        mutual_top_positions={},
+        gradient_rows=(),
+        fixed_mask_receipts={},
+    )
+    path = tmp_path / "fixed_edges.parquet"
+    pq.write_table(stability_module._fixed_edge_table((extraction,)), path)
+    loaded = pq.read_table(path)
+    head_values = np.stack(
+        [
+            np.asarray(
+                loaded[f"combined_logit_head_{head:02d}"].to_numpy(),
+                dtype=np.float32,
+            )
+            for head in range(8)
+        ],
+        axis=1,
+    )
+    stored_mean = np.asarray(
+        loaded["combined_logit_mean"].to_numpy(), dtype=np.float32
+    )
+    np.testing.assert_array_equal(
+        stored_mean,
+        stability_module._canonical_float32_head_mean(head_values),
+    )
+    np.testing.assert_array_equal(stored_mean, fp64_mean.astype(np.float32))
+
+
 def test_receiver_centered_logits_ignore_softmax_null_offsets() -> None:
     groups = ("a", "a", "b", "b", "b")
     logits = np.asarray(
@@ -1124,6 +1178,28 @@ def test_complete_small_bundle_passes_strict_staging_and_published_verification(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     members, extractions, batches = _synthetic_four_seed_inputs(tmp_path)
+    seed_three = extractions[3]
+    content = seed_three.content_logits.copy()
+    bias = seed_three.positional_bias.copy()
+    content[0] = np.asarray([2.9204051, 4.3694563, 21.620934], dtype=np.float32)
+    bias[0] = np.asarray([-15.545335, -24.190796, 10.825361], dtype=np.float32)
+    combined = np.asarray(content + bias, dtype=np.float32)
+    assert not np.allclose(
+        combined[0].mean(dtype=np.float32),
+        combined[0].mean(dtype=np.float64),
+        atol=1e-7,
+        rtol=1e-7,
+    )
+    modified = list(extractions)
+    modified[3] = SeedCompactExtraction(
+        **{
+            **seed_three.__dict__,
+            "content_logits": content,
+            "positional_bias": bias,
+            "combined_logits": combined,
+        }
+    )
+    extractions = tuple(modified)
     protocol = tmp_path / "analysis_protocol_selected_gradient_stability_v1.yaml"
     requests = tmp_path / "selected_gradient_requests_v1.csv"
     cohort = tmp_path / "cohort_manifest.json"
@@ -1355,6 +1431,32 @@ def test_strict_verifier_rejects_rehashed_derived_attention_npz_tamper(
     _refresh_analysis_manifest(output)
 
     with pytest.raises(FourSeedStabilityError):
+        verify_four_seed_analysis_bundle(output)
+
+
+def test_strict_verifier_rejects_rehashed_fixed_edge_mean_ulp_tamper(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    output = _complete_verified_bundle(tmp_path, monkeypatch)
+    table_path = output / "tables/fixed_probe_edges.parquet"
+    table = pq.read_table(table_path)
+    name = "combined_logit_mean"
+    values = np.array(table[name].to_numpy(), dtype=np.float32, copy=True)
+    values[0] = np.nextafter(
+        values[0],
+        np.float32(np.inf),
+        dtype=np.float32,
+    )
+    table = table.set_column(
+        table.schema.get_field_index(name),
+        name,
+        pa.array(values, type=pa.float32()),
+    )
+    pq.write_table(table, table_path, compression="zstd")
+    _refresh_analysis_manifest(output)
+
+    with pytest.raises(FourSeedStabilityError, match="combined_logit_mean drifted"):
         verify_four_seed_analysis_bundle(output)
 
 
