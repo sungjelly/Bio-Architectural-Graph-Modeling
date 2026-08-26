@@ -1,6 +1,6 @@
 schema_version: 1
 campaign_id: cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150
-status: frozen_before_implementation
+status: frozen_with_verified_immutable_preparation
 objective: fit_one_fresh_shared_relative_geometric_qkv_model_on_so1_cores_1_through_14
 estimand: held_in_all_cells_so1_14core_transductive_masked_expression_reconstruction
 permitted_claim: model_fit_behavior_and_predictive_dependencies_within_fitted_so1_cores
@@ -21,12 +21,12 @@ cohort:
 preparation:
   cohort_artifact: data/processed/so1_14core_relative_qkv_v1
   graph_artifact: data/processed/so1_14core_relative_qkv_graphs_v1
-  cohort_manifest_content_sha256: null
-  cohort_manifest_file_sha256: null
-  graph_manifest_content_sha256: null
-  graph_manifest_file_sha256: null
-  completed_cohort_manifest_sha256: null
-  immutable_hash_status: pending_materialization
+  cohort_manifest_content_sha256: e006316e0f04afa645191544bcac8aa64f58c423e755f2f8d79bfd9db68a233d
+  cohort_manifest_file_sha256: 15f9da492959c35d89020b3956047ec163a5f3537eaaefd5b8a011cb9279b440
+  graph_manifest_content_sha256: 5262453fc631c15a66f00f960de2a766a6142a4f1f7644b8b77a8784ec43d3b4
+  graph_manifest_file_sha256: 754e98fa1b2d8b488892c4effbf095cf26da6d99c927ee45e9ee01c2d64b978f
+  completed_cohort_manifest_sha256: e078588668d9b2285db27da6cda8b7f1d144aa055065c3022e43048fd1951596
+  immutable_hash_status: verified_materialized_and_hash_bound
   registration_or_enqueue_before_hash_binding_allowed: false
 model:
   architecture: relative_geometric_qkv_graph_transformer

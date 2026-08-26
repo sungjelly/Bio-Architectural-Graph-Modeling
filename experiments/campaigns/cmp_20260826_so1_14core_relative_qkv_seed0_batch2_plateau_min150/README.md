@@ -9,10 +9,10 @@ features, graph recipe, ten-view masking, batch-two update semantics, and
 four-GPU DDP execution, but it does not copy weights, optimizer state, metrics,
 or stopping decisions from an SO2 run.
 
-The campaign is implementation-complete but preparation-pending. It must not
-be registered, preflighted, enqueued, or started until the immutable SO1 cohort
-and graph manifests exist and their generated checksums replace every `null`
-preparation checksum in the dataset config and `campaign.yaml`.
+The campaign is implementation-complete and its immutable SO1 cohort and graph
+artifacts have been prepared and independently checksum-verified. Registry
+registration is allowed. The GPU preflight, enqueue, and production start remain
+gated on the active SO2 recovery releasing all four GPUs.
 
 ## Scientific scope
 
@@ -56,8 +56,10 @@ The canonical fit-only split fingerprint is
 `a0d2c008ff02471010585a023724f75d6f029d1a81f39f1f2dbba1531091b9a4`.
 It is SHA-256 over compact, sorted-key JSON containing the ordered aliases,
 dataset ID, fit scope, total cell count, false validation/test-partition flag,
-and dataset version. The cohort and graph fingerprints are intentionally not
-guessed before materialization.
+and dataset version. The verified cohort canonical fingerprint is
+`e006316e0f04afa645191544bcac8aa64f58c423e755f2f8d79bfd9db68a233d`,
+and the verified graph canonical fingerprint is
+`5262453fc631c15a66f00f960de2a766a6142a4f1f7644b8b77a8784ec43d3b4`.
 
 ## Locked model and data recipe
 
@@ -150,13 +152,64 @@ test -f "$BAGM_DATA_ROOT/processed/so1_14core_relative_qkv_graphs_v1/manifest.js
   /venv/main/bin/python -u scripts/data/materialize_so1_14core_relative_graphs.py
 ```
 
-After both scripts finish, verify the declared 14 aliases, 161,596 cells, zero
-unmapped routing, graph QC, and completed cohort-with-graphs manifest. Bind the
-generated cohort `manifest_content_sha256`, cohort manifest file SHA-256, graph
-manifest file SHA-256, graph canonical content SHA-256, and completed cohort
-manifest SHA-256 into the pending config fields. Do not substitute the split
-fingerprint or a hash copied from SO2. Registration and enqueue are fail-closed
-until all preparation hashes are non-null and independently verified.
+Both scripts have finished. All declared 14 aliases, 161,596 cells, zero
+unmapped routing, every listed artifact checksum, graph QC, and the completed
+cohort-with-graphs manifest were independently verified. The bound SHA-256
+values are:
+
+- cohort canonical content:
+  `e006316e0f04afa645191544bcac8aa64f58c423e755f2f8d79bfd9db68a233d`;
+- cohort manifest file:
+  `15f9da492959c35d89020b3956047ec163a5f3537eaaefd5b8a011cb9279b440`;
+- graph canonical content:
+  `5262453fc631c15a66f00f960de2a766a6142a4f1f7644b8b77a8784ec43d3b4`;
+- graph manifest file:
+  `754e98fa1b2d8b488892c4effbf095cf26da6d99c927ee45e9ee01c2d64b978f`;
+- completed cohort-with-graphs manifest file:
+  `e078588668d9b2285db27da6cda8b7f1d144aa055065c3022e43048fd1951596`.
+
+These are SO1-generated values; none is substituted from SO2. Production
+enqueue and start remain fail-closed until the four-rank preflight passes.
+
+Register the verified dataset, split, and campaign with the repository CLI:
+
+```bash
+export BAGM_STATE_ROOT=/workspace/BAGM/state
+export BAGM_DATA_ROOT=/workspace/BAGM/data
+
+/venv/main/bin/python -m spatial_benchmark \
+  --database "$BAGM_STATE_ROOT/tracking/bagm.sqlite3" register-dataset \
+  --dataset-id cosmx_so1_14core_pooled_fit_v1 \
+  --version so1_14core_pooled_fit_v1 \
+  --display-name "CosMx SO1 cores 1-14 pooled transductive fit" \
+  --protected-source-path "$BAGM_DATA_ROOT/processed/so1_14core_relative_qkv_v1/manifest.json" \
+  --raw-fingerprint e006316e0f04afa645191544bcac8aa64f58c423e755f2f8d79bfd9db68a233d \
+  --preprocessing-version so1_14core_equal_core_log1p_metadata_v1 \
+  --processed-fingerprint 5262453fc631c15a66f00f960de2a766a6142a4f1f7644b8b77a8784ec43d3b4 \
+  --sample-count 161596 --graph-count 14 \
+  --node-feature-schema expression_mask_permitted_metadata_v1 \
+  --edge-feature-schema relative_geometry_logit_bias_70d_v1 \
+  --status available --verification-status verified
+
+/venv/main/bin/python -m spatial_benchmark \
+  --database "$BAGM_STATE_ROOT/tracking/bagm.sqlite3" register-split \
+  --split-id fit_all_so1_cores_1_through_14_transductive_v1 \
+  --dataset-id cosmx_so1_14core_pooled_fit_v1 \
+  --dataset-version so1_14core_pooled_fit_v1 \
+  --method all_cells_fit_only_transductive --unit spatial_core \
+  --fold-count 1 \
+  --fingerprint a0d2c008ff02471010585a023724f75d6f029d1a81f39f1f2dbba1531091b9a4 \
+  --protected-path "$BAGM_DATA_ROOT/processed/so1_14core_relative_qkv_graphs_v1/cohort_manifest_with_graphs.json" \
+  --verification-status verified
+
+/venv/main/bin/python -m spatial_benchmark \
+  --database "$BAGM_STATE_ROOT/tracking/bagm.sqlite3" create-campaign \
+  --campaign-id cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150 \
+  --name "SO1 cores 1-14 Relative-Geometric QKV seed-0 strict-plateau fit" \
+  --scientific-question "Does one fresh shared relative-QKV model reach the locked strict fitted training-loss plateau across SO1 cores 1 through 14 after at least 150 global epochs?" \
+  --plan experiments/campaigns/cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150/campaign.yaml \
+  --status planned
+```
 
 ## Four-rank preflight
 

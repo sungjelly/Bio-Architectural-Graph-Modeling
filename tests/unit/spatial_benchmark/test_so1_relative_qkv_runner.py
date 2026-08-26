@@ -228,6 +228,58 @@ def test_hardware_preflight_receipt_is_checksum_and_manifest_bound(
         )
 
 
+def test_preparation_artifacts_are_bound_to_config_hashes(tmp_path: Path) -> None:
+    cohort_dir = tmp_path / "cohort"
+    graph_dir = tmp_path / "graphs"
+    cohort_dir.mkdir()
+    graph_dir.mkdir()
+
+    cohort = {"artifact_kind": "cohort"}
+    cohort["manifest_content_sha256"] = _RUNNER._canonical_sha256(cohort)
+    cohort_path = cohort_dir / "manifest.json"
+    cohort_path.write_text(json.dumps(cohort), encoding="utf-8")
+
+    completed = {"artifact_kind": "completed"}
+    completed["manifest_content_sha256"] = _RUNNER._canonical_sha256(completed)
+    completed_path = graph_dir / "cohort_manifest_with_graphs.json"
+    completed_path.write_text(json.dumps(completed), encoding="utf-8")
+
+    graph = {
+        "artifact_kind": "graphs",
+        "cohort_manifest_sha256": _RUNNER.sha256_file(cohort_path),
+        "completed_cohort_manifest_sha256": _RUNNER.sha256_file(completed_path),
+    }
+    graph["manifest_content_sha256"] = _RUNNER._canonical_sha256(graph)
+    graph_path = graph_dir / "manifest.json"
+    graph_path.write_text(json.dumps(graph), encoding="utf-8")
+
+    dataset = {
+        "immutable_manifest_status": "verified_materialized_and_hash_bound",
+        "dataset_fingerprint": cohort["manifest_content_sha256"],
+        "cohort_manifest_file_sha256": _RUNNER.sha256_file(cohort_path),
+        "graph_manifest_file_sha256": _RUNNER.sha256_file(graph_path),
+        "graph_manifest_content_sha256": graph["manifest_content_sha256"],
+        "completed_cohort_manifest_sha256": _RUNNER.sha256_file(completed_path),
+    }
+    observed = _RUNNER._validate_bound_preparation(
+        dataset,
+        cohort_dir=cohort_dir,
+        graph_dir=graph_dir,
+    )
+    assert observed["graph_manifest_file_sha256"] == dataset[
+        "graph_manifest_file_sha256"
+    ]
+
+    drifted = dict(dataset)
+    drifted["graph_manifest_content_sha256"] = "0" * 64
+    with pytest.raises(_RUNNER.SO114CoreRunnerError, match="graph_manifest_content"):
+        _RUNNER._validate_bound_preparation(
+            drifted,
+            cohort_dir=cohort_dir,
+            graph_dir=graph_dir,
+        )
+
+
 def test_epoch_event_append_is_idempotent_after_checkpoint(tmp_path: Path) -> None:
     class Archive:
         scratch_path = tmp_path

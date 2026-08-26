@@ -252,6 +252,63 @@ def _canonical_sha256(value: Mapping[str, Any]) -> str:
     ).hexdigest()
 
 
+def _load_verified_manifest(path: Path, *, label: str) -> dict[str, Any]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise SO114CoreRunnerError(f"Cannot read bound {label}: {path}.") from exc
+    if not isinstance(value, dict):
+        raise SO114CoreRunnerError(f"Bound {label} must be a JSON mapping.")
+    expected = value.get("manifest_content_sha256")
+    unsigned = dict(value)
+    unsigned.pop("manifest_content_sha256", None)
+    if expected != _canonical_sha256(unsigned):
+        raise SO114CoreRunnerError(f"Bound {label} content checksum mismatch.")
+    return value
+
+
+def _validate_bound_preparation(
+    dataset: Mapping[str, Any],
+    *,
+    cohort_dir: Path,
+    graph_dir: Path,
+) -> dict[str, str]:
+    """Fail closed if immutable prepared artifacts drift from their config."""
+
+    _require_equal(
+        dataset.get("immutable_manifest_status"),
+        "verified_materialized_and_hash_bound",
+        field="dataset.immutable_manifest_status",
+    )
+    cohort_path = cohort_dir / "manifest.json"
+    graph_path = graph_dir / "manifest.json"
+    completed_path = graph_dir / "cohort_manifest_with_graphs.json"
+    cohort = _load_verified_manifest(cohort_path, label="cohort manifest")
+    graph = _load_verified_manifest(graph_path, label="graph manifest")
+    _load_verified_manifest(completed_path, label="completed cohort manifest")
+
+    observed = {
+        "dataset_fingerprint": str(cohort["manifest_content_sha256"]),
+        "cohort_manifest_file_sha256": sha256_file(cohort_path),
+        "graph_manifest_file_sha256": sha256_file(graph_path),
+        "graph_manifest_content_sha256": str(graph["manifest_content_sha256"]),
+        "completed_cohort_manifest_sha256": sha256_file(completed_path),
+    }
+    for field, actual in observed.items():
+        _require_equal(dataset.get(field), actual, field=f"dataset.{field}")
+    _require_equal(
+        graph.get("cohort_manifest_sha256"),
+        observed["cohort_manifest_file_sha256"],
+        field="graph_manifest.cohort_manifest_sha256",
+    )
+    _require_equal(
+        graph.get("completed_cohort_manifest_sha256"),
+        observed["completed_cohort_manifest_sha256"],
+        field="graph_manifest.completed_cohort_manifest_sha256",
+    )
+    return observed
+
+
 def _preflight_bound_config(config: Mapping[str, Any]) -> dict[str, Any]:
     """Remove retry routing while binding every scientific/execution setting."""
 
@@ -1163,6 +1220,11 @@ def run_distributed(
     dataset = _section(config, "dataset")
     cohort_dir = _runtime_path(dataset["prepared_artifact"], paths)
     graph_dir = _runtime_path(dataset["prepared_graph_artifact"], paths)
+    _validate_bound_preparation(
+        dataset,
+        cohort_dir=cohort_dir,
+        graph_dir=graph_dir,
+    )
     preflight = _validate_hardware_preflight(
         config,
         paths=paths,

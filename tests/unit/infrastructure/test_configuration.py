@@ -454,6 +454,21 @@ def test_so1_14core_strict_plateau_config_locks_minimum_and_thresholds() -> None
         f"SO1-C{core:02d}" for core in range(1, 15)
     ]
     assert resolved["dataset"]["total_fit_cells"] == 161596
+    assert resolved["dataset"]["dataset_fingerprint"] == (
+        "e006316e0f04afa645191544bcac8aa64f58c423e755f2f8d79bfd9db68a233d"
+    )
+    assert resolved["dataset"]["cohort_manifest_file_sha256"] == (
+        "15f9da492959c35d89020b3956047ec163a5f3537eaaefd5b8a011cb9279b440"
+    )
+    assert resolved["dataset"]["graph_manifest_file_sha256"] == (
+        "754e98fa1b2d8b488892c4effbf095cf26da6d99c927ee45e9ee01c2d64b978f"
+    )
+    assert resolved["dataset"]["graph_manifest_content_sha256"] == (
+        "5262453fc631c15a66f00f960de2a766a6142a4f1f7644b8b77a8784ec43d3b4"
+    )
+    assert resolved["dataset"]["completed_cohort_manifest_sha256"] == (
+        "e078588668d9b2285db27da6cda8b7f1d144aa055065c3022e43048fd1951596"
+    )
     assert trainer["execution_mode"] == "fresh_plateau_min150"
     assert trainer["minimum_global_epochs"] == 150
     assert trainer["max_epochs"] is None

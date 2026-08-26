@@ -42,6 +42,7 @@ from scripts.train.run_so1_14core_relative_qkv import (  # noqa: E402
     _preflight_bound_config,
     _runtime_path,
     _section,
+    _validate_bound_preparation,
     _validate_contract,
 )
 from spatial_benchmark.configuration import compose_config  # noqa: E402
@@ -196,6 +197,11 @@ def run_preflight(
     dataset = _section(config, "dataset")
     cohort_dir = _runtime_path(dataset["prepared_artifact"], paths)
     graph_dir = _runtime_path(dataset["prepared_graph_artifact"], paths)
+    preparation_hashes = _validate_bound_preparation(
+        dataset,
+        cohort_dir=cohort_dir,
+        graph_dir=graph_dir,
+    )
     all_batches = load_so1_relative_qkv_batches(
         cohort_dir=cohort_dir, graph_dir=graph_dir
     )
@@ -307,6 +313,7 @@ def run_preflight(
             ),
             "cohort_manifest_sha256": sha256_file(cohort_dir / "manifest.json"),
             "graph_manifest_sha256": sha256_file(graph_dir / "manifest.json"),
+            "immutable_preparation_hashes": preparation_hashes,
             "selected_core_aliases": list(PREFLIGHT_ALIASES),
             "selected_core_cell_counts": {
                 batch.alias: int(batch.n_nodes) for batch in selected
