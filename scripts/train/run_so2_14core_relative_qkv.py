@@ -913,6 +913,47 @@ def _strict_plateau_payload(
     }
 
 
+def _write_or_verify_strict_plateau_audit(
+    archive: RunArchive,
+    payload: Mapping[str, Any],
+) -> Path:
+    """Write one immutable audit, or verify an identical prior callback write.
+
+    Epoch 300 is both an ordinary 25-epoch audit boundary and the fixed-budget
+    terminal boundary.  The epoch callback therefore owns the durable write;
+    terminal finalization may only verify that same payload.  This helper keeps
+    the operation idempotent without weakening the run archive's exclusive-
+    write policy or permitting a drifted diagnostic to be silently replaced.
+    """
+
+    try:
+        completed = int(payload["completed_global_epochs"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise SO214CoreRunnerError(
+            "Strict plateau audit lacks a valid completed epoch."
+        ) from exc
+    relative = Path(
+        f"diagnostics/strict_plateau_audit_epoch_{completed:04d}.json"
+    )
+    target = archive.scratch_path / relative
+    if not target.exists():
+        archive.write_json(relative, dict(payload))
+        return target
+    try:
+        existing = json.loads(target.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise SO214CoreRunnerError(
+            f"Existing strict plateau audit is unreadable: {relative}."
+        ) from exc
+    if not isinstance(existing, Mapping) or _canonical_sha256(
+        dict(existing)
+    ) != _canonical_sha256(dict(payload)):
+        raise SO214CoreRunnerError(
+            f"Existing strict plateau audit drifted: {relative}."
+        )
+    return target
+
+
 def _fixed_completion_payload(
     resume: CohortRelativeQKVEpochBoundaryResume,
     *,
@@ -1649,11 +1690,7 @@ def run_distributed(
                 observed_losses,
                 trainer=trainer,
             )
-            archive.write_json(
-                "diagnostics/strict_plateau_audit_epoch_"
-                f"{epoch.completed_global_epochs:04d}.json",
-                strict_payload,
-            )
+            _write_or_verify_strict_plateau_audit(archive, strict_payload)
         archive.append_metric_event(
             {
                 "name": "fit/training/equal_core_mean_masked_huber",
@@ -1766,8 +1803,8 @@ def run_distributed(
         )
         if rank == 0:
             assert archive is not None
-            archive.write_json(
-                "diagnostics/strict_plateau_audit_epoch_0300.json",
+            _write_or_verify_strict_plateau_audit(
+                archive,
                 strict_plateau_diagnostic,
             )
     else:

@@ -234,6 +234,40 @@ def test_fixed_final_validation_accepts_strict_diagnostic_pass_or_fail(
     )
 
 
+def test_terminal_strict_audit_verifies_callback_write_without_overwrite(
+    tmp_path: Path,
+) -> None:
+    class _Archive:
+        def __init__(self, root: Path) -> None:
+            self.scratch_path = root
+            self.write_count = 0
+
+        def write_json(self, relative: Path, payload: object) -> None:
+            self.write_count += 1
+            target = self.scratch_path / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(
+                json.dumps(payload, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+
+    archive = _Archive(tmp_path)
+    payload = {
+        "schema": "so2_14core_strict_plateau_diagnostic_v1",
+        "completed_global_epochs": 300,
+        "diagnostic_confirmed": False,
+    }
+    first = _RUNNER._write_or_verify_strict_plateau_audit(archive, payload)
+    second = _RUNNER._write_or_verify_strict_plateau_audit(archive, payload)
+    assert first == second
+    assert archive.write_count == 1
+
+    drifted = dict(payload)
+    drifted["diagnostic_confirmed"] = True
+    with pytest.raises(_RUNNER.SO214CoreRunnerError, match="drifted"):
+        _RUNNER._write_or_verify_strict_plateau_audit(archive, drifted)
+
+
 def test_fixed_checkpoint_replay_compares_fresh_predictions_and_state() -> None:
     batch = SimpleNamespace(
         alias="SO2-C15",
