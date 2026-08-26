@@ -9,6 +9,7 @@ from types import SimpleNamespace
 import pytest
 import torch
 
+from spatial_benchmark.configuration import compose_config
 from spatial_benchmark.paths import ProjectPaths
 from spatial_benchmark.pooled_relative_qkv_training_v2 import (
     SO2_14CORE_ALIASES,
@@ -120,6 +121,117 @@ def test_resume_after_passing_audit_rechecks_before_training() -> None:
     assert decision.consecutive_passing_audits == 2
     assert decision.should_stop is True
     assert decision.final_epoch == 175
+
+
+def test_fixed_continuation_resume_compatibility_is_schedule_only() -> None:
+    source = compose_config(
+        PROJECT_ROOT
+        / "configs/experiment/so2_14core_relative_qkv_seed0_batch2.yaml",
+        config_root=PROJECT_ROOT / "configs",
+    )
+    continuation = compose_config(
+        PROJECT_ROOT
+        / "configs/experiment/"
+        "so2_14core_relative_qkv_seed0_batch2_resume175_fixed300.yaml",
+        config_root=PROJECT_ROOT / "configs",
+    )
+    assert _RUNNER._resume_compatible_config(source) == (
+        _RUNNER._resume_compatible_config(continuation)
+    )
+
+    drifted = dict(continuation)
+    drifted["trainer"] = dict(continuation["trainer"])
+    drifted["trainer"]["learning_rate"] = 2e-4
+    assert _RUNNER._resume_compatible_config(source) != (
+        _RUNNER._resume_compatible_config(drifted)
+    )
+
+    drifted_mask = dict(continuation)
+    drifted_mask["masking"] = dict(continuation["masking"])
+    drifted_mask["masking"]["mask_base_seed"] += 1
+    assert _RUNNER._resume_compatible_config(source) != (
+        _RUNNER._resume_compatible_config(drifted_mask)
+    )
+
+
+def test_fixed_continuation_plan_disables_callbacks_and_stops_exactly_at_300() -> None:
+    continuation = compose_config(
+        PROJECT_ROOT
+        / "configs/experiment/"
+        "so2_14core_relative_qkv_seed0_batch2_resume175_fixed300.yaml",
+        config_root=PROJECT_ROOT / "configs",
+    )
+    resume = SimpleNamespace(
+        completed_global_epochs=175,
+        optimizer_updates_per_global_epoch=7,
+    )
+    plan = _RUNNER._fixed_continuation_plan(continuation, resume)
+    assert plan == {
+        "segment_start_global_epoch": 175,
+        "segment_end_global_epoch": 300,
+        "checkpoint_callback_enabled": False,
+        "plateau_stopping_enabled": False,
+        "epochs_this_segment": 125,
+        "optimizer_updates_this_segment": 875,
+    }
+
+
+def test_fixed_completion_requires_epoch_300_and_2100_updates() -> None:
+    completed = _RUNNER._fixed_completion_payload(
+        SimpleNamespace(
+            completed_global_epochs=300,
+            optimizer_updates_completed=2100,
+            optimizer_updates_per_global_epoch=7,
+        ),
+        source_checkpoint_sha256=(
+            _RUNNER.FIXED_CONTINUATION_SOURCE_CHECKPOINT_SHA256
+        ),
+    )
+    assert completed["fixed_budget_completed"] is True
+    assert completed["plateau_stopping_enabled"] is False
+    assert completed["early_stop_applied"] is False
+
+    early = _RUNNER._fixed_completion_payload(
+        SimpleNamespace(
+            completed_global_epochs=299,
+            optimizer_updates_completed=2093,
+            optimizer_updates_per_global_epoch=7,
+        ),
+        source_checkpoint_sha256=(
+            _RUNNER.FIXED_CONTINUATION_SOURCE_CHECKPOINT_SHA256
+        ),
+    )
+    assert early["fixed_budget_completed"] is False
+
+
+@pytest.mark.parametrize("diagnostic_confirmed", [False, True])
+def test_fixed_final_validation_accepts_strict_diagnostic_pass_or_fail(
+    diagnostic_confirmed: bool,
+) -> None:
+    resume = SimpleNamespace(
+        completed_global_epochs=300,
+        optimizer_updates_completed=2100,
+        optimizer_updates_per_global_epoch=7,
+    )
+    completion = _RUNNER._fixed_completion_payload(
+        resume,
+        source_checkpoint_sha256=(
+            _RUNNER.FIXED_CONTINUATION_SOURCE_CHECKPOINT_SHA256
+        ),
+    )
+    strict = {
+        "schema": "so2_14core_strict_plateau_diagnostic_v1",
+        "completed_global_epochs": 300,
+        "role": "diagnostic_only_never_stopping",
+        "training_stop_applied": False,
+        "plateau_should_stop": False,
+        "diagnostic_confirmed": diagnostic_confirmed,
+    }
+    _RUNNER._validate_fixed_final_metadata(
+        completion,
+        strict,
+        expected_resume=resume,
+    )
 
 
 def test_fixed_checkpoint_replay_compares_fresh_predictions_and_state() -> None:

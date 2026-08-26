@@ -744,6 +744,7 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
     held_in_fit_protocols = {
         "held_in_full_core_fixed_budget",
         "held_in_pooled_10core_fixed_budget",
+        "held_in_pooled_14core_relative_qkv_fixed_continuation_epoch300",
         "held_in_pooled_14core_relative_qkv_seed_plateau",
         "held_in_pooled_6core_relative_qkv_fixed_budget",
         "held_in_pooled_6core_relative_qkv_joint_plateau",
@@ -890,17 +891,22 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                 "trainer.primary_checkpoint_role=last."
             )
         expected_checkpoint_policy = (
-            "atomic_latest_then_final_last_only"
-            if protocol == "held_in_pooled_14core_relative_qkv_seed_plateau"
+            "final_last_only_no_intermediate"
+            if protocol
+            == "held_in_pooled_14core_relative_qkv_fixed_continuation_epoch300"
             else (
-                "periodic_and_last"
-                if protocol
-                in {
-                    "held_in_pooled_6core_relative_qkv_fixed_budget",
-                    "held_in_pooled_6core_relative_qkv_joint_plateau",
-                    "held_in_pooled_6core_relative_qkv_seed_plateau",
-                }
-                else "last_only"
+                "atomic_latest_then_final_last_only"
+                if protocol == "held_in_pooled_14core_relative_qkv_seed_plateau"
+                else (
+                    "periodic_and_last"
+                    if protocol
+                    in {
+                        "held_in_pooled_6core_relative_qkv_fixed_budget",
+                        "held_in_pooled_6core_relative_qkv_joint_plateau",
+                        "held_in_pooled_6core_relative_qkv_seed_plateau",
+                    }
+                    else "last_only"
+                )
             )
         )
         if trainer.get("checkpoint_policy") != expected_checkpoint_policy:
@@ -1058,6 +1064,116 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             if dataset.get("total_fit_cells") != 246063:
                 raise ConfigurationError(
                     "The SO2 14-core protocol requires exactly 246,063 fit cells."
+                )
+        if (
+            protocol
+            == "held_in_pooled_14core_relative_qkv_fixed_continuation_epoch300"
+        ):
+            expected_aliases = [f"SO2-C{core}" for core in range(15, 29)]
+            locked_values = {
+                "batch_size": 2,
+                "core_visits_per_global_epoch": 14,
+                "cores_per_optimizer_update": 2,
+                "optimizer_updates_per_global_epoch": 7,
+                "execution_mode": "resume_fixed_final_epoch",
+                "required_resume_completed_global_epochs": 175,
+                "required_source_run_id": (
+                    "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6"
+                ),
+                "required_source_checkpoint_sha256": (
+                    "2e0f9d837fdbb78673f9788e355ce7a6f6843ffa1fc7a46a6b0c126d53fe7d8d"
+                ),
+                "fixed_final_global_epoch": 300,
+                "max_epochs": 300,
+                "initial_global_epoch_budget": 300,
+                "minimum_global_epochs": 300,
+                "fixed_epoch_budget": True,
+                "continuation_policy": (
+                    "fixed_epoch_300_from_confirmed_epoch_175"
+                ),
+                "plateau_extension": False,
+                "plateau_stopping_enabled": False,
+                "maximum_scientific_epoch_cap": 300,
+                "mask_views_per_core_step": 10,
+                "mask_views_per_rank_per_optimizer_update": 5,
+                "optimizer_zero_grad_per_paired_core_update": 1,
+                "optimizer_steps_per_paired_core_update": 1,
+                "early_stopping": False,
+                "distributed": True,
+                "distributed_backend": "nccl",
+                "distributed_world_size": 4,
+                "rank_zero_only_artifact_writes": True,
+                "checkpoint_every_global_epochs": None,
+                "checkpoint_final_role": "final_epoch_300_last",
+                "strict_plateau_diagnostic_only": True,
+                "strict_plateau_audit_interval_global_epochs": 25,
+                "strict_plateau_window_global_epochs": 50,
+                "strict_plateau_absolute_relative_half_window_change_max": 0.0005,
+                "strict_plateau_normalized_absolute_slope_per_epoch_max": 0.000025,
+                "strict_plateau_consecutive_passing_audits": 2,
+                "epoch_metrics_csv": "results/epoch_metrics.csv",
+                "epoch_metrics_fsync": True,
+            }
+            for field, expected in locked_values.items():
+                if trainer.get(field) != expected:
+                    raise ConfigurationError(
+                        "held_in_pooled_14core_relative_qkv_fixed_continuation_"
+                        f"epoch300 requires trainer.{field}={expected!r}."
+                    )
+            launcher = _mapping(config, "launcher")
+            locked_launcher = {
+                "requested_gpu": "0,1,2,3",
+                "requested_gpu_count": 4,
+                "require_exact_visible_devices": "0,1,2,3",
+                "distributed": True,
+                "distributed_backend": "nccl",
+                "process_count": 4,
+                "elastic_max_restarts": 0,
+                "hardware_preflight_receipt": (
+                    "state/preflight/so2_14core_relative_qkv_ddp4_"
+                    "resume175_fixed300.json"
+                ),
+            }
+            for field, expected in locked_launcher.items():
+                if launcher.get(field) != expected:
+                    raise ConfigurationError(
+                        "held_in_pooled_14core_relative_qkv_fixed_continuation_"
+                        f"epoch300 requires launcher.{field}={expected!r}."
+                    )
+            resume_checkpoint = str(launcher.get("resume_checkpoint", "")).strip()
+            if not resume_checkpoint.endswith(
+                "/r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6/"
+                "checkpoints/last.ckpt"
+            ):
+                raise ConfigurationError(
+                    "The fixed continuation launcher must identify the locked "
+                    "epoch-175 last checkpoint."
+                )
+            source_artifact_path = str(
+                launcher.get("source_artifact_path", "")
+            ).strip().rstrip("/")
+            if not source_artifact_path.endswith(
+                "/r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6"
+            ):
+                raise ConfigurationError(
+                    "The fixed continuation launcher must identify the locked "
+                    "source artifact bundle."
+                )
+            if model_name != "relative-qkv-gat":
+                raise ConfigurationError(
+                    "The SO2 fixed continuation requires model.name=relative-qkv-gat."
+                )
+            if config.get("seed") != 0 or evaluation.get("active_model_seeds") != [0]:
+                raise ConfigurationError(
+                    "The SO2 fixed continuation is locked to model seed 0."
+                )
+            if dataset.get("core_aliases") != expected_aliases:
+                raise ConfigurationError(
+                    "The SO2 fixed continuation requires exact ordered cores 15--28."
+                )
+            if dataset.get("total_fit_cells") != 246063:
+                raise ConfigurationError(
+                    "The SO2 fixed continuation requires exactly 246,063 fit cells."
                 )
     elif canonical_prediction_split == "fit" or str(primary).startswith("fit/"):
         raise ConfigurationError(

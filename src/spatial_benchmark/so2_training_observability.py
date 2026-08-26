@@ -30,6 +30,7 @@ import torch
 from .pooled_relative_qkv_training import (
     CHECKPOINT_INTERVAL_GLOBAL_EPOCHS,
     PLATEAU_FIRST_ALLOWED_STOP_EPOCH,
+    PLATEAU_WINDOW_GLOBAL_EPOCHS,
     audit_training_loss_plateau,
     single_seed_plateau_decision,
 )
@@ -38,6 +39,9 @@ from .pooled_relative_qkv_training import (
 SO2_CORE_ALIASES = tuple(f"SO2-C{core}" for core in range(15, 29))
 EPOCH_METRICS_SCHEMA = "so2_14core_epoch_metrics_v1"
 CHECKPOINT_SCHEMA = "so2_14core_relative_qkv_resume_v1"
+STRICT_PLATEAU_ABSOLUTE_RELATIVE_HALF_WINDOW_CHANGE_MAX = 0.0005
+STRICT_PLATEAU_NORMALIZED_ABSOLUTE_SLOPE_MAX = 0.000025
+STRICT_PLATEAU_CONSECUTIVE_PASSING_AUDITS = 2
 
 
 class SO2ObservabilityError(RuntimeError):
@@ -174,6 +178,128 @@ def plateau_monitor_fields(
     return result
 
 
+def strict_plateau_monitor_fields(
+    losses: Sequence[float],
+    *,
+    model_seed: int,
+    audit_interval_global_epochs: int = CHECKPOINT_INTERVAL_GLOBAL_EPOCHS,
+    window_global_epochs: int = PLATEAU_WINDOW_GLOBAL_EPOCHS,
+    absolute_relative_half_window_change_max: float = (
+        STRICT_PLATEAU_ABSOLUTE_RELATIVE_HALF_WINDOW_CHANGE_MAX
+    ),
+    normalized_absolute_slope_per_epoch_max: float = (
+        STRICT_PLATEAU_NORMALIZED_ABSOLUTE_SLOPE_MAX
+    ),
+    consecutive_passing_audits: int = (
+        STRICT_PLATEAU_CONSECUTIVE_PASSING_AUDITS
+    ),
+) -> dict[str, object]:
+    """Return stricter, diagnostic-only plateau fields.
+
+    Unlike the legacy stopping audit, this diagnostic bounds the *absolute*
+    relative change between the two half windows.  A small deterioration can
+    therefore no longer pass merely because its signed improvement is
+    negative.  ``plateau_should_stop`` and
+    ``plateau_eligible_for_stopping`` are always false: these fields reuse the
+    established CSV schema for monitoring but never own training duration.
+    """
+
+    values = np.asarray(losses, dtype=np.float64)
+    interval = int(audit_interval_global_epochs)
+    window_size = int(window_global_epochs)
+    required_consecutive = int(consecutive_passing_audits)
+    relative_limit = float(absolute_relative_half_window_change_max)
+    slope_limit = float(normalized_absolute_slope_per_epoch_max)
+    if values.ndim != 1 or values.size == 0 or not np.isfinite(values).all():
+        raise SO2ObservabilityError(
+            "Strict plateau history must be finite and non-empty."
+        )
+    if (
+        interval <= 0
+        or window_size < 2
+        or window_size % 2 != 0
+        or required_consecutive <= 0
+        or not math.isfinite(relative_limit)
+        or relative_limit < 0.0
+        or not math.isfinite(slope_limit)
+        or slope_limit < 0.0
+    ):
+        raise SO2ObservabilityError("Strict plateau diagnostic settings are invalid.")
+
+    completed = int(values.size)
+    performed = completed >= window_size and completed % interval == 0
+    result: dict[str, object] = {
+        "plateau_audit_performed": bool(performed),
+        "plateau_eligible_for_stopping": False,
+        "plateau_conditions_passed": False,
+        "plateau_qualifying_passed": False,
+        "plateau_consecutive_passing_audits": 0,
+        "plateau_relative_mean_improvement": "",
+        "plateau_normalized_absolute_slope_per_epoch": "",
+        "plateau_should_stop": False,
+    }
+    if not performed:
+        return result
+
+    def audit_at(boundary: int) -> tuple[bool, float, float]:
+        if boundary < window_size or boundary % interval != 0:
+            return False, float("nan"), float("nan")
+        window = values[boundary - window_size : boundary]
+        half = window_size // 2
+        previous_mean = float(window[:half].mean())
+        recent_mean = float(window[half:].mean())
+        if previous_mean == 0.0:
+            relative_change = 0.0 if recent_mean == 0.0 else float("inf")
+        else:
+            relative_change = (previous_mean - recent_mean) / abs(previous_mean)
+        window_mean = float(window.mean())
+        x = np.arange(window_size, dtype=np.float64)
+        x_centered = x - x.mean()
+        slope = float(
+            np.dot(x_centered, window - window_mean)
+            / np.dot(x_centered, x_centered)
+        )
+        normalized_slope = (
+            abs(slope) / abs(window_mean)
+            if window_mean != 0.0
+            else (0.0 if slope == 0.0 else float("inf"))
+        )
+        passed = bool(
+            abs(relative_change) <= relative_limit
+            and normalized_slope <= slope_limit
+        )
+        return passed, float(relative_change), float(normalized_slope)
+
+    current_passed, relative_change, normalized_slope = audit_at(completed)
+    consecutive = 0
+    boundary = completed
+    while consecutive < required_consecutive:
+        passed, _, _ = audit_at(boundary)
+        if not passed:
+            break
+        consecutive += 1
+        boundary -= interval
+    result.update(
+        {
+            "plateau_conditions_passed": current_passed,
+            "plateau_qualifying_passed": current_passed,
+            "plateau_consecutive_passing_audits": consecutive,
+            "plateau_relative_mean_improvement": _optional_finite(
+                relative_change,
+                field="strict_plateau_relative_half_window_change",
+            ),
+            "plateau_normalized_absolute_slope_per_epoch": _optional_finite(
+                normalized_slope,
+                field="strict_plateau_normalized_absolute_slope_per_epoch",
+            ),
+            # Diagnostic confirmation is represented by the consecutive count;
+            # it never becomes a training stop signal.
+            "plateau_should_stop": False,
+        }
+    )
+    return result
+
+
 def build_epoch_metrics_row(
     *,
     run_id: str,
@@ -191,6 +317,20 @@ def build_epoch_metrics_row(
     masked_entries_across_views: int,
     peak_vram_gib_all_ranks: float,
     loss_history: Sequence[float],
+    strict_plateau_diagnostic: bool = False,
+    strict_plateau_audit_interval_global_epochs: int = (
+        CHECKPOINT_INTERVAL_GLOBAL_EPOCHS
+    ),
+    strict_plateau_window_global_epochs: int = PLATEAU_WINDOW_GLOBAL_EPOCHS,
+    strict_plateau_absolute_relative_half_window_change_max: float = (
+        STRICT_PLATEAU_ABSOLUTE_RELATIVE_HALF_WINDOW_CHANGE_MAX
+    ),
+    strict_plateau_normalized_absolute_slope_per_epoch_max: float = (
+        STRICT_PLATEAU_NORMALIZED_ABSOLUTE_SLOPE_MAX
+    ),
+    strict_plateau_consecutive_passing_audits: int = (
+        STRICT_PLATEAU_CONSECUTIVE_PASSING_AUDITS
+    ),
 ) -> dict[str, object]:
     """Build one complete, finite CSV row for a finished global epoch."""
 
@@ -238,6 +378,27 @@ def build_epoch_metrics_row(
         ((epoch // CHECKPOINT_INTERVAL_GLOBAL_EPOCHS) + 1)
         * CHECKPOINT_INTERVAL_GLOBAL_EPOCHS
     )
+    plateau_fields = (
+        strict_plateau_monitor_fields(
+            loss_history,
+            model_seed=int(model_seed),
+            audit_interval_global_epochs=(
+                strict_plateau_audit_interval_global_epochs
+            ),
+            window_global_epochs=strict_plateau_window_global_epochs,
+            absolute_relative_half_window_change_max=(
+                strict_plateau_absolute_relative_half_window_change_max
+            ),
+            normalized_absolute_slope_per_epoch_max=(
+                strict_plateau_normalized_absolute_slope_per_epoch_max
+            ),
+            consecutive_passing_audits=(
+                strict_plateau_consecutive_passing_audits
+            ),
+        )
+        if strict_plateau_diagnostic
+        else plateau_monitor_fields(loss_history, model_seed=int(model_seed))
+    )
     row: dict[str, object] = {
         "schema": EPOCH_METRICS_SCHEMA,
         "run_id": str(run_id),
@@ -272,7 +433,7 @@ def build_epoch_metrics_row(
             field="peak_vram_gib_all_ranks",
             nonnegative=True,
         ),
-        **plateau_monitor_fields(loss_history, model_seed=int(model_seed)),
+        **plateau_fields,
     }
     for alias in SO2_CORE_ALIASES:
         row[_loss_column(alias)] = _finite_float(

@@ -1,0 +1,23 @@
+launcher:
+  kind: local_subprocess
+  concurrency: 1
+  requested_gpu: "0,1,2,3"
+  requested_gpu_count: 4
+  set_cuda_visible_devices: true
+  require_exact_visible_devices: "0,1,2,3"
+  distributed: true
+  distributed_backend: nccl
+  process_count: 4
+  elastic_max_restarts: 0
+  source_artifact_path: artifacts/runs/2026/08/r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6
+  resume_checkpoint: artifacts/runs/2026/08/r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6/checkpoints/last.ckpt
+  hardware_preflight_receipt: state/preflight/so2_14core_relative_qkv_ddp4_resume175_fixed300.json
+  gpu_model_assumption: NVIDIA GeForce RTX 3090
+  gpu_memory_gb_assumption: 24
+  heartbeat_seconds: 30
+  stale_after_seconds: 900
+  disk_safety_min_free_gb: 25
+  capture_stdout: true
+  capture_stderr: true
+  active_output_root: scratch/active_runs
+  finalized_output_root: artifacts/runs

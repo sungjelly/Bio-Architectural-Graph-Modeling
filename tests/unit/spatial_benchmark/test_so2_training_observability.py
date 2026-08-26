@@ -16,6 +16,7 @@ from spatial_benchmark.so2_training_observability import (
     build_epoch_metrics_row,
     plateau_monitor_fields,
     require_latest_only_checkpoint_layout,
+    strict_plateau_monitor_fields,
 )
 
 
@@ -188,6 +189,46 @@ def test_plateau_columns_record_two_consecutive_training_audits() -> None:
     assert second["plateau_should_stop"] is True
 
 
+def test_strict_plateau_is_absolute_and_diagnostic_only() -> None:
+    flat = strict_plateau_monitor_fields([1.0] * 175, model_seed=0)
+    assert flat["plateau_audit_performed"] is True
+    assert flat["plateau_conditions_passed"] is True
+    assert flat["plateau_consecutive_passing_audits"] == 2
+    assert flat["plateau_eligible_for_stopping"] is False
+    assert flat["plateau_should_stop"] is False
+
+    # The legacy one-sided improvement rule regards a deterioration as less
+    # than its positive threshold. The strict diagnostic uses its magnitude.
+    worsening = [1.0] * 25 + [1.0006] * 25
+    assert plateau_monitor_fields(worsening, model_seed=0)[
+        "plateau_conditions_passed"
+    ] is True
+    strict = strict_plateau_monitor_fields(worsening, model_seed=0)
+    assert strict["plateau_relative_mean_improvement"] == pytest.approx(-0.0006)
+    assert strict["plateau_conditions_passed"] is False
+    assert strict["plateau_should_stop"] is False
+
+
+def test_strict_plateau_threshold_is_inclusive() -> None:
+    # Use a relaxed slope bound to isolate the exact half-window threshold.
+    at_threshold = strict_plateau_monitor_fields(
+        [1.0] * 25 + [1.0005] * 25,
+        model_seed=0,
+        normalized_absolute_slope_per_epoch_max=1.0,
+    )
+    assert abs(float(at_threshold["plateau_relative_mean_improvement"])) == (
+        pytest.approx(0.0005)
+    )
+    assert at_threshold["plateau_conditions_passed"] is True
+
+    over_threshold = strict_plateau_monitor_fields(
+        [1.0] * 25 + [1.0005001] * 25,
+        model_seed=0,
+        normalized_absolute_slope_per_epoch_max=1.0,
+    )
+    assert over_threshold["plateau_conditions_passed"] is False
+
+
 def test_rolling_checkpoint_replaces_previous_and_model_reloads(
     tmp_path: Path,
 ) -> None:
@@ -254,6 +295,24 @@ def test_finalize_retains_only_loadable_last_checkpoint(tmp_path: Path) -> None:
     loaded = torch.load(receipt.path, map_location="cpu", weights_only=True)
     assert loaded["completed_global_epochs"] == 1
     assert loaded["plateau"]["should_stop"] is True
+
+
+def test_fixed_continuation_writes_only_final_epoch_300_checkpoint(
+    tmp_path: Path,
+) -> None:
+    model = torch.nn.Linear(3, 2)
+    store = AtomicLatestCheckpointStore(
+        tmp_path,
+        completed_global_epochs=175,
+    )
+    assert not list((tmp_path / "checkpoints").glob("*.ckpt"))
+
+    staged = store.save(_payload(300, model), completed_global_epochs=300)
+    assert staged.path.name == "latest.ckpt"
+    final = store.finalize()
+    assert final.completed_global_epochs == 300
+    assert final.path.name == "last.ckpt"
+    assert require_latest_only_checkpoint_layout(tmp_path, final=True) == final.path
     with pytest.raises(SO2ObservabilityError, match="immutable|already exists"):
         store.save(_payload(2, model), completed_global_epochs=2)
 

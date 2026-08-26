@@ -384,7 +384,10 @@ def command_for_config(
             "--run-scratch",
             "{run_scratch}",
         ]
-    if protocol == "held_in_pooled_14core_relative_qkv_seed_plateau":
+    if protocol in {
+        "held_in_pooled_14core_relative_qkv_seed_plateau",
+        "held_in_pooled_14core_relative_qkv_fixed_continuation_epoch300",
+    }:
         model = _section(configuration, "model")
         campaign = _section(configuration, "campaign")
         launcher = _section(configuration, "launcher")

@@ -2,7 +2,15 @@
 
 ## Task contract
 
-Phase: implementation and production preparation. Outcome: pending.
+Baseline phase: completed on 2026-08-26 at epoch 175 under the original
+plateau contract. Additive fixed epoch-300 continuation: configured, pending.
+
+The completed baseline run and its epoch-175 checkpoint remain immutable. A
+later user-authorized successor resumes at human epoch 176 and trains through
+the fixed final epoch 300 under a checksum-bound amendment. Its stricter
+plateau calculation is explicitly post-hoc and exploratory and cannot change
+training duration or checkpoint choice. See
+[Fixed epoch-176-to-300 continuation](CONTINUATION_EPOCH176_TO300.md).
 
 This campaign fits one shared Relative-Geometric QKV Graph Transformer (model
 seed 0) across the fourteen disconnected SO2 tissue-core graphs numbered 15

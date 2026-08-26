@@ -1,0 +1,106 @@
+amendment_schema_version: 1
+amendment_id: cmp_20260825_so2_14core_fixed_epoch300_continuation_001
+campaign_id: cmp_20260825_so2_14core_relative_qkv_seed0_batch2
+issued_at_utc: "2026-08-26"
+authority: explicit_user_instruction
+user_instruction_summary: Continue the immutable completed seed-0 SO2 14-core model from epoch 175 through a fixed final epoch 300.
+
+supersedes_contract_fields:
+  - training.loss_plateau_as_terminal_condition_for_the_successor_continuation
+  - acceptance.epoch_175_as_the_successor_model_endpoint
+
+nonretroactivity:
+  source_run_remains_valid_under_original_contract: true
+  source_run_or_bundle_mutation_allowed: false
+  source_plateau_decision_retracted: false
+
+source_completed_run:
+  run_id: r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6
+  artifact_relative_path: artifacts/runs/2026/08/r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6
+  status: success
+  completed_global_epochs: 175
+  optimizer_updates_completed: 1225
+  checkpoint_relative_path: checkpoints/last.ckpt
+  checkpoint_file_sha256: 2e0f9d837fdbb78673f9788e355ce7a6f6843ffa1fc7a46a6b0c126d53fe7d8d
+  resume_payload_sha256: fd7fa5031a6eaebbfe279cc75d8c4c2821a8619916e6221b02a10123d3d36724
+  model_state_sha256: 594a8a27beec40902febffcd2f3682824bb89117bcd330400ba8eb2ec87f46ad
+  optimizer_state_sha256: 32d84e63307d1711c50b8bc0835bc23a863bd02ec67f18e2f87a4c9fa824be3c
+  amp_scaler_state_sha256: 9c0cef8b853609a7e02dae61329567280f61370ad375d457051f73799f2f7048
+  history_sha256: c1d911cd39ed22b765aa43c9e68718739d4cf1ba13cfbcf3c02fc5b7e5bd15ca
+  resolved_config_file_sha256: 47bdadef687a84d0a9212bb1325d2ed2ac49bea2e596a08e171858a4125db3bb
+  epoch_metrics_csv_file_sha256: 970bb65bf2bef092838844109c04437d35c89cc2a85424baf5e8acc1bf747e46
+  run_manifest_file_sha256: 36d15da9ff13c7e6365c4eb560c2093c6ebee22a560e469445a1a0a843b84b00
+  success_marker_file_sha256: 3199501e6b19c36537743982816c5ceb2208a86dc7366e4cebf81490e5f8a5ec
+  success_content_sha256: 3a79627130d2332b7f5afb0c25255c7b88faa43c83e75945c7bbd48634656dc9
+  independent_reload_and_fixed_prediction_replay_verified: true
+
+preserves:
+  - exact_so2_c15_through_so2_c28_cohort_and_246063_fit_cells
+  - fit_only_transductive_role_and_no_generalization_claim
+  - expression_metadata_and_relative_geometry_contracts
+  - radial_stratified_k200_r500_graphs_and_checksums
+  - relative_qkv_256_l4_h8_architecture_and_model_seed_0
+  - ten_model_seed_independent_masks_per_core_and_epoch
+  - batch2_four_rank_ddp_exact_gradient_mean
+  - adamw_lr_1e4_weight_decay_1e5_gradient_clip_1
+  - deterministic_epoch_boundary_resume
+
+fixed_continuation:
+  execution_mode: resume_fixed_final_epoch
+  source_completed_global_epochs: 175
+  first_new_human_global_epoch: 176
+  first_new_internal_zero_based_epoch_index: 175
+  target_completed_global_epochs: 300
+  additional_global_epochs: 125
+  optimizer_updates_per_global_epoch: 7
+  additional_optimizer_updates: 875
+  total_optimizer_updates_at_target: 2100
+  complete_core_mask_views_per_global_epoch: 140
+  additional_complete_core_mask_views: 17500
+  masks_per_cell_added: 1250
+  total_masks_per_cell_at_target: 3000
+  fixed_epoch_budget: true
+  early_stopping: false
+  restore_best: false
+  validation_or_test_selection: false
+  metric_selected_duration: false
+  metric_selected_checkpoint: false
+
+strict_plateau_diagnostic:
+  schema: strict_equal_core_training_loss_stationarity_v1
+  status: post_hoc_exploratory
+  selection_timing: specified_after_inspection_of_the_completed_epoch_175_loss_history
+  metric: equal_core_mean_training_masked_huber
+  validation_or_test_metric: false
+  checkpoint_selection_metric: false
+  source_epoch_175_recomputed_as_baseline: true
+  continuation_audit_epochs: [200, 225, 250, 275, 300]
+  window_global_epochs: 50
+  adjacent_half_windows_global_epochs: 25
+  conditions:
+    absolute_relative_change_last_25_mean_vs_previous_25_mean_max: 0.0005
+    absolute_linear_slope_over_last_50_divided_by_window_mean_max_per_epoch: 0.000025
+    all_window_losses_finite: true
+  consecutive_passing_audits_required: 2
+  final_epoch_300_confirmation_requires_epochs: [275, 300]
+  determines_training_duration: false
+  determines_checkpoint_choice: false
+  failure_at_epoch_300: finalize_epoch_300_last_checkpoint_and_report_strict_plateau_not_confirmed
+
+checkpointing:
+  source_epoch_175_checkpoint_retained_immutable: true
+  continuation_checkpoint_policy: final_last_only_no_intermediate
+  checkpoint_interval_global_epochs: null
+  canonical_successor_checkpoint: final_epoch_300_last
+  best_checkpoint_selection: false
+
+resume:
+  boundary: completed_global_epoch_175
+  source_checkpoint_and_resume_hashes_must_match: true
+  preserve_completed_model_optimizer_scaler_and_rng_state: true
+  preserve_completed_mask_and_core_order_schedule: true
+  future_mask_sequence_rederived_from_locked_fields: true
+  historical_plateau_payload_role: source_run_terminal_decision_only
+
+interpretation:
+  statement: The successor is a fixed epoch-176-through-300 continuation of an immutable completed epoch-175 run. The stricter plateau calculation is a post-hoc exploratory held-in training diagnostic and neither validation nor checkpoint selection.

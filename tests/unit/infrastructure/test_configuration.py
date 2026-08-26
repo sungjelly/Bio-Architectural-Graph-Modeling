@@ -393,6 +393,53 @@ def test_so2_14core_relative_qkv_config_locks_ddp_and_latest_only_policy() -> No
             validate_experiment_config(invalid)
 
 
+def test_so2_fixed_epoch300_continuation_locks_lineage_and_no_checkpoints() -> None:
+    project_root = Path(__file__).resolve().parents[3]
+    source = (
+        project_root
+        / "configs/experiment/"
+        "so2_14core_relative_qkv_seed0_batch2_resume175_fixed300.yaml"
+    )
+    resolved = compose_config(source, config_root=project_root / "configs")
+    validate_experiment_config(resolved)
+    trainer = resolved["trainer"]
+    assert resolved["evaluation"]["protocol"] == (
+        "held_in_pooled_14core_relative_qkv_fixed_continuation_epoch300"
+    )
+    assert trainer["execution_mode"] == "resume_fixed_final_epoch"
+    assert trainer["required_resume_completed_global_epochs"] == 175
+    assert trainer["fixed_final_global_epoch"] == 300
+    assert trainer["plateau_stopping_enabled"] is False
+    assert trainer["checkpoint_policy"] == "final_last_only_no_intermediate"
+    assert trainer["checkpoint_every_global_epochs"] is None
+    assert trainer[
+        "strict_plateau_absolute_relative_half_window_change_max"
+    ] == pytest.approx(0.0005)
+    assert trainer[
+        "strict_plateau_normalized_absolute_slope_per_epoch_max"
+    ] == pytest.approx(0.000025)
+
+    for field, value in (
+        ("required_resume_completed_global_epochs", 174),
+        ("fixed_final_global_epoch", 299),
+        ("plateau_stopping_enabled", True),
+        ("checkpoint_every_global_epochs", 1),
+        ("strict_plateau_absolute_relative_half_window_change_max", 0.0006),
+        ("strict_plateau_normalized_absolute_slope_per_epoch_max", 0.000026),
+    ):
+        invalid = deepcopy(resolved)
+        invalid["trainer"][field] = value
+        with pytest.raises(ConfigurationError, match="fixed_continuation|fixed continuation"):
+            validate_experiment_config(invalid)
+
+    invalid = deepcopy(resolved)
+    invalid["launcher"]["resume_checkpoint"] = (
+        "artifacts/runs/2026/08/wrong/checkpoints/last.ckpt"
+    )
+    with pytest.raises(ConfigurationError, match="epoch-175"):
+        validate_experiment_config(invalid)
+
+
 def test_mean_adjacency_sage_requires_canonical_family(
     tmp_path: Path,
 ) -> None:

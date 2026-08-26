@@ -5,6 +5,10 @@ status: implementation
 definition: experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/README.md
 frozen_task_contract: experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/frozen_task_contract.yaml
 frozen_task_contract_sha256: 27e98401807ffaf0cd88269fded75b96f25d21f4e4556eb0cbc3d59289479ae8
+task_contract_amendments:
+  - path: experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/task_contract_amendment_001_fixed_epoch300_continuation.yaml
+    sha256: 4acf79c598be8c4155f6d519bf446ed32ef1a5628b8cc18960f05017981863d6
+    status: active
 cohort:
   source_slide: SO_2
   aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26, SO2-C27, SO2-C28]
