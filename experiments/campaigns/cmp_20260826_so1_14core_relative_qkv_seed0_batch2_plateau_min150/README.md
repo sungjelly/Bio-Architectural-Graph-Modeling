@@ -264,6 +264,32 @@ explicit order after readiness approval is prepare, hash binding and registry
 registration, preflight, enqueue exactly one experiment, then start the
 one-shot four-GPU worker.
 
+For the current host, SO2 recovery run
+`r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2` owns all four GPUs first.
+The one-shot handoff coordinator preserves the same order without polling from
+an unmanaged shell. It blocks on the repository's global worker lock, then
+requires the registered SO2 job and run to be completed, an exact contiguous
+epoch 1--300 CSV, a sole loadable `last.ckpt`, successful fixed-budget and
+prediction-replay receipts, a clean artifact-verification result, two idle-GPU
+samples, and at least 25 GiB free. Only then does it run the SO1 preflight,
+enqueue exactly one matching job, release the global lock, start the normal
+SO1 worker, and verify epoch 1 in the live CSV plus `latest.ckpt`.
+
+```bash
+install -m 0755 ops/supervisor/bagm-so1-after-so2-handoff.sh \
+  /opt/supervisor-scripts/bagm-so1-after-so2-handoff.sh
+install -m 0644 ops/supervisor/bagm-so1-after-so2-handoff.conf \
+  /etc/supervisor/conf.d/bagm-so1-after-so2-handoff.conf
+supervisorctl reread
+supervisorctl update
+supervisorctl start bagm_so1_after_so2_handoff
+```
+
+Its durable state is
+`/workspace/BAGM/state/handoffs/so2_epoch300_to_so1_plateau_min150.json`.
+Any failed scientific, provenance, GPU-idleness, disk, preflight, or queue
+gate stops the coordinator without starting SO1.
+
 Once a run ID exists, the live files are:
 
 ```bash
