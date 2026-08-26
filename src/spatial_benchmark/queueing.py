@@ -421,6 +421,40 @@ def command_for_config(
             "--run-scratch",
             "{run_scratch}",
         ]
+    if protocol == "held_in_pooled_so1_14core_relative_qkv_plateau_min150":
+        model = _section(configuration, "model")
+        campaign = _section(configuration, "campaign")
+        launcher = _section(configuration, "launcher")
+        if (
+            str(model.get("name", "")).strip().lower() != "relative-qkv-gat"
+            or campaign.get("campaign_id")
+            != "cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150"
+            or launcher.get("requested_gpu") != "0,1,2,3"
+            or launcher.get("process_count") != 4
+            or launcher.get("elastic_max_restarts") != 0
+        ):
+            raise ConfigurationError(
+                "The SO1 14-core protocol requires its registered four-rank "
+                "Relative-QKV campaign with GPUs 0,1,2,3 and no elastic restarts."
+            )
+        script = (
+            selected_paths.project_root
+            / "scripts/train/run_so1_14core_relative_qkv.py"
+        )
+        return [
+            sys.executable,
+            "-m",
+            "torch.distributed.run",
+            "--standalone",
+            "--nnodes=1",
+            "--nproc-per-node=4",
+            "--max-restarts=0",
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
     if protocol == "held_in_full_core_fixed_budget":
         model_name = ""
         if "model" in configuration:

@@ -1,0 +1,112 @@
+schema_version: 1
+campaign_id: cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150
+status: frozen_before_implementation
+objective: fit_one_fresh_shared_relative_geometric_qkv_model_on_so1_cores_1_through_14
+estimand: held_in_all_cells_so1_14core_transductive_masked_expression_reconstruction
+permitted_claim: model_fit_behavior_and_predictive_dependencies_within_fitted_so1_cores
+generalization_claim_supported: false
+validation_or_test_partition_present: false
+cohort:
+  slide: SO_1
+  core_numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+  core_aliases: [SO1-C01, SO1-C02, SO1-C03, SO1-C04, SO1-C05, SO1-C06, SO1-C07, SO1-C08, SO1-C09, SO1-C10, SO1-C11, SO1-C12, SO1-C13, SO1-C14]
+  expected_cells: 161596
+  routed_fov_count: 205
+  unmapped_fov_excluded: 0
+  unmapped_cells_excluded: 0
+  fit_scope: all_cells_so1_cores_1_through_14_transductive
+  tissue_context: mixed_or_unresolved_core_routing_cohort
+  single_diagnosis_or_tissue_status_asserted: false
+  population_representativeness_asserted: false
+preparation:
+  cohort_artifact: data/processed/so1_14core_relative_qkv_v1
+  graph_artifact: data/processed/so1_14core_relative_qkv_graphs_v1
+  cohort_manifest_content_sha256: null
+  cohort_manifest_file_sha256: null
+  graph_manifest_content_sha256: null
+  graph_manifest_file_sha256: null
+  completed_cohort_manifest_sha256: null
+  immutable_hash_status: pending_materialization
+  registration_or_enqueue_before_hash_binding_allowed: false
+model:
+  architecture: relative_geometric_qkv_graph_transformer
+  hidden_dim: 256
+  graph_layers: 4
+  attention_heads: 8
+  attention_head_dim: 32
+  ffn_dim: 1024
+  decoder_dim: 1024
+  relative_geometry_role: attention_logit_bias_only
+graph:
+  kind: radial_stratified_knn
+  nominal_k: 200
+  maximum_range_um: 500
+  radial_quotas: [48, 64, 48, 40]
+  bidirectional_union: true
+  self_loops: false
+  cross_core_edges: false
+masking:
+  distribution: uniform_integer_mask_count_0_through_1000
+  views_per_core_epoch: 10
+  model_seed_in_mask_derivation: false
+training:
+  initialization: fresh_from_scratch
+  pretrained_or_cross_campaign_resume_allowed: false
+  model_seed: 0
+  distributed_world_size: 4
+  distributed_backend: nccl
+  gpu_ids: [0, 1, 2, 3]
+  elastic_max_restarts: 0
+  core_visits_per_global_epoch: 14
+  cores_per_optimizer_update: 2
+  optimizer_updates_per_global_epoch: 7
+  mask_view_gradients_per_optimizer_update: 20
+  mask_views_per_rank_per_optimizer_update: 5
+  rank_assignment: [core_a_views_0_4, core_a_views_5_9, core_b_views_0_4, core_b_views_5_9]
+  maximum_simultaneously_staged_cores_per_gpu: 1
+  ddp_gradient_average: exact_mean_across_20_core_view_losses
+  optimizer: AdamW
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  gradient_clip_norm: 1.0
+stopping:
+  metric: equal_core_mean_training_masked_huber
+  metric_role: active_training_stop_not_checkpoint_selection
+  validation_or_test_metric: false
+  minimum_global_epochs: 150
+  first_audit_global_epoch: 150
+  audit_interval_global_epochs: 25
+  window_global_epochs: 50
+  absolute_relative_half_window_change_max: 0.0005
+  normalized_absolute_slope_per_epoch_max: 0.000025
+  consecutive_passing_audits_required: 2
+  earliest_possible_stop_global_epoch: 175
+  continuation_block_global_epochs: 25
+  fixed_epoch_budget: false
+  maximum_scientific_epoch_cap: null
+checkpointing:
+  in_training_policy: one_atomic_latest_replaced_each_completed_epoch
+  historical_periodic_checkpoints_retained: false
+  final_path: checkpoints/last.ckpt
+  final_role: last_confirmed_strict_training_loss_plateau_epoch
+observability:
+  csv_path_within_run: results/epoch_metrics.csv
+  csv_flush: every_completed_global_epoch_with_fsync
+  append_only_metrics_events: true
+  per_core_losses: true
+  gradient_norms: true
+execution:
+  experiment_config: configs/experiment/so1_14core_relative_qkv_seed0_batch2_plateau_min150.yaml
+  preflight_receipt: state/preflight/so1_14core_relative_qkv_ddp4_plateau_min150.json
+  automatic_enqueue: false
+  supervisor_autostart: false
+acceptance:
+  immutable_hashes_bound_and_verified: true
+  focused_tests_pass: true
+  graph_qc_pass: true
+  amp_fp32_preflight_pass: true
+  ddp_exact_aggregation_pass: true
+  live_csv_verified: true
+  two_consecutive_strict_plateau_audits_pass: true
+  final_checkpoint_loadable: true
+  finalized_bundle_checksums_verify: true

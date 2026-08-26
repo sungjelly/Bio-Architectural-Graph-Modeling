@@ -1,0 +1,53 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150
+display_name: SO1 cores 1-14 Relative-Geometric QKV seed-0 strict-plateau fit
+status: preparation_pending
+definition: experiments/campaigns/cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150/README.md
+frozen_task_contract: experiments/campaigns/cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150/frozen_task_contract.yaml
+frozen_task_contract_sha256: 8c6b0ea4a96b33387a1431b31542e4af066b263dbdea64f1242de0043378a7bd
+cohort:
+  source_slide: SO_1
+  aliases: [SO1-C01, SO1-C02, SO1-C03, SO1-C04, SO1-C05, SO1-C06, SO1-C07, SO1-C08, SO1-C09, SO1-C10, SO1-C11, SO1-C12, SO1-C13, SO1-C14]
+  independent_core_count: 14
+  total_fit_cells: 161596
+  routed_fov_count: 205
+  fit_scope: all_cells_so1_cores_1_through_14_transductive
+  validation_or_test_partition_present: false
+  tissue_context: mixed_or_unresolved_core_routing_cohort_no_single_tissue_status_asserted
+immutable_preparation:
+  status: pending_materialization_and_hash_binding
+  cohort_manifest_content_sha256: null
+  cohort_manifest_file_sha256: null
+  graph_manifest_file_sha256: null
+  graph_manifest_content_sha256: null
+  completed_cohort_manifest_sha256: null
+  registration_or_enqueue_allowed: false
+variant:
+  name: relative_qkv_gat_256_l4_h8_radial_stratified_k200_r500_batch2_ddp4_strict_plateau_min150
+  model_seeds: [0]
+  initialization: fresh_from_scratch
+production_run_count: 1
+production_minimum_global_epochs: 150
+production_optimizer_updates_per_global_epoch: 7
+production_masks_per_cell_per_epoch: 10
+production_stopping_policy:
+  metric: equal_core_mean_training_masked_huber
+  first_audit_global_epoch: 150
+  audit_interval_global_epochs: 25
+  window_global_epochs: 50
+  absolute_relative_half_window_change_max: 0.0005
+  normalized_absolute_slope_per_epoch_max: 0.000025
+  consecutive_passing_audits_required: 2
+  continuation_block_global_epochs: 25
+  maximum_scientific_epoch_cap: null
+  validation_or_test_metric: false
+execution:
+  world_size: 4
+  backend: nccl
+  physical_gpu_ids: [0, 1, 2, 3]
+  elastic_max_restarts: 0
+  checkpoint_policy: atomic_latest_then_final_last_only
+  final_checkpoint: checkpoints/last.ckpt
+  epoch_metrics_csv: results/epoch_metrics.csv
+production_maximum_attempts: 2
+automatic_enqueue: false

@@ -1,0 +1,24 @@
+evaluation:
+  registry_version: 1
+  task_family: masked_expression_regression
+  protocol: held_in_pooled_so1_14core_relative_qkv_plateau_min150
+  canonical_prediction_split: fit
+  primary_metric: fit/uniform_per_cell/masked_huber
+  primary_direction: minimize
+  splits: [fit]
+  mask_modes: [uniform_per_cell_0_100]
+  fixed_mask_bundle: true
+  mask_seed_namespace: held_in_fit_diagnostic_disjoint_from_epoch_masks
+  metrics:
+    - fit/uniform_per_cell/masked_huber
+    - fit/uniform_per_cell/masked_mae
+    - fit/uniform_per_cell/masked_mse
+    - fit/uniform_per_cell/masked_r2
+  uncertainty_unit: model_seed
+  active_model_seeds: [0]
+  independent_biological_replicates: 14
+  generalization_estimate: false
+  validation_or_test_selection: false
+  diagnostic_name: held_in_fit_diagnostic
+  save_fixed_prediction_checks: true
+  save_curve_numeric_data: true

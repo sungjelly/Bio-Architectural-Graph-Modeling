@@ -1,0 +1,27 @@
+version: 1
+defaults:
+  - model: relative_qkv_gat_256_l4_h8
+  - masking: uniform_per_cell_0_100
+  - dataset: so1_14core_pooled_fit_v1
+  - features: cosmx_so1_14core_metadata_relative_geometry
+  - graph: so1_radial_stratified_k200_r500_bidirectional
+  - trainer: pooled_relative_qkv_so1_14core_batch2_plateau_min150
+  - evaluation: held_in_so1_14core_fit_diagnostics_plateau_min150
+  - launcher: so1_14core_plateau_min150_ddp4
+campaign:
+  campaign_id: cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150
+  display_name: SO1 cores 1-14 Relative-Geometric QKV seed-0 strict-plateau fit
+experiment:
+  variant_label: relative_qkv_gat_256_l4_h8_k200_r500_batch2_ddp4_strict_plateau_min150
+  estimand: held_in_all_cells_so1_14core_transductive_masked_reconstruction
+  permitted_claim: fitted_cohort_masked_reconstruction_and_predictive_dependencies
+classification:
+  schema_version: 1
+  lifecycle_stage: locked_final
+  study_axis: so1_14core_relative_geometry_qkv_transductive_fit
+  scientific_variant: relative_qkv_gat_256_l4_h8_k200_r500_batch2_ddp4_strict_plateau_min150
+  retention_class: retain_locked_final_model
+  classification_confidence: high
+seed: 0
+fold: 0
+attempt: 1

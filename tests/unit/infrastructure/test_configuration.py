@@ -440,6 +440,48 @@ def test_so2_fixed_epoch300_continuation_locks_lineage_and_no_checkpoints() -> N
         validate_experiment_config(invalid)
 
 
+def test_so1_14core_strict_plateau_config_locks_minimum_and_thresholds() -> None:
+    project_root = Path(__file__).resolve().parents[3]
+    source = (
+        project_root
+        / "configs/experiment/"
+        "so1_14core_relative_qkv_seed0_batch2_plateau_min150.yaml"
+    )
+    resolved = compose_config(source, config_root=project_root / "configs")
+    validate_experiment_config(resolved)
+    trainer = resolved["trainer"]
+    assert resolved["dataset"]["core_aliases"] == [
+        f"SO1-C{core:02d}" for core in range(1, 15)
+    ]
+    assert resolved["dataset"]["total_fit_cells"] == 161596
+    assert trainer["execution_mode"] == "fresh_plateau_min150"
+    assert trainer["minimum_global_epochs"] == 150
+    assert trainer["max_epochs"] is None
+    assert trainer["plateau_audit_interval_global_epochs"] == 25
+    assert trainer["plateau_consecutive_passing_audits"] == 2
+    assert trainer[
+        "plateau_absolute_relative_half_window_change_max"
+    ] == pytest.approx(0.0005)
+    assert trainer[
+        "plateau_normalized_absolute_slope_per_epoch_max"
+    ] == pytest.approx(0.000025)
+    assert trainer["checkpoint_policy"] == "atomic_latest_then_final_last_only"
+    assert trainer["checkpoint_every_global_epochs"] == 1
+
+    for field, value in (
+        ("minimum_global_epochs", 149),
+        ("plateau_audit_interval_global_epochs", 50),
+        ("plateau_consecutive_passing_audits", 1),
+        ("plateau_absolute_relative_half_window_change_max", 0.0006),
+        ("plateau_normalized_absolute_slope_per_epoch_max", 0.000026),
+        ("checkpoint_every_global_epochs", 25),
+    ):
+        invalid = deepcopy(resolved)
+        invalid["trainer"][field] = value
+        with pytest.raises(ConfigurationError, match="so1|SO1"):
+            validate_experiment_config(invalid)
+
+
 def test_mean_adjacency_sage_requires_canonical_family(
     tmp_path: Path,
 ) -> None:
