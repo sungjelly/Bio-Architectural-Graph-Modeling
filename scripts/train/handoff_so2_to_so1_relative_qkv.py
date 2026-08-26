@@ -308,7 +308,20 @@ def _service_state(name: str) -> str:
     )
     output = (result.stdout or result.stderr).strip()
     fields = output.split()
-    if result.returncode != 0 or len(fields) < 2:
+    # supervisorctl returns a non-zero process status for valid non-running
+    # states such as STOPPED and EXITED.  Treat the parsed state as
+    # authoritative; reserve an error for absent/malformed service output.
+    known_states = {
+        "BACKOFF",
+        "EXITED",
+        "FATAL",
+        "RUNNING",
+        "STARTING",
+        "STOPPED",
+        "STOPPING",
+        "UNKNOWN",
+    }
+    if len(fields) < 2 or fields[1] not in known_states:
         raise HandoffError(f"Cannot resolve supervisor service {name!r}: {output}")
     return fields[1]
 

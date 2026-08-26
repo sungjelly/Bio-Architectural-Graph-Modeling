@@ -5,6 +5,7 @@ import importlib.util
 import json
 from pathlib import Path
 import sys
+from unittest.mock import Mock
 
 import pytest
 
@@ -122,3 +123,18 @@ def test_gpu_idle_gate_requires_all_four_empty_cards() -> None:
     assert _HANDOFF._gpu_snapshot_is_idle(idle)
     busy = {**idle, "compute_processes": ["123, GPU-0, 100"]}
     assert not _HANDOFF._gpu_snapshot_is_idle(busy)
+
+
+def test_supervisor_stopped_is_a_valid_state_despite_nonzero_exit(monkeypatch) -> None:
+    monkeypatch.setattr(
+        _HANDOFF.subprocess,
+        "run",
+        Mock(
+            return_value=Mock(
+                returncode=3,
+                stdout="bagm_so1_14core_preflight STOPPED Not started\n",
+                stderr="",
+            )
+        ),
+    )
+    assert _HANDOFF._service_state("bagm_so1_14core_preflight") == "STOPPED"
