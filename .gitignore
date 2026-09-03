@@ -87,6 +87,11 @@ exports/runs/checkpoints/
 !results/
 !results/**/
 !results/**/.gitkeep
+!results/README.md
+!results/CATALOG.md
+!results/catalog.json
+!results/**/README.md
+!results/**/result.yaml
 !artifacts/
 !artifacts/**/
 !artifacts/**/.gitkeep

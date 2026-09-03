@@ -1,0 +1,483 @@
+{
+  "analysis_code_provenance": {
+    "sha256": "d98cb7ea1152375d06271618a626119a8568fb83d863593bbb4a50db0b375916",
+    "size_bytes": 1527
+  },
+  "cluster_counts": {
+    "contextual": 26,
+    "intrinsic": 17
+  },
+  "cluster_size_ranges": {
+    "contextual": [
+      317,
+      16676
+    ],
+    "intrinsic": [
+      1170,
+      17345
+    ]
+  },
+  "configuration": {
+    "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+    "contextual_label_prefix": "S1C",
+    "cross_core_embedding_neighbors_permitted": true,
+    "dense_cell_by_cell_matrix_constructed": false,
+    "device": "cpu",
+    "distance_metric": "cosine",
+    "independent_representation_graphs": true,
+    "intrinsic_label_prefix": "S1I",
+    "joint_cell_count": 161596,
+    "joint_core_order": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "knn_implementation": "faiss.IndexHNSWFlat",
+    "knn_symmetrization": "undirected_union_unweighted",
+    "l2_normalize_for_cosine": true,
+    "leiden_resolution": 1.0,
+    "mean_center": false,
+    "minimum_mean_exact_recall_at_k": 0.9,
+    "n_neighbors": 30,
+    "pca": false,
+    "pipeline": "direct_embedding_l2_cosine_knn_leiden",
+    "random_seed": 20260825,
+    "representations": [
+      "h0",
+      "hL"
+    ],
+    "seeded_insertion_permutation_independent_of_core": true,
+    "shared_insertion_seed_across_independent_representations": true,
+    "spatial_training_graph_reused_for_clustering": false
+  },
+  "core_dominated_gt_90pct": {
+    "contextual": [
+      "S1C8",
+      "S1C13",
+      "S1C15",
+      "S1C16",
+      "S1C17",
+      "S1C22",
+      "S1C24",
+      "S1C25"
+    ],
+    "intrinsic": []
+  },
+  "core_order": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "created_at": "2026-08-27T20:59:13.246713+00:00",
+  "extraction_manifest_sha256": "c703a4a4bae632d9a9a415f0fe8cf122e0ebc406cdf44cf19dd3fe348e83f926",
+  "files": {
+    "clustering/contextual_clustering_parameters.json": {
+      "sha256": "6352630f2ba61b1a14633e53a94b62538eef6bb3afd1342c5444b404bf16bfc3",
+      "size_bytes": 5039
+    },
+    "clustering/contextual_knn_undirected_edges.npy": {
+      "sha256": "41aac2631215c7eb749be168fac94ef4dde8fd3586b26bf73491c6e4b639b39d",
+      "size_bytes": 63865952
+    },
+    "clustering/contextual_labels.npy": {
+      "sha256": "3bd954480418081a9804bd4a0090f784ea92c24204fd045a2b9aa836e0baac65",
+      "size_bytes": 1292896
+    },
+    "clustering/contextual_palette.json": {
+      "sha256": "9bd48f48abe9b5c6c8a1c83c96c376b3614309bf5f6c2aae44971e2f31ba4ffb",
+      "size_bytes": 770
+    },
+    "clustering/intrinsic_clustering_parameters.json": {
+      "sha256": "bbcc9677e6c84ba75ebf59c4a3e4028cbc08fe3480ed9c0831810eed136f8a7a",
+      "size_bytes": 4880
+    },
+    "clustering/intrinsic_knn_undirected_edges.npy": {
+      "sha256": "6e94f0d0be5dc29d6d3c2ffd155c6f1e46ba62ede3b19cf9e8ea445c48dbd5eb",
+      "size_bytes": 72600880
+    },
+    "clustering/intrinsic_labels.npy": {
+      "sha256": "31a7fd517ec4735f9c960f1126432bd134692503692c74a5ef3d4c845a534712",
+      "size_bytes": 1292896
+    },
+    "clustering/intrinsic_palette.json": {
+      "sha256": "6a2a77bed36a32d93a9a750276f01243057b112ea72448e116082efab0535235",
+      "size_bytes": 552
+    },
+    "tables/cell_embedding_clusters.parquet": {
+      "sha256": "16c3c1a06edf8a173f78e2cc902ecb9e480fd55b119e850b67b5ae6994c60b9e",
+      "size_bytes": 4335856
+    },
+    "tables/contextual_cluster_core_composition.csv": {
+      "sha256": "79a136c286d966bf743317fa8aae612c5d183373643dc940ad773529ba28f23b",
+      "size_bytes": 19781
+    },
+    "tables/contextual_cluster_summary.csv": {
+      "sha256": "da0e94fab61d2b13950a42cf23dbfca0455a4b25ffdb9e497f65f8ab85c48161",
+      "size_bytes": 1789
+    },
+    "tables/intrinsic_cluster_core_composition.csv": {
+      "sha256": "34be493136c5af9a031f07346cdc94d9f2e93b72f6d67b5d90c36ee5b16f7aae",
+      "size_bytes": 15910
+    },
+    "tables/intrinsic_cluster_summary.csv": {
+      "sha256": "d251c1a5df4372d03ce51a5c7b23a18a8a24533562d312fd126e50675a525e89",
+      "size_bytes": 1243
+    }
+  },
+  "independent_representation_graphs": true,
+  "manifest_content_sha256": "1e3f03b69ee2f5e6cc1bdda6dd37387880ed6d24889753144198416f9517d5f8",
+  "palettes": {
+    "contextual": {
+      "S1C0": "#D55E00",
+      "S1C1": "#0A0AF5",
+      "S1C10": "#781A29",
+      "S1C11": "#D697F5",
+      "S1C12": "#E50AF5",
+      "S1C13": "#B6C678",
+      "S1C14": "#F50A49",
+      "S1C15": "#1A5868",
+      "S1C16": "#78580A",
+      "S1C17": "#68B60A",
+      "S1C18": "#780A68",
+      "S1C19": "#8758F5",
+      "S1C2": "#0AF50A",
+      "S1C20": "#4997F5",
+      "S1C21": "#0AA797",
+      "S1C22": "#F5B658",
+      "S1C23": "#976887",
+      "S1C24": "#C6C6F5",
+      "S1C25": "#E56878",
+      "S1C3": "#0AC6F5",
+      "S1C4": "#F529A7",
+      "S1C5": "#0A580A",
+      "S1C6": "#0A3997",
+      "S1C7": "#E5D60A",
+      "S1C8": "#F5B6B6",
+      "S1C9": "#0AF5B6"
+    },
+    "intrinsic": {
+      "S1I0": "#0072B2",
+      "S1I1": "#0AF50A",
+      "S1I10": "#581A97",
+      "S1I11": "#1AA739",
+      "S1I12": "#1A7868",
+      "S1I13": "#E58739",
+      "S1I14": "#C6E597",
+      "S1I15": "#C697F5",
+      "S1I16": "#D60AF5",
+      "S1I2": "#F50A0A",
+      "S1I3": "#0A0AF5",
+      "S1I4": "#68680A",
+      "S1I5": "#F539B6",
+      "S1I6": "#0AF5D6",
+      "S1I7": "#F5B6B6",
+      "S1I8": "#F5D60A",
+      "S1I9": "#781A1A"
+    }
+  },
+  "pipelines": {
+    "contextual": {
+      "cosine_distance_setup": {
+        "cell_by_cell_matrix_constructed": false,
+        "input_embedding_sha256": "d0c242295a2d814c60135a76a9bdef187720c2c462f414971b757163cf2499ad",
+        "input_shape": [
+          161596,
+          256
+        ],
+        "l2_normalize_for_cosine": true,
+        "maximum_input_l2_norm": 38.95226639859295,
+        "mean_center": false,
+        "minimum_input_l2_norm": 11.360423158810846,
+        "normalized_sha256": "61fdcd91be99e2437ca50cc0ec5cae8c810249985a88ece54ffd4e314d330dd3",
+        "operation": "row_l2_normalization_for_cosine_distance_only",
+        "output_shape": [
+          161596,
+          256
+        ],
+        "pca": false,
+        "raw_embedding_mutated": false,
+        "representation": "contextual",
+        "representation_learning_or_reduction": false
+      },
+      "embedding_array": "hL",
+      "joint_embedding_sha256": "d0c242295a2d814c60135a76a9bdef187720c2c462f414971b757163cf2499ad",
+      "joint_embedding_shape": [
+        161596,
+        256
+      ],
+      "knn": {
+        "approximate_neighbor_index": true,
+        "cell_by_cell_matrix_constructed": false,
+        "core_labels_consulted_for_insertion_order": false,
+        "directed_neighbor_entries": 4847880,
+        "distance_metric": "cosine_via_l2_normalized_inner_product",
+        "edge_weights": "unweighted",
+        "ef_construction": 200,
+        "ef_search": 128,
+        "faiss_internal_edges_sha256": "befd9891d91cd3b935bf0bcacd89d9c09df8143f62b677a6ec52d21a232c33d4",
+        "faiss_internal_neighbors_sha256": "80a121bec290be73d56550c6b1155d2e5615e4492af0d7fd0d5b44cae6eae6bc",
+        "faiss_version": "1.15.0",
+        "hnsw_m": 32,
+        "implementation": "faiss.IndexHNSWFlat",
+        "input_order": "deterministic_seeded_permutation_then_mapped_to_locked_global_rows",
+        "insertion_permutation_seed": 23467666,
+        "insertion_permutation_sha256": "bf33f86a0a66c4f482381ddc8c0afb1efc955211a344df7fabdd322a9ce95b5c",
+        "maximum_explicit_pairwise_array_shape": [
+          161596,
+          38
+        ],
+        "n_neighbors": 30,
+        "neighbor_cosine_sha256": "9078e677533bdf1666e5a384276493d28c87ccf8b8f633a75e0c31a8a742065b",
+        "neighbor_storage_shape": [
+          161596,
+          30
+        ],
+        "neighbors_sha256": "7979bcf58ec3081c8970e45608027330aa072585de37af0fd224cf7256027d3d",
+        "random_seed": 20260825,
+        "random_seed_role": "Leiden; FAISS HNSW uses fixed library RNG with stable insertion order",
+        "representation_specific_graph": true,
+        "shared_insertion_seed_across_independent_representations": true,
+        "single_threaded_index_and_search": true,
+        "symmetrization": "undirected_union",
+        "undirected_edges": 3991614,
+        "undirected_edges_sha256": "9595574ef2ae7776431336ff3cf38115858c701d21a0e101ce0966dccceea239"
+      },
+      "knn_exact_recall_audit": {
+        "cell_by_cell_matrix_constructed": false,
+        "exact_neighbors_sha256": "50a198c9b12104f5565c00b9d8dc624a7e5a85cf56400eaaccd3ef65193db0c7",
+        "exact_similarity_matrix_persisted": false,
+        "maximum_explicit_pairwise_array_shape": [
+          8,
+          161596
+        ],
+        "mean_recall_acceptance_passed": true,
+        "method": "deterministic_evenly_spaced_queries_exact_cosine",
+        "minimum_accepted_mean_recall_at_k": 0.9,
+        "n_neighbors": 30,
+        "per_query_recall_sha256": "6e87c9547f43e6046318f40693f6830cac989c0b10211f819849c5491aaeb53c",
+        "purpose": "approximate_HNSW_neighbor_recall_quality_control",
+        "query_batch_size": 8,
+        "query_count_evaluated": 128,
+        "query_count_requested": 128,
+        "query_indices_sha256": "e8df9acbe8f1f70a63cce58acce2abd8085a04d222c2befa2f5e95e5423c283e",
+        "recall_at_k_maximum": 1.0,
+        "recall_at_k_mean": 0.9963541666666667,
+        "recall_at_k_median": 1.0,
+        "recall_at_k_minimum": 0.8666666666666667
+      },
+      "l2_normalize_for_cosine": true,
+      "leiden": {
+        "cluster_count": 26,
+        "cluster_size_max": 16676,
+        "cluster_size_min": 317,
+        "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+        "igraph_version": "1.0.0",
+        "implementation": "leidenalg.RBConfigurationVertexPartition",
+        "labels_sha256": "80e85ed717b640fe681b623ad828bb5543f4d27c4427615fa9e1c66436596198",
+        "largest_graph_component_proportion": 1.0,
+        "largest_graph_component_size": 161596,
+        "leidenalg_version": "0.12.0",
+        "modularity": 0.8205979514287371,
+        "n_iterations": -1,
+        "number_of_graph_components": 1,
+        "quality": 6551020.54258854,
+        "random_seed": 20260825,
+        "raw_to_sorted_cluster": {
+          "0": 0,
+          "1": 1,
+          "10": 10,
+          "11": 11,
+          "12": 12,
+          "13": 13,
+          "14": 14,
+          "15": 15,
+          "16": 16,
+          "17": 17,
+          "18": 18,
+          "19": 19,
+          "2": 2,
+          "20": 20,
+          "21": 21,
+          "22": 22,
+          "23": 23,
+          "24": 25,
+          "25": 24,
+          "3": 3,
+          "4": 4,
+          "5": 5,
+          "6": 6,
+          "7": 7,
+          "8": 8,
+          "9": 9
+        },
+        "resolution": 1.0
+      },
+      "mean_center": false,
+      "pca": false,
+      "pipeline_kind": "direct_embedding_l2_cosine_knn_leiden",
+      "raw_embedding_mutated": false,
+      "raw_embedding_sha256_after_pipeline": "d0c242295a2d814c60135a76a9bdef187720c2c462f414971b757163cf2499ad",
+      "representation": "contextual"
+    },
+    "intrinsic": {
+      "cosine_distance_setup": {
+        "cell_by_cell_matrix_constructed": false,
+        "input_embedding_sha256": "316382ade4009eaf01f87ff9c386dafd4b81d7a4e27d428c9453a2b45bac4bd2",
+        "input_shape": [
+          161596,
+          256
+        ],
+        "l2_normalize_for_cosine": true,
+        "maximum_input_l2_norm": 12.409993211602133,
+        "mean_center": false,
+        "minimum_input_l2_norm": 6.888061795569126,
+        "normalized_sha256": "d2635254321b3a0e141ee5fc29d7ba0c53cbd4932107c2214506fad9f627b03f",
+        "operation": "row_l2_normalization_for_cosine_distance_only",
+        "output_shape": [
+          161596,
+          256
+        ],
+        "pca": false,
+        "raw_embedding_mutated": false,
+        "representation": "intrinsic",
+        "representation_learning_or_reduction": false
+      },
+      "embedding_array": "h0",
+      "joint_embedding_sha256": "316382ade4009eaf01f87ff9c386dafd4b81d7a4e27d428c9453a2b45bac4bd2",
+      "joint_embedding_shape": [
+        161596,
+        256
+      ],
+      "knn": {
+        "approximate_neighbor_index": true,
+        "cell_by_cell_matrix_constructed": false,
+        "core_labels_consulted_for_insertion_order": false,
+        "directed_neighbor_entries": 4847880,
+        "distance_metric": "cosine_via_l2_normalized_inner_product",
+        "edge_weights": "unweighted",
+        "ef_construction": 200,
+        "ef_search": 128,
+        "faiss_internal_edges_sha256": "b95f2ac36d5885eeabea6a6b1b22c145ce1adcbaf9c8968772bd6c5851e826ea",
+        "faiss_internal_neighbors_sha256": "d7e6d8998aa389fd8707527dad4492e5e13666fdcb2c7d93b627a6984f298af0",
+        "faiss_version": "1.15.0",
+        "hnsw_m": 32,
+        "implementation": "faiss.IndexHNSWFlat",
+        "input_order": "deterministic_seeded_permutation_then_mapped_to_locked_global_rows",
+        "insertion_permutation_seed": 23467666,
+        "insertion_permutation_sha256": "bf33f86a0a66c4f482381ddc8c0afb1efc955211a344df7fabdd322a9ce95b5c",
+        "maximum_explicit_pairwise_array_shape": [
+          161596,
+          38
+        ],
+        "n_neighbors": 30,
+        "neighbor_cosine_sha256": "fffa94d33d04fb301e263cfed5e137be3dcb8d62a5682e7e05a3d96f0c9ad45b",
+        "neighbor_storage_shape": [
+          161596,
+          30
+        ],
+        "neighbors_sha256": "ec009ca3ef9c4b148b1945215ad3c449c2527873a441608eaf44ee28c1709095",
+        "random_seed": 20260825,
+        "random_seed_role": "Leiden; FAISS HNSW uses fixed library RNG with stable insertion order",
+        "representation_specific_graph": true,
+        "shared_insertion_seed_across_independent_representations": true,
+        "single_threaded_index_and_search": true,
+        "symmetrization": "undirected_union",
+        "undirected_edges": 4537547,
+        "undirected_edges_sha256": "1f0be1c18640b238f6f7b9c497733b9910bd23a231d7a8975778646a0ad65293"
+      },
+      "knn_exact_recall_audit": {
+        "cell_by_cell_matrix_constructed": false,
+        "exact_neighbors_sha256": "52e72d8149e7c1a9e3eccf528052884183975d71bbd70727e7d587c01d55dfa8",
+        "exact_similarity_matrix_persisted": false,
+        "maximum_explicit_pairwise_array_shape": [
+          8,
+          161596
+        ],
+        "mean_recall_acceptance_passed": true,
+        "method": "deterministic_evenly_spaced_queries_exact_cosine",
+        "minimum_accepted_mean_recall_at_k": 0.9,
+        "n_neighbors": 30,
+        "per_query_recall_sha256": "c5e790ebee5830a359223939da6545577de902de077637b9c7d8a671c940d43e",
+        "purpose": "approximate_HNSW_neighbor_recall_quality_control",
+        "query_batch_size": 8,
+        "query_count_evaluated": 128,
+        "query_count_requested": 128,
+        "query_indices_sha256": "e8df9acbe8f1f70a63cce58acce2abd8085a04d222c2befa2f5e95e5423c283e",
+        "recall_at_k_maximum": 1.0,
+        "recall_at_k_mean": 0.9549479166666668,
+        "recall_at_k_median": 1.0,
+        "recall_at_k_minimum": 0.4
+      },
+      "l2_normalize_for_cosine": true,
+      "leiden": {
+        "cluster_count": 17,
+        "cluster_size_max": 17345,
+        "cluster_size_min": 1170,
+        "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+        "igraph_version": "1.0.0",
+        "implementation": "leidenalg.RBConfigurationVertexPartition",
+        "labels_sha256": "84fbdfd4b9878363ed95d86de34f51a19dd8908b580e87c6fcde595acb5886c0",
+        "largest_graph_component_proportion": 1.0,
+        "largest_graph_component_size": 161596,
+        "leidenalg_version": "0.12.0",
+        "modularity": 0.7472756678247076,
+        "n_iterations": -1,
+        "number_of_graph_components": 1,
+        "quality": 6781596.929421997,
+        "random_seed": 20260825,
+        "raw_to_sorted_cluster": {
+          "0": 0,
+          "1": 1,
+          "10": 10,
+          "11": 11,
+          "12": 12,
+          "13": 13,
+          "14": 14,
+          "15": 15,
+          "16": 16,
+          "2": 2,
+          "3": 3,
+          "4": 4,
+          "5": 5,
+          "6": 6,
+          "7": 7,
+          "8": 8,
+          "9": 9
+        },
+        "resolution": 1.0
+      },
+      "mean_center": false,
+      "pca": false,
+      "pipeline_kind": "direct_embedding_l2_cosine_knn_leiden",
+      "raw_embedding_mutated": false,
+      "raw_embedding_sha256_after_pipeline": "316382ade4009eaf01f87ff9c386dafd4b81d7a4e27d428c9453a2b45bac4bd2",
+      "representation": "intrinsic"
+    }
+  },
+  "run_id": "r_20260826T204925Z_06d12943_s000_f00_a01_94691119",
+  "schema": "so1_14core_joint_h0_hl_direct_clustering_v1",
+  "status": "complete",
+  "total_cells": 161596
+}

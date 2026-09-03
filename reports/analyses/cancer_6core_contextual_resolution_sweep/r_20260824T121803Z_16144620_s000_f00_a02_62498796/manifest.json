@@ -1,0 +1,862 @@
+{
+  "analysis_classification": "exploratory_contextual_resolution_sensitivity",
+  "baseline_resolution_1_labels_exact_match": true,
+  "campaign_id": "cmp_20260824_cancer_6core_relative_qkv_multiseed",
+  "cell_counts": {
+    "1": 8924,
+    "13": 5345,
+    "15": 38145,
+    "21": 4897,
+    "23": 43462,
+    "9": 17223
+  },
+  "checkpoint_path": "/workspace/BAGM/artifacts/runs/2026/08/r_20260824T121803Z_16144620_s000_f00_a02_62498796/checkpoints/last.ckpt",
+  "checkpoint_sha256": "c5b7fdd6e3192c3146d415f1c77474f9e4483bba090c4fc9c2ac7d79ab554c0c",
+  "cluster_counts": {
+    "0p25": 7,
+    "0p5": 12,
+    "0p75": 17,
+    "1p0": 21,
+    "1p25": 24,
+    "1p5": 26,
+    "2p0": 32
+  },
+  "cluster_size_ranges": {
+    "0p25": [
+      5137,
+      29952
+    ],
+    "0p5": [
+      4008,
+      16090
+    ],
+    "0p75": [
+      874,
+      13510
+    ],
+    "1p0": [
+      509,
+      10388
+    ],
+    "1p25": [
+      516,
+      9370
+    ],
+    "1p5": [
+      535,
+      8602
+    ],
+    "2p0": [
+      547,
+      6456
+    ]
+  },
+  "contextual_embedding_shapes": {
+    "1": [
+      8924,
+      256
+    ],
+    "13": [
+      5345,
+      256
+    ],
+    "15": [
+      38145,
+      256
+    ],
+    "21": [
+      4897,
+      256
+    ],
+    "23": [
+      43462,
+      256
+    ],
+    "9": [
+      17223,
+      256
+    ]
+  },
+  "core_dominated_gt_90pct": {
+    "0p25": [
+      "R0p25_C0",
+      "R0p25_C2",
+      "R0p25_C3",
+      "R0p25_C6"
+    ],
+    "0p5": [
+      "R0p5_C0",
+      "R0p5_C2",
+      "R0p5_C3",
+      "R0p5_C5",
+      "R0p5_C7",
+      "R0p5_C9",
+      "R0p5_C11"
+    ],
+    "0p75": [
+      "R0p75_C0",
+      "R0p75_C1",
+      "R0p75_C3",
+      "R0p75_C5",
+      "R0p75_C6",
+      "R0p75_C7",
+      "R0p75_C11",
+      "R0p75_C12",
+      "R0p75_C14",
+      "R0p75_C16"
+    ],
+    "1p0": [
+      "R1p0_C0",
+      "R1p0_C1",
+      "R1p0_C3",
+      "R1p0_C5",
+      "R1p0_C6",
+      "R1p0_C7",
+      "R1p0_C8",
+      "R1p0_C12",
+      "R1p0_C13",
+      "R1p0_C15",
+      "R1p0_C16",
+      "R1p0_C18",
+      "R1p0_C19"
+    ],
+    "1p25": [
+      "R1p25_C0",
+      "R1p25_C2",
+      "R1p25_C4",
+      "R1p25_C6",
+      "R1p25_C8",
+      "R1p25_C9",
+      "R1p25_C11",
+      "R1p25_C12",
+      "R1p25_C13",
+      "R1p25_C14",
+      "R1p25_C16",
+      "R1p25_C17",
+      "R1p25_C19",
+      "R1p25_C20",
+      "R1p25_C21",
+      "R1p25_C22"
+    ],
+    "1p5": [
+      "R1p5_C0",
+      "R1p5_C2",
+      "R1p5_C7",
+      "R1p5_C8",
+      "R1p5_C9",
+      "R1p5_C10",
+      "R1p5_C11",
+      "R1p5_C12",
+      "R1p5_C13",
+      "R1p5_C14",
+      "R1p5_C15",
+      "R1p5_C16",
+      "R1p5_C17",
+      "R1p5_C21",
+      "R1p5_C22",
+      "R1p5_C23",
+      "R1p5_C24"
+    ],
+    "2p0": [
+      "R2p0_C1",
+      "R2p0_C3",
+      "R2p0_C5",
+      "R2p0_C7",
+      "R2p0_C8",
+      "R2p0_C9",
+      "R2p0_C10",
+      "R2p0_C11",
+      "R2p0_C12",
+      "R2p0_C13",
+      "R2p0_C14",
+      "R2p0_C15",
+      "R2p0_C17",
+      "R2p0_C18",
+      "R2p0_C19",
+      "R2p0_C21",
+      "R2p0_C22",
+      "R2p0_C23",
+      "R2p0_C25",
+      "R2p0_C26",
+      "R2p0_C28",
+      "R2p0_C29"
+    ]
+  },
+  "core_order": [
+    1,
+    9,
+    13,
+    15,
+    21,
+    23
+  ],
+  "created_at_utc": "2026-08-25T20:38:59.803485Z",
+  "figure_dpi": 300,
+  "files": {
+    "README.md": {
+      "sha256": "665a561ac29ce19e3268b381d6c2e0a0eca41670485b1efca8e43c03e087b871",
+      "size_bytes": 4066
+    },
+    "clustering/contextual_analysis_graph.npz": {
+      "sha256": "44e9c05fc534afdfe2bf8574e3ed9aa6498a7d562c2e44546640a0be8582f999",
+      "size_bytes": 7477012
+    },
+    "clustering/contextual_graph_manifest.json": {
+      "sha256": "593fdc12e4ae3afda9f761517be5aab16db38f00532c188d9b15ae0cd7f3b651",
+      "size_bytes": 5970
+    },
+    "clustering/labels_resolution_0p25.npy": {
+      "sha256": "27e85f4fc36dd97ee95ae54295be6adb3b8565bcd9053c46d1b3fb5e60a63f03",
+      "size_bytes": 944096
+    },
+    "clustering/labels_resolution_0p5.npy": {
+      "sha256": "9eb34cde6ac63a9a3d2e773673990a68edab2f69dcb96f1f5a13bfdb9fccea26",
+      "size_bytes": 944096
+    },
+    "clustering/labels_resolution_0p75.npy": {
+      "sha256": "dc1b502ba7980688c82533d7937a875ab7b864424fea12a5c1221b2508fac159",
+      "size_bytes": 944096
+    },
+    "clustering/labels_resolution_1p0.npy": {
+      "sha256": "1c8e925c4a557166c7ecf3b5e9c3364a4ddc6782341336e8023186204681aacd",
+      "size_bytes": 944096
+    },
+    "clustering/labels_resolution_1p25.npy": {
+      "sha256": "4bf87659864287aed3034ecf533945dc92dc194bc0c781cd9ccfe36c7c275cc4",
+      "size_bytes": 944096
+    },
+    "clustering/labels_resolution_1p5.npy": {
+      "sha256": "832870c8aabbf940b4cc3293a66561c52a151b8aa952e699a4f6006334eb3efd",
+      "size_bytes": 944096
+    },
+    "clustering/labels_resolution_2p0.npy": {
+      "sha256": "3df914c3581610ec1022f87a61adb3bdd6df12e1640a3f20da5757d2b10aafe7",
+      "size_bytes": 944096
+    },
+    "clustering/palette_resolution_0p25.json": {
+      "sha256": "644d68d8f60750b1dba601b52d56b84c968efefd47430974c83aa752c29c933b",
+      "size_bytes": 379
+    },
+    "clustering/palette_resolution_0p5.json": {
+      "sha256": "3c175e268339a60b8aa70715695e828b69daa94c3b1d705fd6e9e3e9dc14a3f6",
+      "size_bytes": 502
+    },
+    "clustering/palette_resolution_0p75.json": {
+      "sha256": "1df381564895eddf0f85ade994356b0f81db74a3c5d22c12c3697beb4682a49f",
+      "size_bytes": 656
+    },
+    "clustering/palette_resolution_1p0.json": {
+      "sha256": "70978f8ae9f3df2928f5ad5e27081be141e2de4379e4a167d3109f0efdc2135f",
+      "size_bytes": 745
+    },
+    "clustering/palette_resolution_1p25.json": {
+      "sha256": "19d6e28a6d75031d38e19a30f440d60065847845419c26d3333772107dada40d",
+      "size_bytes": 852
+    },
+    "clustering/palette_resolution_1p5.json": {
+      "sha256": "7bce918e7f1f5b3fc61fbb24b9cb32d51cf01cd1ad82b5ce3eaca177c7ed5ae7",
+      "size_bytes": 880
+    },
+    "clustering/palette_resolution_2p0.json": {
+      "sha256": "ce398598ea652c93cbba0e15e1f3dd90bb6c4c8f8ab1c8aa90c22288390436c8",
+      "size_bytes": 1042
+    },
+    "clustering/parameters_resolution_0p25.json": {
+      "sha256": "9fdd90deef281a33c2c0df6b475db9aa333bf22a00d87c985776f7332622e243",
+      "size_bytes": 1019
+    },
+    "clustering/parameters_resolution_0p5.json": {
+      "sha256": "3c7023497d9e359d28c2b051b887855c5adc4905796d162681b547f092d4a9d6",
+      "size_bytes": 1090
+    },
+    "clustering/parameters_resolution_0p75.json": {
+      "sha256": "aa2a80261af3b71a0c43ae6e5fb92af8d0e58a530ca1005368b51cffa1d95701",
+      "size_bytes": 1172
+    },
+    "clustering/parameters_resolution_1p0.json": {
+      "sha256": "4f9581a7b3e57e6f83a74c00146e2c2453cf01b50ef61105f84894d5b1e58137",
+      "size_bytes": 1234
+    },
+    "clustering/parameters_resolution_1p25.json": {
+      "sha256": "fd8eb26da16debf55b7c1262bbbbdea692613ae75b000b6f772b257c9f66311c",
+      "size_bytes": 1283
+    },
+    "clustering/parameters_resolution_1p5.json": {
+      "sha256": "d0ef49651e5af8f635eece214f9fea5bdbced0926f3eb6504a429ff33563e2f3",
+      "size_bytes": 1310
+    },
+    "clustering/parameters_resolution_2p0.json": {
+      "sha256": "f0dfc7ace812dc4c9a5266c78fe1ecc5a2fbfe9d923e1aa71e8dfdbfb4753ab9",
+      "size_bytes": 1408
+    },
+    "clustering/resolution_sweep_manifest.json": {
+      "sha256": "b32bc0b06ddcd1dbeb426f9cd4a8c7dd276b1e36e9d18173f151d98fab9af7d1",
+      "size_bytes": 22216
+    },
+    "figures/contextual_leiden_resolution_0p25_spatial_6cores.pdf": {
+      "sha256": "a3f3a4672efb1184fb465aea98c75f55444fffc64d4dc4c437281ccad25b0c22",
+      "size_bytes": 1803423
+    },
+    "figures/contextual_leiden_resolution_0p25_spatial_6cores.png": {
+      "sha256": "2093aa562122116c1429da85956438187a81c00747d3177ae01f09e2cceed3b1",
+      "size_bytes": 3769924
+    },
+    "figures/contextual_leiden_resolution_0p5_spatial_6cores.pdf": {
+      "sha256": "fa8fdd91add18c1de96b6a06a86b229c69457395a9b6def5460e6dae52360b0b",
+      "size_bytes": 2250274
+    },
+    "figures/contextual_leiden_resolution_0p5_spatial_6cores.png": {
+      "sha256": "38f8719316965857e161d217d423dd9755b1448fc2f477012cae21345f39e1c1",
+      "size_bytes": 3770317
+    },
+    "figures/contextual_leiden_resolution_0p75_spatial_6cores.pdf": {
+      "sha256": "c6918a77e70a312426484796dd0c30f6d70b864fc9376ab9175f7daa4b51e993",
+      "size_bytes": 2475119
+    },
+    "figures/contextual_leiden_resolution_0p75_spatial_6cores.png": {
+      "sha256": "051d8dfb2163acf773851f18fa06deb406d96f254cc5c2296f1fdf437f3a5cdf",
+      "size_bytes": 4031397
+    },
+    "figures/contextual_leiden_resolution_1p0_spatial_6cores.pdf": {
+      "sha256": "8db007652c0f523aa236ea629bf56d28b054dd26ccf5d7502da959838ee2efdf",
+      "size_bytes": 2536275
+    },
+    "figures/contextual_leiden_resolution_1p0_spatial_6cores.png": {
+      "sha256": "e10b1b3de5d4d71d95a7750e328d0ee6a710fd5fa387659bdaf72f7b8c170968",
+      "size_bytes": 3911762
+    },
+    "figures/contextual_leiden_resolution_1p25_spatial_6cores.pdf": {
+      "sha256": "0b46b88e8cd74630ba5f19ede5451155554cf7647716a9c714fe6aec4f4221b1",
+      "size_bytes": 2648891
+    },
+    "figures/contextual_leiden_resolution_1p25_spatial_6cores.png": {
+      "sha256": "80c9c5ef81605b038a2a9f9f07636bdcb6941959004c0d69124e985c18f62310",
+      "size_bytes": 4034902
+    },
+    "figures/contextual_leiden_resolution_1p5_spatial_6cores.pdf": {
+      "sha256": "002d6ca7a504a4bbf3a8387d5c748509bea9d75144c41b300da1cd2cfbb57163",
+      "size_bytes": 2647792
+    },
+    "figures/contextual_leiden_resolution_1p5_spatial_6cores.png": {
+      "sha256": "0259aef12098ad27ad0e4749d55fe33e9b898b64835fe03a6fd106bbef91932c",
+      "size_bytes": 3989632
+    },
+    "figures/contextual_leiden_resolution_2p0_spatial_6cores.pdf": {
+      "sha256": "791f80b8336dfdbca2687a546bb3eb106c614c3de063aade4fd7b0c2af242a44",
+      "size_bytes": 2716658
+    },
+    "figures/contextual_leiden_resolution_2p0_spatial_6cores.png": {
+      "sha256": "1de89aa46d80be2a48d4cc92147a29f4344e586e40fb56c27d46682d95ec404a",
+      "size_bytes": 4059629
+    },
+    "figures/plotting_manifest.json": {
+      "sha256": "4ed01339264a85449c66408e7ce6ef004f9c4ff260a8ce85d31171b2cecd72b6",
+      "size_bytes": 11507
+    },
+    "tables/cell_contextual_resolution_clusters.parquet": {
+      "sha256": "a6c1fa1cdab2e979833d47a41c6141121e77377abeeffaeb07e38b1317b37f9b",
+      "size_bytes": 2705827
+    },
+    "tables/contextual_resolution_cluster_summary.csv": {
+      "sha256": "67ca708677addb9272365b9e5f88c2e892b199e51056f9843f0a22293d4f63a1",
+      "size_bytes": 10823
+    },
+    "tables/contextual_resolution_core_composition.csv": {
+      "sha256": "c1cc72ad0c081defc1794cbb3191de47d09b820ffb0d08dd5ae1e55b10e21d55",
+      "size_bytes": 59337
+    }
+  },
+  "graph_manifest_sha256": "593fdc12e4ae3afda9f761517be5aab16db38f00532c188d9b15ae0cd7f3b651",
+  "h0_or_delta_used": false,
+  "interpretation": {
+    "contextual": "patterns after graph-based neighborhood processing",
+    "establishes_biological_influence": false,
+    "establishes_causality": false,
+    "establishes_cell_type": false,
+    "establishes_signaling": false,
+    "marker_and_pathology_validation_separate": true,
+    "resolution_role": "clustering granularity sensitivity parameter"
+  },
+  "manifest_content_sha256": "73cfa72e225066a47e5db98395422b6caa75871ef7cdfb7d29c1b5c4601499e1",
+  "model_construction": {
+    "activation_checkpointing": true,
+    "attention_dropout": 0.0,
+    "attention_head_dim": 32,
+    "attention_heads": 8,
+    "class": "ReceiverChunkedRelativeGeometryQKVGraphTransformer",
+    "decoder_dim": 1024,
+    "dropout": 0.1,
+    "edge_key_vectors": false,
+    "edge_value_gates": false,
+    "edge_value_vectors": false,
+    "embedding_dim": 256,
+    "exact_receiver_partitioning": true,
+    "family": "relative_geometry_qkv_graph_transformer",
+    "ffn_dim": 1024,
+    "fp32_attention_accumulation": true,
+    "graph_layers": 4,
+    "hidden_dim": 256,
+    "implicit_self_loops": false,
+    "max_edges_per_chunk": 200000,
+    "name": "relative-qkv-gat",
+    "node_covariate_dim": 22,
+    "num_genes": 1000,
+    "positional_bias_final_zero_init": true,
+    "positional_bias_hidden_dim": 128,
+    "receiver_chunk_size": 512,
+    "relative_geometry_dim": 70,
+    "relative_geometry_role": "attention_logit_bias_only",
+    "trainable_edge_identifiers": false,
+    "trainable_node_identifiers": false,
+    "uses_edge_inputs": false,
+    "uses_graph_inputs": true,
+    "uses_relative_position": true
+  },
+  "model_seed": 0,
+  "partition_manifest_sha256": "b32bc0b06ddcd1dbeb426f9cd4a8c7dd276b1e36e9d18173f151d98fab9af7d1",
+  "plotting": {
+    "combined_six_core_figure_pairs": 7,
+    "configuration": {
+      "core_order": [
+        1,
+        9,
+        13,
+        15,
+        21,
+        23
+      ],
+      "dpi": 300,
+      "partition_manifest_content_sha256": "6fe931ab3fa961d79d590306d06189cffdc9b35fb8ee629f7e52829ffd977ea0",
+      "representation": "contextual_hL_only",
+      "resolution_tokens": [
+        "0p25",
+        "0p5",
+        "0p75",
+        "1p0",
+        "1p25",
+        "1p5",
+        "2p0"
+      ],
+      "resolutions": [
+        0.25,
+        0.5,
+        0.75,
+        1.0,
+        1.25,
+        1.5,
+        2.0
+      ]
+    },
+    "delta_h_figures_created": false,
+    "figure_count": 14,
+    "files": {
+      "figures/contextual_leiden_resolution_0p25_spatial_6cores.pdf": {
+        "sha256": "a3f3a4672efb1184fb465aea98c75f55444fffc64d4dc4c437281ccad25b0c22",
+        "size_bytes": 1803423
+      },
+      "figures/contextual_leiden_resolution_0p25_spatial_6cores.png": {
+        "sha256": "2093aa562122116c1429da85956438187a81c00747d3177ae01f09e2cceed3b1",
+        "size_bytes": 3769924
+      },
+      "figures/contextual_leiden_resolution_0p5_spatial_6cores.pdf": {
+        "sha256": "fa8fdd91add18c1de96b6a06a86b229c69457395a9b6def5460e6dae52360b0b",
+        "size_bytes": 2250274
+      },
+      "figures/contextual_leiden_resolution_0p5_spatial_6cores.png": {
+        "sha256": "38f8719316965857e161d217d423dd9755b1448fc2f477012cae21345f39e1c1",
+        "size_bytes": 3770317
+      },
+      "figures/contextual_leiden_resolution_0p75_spatial_6cores.pdf": {
+        "sha256": "c6918a77e70a312426484796dd0c30f6d70b864fc9376ab9175f7daa4b51e993",
+        "size_bytes": 2475119
+      },
+      "figures/contextual_leiden_resolution_0p75_spatial_6cores.png": {
+        "sha256": "051d8dfb2163acf773851f18fa06deb406d96f254cc5c2296f1fdf437f3a5cdf",
+        "size_bytes": 4031397
+      },
+      "figures/contextual_leiden_resolution_1p0_spatial_6cores.pdf": {
+        "sha256": "8db007652c0f523aa236ea629bf56d28b054dd26ccf5d7502da959838ee2efdf",
+        "size_bytes": 2536275
+      },
+      "figures/contextual_leiden_resolution_1p0_spatial_6cores.png": {
+        "sha256": "e10b1b3de5d4d71d95a7750e328d0ee6a710fd5fa387659bdaf72f7b8c170968",
+        "size_bytes": 3911762
+      },
+      "figures/contextual_leiden_resolution_1p25_spatial_6cores.pdf": {
+        "sha256": "0b46b88e8cd74630ba5f19ede5451155554cf7647716a9c714fe6aec4f4221b1",
+        "size_bytes": 2648891
+      },
+      "figures/contextual_leiden_resolution_1p25_spatial_6cores.png": {
+        "sha256": "80c9c5ef81605b038a2a9f9f07636bdcb6941959004c0d69124e985c18f62310",
+        "size_bytes": 4034902
+      },
+      "figures/contextual_leiden_resolution_1p5_spatial_6cores.pdf": {
+        "sha256": "002d6ca7a504a4bbf3a8387d5c748509bea9d75144c41b300da1cd2cfbb57163",
+        "size_bytes": 2647792
+      },
+      "figures/contextual_leiden_resolution_1p5_spatial_6cores.png": {
+        "sha256": "0259aef12098ad27ad0e4749d55fe33e9b898b64835fe03a6fd106bbef91932c",
+        "size_bytes": 3989632
+      },
+      "figures/contextual_leiden_resolution_2p0_spatial_6cores.pdf": {
+        "sha256": "791f80b8336dfdbca2687a546bb3eb106c614c3de063aade4fd7b0c2af242a44",
+        "size_bytes": 2716658
+      },
+      "figures/contextual_leiden_resolution_2p0_spatial_6cores.png": {
+        "sha256": "1de89aa46d80be2a48d4cc92147a29f4344e586e40fb56c27d46682d95ec404a",
+        "size_bytes": 4059629
+      }
+    },
+    "h0_figures_created": false,
+    "manifest_content_sha256": "a38538262e6ecd376c0a9315f36c7165b3b2c397187baab309a0d4305c7459ab",
+    "one_dot_per_cell": true,
+    "plot_specifications": {
+      "0p25": {
+        "coordinate_units": "micrometres",
+        "equal_aspect": true,
+        "grid_shape": [
+          2,
+          3
+        ],
+        "invert_y_axis": true,
+        "leiden_resolution": 0.25,
+        "lines_between_cells": false,
+        "marker_borders": false,
+        "one_dot_per_cell": true,
+        "palette": {
+          "R0p25_C0": "#D55E00",
+          "R0p25_C1": "#0A0AF5",
+          "R0p25_C2": "#0AF50A",
+          "R0p25_C3": "#0AC6F5",
+          "R0p25_C4": "#F529A7",
+          "R0p25_C5": "#0A580A",
+          "R0p25_C6": "#0A3997"
+        },
+        "panel_order": [
+          1,
+          9,
+          13,
+          15,
+          21,
+          23
+        ],
+        "point_layer_rasterized_in_pdf": true,
+        "representation": "contextual_hL_only"
+      },
+      "0p5": {
+        "coordinate_units": "micrometres",
+        "equal_aspect": true,
+        "grid_shape": [
+          2,
+          3
+        ],
+        "invert_y_axis": true,
+        "leiden_resolution": 0.5,
+        "lines_between_cells": false,
+        "marker_borders": false,
+        "one_dot_per_cell": true,
+        "palette": {
+          "R0p5_C0": "#E5D60A",
+          "R0p5_C1": "#F5B6B6",
+          "R0p5_C10": "#0A580A",
+          "R0p5_C11": "#0A3997",
+          "R0p5_C2": "#0AF5B6",
+          "R0p5_C3": "#781A29",
+          "R0p5_C4": "#D697F5",
+          "R0p5_C5": "#D55E00",
+          "R0p5_C6": "#0A0AF5",
+          "R0p5_C7": "#0AF50A",
+          "R0p5_C8": "#0AC6F5",
+          "R0p5_C9": "#F529A7"
+        },
+        "panel_order": [
+          1,
+          9,
+          13,
+          15,
+          21,
+          23
+        ],
+        "point_layer_rasterized_in_pdf": true,
+        "representation": "contextual_hL_only"
+      },
+      "0p75": {
+        "coordinate_units": "micrometres",
+        "equal_aspect": true,
+        "grid_shape": [
+          2,
+          3
+        ],
+        "invert_y_axis": true,
+        "leiden_resolution": 0.75,
+        "lines_between_cells": false,
+        "marker_borders": false,
+        "one_dot_per_cell": true,
+        "palette": {
+          "R0p75_C0": "#F50A49",
+          "R0p75_C1": "#1A5868",
+          "R0p75_C10": "#E5D60A",
+          "R0p75_C11": "#F5B6B6",
+          "R0p75_C12": "#0AF5B6",
+          "R0p75_C13": "#781A29",
+          "R0p75_C14": "#D697F5",
+          "R0p75_C15": "#E50AF5",
+          "R0p75_C16": "#B6C678",
+          "R0p75_C2": "#78580A",
+          "R0p75_C3": "#D55E00",
+          "R0p75_C4": "#0A0AF5",
+          "R0p75_C5": "#0AF50A",
+          "R0p75_C6": "#0AC6F5",
+          "R0p75_C7": "#F529A7",
+          "R0p75_C8": "#0A580A",
+          "R0p75_C9": "#0A3997"
+        },
+        "panel_order": [
+          1,
+          9,
+          13,
+          15,
+          21,
+          23
+        ],
+        "point_layer_rasterized_in_pdf": true,
+        "representation": "contextual_hL_only"
+      },
+      "1p0": {
+        "coordinate_units": "micrometres",
+        "equal_aspect": true,
+        "grid_shape": [
+          2,
+          3
+        ],
+        "invert_y_axis": true,
+        "leiden_resolution": 1.0,
+        "lines_between_cells": false,
+        "marker_borders": false,
+        "one_dot_per_cell": true,
+        "palette": {
+          "R1p0_C0": "#D55E00",
+          "R1p0_C1": "#0A0AF5",
+          "R1p0_C10": "#781A29",
+          "R1p0_C11": "#D697F5",
+          "R1p0_C12": "#E50AF5",
+          "R1p0_C13": "#B6C678",
+          "R1p0_C14": "#F50A49",
+          "R1p0_C15": "#1A5868",
+          "R1p0_C16": "#78580A",
+          "R1p0_C17": "#68B60A",
+          "R1p0_C18": "#780A68",
+          "R1p0_C19": "#8758F5",
+          "R1p0_C2": "#0AF50A",
+          "R1p0_C20": "#4997F5",
+          "R1p0_C3": "#0AC6F5",
+          "R1p0_C4": "#F529A7",
+          "R1p0_C5": "#0A580A",
+          "R1p0_C6": "#0A3997",
+          "R1p0_C7": "#E5D60A",
+          "R1p0_C8": "#F5B6B6",
+          "R1p0_C9": "#0AF5B6"
+        },
+        "panel_order": [
+          1,
+          9,
+          13,
+          15,
+          21,
+          23
+        ],
+        "point_layer_rasterized_in_pdf": true,
+        "representation": "contextual_hL_only"
+      },
+      "1p25": {
+        "coordinate_units": "micrometres",
+        "equal_aspect": true,
+        "grid_shape": [
+          2,
+          3
+        ],
+        "invert_y_axis": true,
+        "leiden_resolution": 1.25,
+        "lines_between_cells": false,
+        "marker_borders": false,
+        "one_dot_per_cell": true,
+        "palette": {
+          "R1p25_C0": "#F529A7",
+          "R1p25_C1": "#0A580A",
+          "R1p25_C10": "#F50A49",
+          "R1p25_C11": "#1A5868",
+          "R1p25_C12": "#78580A",
+          "R1p25_C13": "#68B60A",
+          "R1p25_C14": "#780A68",
+          "R1p25_C15": "#8758F5",
+          "R1p25_C16": "#4997F5",
+          "R1p25_C17": "#0AA797",
+          "R1p25_C18": "#F5B658",
+          "R1p25_C19": "#976887",
+          "R1p25_C2": "#0A3997",
+          "R1p25_C20": "#D55E00",
+          "R1p25_C21": "#0A0AF5",
+          "R1p25_C22": "#0AF50A",
+          "R1p25_C23": "#0AC6F5",
+          "R1p25_C3": "#E5D60A",
+          "R1p25_C4": "#F5B6B6",
+          "R1p25_C5": "#0AF5B6",
+          "R1p25_C6": "#781A29",
+          "R1p25_C7": "#D697F5",
+          "R1p25_C8": "#E50AF5",
+          "R1p25_C9": "#B6C678"
+        },
+        "panel_order": [
+          1,
+          9,
+          13,
+          15,
+          21,
+          23
+        ],
+        "point_layer_rasterized_in_pdf": true,
+        "representation": "contextual_hL_only"
+      },
+      "1p5": {
+        "coordinate_units": "micrometres",
+        "equal_aspect": true,
+        "grid_shape": [
+          2,
+          3
+        ],
+        "invert_y_axis": true,
+        "leiden_resolution": 1.5,
+        "lines_between_cells": false,
+        "marker_borders": false,
+        "one_dot_per_cell": true,
+        "palette": {
+          "R1p5_C0": "#0AF5B6",
+          "R1p5_C1": "#781A29",
+          "R1p5_C10": "#8758F5",
+          "R1p5_C11": "#4997F5",
+          "R1p5_C12": "#0AA797",
+          "R1p5_C13": "#F5B658",
+          "R1p5_C14": "#976887",
+          "R1p5_C15": "#C6C6F5",
+          "R1p5_C16": "#E56878",
+          "R1p5_C17": "#D55E00",
+          "R1p5_C18": "#0A0AF5",
+          "R1p5_C19": "#0AF50A",
+          "R1p5_C2": "#D697F5",
+          "R1p5_C20": "#0AC6F5",
+          "R1p5_C21": "#F529A7",
+          "R1p5_C22": "#0A580A",
+          "R1p5_C23": "#0A3997",
+          "R1p5_C24": "#E5D60A",
+          "R1p5_C25": "#F5B6B6",
+          "R1p5_C3": "#E50AF5",
+          "R1p5_C4": "#B6C678",
+          "R1p5_C5": "#F50A49",
+          "R1p5_C6": "#1A5868",
+          "R1p5_C7": "#78580A",
+          "R1p5_C8": "#68B60A",
+          "R1p5_C9": "#780A68"
+        },
+        "panel_order": [
+          1,
+          9,
+          13,
+          15,
+          21,
+          23
+        ],
+        "point_layer_rasterized_in_pdf": true,
+        "representation": "contextual_hL_only"
+      },
+      "2p0": {
+        "coordinate_units": "micrometres",
+        "equal_aspect": true,
+        "grid_shape": [
+          2,
+          3
+        ],
+        "invert_y_axis": true,
+        "leiden_resolution": 2.0,
+        "lines_between_cells": false,
+        "marker_borders": false,
+        "one_dot_per_cell": true,
+        "palette": {
+          "R2p0_C0": "#781A29",
+          "R2p0_C1": "#D697F5",
+          "R2p0_C10": "#4997F5",
+          "R2p0_C11": "#0AA797",
+          "R2p0_C12": "#F5B658",
+          "R2p0_C13": "#976887",
+          "R2p0_C14": "#C6C6F5",
+          "R2p0_C15": "#E56878",
+          "R2p0_C16": "#0AE568",
+          "R2p0_C17": "#29A758",
+          "R2p0_C18": "#394929",
+          "R2p0_C19": "#A7E5E5",
+          "R2p0_C2": "#E50AF5",
+          "R2p0_C20": "#97970A",
+          "R2p0_C21": "#B629B6",
+          "R2p0_C22": "#D55E00",
+          "R2p0_C23": "#0A0AF5",
+          "R2p0_C24": "#0AF50A",
+          "R2p0_C25": "#0AC6F5",
+          "R2p0_C26": "#F529A7",
+          "R2p0_C27": "#0A580A",
+          "R2p0_C28": "#0A3997",
+          "R2p0_C29": "#E5D60A",
+          "R2p0_C3": "#B6C678",
+          "R2p0_C30": "#F5B6B6",
+          "R2p0_C31": "#0AF5B6",
+          "R2p0_C4": "#F50A49",
+          "R2p0_C5": "#1A5868",
+          "R2p0_C6": "#78580A",
+          "R2p0_C7": "#68B60A",
+          "R2p0_C8": "#780A68",
+          "R2p0_C9": "#8758F5"
+        },
+        "panel_order": [
+          1,
+          9,
+          13,
+          15,
+          21,
+          23
+        ],
+        "point_layer_rasterized_in_pdf": true,
+        "representation": "contextual_hL_only"
+      }
+    },
+    "point_layer_rasterized_in_pdf": true,
+    "schema": "contextual_hl_resolution_spatial_figures_v1",
+    "status": "complete"
+  },
+  "plotting_manifest_sha256": "4ed01339264a85449c66408e7ce6ef004f9c4ff260a8ce85d31171b2cecd72b6",
+  "random_seed": 20260825,
+  "representation": "contextual_hL_only",
+  "resolutions": [
+    0.25,
+    0.5,
+    0.75,
+    1.0,
+    1.25,
+    1.5,
+    2.0
+  ],
+  "run_id": "r_20260824T121803Z_16144620_s000_f00_a02_62498796",
+  "schema": "cancer_6core_contextual_leiden_resolution_sweep_v1",
+  "shared_analysis_graph": {
+    "cell_by_cell_dense_matrix_constructed": false,
+    "distance_metric": "cosine",
+    "knn_edges_sha256": "180afebe30ee6232c8c39368f7da18d420680ed290e4d56670820f3f383dd037",
+    "n_neighbors": 30,
+    "pca_components": 50,
+    "pca_scores_sha256": "8b3bc4f68b1e163670d4f40a8265fd9f6f5d1c22cfefefcb03d73b81e2afa92c",
+    "reused_for_all_resolutions": true
+  },
+  "source_analysis_bundle": "/workspace/BAGM/reports/analyses/cancer_6core_embedding_clustering/r_20260824T121803Z_16144620_s000_f00_a02_62498796",
+  "source_analysis_file_count": 62,
+  "source_analysis_manifest_content_sha256": "211cba4b91f7721aea8f574b02c87b569f8b2ab92d03843fc5feb21e6ccb2fb9",
+  "source_analysis_manifest_file_sha256": "921f5aa074d9898fb811d359c98e0d8164391376fcf4d3e2fd45bc84535a8763",
+  "status": "complete",
+  "total_cells": 117996
+}

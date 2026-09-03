@@ -1,0 +1,29 @@
+{
+  "colors": {
+    "R1p0_C0": "#D55E00",
+    "R1p0_C1": "#0A0AF5",
+    "R1p0_C10": "#781A29",
+    "R1p0_C11": "#D697F5",
+    "R1p0_C12": "#E50AF5",
+    "R1p0_C13": "#B6C678",
+    "R1p0_C14": "#F50A49",
+    "R1p0_C15": "#1A5868",
+    "R1p0_C16": "#78580A",
+    "R1p0_C17": "#68B60A",
+    "R1p0_C18": "#780A68",
+    "R1p0_C19": "#8758F5",
+    "R1p0_C2": "#0AF50A",
+    "R1p0_C20": "#4997F5",
+    "R1p0_C3": "#0AC6F5",
+    "R1p0_C4": "#F529A7",
+    "R1p0_C5": "#0A580A",
+    "R1p0_C6": "#0A3997",
+    "R1p0_C7": "#E5D60A",
+    "R1p0_C8": "#F5B6B6",
+    "R1p0_C9": "#0AF5B6"
+  },
+  "cross_resolution_cluster_identity_implied": false,
+  "leiden_resolution": 1.0,
+  "representation": "contextual_hL_only",
+  "resolution_qualified_prefix": "R1p0_C"
+}

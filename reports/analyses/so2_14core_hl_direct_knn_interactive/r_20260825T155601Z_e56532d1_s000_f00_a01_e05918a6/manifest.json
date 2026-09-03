@@ -1,0 +1,196 @@
+{
+  "analysis_scope": "direct_contextual_hL_resolution_1p0_visualization_only",
+  "cluster_count": 18,
+  "cluster_labels": [
+    "D0",
+    "D1",
+    "D2",
+    "D3",
+    "D4",
+    "D5",
+    "D6",
+    "D7",
+    "D8",
+    "D9",
+    "D10",
+    "D11",
+    "D12",
+    "D13",
+    "D14",
+    "D15",
+    "D16",
+    "D17"
+  ],
+  "core_cell_counts": {
+    "15": 38145,
+    "16": 16229,
+    "17": 9041,
+    "18": 11696,
+    "19": 19119,
+    "20": 12155,
+    "21": 4897,
+    "22": 11443,
+    "23": 43462,
+    "24": 14506,
+    "25": 13147,
+    "26": 14856,
+    "27": 24245,
+    "28": 13122
+  },
+  "core_order": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+  ],
+  "created_at": "2026-08-26T13:00:59.020417+00:00",
+  "embedding_dimension": 256,
+  "execution": {
+    "embedding_extraction": false,
+    "gpu_used": false,
+    "model_inference": false,
+    "model_training": false,
+    "neighbor_construction": false,
+    "reclustering": false,
+    "visualization_only": true
+  },
+  "files": {
+    "README.md": {
+      "sha256": "e9bd9df5b860c526838852322778de35101ce22b8d4d871e97cfd6abe1163aa8",
+      "size_bytes": 1988
+    },
+    "contextual_direct_hl_leiden_resolution_1p0_spatial_14cores_interactive.html": {
+      "sha256": "e3ec96a3788980b9300c6b419a8ac53614dccfe5cfa7aea8189e84931a61779d",
+      "size_bytes": 5612249
+    },
+    "contextual_direct_hl_leiden_resolution_1p0_spatial_14cores_interactive.zip": {
+      "sha256": "27a048093865a56d6c349fdfcf546b55db6036e91d243d6a828eedc9e23b34fd",
+      "size_bytes": 3526631
+    }
+  },
+  "interaction": {
+    "cluster_click_highlight": true,
+    "combined_png_export": true,
+    "hover_fields": [
+      "numeric_core_number",
+      "contextual_direct_cluster",
+      "rounded_x_um",
+      "rounded_y_um"
+    ],
+    "nonselected_opacity": 0.09,
+    "pan": "pointer_drag",
+    "selected_draw_order": "last",
+    "show_all_and_escape_reset": true,
+    "zoom": "wheel"
+  },
+  "interpretation": {
+    "biological_influence_established": false,
+    "causality_established": false,
+    "cell_types_established": false,
+    "model_derived_contextual_clusters": true,
+    "signaling_established": false
+  },
+  "l2_normalize_for_cosine": true,
+  "leiden_resolution": 1.0,
+  "manifest_content_sha256": "a302c1c4c6df5232a6856e025ddc23028e7a3005a5714fcd7d134b8e0df733ea",
+  "mean_center": false,
+  "n_neighbors": 30,
+  "pca": false,
+  "pipeline_kind": "direct_hl_cosine_knn_leiden",
+  "point_count": 246063,
+  "render_receipt": {
+    "browser_payload_fields": [
+      "numeric_core_number",
+      "x_um",
+      "y_um",
+      "contextual_direct_cluster_code"
+    ],
+    "clinical_fields_included": false,
+    "cluster_count": 18,
+    "core_order": [
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28
+    ],
+    "embedding_dimension": 256,
+    "embedding_values_included": false,
+    "expression_values_included": false,
+    "html_sha256": "e3ec96a3788980b9300c6b419a8ac53614dccfe5cfa7aea8189e84931a61779d",
+    "html_size_bytes": 5612249,
+    "l2_normalize_for_cosine": true,
+    "leiden_resolution": 1.0,
+    "manifest_content_sha256": "56981bfb035bf3b1134facd2de889c161dd87587e990108837bbf0e5f0edba2b",
+    "mean_center": false,
+    "n_neighbors": 30,
+    "neighbor_edges_included": false,
+    "offline_network_policy": "connect-src-none",
+    "pca": false,
+    "pipeline_kind": "direct_hl_cosine_knn_leiden",
+    "point_count": 246063,
+    "schema": "so2_14core_hl_direct_knn_interactive_v1",
+    "self_contained": true,
+    "source_manifest_sha256": "a58ed01ad877873246b963c605c8e8edab0f7ed753f65a2a8289c79d5ec73708",
+    "source_table_sha256": "546f584fd51e945ccaf3c7a275179ec9f8d7763943ae666886212ffcab0f2afc",
+    "stable_identifiers_included": false,
+    "status": "complete"
+  },
+  "run_id": "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+  "schema": "so2_14core_hl_direct_knn_interactive_v1",
+  "sharing": {
+    "authorized_collaborators_only": true,
+    "clinical_fields_included": false,
+    "embedding_values_included": false,
+    "exact_tissue_coordinates_included": true,
+    "expression_values_included": false,
+    "neighbor_edges_included": false,
+    "self_contained_offline_html": true,
+    "stable_cell_identifiers_included": false
+  },
+  "source_artifacts": {
+    "analysis_manifest": {
+      "sha256": "a58ed01ad877873246b963c605c8e8edab0f7ed753f65a2a8289c79d5ec73708",
+      "size_bytes": 34944
+    },
+    "cluster_table": {
+      "sha256": "546f584fd51e945ccaf3c7a275179ec9f8d7763943ae666886212ffcab0f2afc",
+      "size_bytes": 3574038
+    },
+    "palette": {
+      "sha256": "7b0b41a8f5b77e97ff94767c2f6234fcac8955574b980af61099fe33c584acf2",
+      "size_bytes": 810
+    },
+    "static_png": {
+      "sha256": "e3abbb865c6504136c6b32db7dda6e9b6d480ad3940d74bde79ca3552493efab",
+      "size_bytes": 10161448
+    }
+  },
+  "status": "complete",
+  "zip_receipt": {
+    "deterministic_timestamp": "1980-01-01T00:00:00",
+    "member": "contextual_direct_hl_leiden_resolution_1p0_spatial_14cores_interactive.html",
+    "member_sha256": "e3ec96a3788980b9300c6b419a8ac53614dccfe5cfa7aea8189e84931a61779d",
+    "zip_sha256": "27a048093865a56d6c349fdfcf546b55db6036e91d243d6a828eedc9e23b34fd",
+    "zip_size_bytes": 3526631
+  }
+}

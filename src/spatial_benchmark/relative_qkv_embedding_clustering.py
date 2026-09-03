@@ -127,6 +127,10 @@ class PCAResult:
 class KNNGraphResult:
     edge_pairs: np.ndarray = field(repr=False)
     receipt: Mapping[str, Any]
+    # Optional directed rows support bounded exact-recall audits without
+    # rebuilding an approximate index.  Existing consumers use only the
+    # undirected edge union and remain backward compatible.
+    directed_neighbors: np.ndarray | None = field(default=None, repr=False)
 
 
 @dataclass(frozen=True, slots=True)
@@ -1260,7 +1264,9 @@ def build_faiss_cosine_knn_graph(
         or int(n_neighbors) >= n_cells
     ):
         raise EmbeddingClusterAnalysisError("n_neighbors must be in [1, cells-1].")
-    norms = np.linalg.norm(values.astype(np.float64), axis=1)
+    norms = np.sqrt(
+        np.einsum("ij,ij->i", values, values, dtype=np.float64, optimize=True)
+    )
     if not np.allclose(norms, 1.0, rtol=1e-5, atol=1e-6):
         raise EmbeddingClusterAnalysisError("FAISS cosine input is not L2-normalized.")
     faiss.omp_set_num_threads(1)
@@ -1332,7 +1338,11 @@ def build_faiss_cosine_knn_graph(
             "knn_undirected_edges", edge_pairs
         ),
     }
-    return KNNGraphResult(edge_pairs=edge_pairs, receipt=receipt)
+    return KNNGraphResult(
+        edge_pairs=edge_pairs,
+        receipt=receipt,
+        directed_neighbors=np.ascontiguousarray(selected, dtype=np.int64),
+    )
 
 
 def run_seeded_leiden(
@@ -2010,7 +2020,12 @@ def _style_spatial_axis(axis: Any, coordinates: np.ndarray) -> None:
 
 
 def _atomic_save_figure_pair(
-    figure: Any, *, png_path: Path, pdf_path: Path, dpi: int
+    figure: Any,
+    *,
+    png_path: Path,
+    pdf_path: Path,
+    dpi: int,
+    producer: str = "spatial_benchmark.relative_qkv_embedding_clustering",
 ) -> None:
     png_path.parent.mkdir(parents=True, exist_ok=True)
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
@@ -2020,13 +2035,13 @@ def _atomic_save_figure_pair(
             (
                 png_path,
                 "png",
-                {"Software": "spatial_benchmark.relative_qkv_embedding_clustering"},
+                {"Software": str(producer)},
             ),
             (
                 pdf_path,
                 "pdf",
                 {
-                    "Creator": "spatial_benchmark.relative_qkv_embedding_clustering",
+                    "Creator": str(producer),
                     "CreationDate": None,
                     "ModDate": None,
                 },

@@ -1,0 +1,121 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260826_so1_14core_classical_raw_expression
+display_name: SO1 cores 1-14 classical raw-expression clustering
+status: complete
+outcome: inconclusive
+completed_at_utc: '2026-08-26T22:00:35Z'
+exploratory: true
+definition: experiments/campaigns/cmp_20260826_so1_14core_classical_raw_expression/README.md
+interactive_map_contract: experiments/campaigns/cmp_20260826_so1_14core_classical_raw_expression/INTERACTIVE_MAP.md
+cohort:
+  source_slide: SO_1
+  aliases:
+    - SO1-C01
+    - SO1-C02
+    - SO1-C03
+    - SO1-C04
+    - SO1-C05
+    - SO1-C06
+    - SO1-C07
+    - SO1-C08
+    - SO1-C09
+    - SO1-C10
+    - SO1-C11
+    - SO1-C12
+    - SO1-C13
+    - SO1-C14
+  core_numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+  independent_core_count: 14
+  total_cells: 161596
+  analysis_scope: all_cells_so1_cores_1_through_14_joint_transductive
+  validation_or_test_partition_present: false
+immutable_preparation:
+  source_directory: data/processed/so1_14core_relative_qkv_v1
+  manifest_file_sha256: 15f9da492959c35d89020b3956047ec163a5f3537eaaefd5b8a011cb9279b440
+  manifest_content_sha256: e006316e0f04afa645191544bcac8aa64f58c423e755f2f8d79bfd9db68a233d
+  statistics_sha256: 0f03540c317a6a0f0e7ebcd3a0610c0200892f17f88ca51efa5f03f3a094c554
+  gene_order_sha256: 046eb86c7ea8f1fe6977598a0190132340400fc61802fcde63ab5ac0e9502b03
+  biological_gene_count: 1000
+variant:
+  name: rawexpr_pca50_cosinek30_leiden_r1p0_s20260825
+  representation: normalized_log1p_scaled_expression_pca50_l2
+  normalization_target: 162.0
+  library_size_floor: 20.0
+  scale_clip: 10.0
+  pca_components: 50
+  knn_neighbors: 30
+  knn_metric: cosine
+  knn_implementation: faiss_hnsw_sparse
+  knn_insertion_order: deterministic_seeded_permutation_independent_of_core_labels
+  leiden_partition: RBConfigurationVertexPartition
+  leiden_resolution: 1.0
+  random_seed: 20260825
+analysis:
+  status: complete
+  outcome: inconclusive
+  lifecycle_stage: posthoc_evaluation
+  study_axis: classical_raw_expression_clustering
+  estimand: joint_transductive_expression_space_partition
+  model_or_checkpoint_used: false
+  batch_correction_used: false
+  core_labels_used_as_features: false
+  coordinates_used_as_features: false
+  vendor_annotations_used_as_features: false
+  primary_cluster_prefix: S1E
+  cluster_labels_are_biological_annotations: false
+  include_all_cells: true
+  retain_vendor_qc_failures: true
+  retain_low_count_cells: true
+  result:
+    cell_count: 161596
+    dropped_cell_count: 0
+    gene_count: 1000
+    core_count: 14
+    cluster_labels: [S1E0, S1E1, S1E2, S1E3, S1E4, S1E5, S1E6, S1E7, S1E8, S1E9, S1E10, S1E11, S1E12, S1E13]
+    cluster_count: 14
+    cluster_size_min: 1734
+    cluster_size_max: 44633
+    pca50_total_explained_variance_ratio: 0.09184099685466733
+    undirected_knn_edges: 4105256
+    graph_component_count: 1
+    leiden_quality: 5751530.229056849
+    leiden_modularity: 0.7005081082710611
+    core_dominated_gt_90pct:
+      - cluster: S1E10
+        core_number: 7
+        dominant_core_proportion: 0.9153864910997318
+    low_count_depth_warning:
+      threshold_transcripts: 20.0
+      cohort_below_threshold_cells: 5269
+      flagged_cluster: S1E1
+      flagged_cluster_cells: 32451
+      flagged_cluster_below_threshold_cells: 4996
+      flagged_cluster_below_threshold_proportion: 0.15395519398477706
+      flagged_cluster_share_of_low_count_cohort: 0.9481875118618333
+execution:
+  device: cpu
+  cuda_visible_devices: hidden
+  gpu_used: false
+  automatic_enqueue: false
+outputs:
+  static_report_directory: reports/analyses/so1_14core_raw_expression_clustering/rawexpr_pca50_cosinek30_leiden_r1p0_s20260825
+  static_manifest_content_sha256: aeb3de639ad5bf5107f91a06ec01afc6b91145fd2d89ec0ad76fbc153502d620
+  static_combined_png: reports/analyses/so1_14core_raw_expression_clustering/rawexpr_pca50_cosinek30_leiden_r1p0_s20260825/figures/so1_raw_expression_leiden_resolution_1p0_spatial_14cores.png
+  static_combined_png_sha256: f52a8558b14684da97f95f1aa8859d8df9ae782f2d9d44eb0cd781d66a7471ea
+  static_combined_pdf: reports/analyses/so1_14core_raw_expression_clustering/rawexpr_pca50_cosinek30_leiden_r1p0_s20260825/figures/so1_raw_expression_leiden_resolution_1p0_spatial_14cores.pdf
+  static_combined_pdf_sha256: 426dab1428446bd27137ff33765f4bc72f627f1b2bd88ed6efcdb139d3857d91
+  cell_cluster_table: reports/analyses/so1_14core_raw_expression_clustering/rawexpr_pca50_cosinek30_leiden_r1p0_s20260825/tables/cell_expression_clusters.parquet
+  cell_cluster_table_sha256: 013980dd32951d173adccce6351b8ae9fccfaced0c15ce683e8df830d13226e7
+  interactive_report_directory: reports/analyses/so1_14core_raw_expression_interactive/rawexpr_pca50_cosinek30_leiden_r1p0_s20260825
+  interactive_manifest_content_sha256: 7dfeb9e6cd78fea707d6989abe39acf98383e51242662bbf120751e34e62293a
+  interactive_html: reports/analyses/so1_14core_raw_expression_interactive/rawexpr_pca50_cosinek30_leiden_r1p0_s20260825/so1_raw_expression_leiden_resolution_1p0_spatial_14cores_interactive.html
+  interactive_html_sha256: 8cafbc7521ee3d3801ce99b82fcbc5d7a08f88a4e0a4ae5117ccc282c4be4fa3
+  interactive_zip: reports/analyses/so1_14core_raw_expression_interactive/rawexpr_pca50_cosinek30_leiden_r1p0_s20260825/so1_raw_expression_leiden_resolution_1p0_spatial_14cores_interactive.zip
+  interactive_zip_sha256: ac6beb974143964a38813059230421f6b1e1f41fbd74cfc059cd5f986f56813a
+  interactive_payload_sha256: a386fbf1f41a37e7e630a55bd0e7f97ca2f465d3b2d9b86725dda663ee6c6153
+verification:
+  static_resume_verifier_passed: true
+  interactive_resume_verifier_passed: true
+  visual_inspection_passed: true
+claim_limit: exploratory_model_independent_expression_partition_not_cell_type_mechanism_influence_or_causality
+automatic_enqueue: false

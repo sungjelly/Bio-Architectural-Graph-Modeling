@@ -1,0 +1,79 @@
+{
+  "knn": {
+    "approximate_neighbor_index": true,
+    "cell_by_cell_matrix_constructed": false,
+    "core_labels_consulted_for_insertion_order": false,
+    "directed_neighbor_entries": 4847880,
+    "distance_metric": "cosine_via_l2_normalized_inner_product",
+    "edge_weights": "unweighted",
+    "ef_construction": 200,
+    "ef_search": 128,
+    "faiss_internal_neighbor_cosine_sha256": "8c8cd3f3d154e937c5c81023e99b9c78ee657794600f47d1c23b85041cd550fd",
+    "faiss_internal_neighbors_sha256": "96dc712e515627b1e3483ad7c1b7246d08b761f783d1e9fe3a136e647d7553c0",
+    "faiss_internal_undirected_edges_sha256": "df10420d5375d2fc2e30afa21e06ef9557e4cb825e7bd3cb99ff617d69df67d6",
+    "faiss_version": "1.15.0",
+    "hnsw_m": 32,
+    "implementation": "faiss.IndexHNSWFlat",
+    "input_order": "deterministic_seeded_permutation_then_mapped_to_locked_global_rows",
+    "insertion_permutation_seed": 23488744,
+    "insertion_permutation_sha256": "fe30cfef61b02a00b24aa386b887698d033ef350dc27ac4a75b9ed7cd2c339e0",
+    "maximum_explicit_pairwise_array_shape": [
+      161596,
+      38
+    ],
+    "n_neighbors": 30,
+    "neighbor_cosine_sha256": "8c8cd3f3d154e937c5c81023e99b9c78ee657794600f47d1c23b85041cd550fd",
+    "neighbor_cosine_storage_order": "faiss_internal_permuted_rows",
+    "neighbor_storage_shape": [
+      161596,
+      30
+    ],
+    "neighbors_sha256": "079115458d97cea6f1f619547ab60947f353561fe8083a9079cfdfb2710094a8",
+    "random_seed": 20260825,
+    "random_seed_role": "deterministic HNSW insertion permutation and seeded Leiden; FAISS HNSW otherwise uses its fixed library RNG",
+    "single_threaded_index_and_search": true,
+    "symmetrization": "undirected_union",
+    "undirected_edges": 4105256,
+    "undirected_edges_sha256": "bf70144962e069c30f79eb595bcd8768010969dd9d2f7b31bbcc333b45d843c6"
+  },
+  "leiden": {
+    "cluster_count": 14,
+    "cluster_size_max": 44633,
+    "cluster_size_min": 1734,
+    "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+    "igraph_version": "1.0.0",
+    "implementation": "leidenalg.RBConfigurationVertexPartition",
+    "labels_sha256": "01aeacbfe4b7f5c9c25c28c5b697c9116b2c401689d02af3a69a9c271df744bc",
+    "largest_graph_component_proportion": 1.0,
+    "largest_graph_component_size": 161596,
+    "leidenalg_version": "0.12.0",
+    "modularity": 0.7005081082710611,
+    "n_iterations": -1,
+    "number_of_graph_components": 1,
+    "quality": 5751530.229056849,
+    "random_seed": 20260825,
+    "raw_to_sorted_cluster": {
+      "0": 0,
+      "1": 1,
+      "10": 10,
+      "11": 11,
+      "12": 12,
+      "13": 13,
+      "2": 2,
+      "3": 3,
+      "4": 4,
+      "5": 5,
+      "6": 6,
+      "7": 7,
+      "8": 8,
+      "9": 9
+    },
+    "resolution": 1.0
+  },
+  "pca_score_shape": [
+    161596,
+    50
+  ],
+  "pca_scores_sha256": "cbffc3b2811ecfdc5ac67f0b9671b9558471bac0142fab3767a46eb0b548a6af",
+  "representation": "normalized_log1p_scaled_raw_expression_pca"
+}

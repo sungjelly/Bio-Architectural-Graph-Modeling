@@ -1,0 +1,15 @@
+{
+  "colors": {
+    "R0p25_C0": "#D55E00",
+    "R0p25_C1": "#0A0AF5",
+    "R0p25_C2": "#0AF50A",
+    "R0p25_C3": "#0AC6F5",
+    "R0p25_C4": "#F529A7",
+    "R0p25_C5": "#0A580A",
+    "R0p25_C6": "#0A3997"
+  },
+  "cross_resolution_cluster_identity_implied": false,
+  "leiden_resolution": 0.25,
+  "representation": "contextual_hL_only",
+  "resolution_qualified_prefix": "R0p25_C"
+}

@@ -508,3 +508,14 @@ PY
 > masked-expression reconstruction. Attention, gradients, and Jacobians are
 > model-derived quantities and do not by themselves establish direct signaling
 > or causality.
+
+## Completed contextual hL UMAP extension
+
+The locked joint Leiden resolution-1.0 labels now have a deterministic,
+CPU-only UMAP visualization for all 246,063 cells. The two-panel figure shows
+the immutable clusters and the same coordinates colored by tissue core. The
+visualization contract, exact reproduction command, checksums, observed
+core-associated islands, and claim limits are documented in
+[`HL_UMAP.md`](HL_UMAP.md). The verified additive report is under
+`reports/analyses/so2_14core_contextual_embedding_umap/` and does not modify
+the completed model run or its source clustering report.

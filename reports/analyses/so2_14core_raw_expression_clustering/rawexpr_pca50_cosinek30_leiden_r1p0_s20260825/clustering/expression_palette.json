@@ -1,0 +1,19 @@
+{
+  "colors": {
+    "E0": "#0AF50A",
+    "E1": "#F50A0A",
+    "E10": "#1AA739",
+    "E11": "#0072B2",
+    "E2": "#0A0AF5",
+    "E3": "#68680A",
+    "E4": "#F539B6",
+    "E5": "#0AF5D6",
+    "E6": "#F5B6B6",
+    "E7": "#F5D60A",
+    "E8": "#781A1A",
+    "E9": "#581A97"
+  },
+  "label_prefix": "E",
+  "method": "deterministic_greedy_farthest_point_CIELAB",
+  "representation": "raw_expression"
+}

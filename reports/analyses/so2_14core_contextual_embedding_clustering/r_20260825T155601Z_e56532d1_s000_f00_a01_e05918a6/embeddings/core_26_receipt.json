@@ -1,0 +1,61 @@
+{
+  "alias": "SO2-C26",
+  "cell_count": 14856,
+  "cell_index_array_sha256": "255ff675f3670f43862afaaef259a34d1cb763773f8c51a070b30c6db037802a",
+  "checkpoint_sha256": "2e0f9d837fdbb78673f9788e355ce7a6f6843ffa1fc7a46a6b0c126d53fe7d8d",
+  "coordinates_array_sha256": "40f0313e8e43aec1eb9a030ba7f36fb65cf2f91298f6e3a2b88cf769e6466c52",
+  "core_number": 26,
+  "created_at": "2026-08-26T03:18:07.571753+00:00",
+  "embedding_file": "embeddings/core_26_hL.npz",
+  "file": {
+    "sha256": "40efe8c7f6f8409e6d95232063aca1a04237d95dabbea9e90ebdd05c7dfd0e75",
+    "size_bytes": 14255851
+  },
+  "hL_array_sha256": "c10f009450094fcd652a9d4c6d9b173181a29aa9f7efc075af6f51e5b9aa5f31",
+  "hL_dtype": "float32",
+  "hL_shape": [
+    14856,
+    256
+  ],
+  "inference": {
+    "attention_dropout_probability": 0.0,
+    "batch_correction_added": false,
+    "complete_core": true,
+    "coordinates_supplied_to_node_encoder": false,
+    "cpu_threads": 40,
+    "decoder_target_rows": 0,
+    "device": "cpu",
+    "dropout_disabled_by_eval": true,
+    "elapsed_seconds": 25.956541346851736,
+    "gene_mask_nonzero_count": 0,
+    "hL_source": "model_output.full_node_embedding",
+    "model_eval": true,
+    "neighbor_sampling": false,
+    "torch_inference_mode": true
+  },
+  "manifest_content_sha256": "789141fddfb61c54234aad49478e73a8566c9072cc51ddc0aeea2d1ec0d6229d",
+  "run_id": "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+  "schema": "so2_14core_hl_core_extraction_v1",
+  "source_core": {
+    "alias": "SO2-C26",
+    "cell_count": 14856,
+    "core_number": 26,
+    "graph_file_checksums": {
+      "edge_index.npy": "5f3ac7a1bd59481dfa7cec36099c7d74933c996ce998afb2e9435e63a15cd938",
+      "orientation.npz": "a532817c9c7dd654fa72ebf083fba0ffac87f6d20a40c5f144bb2916f722ed65",
+      "relative_geometry.npy": "8ae9eb0fac4dd103b2e923749926ffa36c50fe3c2a2bbc7b5357920bea4998f0"
+    },
+    "graph_logical_sha256": "4caf6aa24f6e67ba985cdbb4583f244de69fa9e9e9396bf1a086d5c1476e3f13",
+    "graph_record_sha256": "9b4895da01e905293247b039ec2a07d86cd3f043279600e9b793fc2b0ceb51de",
+    "prepared_component_checksums": {
+      "coordinates_um": "35fc7d9ab0e211e4a7ca8c5efb187c72ad91a76755c88838ca7373c07fa24e87",
+      "expression_counts": "c6a01080eb248d8c51380b2426053f5e056c385081d880707933106f1106c6ca",
+      "node_covariates": "9e644faa2158491ca82321800783b8d2bc6960fc0bcf41760d14cd8761ee963f",
+      "target_expression": "733a0133a43d7f76019d5aae67100f14cd6407cc6d5803093a0fd568b28255f9"
+    },
+    "prepared_core_artifact_sha256": "1c719c24035a747326ccb4dfd3f43063b9ea0896849b0e00c5a9ea8b164dba31"
+  },
+  "source_expression_sha256": "b86e22c6ea80c715fc0f22a2af7b483e96d87350878a806ca21602baa1b60db7",
+  "source_metadata_sha256": "ddfb2b7197ffb673daf8a39a113009a340a9926825363475ddbd28a227e00f37",
+  "status": "complete"
+}

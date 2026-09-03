@@ -69,6 +69,7 @@ artifacts/legacy_runs/ preserved historical campaigns
 state/                 local SQLite registry, locks, queue state, and operational logs
 exports/runs/checkpoints/ generated semantic checkpoint catalogs and link views
 reports/               cross-run analyses, figures, and tables
+results/               curated, searchable conclusion records referencing immutable evidence
 ```
 
 The existing `spatial_benchmark` package remains canonical. A campaign is one
@@ -142,6 +143,20 @@ clinical-schema reconciliation before its outputs can be treated as canonical;
 see the data guide and `scripts/core_assignment/README.md`.
 
 Computational workflows should provide a cheap smoke or pilot profile and, when a distinct scaled experiment is meaningful, a documented full profile. Pilot outputs are diagnostic; locked, fully validated outputs are canonical. If pilot artifacts are removed, retain the configuration, metrics, logs or summary, and the decision they informed.
+
+Important conclusion-bearing outcomes are promoted explicitly to `results/`
+using the contract in [`docs/result_management.md`](docs/result_management.md).
+The result record identifies the experiment type, method family, outcome,
+evidence dimensions, limitations, contributing runs, and checksummed sources.
+Negative and inconclusive findings are promoted when they change the evidence
+record or a documented decision. `results/` is a curated discovery layer; it
+does not replace immutable run bundles under `artifacts/` or detailed analyses
+under `reports/`.
+
+```bash
+PYTHONPATH=src /venv/main/bin/python scripts/results/manage_results.py validate
+PYTHONPATH=src /venv/main/bin/python scripts/results/manage_results.py catalog --check
+```
 
 ## Current Status
 

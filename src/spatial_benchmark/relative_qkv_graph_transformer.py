@@ -27,6 +27,9 @@ receiver ranges while retaining every incoming edge of each receiver.  In
 particular, a CPU-resident ``edge_index`` and relative-geometry tensor stay on
 the CPU; only the current exact shard is transferred to the model device.
 Chunking therefore changes execution memory, not the attention operator.
+``ReceiverChunkedRecurrentRelativeGeometryQKVGraphTransformer`` retains that
+exact chunking while applying one fully weight-tied block for a configurable
+number of recurrent steps.
 
 When requested, diagnostics are restored to the supplied edge order and expose
 attention, content logits, positional bias, and combined logits separately.
@@ -791,6 +794,18 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
         self.activation_checkpointing = activation_checkpointing
         self._receiver_layout_cache: Optional[_ReceiverLayout] = None
 
+    def _graph_execution_blocks(
+        self,
+    ) -> Iterator[RelativeGeometryQKVGraphTransformerBlock]:
+        """Yield each independently parameterized block once."""
+
+        yield from self.blocks
+
+    def _explanation_graph_depth(self) -> int:
+        """Return the number of graph steps addressable by diagnostics."""
+
+        return self.graph_layers
+
     def clear_edge_layout_cache(self) -> None:
         self._receiver_layout_cache = None
 
@@ -1050,7 +1065,7 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
             return_explanations = bool(return_diagnostics)
         selected_layer = _resolve_explanation_layer(
             explanation_layer,
-            graph_layers=self.graph_layers,
+            graph_layers=self._explanation_graph_depth(),
         )
         num_nodes = input_expression.shape[0]
         prepared_edges = _prepare_chunked_edge_index(
@@ -1093,7 +1108,7 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
         final_content: Optional[Tensor] = None
         final_bias: Optional[Tensor] = None
         final_combined: Optional[Tensor] = None
-        for layer_number, block in enumerate(self.blocks):
+        for layer_number, block in enumerate(self._graph_execution_blocks()):
             diagnostic_mask = (
                 receiver_mask
                 if return_explanations and layer_number == selected_layer
@@ -1141,6 +1156,77 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
         )
 
 
+class ReceiverChunkedRecurrentRelativeGeometryQKVGraphTransformer(
+    ReceiverChunkedRelativeGeometryQKVGraphTransformer
+):
+    """Exact receiver-chunked Transformer with one recurrently reused block.
+
+    The encoder and decoder are each evaluated once. Between them, the single
+    block registered at ``blocks.0`` is applied ``recurrent_unroll_steps``
+    times. Reusing the module itself ties the complete block, including both
+    LayerNorms, Q/K/V and output projections, relative-position-bias encoder,
+    feed-forward network, and dropout modules.
+    """
+
+    def __init__(
+        self,
+        num_genes: int,
+        node_covariate_dim: int = 0,
+        hidden_dim: int = 512,
+        attention_heads: int = 8,
+        attention_head_dim: Optional[int] = None,
+        ffn_dim: Optional[int] = None,
+        decoder_dim: Optional[int] = None,
+        positional_bias_hidden_dim: int = 128,
+        dropout: float = 0.1,
+        attention_dropout: float = 0.1,
+        relative_geometry_dim: int = RELATIVE_GEOMETRY_DIM,
+        *,
+        recurrent_unroll_steps: int = 4,
+        receiver_chunk_size: int = 256,
+        max_edges_per_chunk: Optional[int] = None,
+        activation_checkpointing: bool = True,
+    ) -> None:
+        if isinstance(recurrent_unroll_steps, bool) or not isinstance(
+            recurrent_unroll_steps,
+            int,
+        ):
+            raise TypeError("recurrent_unroll_steps must be an integer")
+        if recurrent_unroll_steps <= 0:
+            raise ValueError("recurrent_unroll_steps must be positive")
+        super().__init__(
+            num_genes=num_genes,
+            node_covariate_dim=node_covariate_dim,
+            hidden_dim=hidden_dim,
+            attention_heads=attention_heads,
+            attention_head_dim=attention_head_dim,
+            graph_layers=1,
+            ffn_dim=ffn_dim,
+            decoder_dim=decoder_dim,
+            positional_bias_hidden_dim=positional_bias_hidden_dim,
+            dropout=dropout,
+            attention_dropout=attention_dropout,
+            relative_geometry_dim=relative_geometry_dim,
+            receiver_chunk_size=receiver_chunk_size,
+            max_edges_per_chunk=max_edges_per_chunk,
+            activation_checkpointing=activation_checkpointing,
+        )
+        self.unique_graph_blocks = 1
+        self.recurrent_unroll_steps = recurrent_unroll_steps
+        self.effective_graph_depth = recurrent_unroll_steps
+        self.graph_block_weight_tying = "all_steps"
+
+    def _graph_execution_blocks(
+        self,
+    ) -> Iterator[RelativeGeometryQKVGraphTransformerBlock]:
+        block = self.blocks[0]
+        for _ in range(self.recurrent_unroll_steps):
+            yield block
+
+    def _explanation_graph_depth(self) -> int:
+        return self.effective_graph_depth
+
+
 # Compact aliases for configuration and exploratory callers.
 RelativeQKVGraphTransformerBlock = RelativeGeometryQKVGraphTransformerBlock
 RelativeQKVGraphTransformer = RelativeGeometryQKVGraphTransformer
@@ -1155,6 +1241,7 @@ DenseRelativeGeometryQKVGraphTransformer = (
 __all__ = [
     "DenseRelativeGeometryQKVGraphTransformer",
     "RELATIVE_GEOMETRY_DIM",
+    "ReceiverChunkedRecurrentRelativeGeometryQKVGraphTransformer",
     "ReceiverChunkedRelativeGeometryQKVGraphTransformer",
     "ReceiverChunkedRelativeQKVGraphTransformer",
     "RelativeGeometryQKVDiagnostics",

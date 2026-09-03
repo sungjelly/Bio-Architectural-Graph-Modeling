@@ -1,0 +1,236 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260827_so1_14core_relative_qkv_embeddings_direct_knn_clustering
+display_name: SO1 cores 1-14 direct h0/hL clustering and spatial visualization
+status: complete
+outcome: success
+exploratory: true
+definition: experiments/campaigns/cmp_20260827_so1_14core_relative_qkv_embeddings_direct_knn_clustering/README.md
+interactive_map_contract: experiments/campaigns/cmp_20260827_so1_14core_relative_qkv_embeddings_direct_knn_clustering/INTERACTIVE_MAP.md
+upstream_campaign_id: cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150
+upstream_binding:
+  status: bound_verified_final
+  immutable_verification_complete: true
+  selected_run_id: r_20260826T204925Z_06d12943_s000_f00_a01_94691119
+  selected_run_alias: run.locked-final.so1-14core-relative.relative-qkv-gat.k200-r500-union.uniform-per.disabled.d256.s000.f00.a01.v04024ebbeab6.xd02b41451607
+  selected_scientific_id: sci_06d129439d217d83
+  selected_repro_id: rep_8809c814a35a45b7bd1c
+  selected_model_seed: 0
+  selected_fold: 0
+  selected_attempt: 1
+  selected_source_commit: 4b03200af9168c535bde5c291cf5a00af054def7
+  selected_artifact_root: artifacts/runs/2026/08/r_20260826T204925Z_06d12943_s000_f00_a01_94691119
+  selected_checkpoint_role: last
+  selected_checkpoint_path: artifacts/runs/2026/08/r_20260826T204925Z_06d12943_s000_f00_a01_94691119/checkpoints/last.ckpt
+  selected_checkpoint_sha256: 1f98d60849afff80c813dacf34e808be9810ef9dfa07ba42c1be578c034add88
+  selected_checkpoint_size_bytes: 82497199
+  selected_checkpoint_id: ckpt_22ee84eb59926c772188
+  selected_checkpoint_artifact_id: 512
+  selected_checkpoint_epoch: 650
+  selected_checkpoint_model_state_sha256: e213fcf205f0a72a698b5b0e78f8379b00d65ecdb67451a8b1f26751aa8a0168
+  selected_checkpoint_monitored_metric: fit/uniform_per_cell/masked_huber
+  selected_checkpoint_monitored_value: 0.23698082992008754
+  selected_checkpoint_retention_class: retain_locked_final_model
+  selected_checkpoint_verification_status: verified
+  selected_checkpoint_lifecycle_stage: locked_final
+  selected_checkpoint_study_axis: so1_14core_relative_geometry_qkv_transductive_fit
+  verification:
+    upstream_campaign_configuration_sha256: 849ea0d2e0b88d05dab618955568bbd835ea824f6f4f422b22fe1befc47f2ff3
+    upstream_frozen_task_contract_sha256: 837ae83bc33b880ceeb2c736e1e4b021db0abf519bf5c1217aeeb9b71fbc4044
+    run_manifest_sha256: 92e027111479dc2eaa9d91f35434080c64dc3bc94e2e1f8274b92921a87a98d7
+    resolved_config_file_sha256: a8493004152cf4158e6a645c4b3e4db845a078f603c4219d3070f6fac1c5f901
+    resolved_config_canonical_content_sha256: be2285176b48bf39af5e51a07a9a1603cf957dd71890f67167113275703e168d
+    success_marker_file_sha256: 40eb8e993ce1d5b402f4e65c9c7dacdb8192aaab78876eae00e496072a758a19
+    success_marker_content_sha256: 2753068cafebed551602814167e858b4a68ed32edcf8e4d676f6839d9a4d908a
+    artifact_checksum_manifest_sha256: 2ce0a0dd77f1bb80f5defea1f4da4768bfd2123013c4d311139e638cba78b96b
+    final_checkpoint_reload_verification_sha256: 25f7d85ba07268546daeae5c11063ddcd6083f6d62fb5a28a3989a81ce539acf
+    terminal_plateau_audit_sha256: 8eb78620a71e2ea8e46fc52702e457405c04fece9118e52d4be01927f064abab
+    training_provenance_receipt_sha256: fbb5533aad06a08288461c0565a378c3eee37e87ea91f6065c50f49aca5add2c
+    full_bundle_verification: valid_49_of_49_files_zero_tombstones
+    final_checkpoint_reload_verified: true
+    terminal_plateau_confirmed: true
+  selection_policy:
+    model_seed: 0
+    fold: 0
+    require_unique_eligible_completed_attempt: true
+    require_run_status: completed
+    require_success_marker: true
+    require_full_artifact_verification: true
+    require_lifecycle_stage: locked_final
+    require_study_axis: so1_14core_relative_geometry_qkv_transductive_fit
+    require_checkpoint_catalog_verification: true
+    require_checkpoint_role: last
+    require_checkpoint_retention_class: retain_locked_final_model
+    require_final_checkpoint_reload_verification: true
+    reject_active_scratch_checkpoint: true
+    reject_smoke_periodic_or_failed_checkpoint: true
+    stop_on_multiple_eligible_completed_runs: true
+    average_weights_or_embeddings_across_runs: false
+cohort:
+  source_slide: SO_1
+  aliases:
+    - SO1-C01
+    - SO1-C02
+    - SO1-C03
+    - SO1-C04
+    - SO1-C05
+    - SO1-C06
+    - SO1-C07
+    - SO1-C08
+    - SO1-C09
+    - SO1-C10
+    - SO1-C11
+    - SO1-C12
+    - SO1-C13
+    - SO1-C14
+  core_numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+  expected_total_cells: 161596
+  independent_core_count: 14
+  fit_scope: all_cells_so1_cores_1_through_14_transductive
+  validation_or_test_partition_present: false
+analysis:
+  lifecycle_stage: posthoc_evaluation
+  study_axis: so1_14core_relative_qkv_direct_embedding_clustering
+  estimand: direct_intrinsic_and_contextual_embedding_partitions_and_contextual_representation_change_magnitude
+  model_seed_count: 1
+  representations:
+    intrinsic:
+      array: h0
+      source: node_encoder_output_before_graph_layers
+      label_prefix: S1I
+    contextual:
+      array: hL
+      source: final_graph_layer_output_before_expression_decoder
+      label_prefix: S1C
+    delta:
+      array: delta_h
+      definition: hL_minus_h0
+      norm: raw_per_cell_l2
+      interpretation: contextual_representation_change_magnitude_only
+  extraction:
+    expected_embedding_dimension: 256
+    expected_graph_layers: 4
+    model_eval: true
+    torch_inference_mode: true
+    complete_core_at_a_time: true
+    all_zero_gene_mask: true
+    neighbor_sampling: false
+    dropout_disabled: true
+    attention_dropout_disabled: true
+    coordinates_supplied_to_node_encoder: false
+    preprocessing_refit: false
+    batch_correction: false
+    require_prediction_invariance: true
+    require_metadata_invariance: true
+    device: cpu
+  clustering:
+    pipeline: direct_embedding_l2_cosine_knn_leiden
+    pca: false
+    mean_center: false
+    feature_projection: false
+    l2_normalize_for_cosine: true
+    n_neighbors: 30
+    distance_metric: cosine
+    cross_core_embedding_neighbors_permitted: true
+    intrinsic_and_contextual_graphs_separate: true
+    spatial_training_graph_reused: false
+    dense_cell_by_cell_matrix_constructed: false
+    knn_implementation: deterministic_sparse_approximate
+    deterministic_insertion_order_independent_of_core_labels: true
+    exact_recall_audit_query_count: 128
+    minimum_mean_recall_at_30: 0.90
+    leiden_partition: RBConfigurationVertexPartition
+    leiden_resolution: 1.0
+    random_seed: 20260825
+    cluster_sort: descending_size_then_minimum_global_row_then_raw_id
+    core_dominance_flag_threshold: 0.90
+  static_figures:
+    panel_layout: 3_by_5_with_legend_in_final_panel
+    core_order: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+    intrinsic_png_pdf: true
+    contextual_png_pdf: true
+    delta_h_l2_png_pdf: true
+    per_core_png: true
+    repository_coordinate_orientation: true
+    equal_spatial_aspect: true
+    physical_scale_bar: true
+    delta_shared_global_scale: true
+    delta_plotting_percentiles: [1.0, 99.0]
+    raw_delta_values_clipped_in_saved_data: false
+execution:
+  state: complete_verified
+  device: cpu
+  cuda_visible_devices: hidden
+  gpu_access_or_use: prohibited
+  cpu_only_after_upstream_completion: true
+  automatic_enqueue: false
+  active_training_noninterference:
+    training_worktree_mutation: prohibited
+    training_campaign_mutation: prohibited
+    training_registry_mutation: prohibited
+    training_run_or_bundle_mutation: prohibited
+    training_checkpoint_access: prohibited_until_finalized
+    training_process_or_supervisor_interaction: prohibited
+    shared_environment_or_dependency_mutation: prohibited
+    gpu_reservation_or_compute: prohibited
+interactive:
+  representation: hL
+  source_labels: finalized_contextual_S1C_labels
+  rerun_inference_or_clustering: false
+  intrinsic_or_delta_viewer: false
+  self_contained_offline_html: true
+  deterministic_single_member_zip: true
+  dynamic_cluster_highlight_and_fade: true
+  zoom_pan_reset_hover_export: true
+  external_dependencies: false
+  authorized_cell_level_sharing_only: true
+outputs:
+  static_report_root: reports/analyses/so1_14core_model_embedding_direct_knn_clustering
+  interactive_report_root: reports/analyses/so1_14core_hl_direct_knn_interactive
+  run_specific_subdirectory: bound_completed_run_id
+completion:
+  completed_at: '2026-08-27T21:03:55.474734+00:00'
+  production_device: cpu
+  gpu_used: false
+  total_cells: 161596
+  embedding_shapes:
+    h0: [161596, 256]
+    hL: [161596, 256]
+  cluster_counts:
+    intrinsic: 17
+    contextual: 26
+  cluster_size_ranges:
+    intrinsic: [1170, 17345]
+    contextual: [317, 16676]
+  core_dominated_gt_90pct:
+    intrinsic: []
+    contextual: [S1C8, S1C13, S1C15, S1C16, S1C17, S1C22, S1C24, S1C25]
+  delta_h_l2:
+    minimum: 9.151963275134474
+    mean: 14.485145013090149
+    median: 13.464551926004631
+    standard_deviation: 2.907102604774708
+    maximum: 38.760884963329566
+    plotting_p01: 10.85126167005577
+    plotting_p99: 23.448148354487014
+    raw_values_clipped_in_saved_data: false
+  static_report:
+    path: reports/analyses/so1_14core_model_embedding_direct_knn_clustering/r_20260826T204925Z_06d12943_s000_f00_a01_94691119
+    manifest_sha256: 4d904441b57c12d999d99693e3420b96c502f943e5b1591de183965f942535e6
+    manifest_content_sha256: 811b12dd30070c0c1738743a310713c907d402a9eeb473ebf6699b454ccfb96a
+    verifier_status: passed
+    visual_inspection: passed
+  interactive_report:
+    path: reports/analyses/so1_14core_hl_direct_knn_interactive/r_20260826T204925Z_06d12943_s000_f00_a01_94691119
+    manifest_sha256: b7c5a3913bacfcb9662c6232b84ef476a23b664689f4ea16f9feebe1e430a137
+    manifest_content_sha256: c0ec24a5cd46028cc0447653d192fb87fafe8da66a9372fe00b143b0f226316d
+    html_sha256: 6c72a06ece8790857b968f65774ca61c4085c7298019bd1b3e6f9e7a8928dd4f
+    zip_sha256: 59193685f90276748825d335cba4462ef2c9123f631945800de4999b4e0cd921
+    checksum_replay_status: passed
+    zip_integrity_status: passed
+  validation:
+    focused_tests: 60_passed
+    repository_doctor: passed
+    python_compile: passed
+    git_diff_check: passed
+claim_limit: single_seed_transductive_model_representation_structure_not_cell_type_signaling_biological_influence_mechanism_generalization_or_causality
+automatic_enqueue: false

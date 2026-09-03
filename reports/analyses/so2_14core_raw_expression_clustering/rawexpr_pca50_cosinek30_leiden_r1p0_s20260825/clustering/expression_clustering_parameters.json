@@ -1,0 +1,70 @@
+{
+  "knn": {
+    "approximate_neighbor_index": true,
+    "cell_by_cell_matrix_constructed": false,
+    "directed_neighbor_entries": 7381890,
+    "distance_metric": "cosine_via_l2_normalized_inner_product",
+    "edge_weights": "unweighted",
+    "ef_construction": 200,
+    "ef_search": 128,
+    "faiss_version": "1.15.0",
+    "hnsw_m": 32,
+    "implementation": "faiss.IndexHNSWFlat",
+    "input_order": "locked_global_core_then_cell_index",
+    "maximum_explicit_pairwise_array_shape": [
+      246063,
+      38
+    ],
+    "n_neighbors": 30,
+    "neighbor_cosine_sha256": "5899b90eaa38e2115b86948feed448bdd800870066b94aa4c582c8d2cff7cdab",
+    "neighbor_storage_shape": [
+      246063,
+      30
+    ],
+    "neighbors_sha256": "2b80b690848192771d3ca9598d5af5eda948885393e71d615431413302a39a69",
+    "random_seed": 20260825,
+    "random_seed_role": "Leiden; FAISS HNSW uses fixed library RNG with stable insertion order",
+    "single_threaded_index_and_search": true,
+    "symmetrization": "undirected_union",
+    "undirected_edges": 6442143,
+    "undirected_edges_sha256": "51af4efb2b263d5d54d00a45ccce46505d8f64b54aabe938dce80a0398b35b35"
+  },
+  "leiden": {
+    "cluster_count": 12,
+    "cluster_size_max": 56156,
+    "cluster_size_min": 1353,
+    "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+    "igraph_version": "1.0.0",
+    "implementation": "leidenalg.RBConfigurationVertexPartition",
+    "labels_sha256": "8757e3c31a2cb4293b8195c91fe76ac9138120be81dfc1f893d15b1e14977e7a",
+    "largest_graph_component_proportion": 1.0,
+    "largest_graph_component_size": 246063,
+    "leidenalg_version": "0.12.0",
+    "modularity": 0.7276234382452155,
+    "n_iterations": -1,
+    "number_of_graph_components": 1,
+    "quality": 9374908.478654698,
+    "random_seed": 20260825,
+    "raw_to_sorted_cluster": {
+      "0": 0,
+      "1": 1,
+      "10": 10,
+      "11": 11,
+      "2": 2,
+      "3": 3,
+      "4": 4,
+      "5": 5,
+      "6": 6,
+      "7": 7,
+      "8": 8,
+      "9": 9
+    },
+    "resolution": 1.0
+  },
+  "pca_score_shape": [
+    246063,
+    50
+  ],
+  "pca_scores_sha256": "da28abc64053a2401f04465f96157937f53ebc0c8f5c9da4cd3dae595064051e",
+  "representation": "normalized_log1p_scaled_raw_expression_pca"
+}

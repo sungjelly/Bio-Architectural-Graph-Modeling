@@ -1,0 +1,83 @@
+{
+  "alias": "SO2-C18",
+  "cell_count": 11696,
+  "cell_index_array_sha256": "5243d16b54309599cf190a02acd742ad19ba0e35537d6f6204699365b38c4f49",
+  "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+  "coordinates_array_sha256": "61b782e7fb34d455dfc153fca2b7a82930c55a67d5159db6e3a10fb2757a938d",
+  "core_number": 18,
+  "created_at": "2026-09-03T04:46:37.091530+00:00",
+  "directed_edges": 2674636,
+  "embedding_file": "embeddings/core_18_hL.npz",
+  "file": {
+    "sha256": "e7e298f7ccac8b71625e7de40a671b0d2bfe7a1dc2fde43de1e8512625e3d8e5",
+    "size_bytes": 11237501
+  },
+  "hL_array_sha256": "e00785a779df8974d65c18f966aa77795240adb9d6de168e3964e13bfcecdd88",
+  "hL_dtype": "float32",
+  "hL_shape": [
+    11696,
+    256
+  ],
+  "inference": {
+    "autocast_enabled": false,
+    "complete_core": true,
+    "cpu_threads": 4,
+    "cuda_total_memory_bytes": 25296044032,
+    "decoder_target_rows": 0,
+    "device": "cuda:0",
+    "device_name": "NVIDIA GeForce RTX 3090",
+    "edge_index_device_after": "cpu",
+    "edge_index_device_before": "cpu",
+    "effective_graph_depth": 4,
+    "elapsed_seconds": 2.507113364059478,
+    "full_precision_fp32": true,
+    "gene_mask_nonzero_count": 0,
+    "graph_block_weight_tying": "all_steps",
+    "hL_source": "model_output.full_node_embedding",
+    "host_max_rss_bytes": 7900192768,
+    "model_eval": true,
+    "neighbor_sampling": false,
+    "peak_cuda_allocated_bytes": 690193920,
+    "peak_cuda_reserved_bytes": 1268776960,
+    "recurrent_unroll_steps": 4,
+    "relative_geometry_device_after": "cpu",
+    "relative_geometry_device_before": "cpu",
+    "repeatability": {
+      "allclose": null,
+      "exact_array_match": null,
+      "maximum_absolute_difference": null,
+      "performed": false,
+      "repeated_hL_array_sha256": null
+    },
+    "tf32_enabled": false,
+    "torch_inference_mode": true,
+    "unique_graph_blocks": 1
+  },
+  "manifest_content_sha256": "2bfdc6bda22b270a0c0636aaa5bd6a4e1919003e9855b041523a19abe17bbbfd",
+  "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+  "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+  "source_core": {
+    "alias": "SO2-C18",
+    "cell_count": 11696,
+    "core_number": 18,
+    "directed_edges": 2674636,
+    "graph_file_checksums": {
+      "edge_index.npy": "609ce98f2a0aef0341a229831f2c1fb7b8a8ba98a999b66142c7c5f225e25ff3",
+      "orientation.npz": "02f93832c266a45101489b9efa05bd0cd6c85e5e771cd2816f89ba08b897dc44",
+      "relative_geometry.npy": "9ea3dcd518046d693a468928860d2056c5016c0698eb8b0a94d98528cc2da633"
+    },
+    "graph_logical_sha256": "ada86a21f4727bafd79bcf7e2577c1bdb7ac02ee083ee9ee11205adc0b47abed",
+    "graph_record_sha256": "bc6309d9526784edd059f71c4373371aa141740b642b33e9d3725ff0741cf81f",
+    "prepared_component_checksums": {
+      "coordinates_um": "0888b4c5a5409bbd952280266e1df3cd652248a46fd229c6a6caceff7c129566",
+      "expression_counts": "7bbc8774a477b72427aab6d6b575602f516517be0b49728c59c028374d0d1b3f",
+      "node_covariates": "b61c4f072dc4349e6d90e294ce4e04124993d19b83b3e70ab59128c28bba4f91",
+      "target_expression": "0393a89c78e92980adb7689f708fee91885ef7714e81b0fea3be243d04d80adf"
+    },
+    "prepared_core_artifact_sha256": "8ceaff86bc4f1a4bdde71aebbd5eed9488b6e167d941e81864417fe47049a99e",
+    "receiver_major_canonical_order": true
+  },
+  "source_expression_sha256": "a1f5b70b9d1f49e09d39f7007627611c72d28d73db29d8e10bd7d5c4093f6054",
+  "source_metadata_sha256": "f41582b9fdbf445344adb88d18ae42b6e1c16d298b2dc977c2e44bff96a856a9",
+  "status": "complete"
+}

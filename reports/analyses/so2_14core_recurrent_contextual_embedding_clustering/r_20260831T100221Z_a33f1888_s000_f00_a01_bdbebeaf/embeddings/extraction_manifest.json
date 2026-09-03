@@ -1,0 +1,1390 @@
+{
+  "all_zero_extraction_masks": true,
+  "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+  "core_order": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+  ],
+  "cores": [
+    {
+      "alias": "SO2-C15",
+      "cell_count": 38145,
+      "cell_index_array_sha256": "181b7501811168fdd4a4fbb01350d7db5eaaf2c0352811ad461707930f603c08",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "7ac58b4a48a8d9be8bd960d6f88c05ae6d3424455f40d331c65d075d519bb1ce",
+      "core_number": 15,
+      "created_at": "2026-09-03T04:46:30.820965+00:00",
+      "directed_edges": 8607462,
+      "embedding_file": "embeddings/core_15_hL.npz",
+      "file": {
+        "sha256": "0c8df1e12e2fb457bab6c038a2249b0eb2622105f83e34fcd1981b051617a341",
+        "size_bytes": 36716245
+      },
+      "hL_array_sha256": "0fa29b98a049a2ea49d5f874c1c30b17fcee0b0f759f54ca193405a0e20d1a22",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        38145,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:0",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 8.267788642086089,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 7900192768,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 947278336,
+        "peak_cuda_reserved_bytes": 1444937728,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "c5afce79a21f7c6a26b60608e241710d060551bfa9ac30d592be9093b97e1e7f",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C15",
+        "cell_count": 38145,
+        "core_number": 15,
+        "directed_edges": 8607462,
+        "graph_file_checksums": {
+          "edge_index.npy": "687ac4de2e8c1f8c9872d8b89f88d3e961f15122c80b586f9a85df41040b5242",
+          "orientation.npz": "6e32dc8214bfc5472d21cc4922af26f3bd8c0be2f1236378e279269c4695279f",
+          "relative_geometry.npy": "c1d9bbb1a3cb887e97214f9bc3e48d671755bb8b99c32248bfeeda1a836a2cd7"
+        },
+        "graph_logical_sha256": "47da2e3d0a3c28c50dd331748ddb726c441687b7c6b1bb68d2ce67483bf4550b",
+        "graph_record_sha256": "161cfed03d9ee0a5c7ea70d9d85072a376779ee8b3b6d7a45a61571c716db50a",
+        "prepared_component_checksums": {
+          "coordinates_um": "8c120469b073294b3db9d98b7b2ffade9663ab379a1d72be2f00105bbb32b623",
+          "expression_counts": "e7e6a69689e5882a73bb032359fd8b4780855a2b6cf55fe3818710f921492b9c",
+          "node_covariates": "d113d630ca05278f913d14d9637965a220fa95a1d2d7ce17dea3a6fd330d7cb3",
+          "target_expression": "19fc3f1869684116c1e252e4e51b87ac5e68bf82727a7c4c62df42fd8075994b"
+        },
+        "prepared_core_artifact_sha256": "29d7840a6786a4a685f35ca55b9d3a7e65a559d161eb83d6fbfa6dbb6b0b4ebd",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "c30e7bee674730cd30d1ffd78a9807909f2c146c7342fbb7cd1973a461f54d9c",
+      "source_metadata_sha256": "960f877cd8c0f0e5ba8ece38ae2223500660a7a69d8958073cc7baf813c3e6fe",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C16",
+      "cell_count": 16229,
+      "cell_index_array_sha256": "f934ab410db8e9192c792e1d80cb50e98ea744f6caac11620cf2cf0c0c6bf8b1",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "631b9d2b3e99b49138142c050d07243bf8503bcf6aeeb8cebe93a2057449de24",
+      "core_number": 16,
+      "created_at": "2026-09-03T04:46:19.791397+00:00",
+      "directed_edges": 3671048,
+      "embedding_file": "embeddings/core_16_hL.npz",
+      "file": {
+        "sha256": "57d930f6662e4b7be48143f6484c87097040f648b9024d42350047a852f4edc2",
+        "size_bytes": 15620114
+      },
+      "hL_array_sha256": "78ebeaf6e90f9eeadf9241cefe81b418affc867685c352a5705ea071f051224d",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        16229,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:3",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 3.6481108549050987,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 3919970304,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 730657792,
+        "peak_cuda_reserved_bytes": 2237661184,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "d0347dfaf75cae95b40d4d97029a7b0734272c9d5129e4ff4f223d02a47cf2e3",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C16",
+        "cell_count": 16229,
+        "core_number": 16,
+        "directed_edges": 3671048,
+        "graph_file_checksums": {
+          "edge_index.npy": "9297b0202d976385f345cbb85f7923dd03581f0de1ee4216632751db9b47dc8c",
+          "orientation.npz": "1119176a44b8b6738b8ceb063088a6f35abecc6292b1d34e90fedb5b73548350",
+          "relative_geometry.npy": "882f0f2cc87f0c577d0d4d8df0929455f463c14461adccf575ac000e02a2be71"
+        },
+        "graph_logical_sha256": "bfb2f9098eaf7c5211bd9673d3572c77e4d574cc7aedfb2ab7243069bfc09616",
+        "graph_record_sha256": "e7dacc0839d4ce5bbd0d9846b1befdc882fd4ff7696f5b58c2b15e504e668aef",
+        "prepared_component_checksums": {
+          "coordinates_um": "429a08402556016484553985835eb2bda709af98edf781ac8511d17f49173c3a",
+          "expression_counts": "fc245757333ead99eb25d5e14834168223cb5553a3132b0d41483be08176127e",
+          "node_covariates": "0a7ab90209a117b3dcc9d87893d6f7ddd7c0418855c8b3baefc1712e530a2238",
+          "target_expression": "2f956228bc8b5b0943042861c7060820e3954fd94b46b2793870ad0ff1629f5c"
+        },
+        "prepared_core_artifact_sha256": "eba070ae48d7bd0d56b643e7f2153168369d8b86c3bbacc26a3f67d87b4150eb",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "f90106219982d4e7cdb91081d599cccda4a087dbf74348bb01e94e431e676913",
+      "source_metadata_sha256": "adf25b9bfcf608c1684afaf5982d689a02c777199d1aae1aabcd691b6acd40e4",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C17",
+      "cell_count": 9041,
+      "cell_index_array_sha256": "0b8c410ca8cdffd0d59ae4b2d1706e61c10c52abb9a9a7ad09033e857bc55eaf",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "96ff9c279b64f985053eb073b982cb2fd222354b28936c7c9b3f679c4a2a0740",
+      "core_number": 17,
+      "created_at": "2026-09-03T04:46:36.125157+00:00",
+      "directed_edges": 2070630,
+      "embedding_file": "embeddings/core_17_hL.npz",
+      "file": {
+        "sha256": "7dec48c012b446b61843de5fd3d44157dc5a4f74d89b74f55620321944023068",
+        "size_bytes": 8682453
+      },
+      "hL_array_sha256": "d9fd4f1b008aaa114463796fc6d75994d4021ef716b8ea5d47df3b22703761ec",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        9041,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:3",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 1.8136385548859835,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 3968086016,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 662868992,
+        "peak_cuda_reserved_bytes": 1711276032,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "7b6ace53b600f9c3268ae17def1694274ffd1439fa9fb8b2d30fb616397c39df",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C17",
+        "cell_count": 9041,
+        "core_number": 17,
+        "directed_edges": 2070630,
+        "graph_file_checksums": {
+          "edge_index.npy": "73efbf5ed58c2938e7e6194cbfa1795b5f1e01aae778c1b85fd574fb561becd7",
+          "orientation.npz": "c5fce3bdc0d903f372b0f7ba16705ddaa7be176a6d259a187b5f8491dacd0370",
+          "relative_geometry.npy": "4ca4a1c7ce053538d804014e394a34e4b0142ac82bbbe49c7a6723b911cca8d4"
+        },
+        "graph_logical_sha256": "801814a4295c8ffb98e553f44359b52f962b531a2efcde4e2db252023ed62e82",
+        "graph_record_sha256": "981625170127990d0a02f4a3be44e615c9786bb02ba74ce246a35ae7d06697a8",
+        "prepared_component_checksums": {
+          "coordinates_um": "c47060ec85668da535f8782c498504c5da9113a46ed09a62336731fd73680783",
+          "expression_counts": "f25fee169c7ce7bbde5775372e61e30153c2d11c548381bdd0d624af7e83fc8a",
+          "node_covariates": "80c4e98c5c9b066171f8f0c76a3269eccbdecfdee16ff1c71c1f34260bd66333",
+          "target_expression": "c6f6c74c4ecedf22ac87ce69d1a3396543a9da47f47b54dc78278523e9573e92"
+        },
+        "prepared_core_artifact_sha256": "a5e3ecca416d33e40026581912a7bd08df3337d01ec442e425061eaf904b4698",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "050fde3093497d9d0ebfcfacddb36eb318dbd265e341220eb253bc9416e6be25",
+      "source_metadata_sha256": "c17e9cd70dc4a043aa2d0bccf2023dc95f70a00f1bd330d1a3bb784c71ef68a9",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C18",
+      "cell_count": 11696,
+      "cell_index_array_sha256": "5243d16b54309599cf190a02acd742ad19ba0e35537d6f6204699365b38c4f49",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "61b782e7fb34d455dfc153fca2b7a82930c55a67d5159db6e3a10fb2757a938d",
+      "core_number": 18,
+      "created_at": "2026-09-03T04:46:37.091530+00:00",
+      "directed_edges": 2674636,
+      "embedding_file": "embeddings/core_18_hL.npz",
+      "file": {
+        "sha256": "e7e298f7ccac8b71625e7de40a671b0d2bfe7a1dc2fde43de1e8512625e3d8e5",
+        "size_bytes": 11237501
+      },
+      "hL_array_sha256": "e00785a779df8974d65c18f966aa77795240adb9d6de168e3964e13bfcecdd88",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        11696,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:0",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 2.507113364059478,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 7900192768,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 690193920,
+        "peak_cuda_reserved_bytes": 1268776960,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "2bfdc6bda22b270a0c0636aaa5bd6a4e1919003e9855b041523a19abe17bbbfd",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C18",
+        "cell_count": 11696,
+        "core_number": 18,
+        "directed_edges": 2674636,
+        "graph_file_checksums": {
+          "edge_index.npy": "609ce98f2a0aef0341a229831f2c1fb7b8a8ba98a999b66142c7c5f225e25ff3",
+          "orientation.npz": "02f93832c266a45101489b9efa05bd0cd6c85e5e771cd2816f89ba08b897dc44",
+          "relative_geometry.npy": "9ea3dcd518046d693a468928860d2056c5016c0698eb8b0a94d98528cc2da633"
+        },
+        "graph_logical_sha256": "ada86a21f4727bafd79bcf7e2577c1bdb7ac02ee083ee9ee11205adc0b47abed",
+        "graph_record_sha256": "bc6309d9526784edd059f71c4373371aa141740b642b33e9d3725ff0741cf81f",
+        "prepared_component_checksums": {
+          "coordinates_um": "0888b4c5a5409bbd952280266e1df3cd652248a46fd229c6a6caceff7c129566",
+          "expression_counts": "7bbc8774a477b72427aab6d6b575602f516517be0b49728c59c028374d0d1b3f",
+          "node_covariates": "b61c4f072dc4349e6d90e294ce4e04124993d19b83b3e70ab59128c28bba4f91",
+          "target_expression": "0393a89c78e92980adb7689f708fee91885ef7714e81b0fea3be243d04d80adf"
+        },
+        "prepared_core_artifact_sha256": "8ceaff86bc4f1a4bdde71aebbd5eed9488b6e167d941e81864417fe47049a99e",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "a1f5b70b9d1f49e09d39f7007627611c72d28d73db29d8e10bd7d5c4093f6054",
+      "source_metadata_sha256": "f41582b9fdbf445344adb88d18ae42b6e1c16d298b2dc977c2e44bff96a856a9",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C19",
+      "cell_count": 19119,
+      "cell_index_array_sha256": "bed01c6f6f176293a6f369d25cc065fcaaa25a0adc7ef62b98d0af54eac8b319",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "0fd237a6de9e0d921d7c7b7c10a72688c1ad322b913c1614381257c0a27a82dc",
+      "core_number": 19,
+      "created_at": "2026-09-03T04:46:21.100692+00:00",
+      "directed_edges": 4403562,
+      "embedding_file": "embeddings/core_19_hL.npz",
+      "file": {
+        "sha256": "e6cf6bee120e7a855563cfab57bc6ecf1be0e6e4c48e7ef671242eec16ed8ebd",
+        "size_bytes": 18384946
+      },
+      "hL_array_sha256": "d171b3515f404cc653ad4d2c46050289d402eb472385b2a46d7d3e06ebb9cc4a",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        19119,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:2",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 4.441855445038527,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 4504363008,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 770606080,
+        "peak_cuda_reserved_bytes": 1015021568,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "2211a0fb92866223493a3d22b8a7bd85a58629d7a039c25d72c92f7c9e6b2f4a",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C19",
+        "cell_count": 19119,
+        "core_number": 19,
+        "directed_edges": 4403562,
+        "graph_file_checksums": {
+          "edge_index.npy": "ef189be65b6c79b774dec74b53770e00ca9f064dac4b6964d1b8baffbb387232",
+          "orientation.npz": "e6ce6571f405f6054b571fc7dcd83f019ecd241760339df603f87ff0efc554d5",
+          "relative_geometry.npy": "552c4575902385656c8306291030bca955053457e408a1f9100d2e4e9e3a88ec"
+        },
+        "graph_logical_sha256": "90046fa5bb34d140fda43eead9a7163dfa6dccf0e57c7c6b9b014315cc898888",
+        "graph_record_sha256": "eebdc85de220e9cff1348dec21abc5a5da5929c5724e431b06fd63cbe985c96c",
+        "prepared_component_checksums": {
+          "coordinates_um": "7b42b392d45cb02fd03b547bd6fbb166cd5201a07f0afbef6cf6f46b125aa458",
+          "expression_counts": "9211ca63aca42bc8baab48df4eca2a80c06dd33817b7f6d60cdc8a9affd4df2f",
+          "node_covariates": "443689de9ffea88bcd7cb6b1e8fbe9b90c045bb9fa2104b102e010900bbc31d0",
+          "target_expression": "30174505182e4320459e236ddb445749256a786823be5da4f613b9d3eaa7c596"
+        },
+        "prepared_core_artifact_sha256": "60907223f98b8e75efa857211a757a2e72309ec915fcd347303086739b529da2",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "0f29d684059f0df891787db66459db37c9832b3d407f6a944c5b6cd7a25ce48e",
+      "source_metadata_sha256": "ca80141cfc79f213def9d1021cadc0e099081e6c182f491b0b335e5076d0a67d",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C20",
+      "cell_count": 12155,
+      "cell_index_array_sha256": "2cd5f071561cc567e4389206ec4488f82f87944230c53511caaedeaa7d10d3a0",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "faff7f97a87cc99ff2e4e3460ba0560e604e847be208230e771719270bc2530e",
+      "core_number": 20,
+      "created_at": "2026-09-03T04:46:34.349293+00:00",
+      "directed_edges": 2746180,
+      "embedding_file": "embeddings/core_20_hL.npz",
+      "file": {
+        "sha256": "baa7d3808bcdaf0905558cca224de7763750496f9638193c84256a5b94646a24",
+        "size_bytes": 11695251
+      },
+      "hL_array_sha256": "05aaaff414ff7d922e4fcfde5be6df6043c0819ac08da60d6e118aef82a60e4b",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        12155,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:2",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 2.445960994809866,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 4504363008,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 687600128,
+        "peak_cuda_reserved_bytes": 2210398208,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "580663431aebe220c0119e987cdd3d89a40f79b21080fe971576c1917942f2e4",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C20",
+        "cell_count": 12155,
+        "core_number": 20,
+        "directed_edges": 2746180,
+        "graph_file_checksums": {
+          "edge_index.npy": "1a7c3ce62003a50387c4feeb52ba07b9e08b97458afceee4e6b306cff91a0788",
+          "orientation.npz": "ad3b52203ba0a25bcda46d9e1e294c81a206b2265d50134a6f916107580a92d5",
+          "relative_geometry.npy": "72e47ee45b732a96bafdc70615ca8fe3dcf30de6cbd91587a6c79f023c90ce24"
+        },
+        "graph_logical_sha256": "dc59307864177722c5570238176c2686eae2a7fd6bb009e84e3c165cdc34dc2b",
+        "graph_record_sha256": "6de6857c8e3f5ec00d54ba7599525b3683b5421de55e12d7e7efca926ab2f624",
+        "prepared_component_checksums": {
+          "coordinates_um": "ceabb9a78607a624d17917c2e311a1c1d3f7f5fcac1a2e230b2068e92e4d460e",
+          "expression_counts": "2cc69e18ad235919414b2133579f78fa1e067ecb6d2a76f24c2d1d2d52798ca1",
+          "node_covariates": "16effe7c1f9530d655833017a449ad3802b95667f6bac00ab24f7c95164353fc",
+          "target_expression": "da756b5f277a423e168c4f4991b22ed5c1fca629fae4ff9022c42723e3322b28"
+        },
+        "prepared_core_artifact_sha256": "03228c8838f17acfdc491418252c9044bce73d83acc68b103dcaf0f7102abce9",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "de1b89d67204a5b58885e0eef87da7c2f88893b5b17439b6a20e5e38fbb3d84a",
+      "source_metadata_sha256": "75e2d383764866430b5a044e15839f4f930fff3892706fb129a83514b42ddef9",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C21",
+      "cell_count": 4897,
+      "cell_index_array_sha256": "28294b8eec69bda1c4b051e9216552b9d05514ca54ef2b1e2f7af4b689c7fad8",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "6b71e9b4d959f0983d131d45d23792aa0363baf430a572f10e7e1cc4b299059a",
+      "core_number": 21,
+      "created_at": "2026-09-03T04:45:29.369740+00:00",
+      "directed_edges": 1137942,
+      "embedding_file": "embeddings/core_21_hL.npz",
+      "file": {
+        "sha256": "8ccbfd5124b8b0c56e5c6165b5241edeec5a47e395fc73aa7ca3266eb00ea20f",
+        "size_bytes": 4713152
+      },
+      "hL_array_sha256": "5748e04d247c04aff48912b56cc94fe7f21eed71b2a9d89aa52bdea69602a6fe",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        4897,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:0",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 1.4217179669067264,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 1900457984,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 646514688,
+        "peak_cuda_reserved_bytes": 742391808,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "absolute_tolerance": 1e-05,
+          "allclose": true,
+          "exact_array_match": false,
+          "maximum_absolute_difference": 1.430511474609375e-06,
+          "note": "GPU receiver aggregation may vary at floating-point roundoff scale across repeated forwards.",
+          "performed": true,
+          "relative_tolerance": 1e-06,
+          "repeated_hL_array_sha256": "4fd7feb13a481c0401ddc8f5eeae59c7811f22877d82529605d5256be1fa8c25"
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "e1a3cb57cd131ba86e4a01e623ec4df7162d04748187beeb27adac7e5997d348",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C21",
+        "cell_count": 4897,
+        "core_number": 21,
+        "directed_edges": 1137942,
+        "graph_file_checksums": {
+          "edge_index.npy": "837d441f8d51355b383ccdd608705942b806d1fa0830157f2307f521d265e83d",
+          "orientation.npz": "09b26904bd7ac833c6455eefc0b6b3969b635703aa687eb3282d9714f4b26d97",
+          "relative_geometry.npy": "fee71d8789cb02ff1b10317eb6185aac80ef8de9e3f885a9967eb06ce2fdd41d"
+        },
+        "graph_logical_sha256": "8ec23d683ff445afcb342c4e6f0168fe628b915623e99a350a00cee43cbe2eaa",
+        "graph_record_sha256": "67425bd9676aced130061ed089623bc3ccb9796ef7aededf983e01f8b6ac124d",
+        "prepared_component_checksums": {
+          "coordinates_um": "34b099a8c913c6d4fdf91e81f361477dd6b4a35725651e2a3cf9246f166f5747",
+          "expression_counts": "0267e69fc8e4e4b0aeece5af0e4a5226624cb1acd0b7c39a0d0713a2c7bb4c76",
+          "node_covariates": "f607d056a36b5309c6f526a1620299fca9f7cb2604b0ed562a6acb656fad7bdd",
+          "target_expression": "1f66ab5265227675df1716c6a9778d8de270e3b525f1e9e574f3685c39722535"
+        },
+        "prepared_core_artifact_sha256": "02a4a2ffbc9a5fb08607c95b00fe875f0a6fb4b40cc8e1da56c554f0b0df6df9",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "c6e2307bcdf60edd723f3b6e1443bfc092b96da184eb7898d43a7f988efb0bb5",
+      "source_metadata_sha256": "86093b19786a70f572041653a53fc14025e5ee2efa3f833aa2ce25943aba34bd",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C22",
+      "cell_count": 11443,
+      "cell_index_array_sha256": "70017faa5829143ae8093db482348275eb2542c5d9e4a4bd74cc58377d8f001e",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "a92b0a6502d2e18a33797666633efd7cdef01e5a38f87a39dbcd342cb6e4839a",
+      "core_number": 22,
+      "created_at": "2026-09-03T04:46:36.696305+00:00",
+      "directed_edges": 2598742,
+      "embedding_file": "embeddings/core_22_hL.npz",
+      "file": {
+        "sha256": "0f1bb2ba215fae3d098c245b18710f593c844e74ddca91ce8e8ed2cf8a7ff227",
+        "size_bytes": 11000963
+      },
+      "hL_array_sha256": "8136dde687d3cf057ae55a5cb4c9bc04fdab793899da295589645cc111afd8ab",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        11443,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:1",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 2.3025667439214885,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 5432758272,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 685497344,
+        "peak_cuda_reserved_bytes": 2227175424,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "983cd730da8313fdbb72d0dac4b2c19333b832af53d3464d1d2ab0f53354a562",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C22",
+        "cell_count": 11443,
+        "core_number": 22,
+        "directed_edges": 2598742,
+        "graph_file_checksums": {
+          "edge_index.npy": "4edbd1c7f14201eb37c882842cee5ce8bae5813e596ff9aea5d0b7d07bacb6ce",
+          "orientation.npz": "44defce2f6534b18f344470e37d2765a73cd8038e7eaf6f791dded9e7a5951d6",
+          "relative_geometry.npy": "83f9acf3cff5dde555e18e90801bd9ac3271e69e06e401e117d6ba0ca4e0aa82"
+        },
+        "graph_logical_sha256": "3cdbcf44651950a236c80e16d6031ed73597b55f3b5f3128a1e099cd50ebb7b6",
+        "graph_record_sha256": "36d642411d50fafc8531b53ce8936298af82f441154ce4c11cae9ee52ce59467",
+        "prepared_component_checksums": {
+          "coordinates_um": "395d78bc25c78e6eb8c91d22e765cba3cd8561df7cdef196115b0826c69b78f6",
+          "expression_counts": "ec1aa5b5d9a3845686670fa257f32b839c28bb99ef31ce8c4041ce0a9628160c",
+          "node_covariates": "e216cd3f0b326e8e123806bcf98da22b5d2721c26ba2a9621c3158d99ef251cd",
+          "target_expression": "3d14d64f31f0eb78c8f8ab8f6279c4bf45b41ed2507936e901b21db0d7d77032"
+        },
+        "prepared_core_artifact_sha256": "e71c4c73d0424037860cab1a38fdf2a12ba1065df6e2073784aeefa11806693c",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "9710bee50d313f56d678de32472b3e07ab0b19feea221fe6dbe6adc022917d06",
+      "source_metadata_sha256": "5df52610af60796309ea8120e6a67b076d4e2dc8c6c31049611015e5a0d5ab11",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C23",
+      "cell_count": 43462,
+      "cell_index_array_sha256": "914abe1522736a4bc9bb1eb62068dc890deb6fb28c96b13bb51966ee84a43b7f",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "33c4a7f3d3798a37dc3b3f3f096b6011a25696648a8c1a71fb3d0b66f1200005",
+      "core_number": 23,
+      "created_at": "2026-09-03T04:45:59.866124+00:00",
+      "directed_edges": 9972300,
+      "embedding_file": "embeddings/core_23_hL.npz",
+      "file": {
+        "sha256": "a2e82c4ccb51db0d595f0e61e180f52b693a346f490fc5b0be034f0a4e5e1784",
+        "size_bytes": 41782129
+      },
+      "hL_array_sha256": "78926048a7630d5844a515735b259c55032d8e9657bfb68e471a0452f0e06893",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        43462,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:0",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 9.207846815232188,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 8999550976,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 1036015104,
+        "peak_cuda_reserved_bytes": 2319450112,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "71d767a633f36198072c70cceb7bf0a1a8cd72890eac01425316b702a0b306f9",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C23",
+        "cell_count": 43462,
+        "core_number": 23,
+        "directed_edges": 9972300,
+        "graph_file_checksums": {
+          "edge_index.npy": "e60ef66b9673bb0227eda10cff63e19bacae72577ca83f7b98724ed15f0674f3",
+          "orientation.npz": "aeb28b12203b8c56c5130cd19ce0d98f7e9e497a859fdb2158a27f2bf6b76bf3",
+          "relative_geometry.npy": "147ad19008ada2d3875e5915cbe3e80cfdeb92da9954a8c06dd9b9cac109f211"
+        },
+        "graph_logical_sha256": "4d38c97e7dcab83f3d4b2cf6c0f94ecdd7e73042f3baea2decc697983a04578b",
+        "graph_record_sha256": "b2a252205861bb939f459a0c3076e62ff2cd9f5ff80154a8f71556ce0078ad8d",
+        "prepared_component_checksums": {
+          "coordinates_um": "33a13891dc2e65a67921552f8a479f4dee70848616b70c75caac72bdc2678967",
+          "expression_counts": "1ef63f7906c838586bcd36acc9f3cedbb4974cb585ff249462f5dbd9758cccb1",
+          "node_covariates": "1f581cebfd9e087f13a0a1cf4a6d0c21477258a7d665059a8c422d098d2fdcbc",
+          "target_expression": "d16997e8b21859a605a2c5b806378596619e491d604badab898c248ad52a8443"
+        },
+        "prepared_core_artifact_sha256": "fdb4a6f6c607ddb650afef9f1f93fb8eecb0be4c1ae593f6f59c4dbf4402c837",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "e69dba5d955dbffb0e63b5e98f87a8dcce3ff8b8ac7906944523bcbcd3d09405",
+      "source_metadata_sha256": "249101fb72f45a16671a404240c8ac39b26d30136145382cfb82828ccc0c8069",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C24",
+      "cell_count": 14506,
+      "cell_index_array_sha256": "f8bd281adbda058e3c01a80c69f591fbfaa920fe235d7aca00061a75c10afab8",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "37cc59962d0860c10243b994ffaf806943c5822fd1a5fba7fc7b0112bc47f29a",
+      "core_number": 24,
+      "created_at": "2026-09-03T04:46:28.487334+00:00",
+      "directed_edges": 3281446,
+      "embedding_file": "embeddings/core_24_hL.npz",
+      "file": {
+        "sha256": "92cd1bfb78cd9dde7a68725b16505c8517777c7049ca598ee2796b5b3958ae96",
+        "size_bytes": 13939206
+      },
+      "hL_array_sha256": "6b05acd11750728f06502c93ff5c8e9318058895e1bbe3908fc95ccfe83e3849",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        14506,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:2",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 3.0124158118851483,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 4504363008,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 719261696,
+        "peak_cuda_reserved_bytes": 3240099840,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "7f66cca80225f4511eca7bf98a8e5f1176424144898ae450c25703c6cc75830f",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C24",
+        "cell_count": 14506,
+        "core_number": 24,
+        "directed_edges": 3281446,
+        "graph_file_checksums": {
+          "edge_index.npy": "607531a001f75ece1bb1a8ef3a1bdcf457784e950dc7e692982e7b0bbd1c7762",
+          "orientation.npz": "1d08d03c9db90594778e07a334b788cf91f59c625c32dc0373b20078cf5ac1fa",
+          "relative_geometry.npy": "24ce65ec7188751213dad33c757db634fae5c19812c5916a4f22232ea55b1399"
+        },
+        "graph_logical_sha256": "9ad2250c61b31912c0cfd84246be0c7283de730fedf47520af3c7107061abe33",
+        "graph_record_sha256": "f318bf0e9052fa063ae0362159e6af2f394a2435b2b7b3b29fe3fe4881d5a45d",
+        "prepared_component_checksums": {
+          "coordinates_um": "e8d181dc704cf994a31d45a25d8f45a85d6a60403829f9b253762ad2beef7b7c",
+          "expression_counts": "b6b9a069c003c4dbc281427f047d08184235e15470de5f42e0ae5e12ea9c637e",
+          "node_covariates": "d3888707a790103701e9b1764e2087999ded6bed064de193bfbd5d4621a129b5",
+          "target_expression": "ef06c10b7b2ca606016182277047546539abb70a72d182c7ef8c7ce443f8a937"
+        },
+        "prepared_core_artifact_sha256": "885b526394f2a55af898ede297a089fd2b2d7e711a0b7275b1fdd820334e7706",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "ffc2803c5102516f82232d1d3d017cd7dd17d595670ecf256dde125baf09662b",
+      "source_metadata_sha256": "68084e9337fed222ff1d990a6a4cc1b8bed4bb70f8b25b73370655b7851fffa3",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C25",
+      "cell_count": 13147,
+      "cell_index_array_sha256": "7cea38c66e31bcd40975f187696e42a084c90fee195a8dc59cb01d836c707883",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "6a98f410658a8fabb3b4d883d6e0945353045f8106387d331410fa1f223f3ef7",
+      "core_number": 25,
+      "created_at": "2026-09-03T04:46:31.102615+00:00",
+      "directed_edges": 3049388,
+      "embedding_file": "embeddings/core_25_hL.npz",
+      "file": {
+        "sha256": "e879176baf6f8faec1ed06087ef9d4680488181bd3bc32598011052771d4ef75",
+        "size_bytes": 12635336
+      },
+      "hL_array_sha256": "9c5c5bff79e8e54176a6982895054a2d6714338506a369d2d59ba199128fdff8",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        13147,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:1",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 2.834782105870545,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 5432758272,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 723379200,
+        "peak_cuda_reserved_bytes": 1845493760,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "b9adca20bf18b7ec4a250a8faee2e5baf739296a4414e1f0c6c9bd68e8c59020",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C25",
+        "cell_count": 13147,
+        "core_number": 25,
+        "directed_edges": 3049388,
+        "graph_file_checksums": {
+          "edge_index.npy": "c3be3303cd04f27d5d32f2c9cd07143b1c73d5a55dbb078408e677bb8adc252d",
+          "orientation.npz": "4ed6e61fd7496dcfcaef8450d6af3552f1d295fdc8ba86715c4d328b854320a4",
+          "relative_geometry.npy": "e189200e29beb916403b83bd086e3deba73dab1e68385b6f67049e347a4aee8f"
+        },
+        "graph_logical_sha256": "5301b437c1813579f85c3bafa45b847d817d33de47dc1386104ac33ba59b634d",
+        "graph_record_sha256": "4b2d79e3f0330a30a9117d4675569ad3c8556ff6d97fb76c6aa20ec7163b58c0",
+        "prepared_component_checksums": {
+          "coordinates_um": "65ae72c29b1b9e9d5a56d4d22df4bfcb50bb77f71bd292822414616529c693ab",
+          "expression_counts": "5fd53b2bb238efa4791060d36cd6af398ce0d1bd4c7f9556f609d27bd630100b",
+          "node_covariates": "580f2de3b16454103dcdbf9acb025212d969c8a3aa8b4cd112fdbeeba31a531d",
+          "target_expression": "c0df4164d4bec97dc991893a99b79684e4b2708c8908cfdc706f206bea5c227a"
+        },
+        "prepared_core_artifact_sha256": "35f66ab45a154acbfb0ef61c0b62d181fc9fefab08290cf8494ed440bc40b833",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "099a0611df9b2ce295851dce4c71cf507a225e98c607299ffeac83987006d1dc",
+      "source_metadata_sha256": "f5f7a90fdcc971923e77c579e3567a4235c6f97ef729337165f39916be7f7c24",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C26",
+      "cell_count": 14856,
+      "cell_index_array_sha256": "255ff675f3670f43862afaaef259a34d1cb763773f8c51a070b30c6db037802a",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "40f0313e8e43aec1eb9a030ba7f36fb65cf2f91298f6e3a2b88cf769e6466c52",
+      "core_number": 26,
+      "created_at": "2026-09-03T04:46:26.165660+00:00",
+      "directed_edges": 3290872,
+      "embedding_file": "embeddings/core_26_hL.npz",
+      "file": {
+        "sha256": "e196feb650c2700eebc8f5806968e123f55a89fdee49430d41da3d1b92e6180d",
+        "size_bytes": 14281678
+      },
+      "hL_array_sha256": "8e25b9e16a43bd461cd49184a50a5681142da8b6107841b6ca8a0c6acae9f9fc",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        14856,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:3",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 2.6032589059323072,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 3968086016,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 701973504,
+        "peak_cuda_reserved_bytes": 840957952,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "91e6d7dd0a9a2252266bf3286feaed4101825c1c00a9aee7a39c8a6ce7469d45",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C26",
+        "cell_count": 14856,
+        "core_number": 26,
+        "directed_edges": 3290872,
+        "graph_file_checksums": {
+          "edge_index.npy": "5f3ac7a1bd59481dfa7cec36099c7d74933c996ce998afb2e9435e63a15cd938",
+          "orientation.npz": "a532817c9c7dd654fa72ebf083fba0ffac87f6d20a40c5f144bb2916f722ed65",
+          "relative_geometry.npy": "8ae9eb0fac4dd103b2e923749926ffa36c50fe3c2a2bbc7b5357920bea4998f0"
+        },
+        "graph_logical_sha256": "4caf6aa24f6e67ba985cdbb4583f244de69fa9e9e9396bf1a086d5c1476e3f13",
+        "graph_record_sha256": "9b4895da01e905293247b039ec2a07d86cd3f043279600e9b793fc2b0ceb51de",
+        "prepared_component_checksums": {
+          "coordinates_um": "35fc7d9ab0e211e4a7ca8c5efb187c72ad91a76755c88838ca7373c07fa24e87",
+          "expression_counts": "c6a01080eb248d8c51380b2426053f5e056c385081d880707933106f1106c6ca",
+          "node_covariates": "9e644faa2158491ca82321800783b8d2bc6960fc0bcf41760d14cd8761ee963f",
+          "target_expression": "733a0133a43d7f76019d5aae67100f14cd6407cc6d5803093a0fd568b28255f9"
+        },
+        "prepared_core_artifact_sha256": "1c719c24035a747326ccb4dfd3f43063b9ea0896849b0e00c5a9ea8b164dba31",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "b86e22c6ea80c715fc0f22a2af7b483e96d87350878a806ca21602baa1b60db7",
+      "source_metadata_sha256": "ddfb2b7197ffb673daf8a39a113009a340a9926825363475ddbd28a227e00f37",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C27",
+      "cell_count": 24245,
+      "cell_index_array_sha256": "e61920f0c8f17f9731feb2452afb73c48bd56e01495d320d237f7b0470d0447d",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "556b18fb57a94763be353da99f2724b5420c1b1bf72bf531286b6f96bf6bc380",
+      "core_number": 27,
+      "created_at": "2026-09-03T04:46:24.139149+00:00",
+      "directed_edges": 5558646,
+      "embedding_file": "embeddings/core_27_hL.npz",
+      "file": {
+        "sha256": "90413ec73d704f4abe0656638f51e3c2f47232a992c9919580982094d83ca333",
+        "size_bytes": 23296918
+      },
+      "hL_array_sha256": "ce0b64cfe4722164fdbd83845cab030fc1b56f815f7b8aaf3b321c52572929a2",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        24245,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:1",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 5.777967060916126,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 5432758272,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 825614336,
+        "peak_cuda_reserved_bytes": 1451229184,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "60e7de3d862038f6999dd31523ff01d802016ab1f3647431f6ccf6b1fc88c5bb",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C27",
+        "cell_count": 24245,
+        "core_number": 27,
+        "directed_edges": 5558646,
+        "graph_file_checksums": {
+          "edge_index.npy": "1a02681a569f644a325f85e38741e1c400bf200a34e25251a6836af1399a588e",
+          "orientation.npz": "ca75a9ac72e662968fd2dad53606b8a431096dea055cb8782e4728a173500dd0",
+          "relative_geometry.npy": "b75057509143153fc75dc1930c9f47c7b61e41aecfc41b59a40e075f3cc1c387"
+        },
+        "graph_logical_sha256": "0344e36234b96b21e83cfd82efe55198c16383fa752e740fd02a5545e350fef2",
+        "graph_record_sha256": "4f55960461acf522b04ee765c1f4ba8d3978a3aea4c52db3eb5daf9de2ff934a",
+        "prepared_component_checksums": {
+          "coordinates_um": "e583cbb92781062726aca31ec042308e62e32c9887a4d7470db3d13df5720216",
+          "expression_counts": "ddff88f6f0e1c58414e98b33cab8c46e9524bab4f5a72735dde6d5d900e05494",
+          "node_covariates": "4c47a498d3849e46921d57a87948c4a980760e64562eabf676ea54ee9ba2adda",
+          "target_expression": "72ddeb3c59092d4bc2f3cd7aef5f939e38b6b5f7f59f5c635c9b800901c03297"
+        },
+        "prepared_core_artifact_sha256": "d1b1b963d05583a58dafc70e7b8f32f4bdec971713839c9a8a9d58f50474e653",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "eb226146d13e285629e823599004289e94066b6ffd19327287192bb4d5ba997e",
+      "source_metadata_sha256": "e8ee0795b34533bf4c2aba016331e3b8a28a9e601b58bb5e04a6f2b508554a70",
+      "status": "complete"
+    },
+    {
+      "alias": "SO2-C28",
+      "cell_count": 13122,
+      "cell_index_array_sha256": "61cdd3ff23a3349d40b6951d35dd42f4cc40f83ee2ec030b32950ba86b47a788",
+      "checkpoint_sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2",
+      "coordinates_array_sha256": "2b2d13236c5f64fc8b2d8313a7fb19440b526c2b995aeded58591c295a27668b",
+      "core_number": 28,
+      "created_at": "2026-09-03T04:46:31.743164+00:00",
+      "directed_edges": 2917682,
+      "embedding_file": "embeddings/core_28_hL.npz",
+      "file": {
+        "sha256": "3777220c985943d66f96d3df89cd14dbb8aa1989125480650030e3b8da2324e0",
+        "size_bytes": 12615897
+      },
+      "hL_array_sha256": "4a6697f71d27017cb9bc4b0b0243fee6499a8361082b6fa2424af5a168c63c62",
+      "hL_dtype": "float32",
+      "hL_shape": [
+        13122,
+        256
+      ],
+      "inference": {
+        "autocast_enabled": false,
+        "complete_core": true,
+        "cpu_threads": 4,
+        "cuda_total_memory_bytes": 25296044032,
+        "decoder_target_rows": 0,
+        "device": "cuda:3",
+        "device_name": "NVIDIA GeForce RTX 3090",
+        "edge_index_device_after": "cpu",
+        "edge_index_device_before": "cpu",
+        "effective_graph_depth": 4,
+        "elapsed_seconds": 2.32183400914073,
+        "full_precision_fp32": true,
+        "gene_mask_nonzero_count": 0,
+        "graph_block_weight_tying": "all_steps",
+        "hL_source": "model_output.full_node_embedding",
+        "host_max_rss_bytes": 3968086016,
+        "model_eval": true,
+        "neighbor_sampling": false,
+        "peak_cuda_allocated_bytes": 700249600,
+        "peak_cuda_reserved_bytes": 1782579200,
+        "recurrent_unroll_steps": 4,
+        "relative_geometry_device_after": "cpu",
+        "relative_geometry_device_before": "cpu",
+        "repeatability": {
+          "allclose": null,
+          "exact_array_match": null,
+          "maximum_absolute_difference": null,
+          "performed": false,
+          "repeated_hL_array_sha256": null
+        },
+        "tf32_enabled": false,
+        "torch_inference_mode": true,
+        "unique_graph_blocks": 1
+      },
+      "manifest_content_sha256": "96575cb1b624e57504be9dc078ff4e9532a0fac07fff5dd82ed1491832970c32",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "schema": "so2_14core_recurrent_hl_core_extraction_v1",
+      "source_core": {
+        "alias": "SO2-C28",
+        "cell_count": 13122,
+        "core_number": 28,
+        "directed_edges": 2917682,
+        "graph_file_checksums": {
+          "edge_index.npy": "63b63367150d7146513dd4755f306664eeb7ab92049d6a880deac32fcb307448",
+          "orientation.npz": "a206e593b128f04cf2796ff96027aad7fbeb9acedffc28576d849c3efd21e110",
+          "relative_geometry.npy": "44b24de7f0063f9b0af82ffa86ce1cd37c8fec3df25909c9039347cf6f68e6dc"
+        },
+        "graph_logical_sha256": "d2aa02a24edfe203cb4e398e22b1d279a09371c4b5adfe40d2f3d3671253eb87",
+        "graph_record_sha256": "f429b9dac91246fbcf46bd964db8a101d99a227bb431e9642730d439518992bc",
+        "prepared_component_checksums": {
+          "coordinates_um": "fa6885e1012f5028c6dc6f1945e599add4d3df17f8fbf3de43b34356fdbe9ae6",
+          "expression_counts": "79f526374f5d6365c4c61b9034a4d4ea0d3823f99126c0337121eb5c0df0ea79",
+          "node_covariates": "936aecbd55dc222d52baae2af487a80ec62dfaaef412b2cdacee85e75db4d5fe",
+          "target_expression": "36d361e4463fbbd75430293b644beac8e96b70cbb6827f0933a2ba32114391fc"
+        },
+        "prepared_core_artifact_sha256": "7e8aebef10d0c0f35fb8de25507030e22dcae81c1783bf85f53416948145c998",
+        "receiver_major_canonical_order": true
+      },
+      "source_expression_sha256": "00de48d278d6dc493a628205f8881d5a471888bcf25c2f591d0539164adecd48",
+      "source_metadata_sha256": "89117040c65541c7beacec1e70734464b8156a159adf4dfe6c3f144a0ceb6cdf",
+      "status": "complete"
+    }
+  ],
+  "created_at": "2026-09-03T04:46:42.997669+00:00",
+  "decoder_target_rows_per_core": 0,
+  "embedding_dimension": 256,
+  "full_precision_fp32": true,
+  "gpu_inventory": [
+    {
+      "compute_capability": [
+        8,
+        6
+      ],
+      "device": "cuda:0",
+      "name": "NVIDIA GeForce RTX 3090",
+      "total_memory_bytes": 25296044032
+    },
+    {
+      "compute_capability": [
+        8,
+        6
+      ],
+      "device": "cuda:1",
+      "name": "NVIDIA GeForce RTX 3090",
+      "total_memory_bytes": 25296044032
+    },
+    {
+      "compute_capability": [
+        8,
+        6
+      ],
+      "device": "cuda:2",
+      "name": "NVIDIA GeForce RTX 3090",
+      "total_memory_bytes": 25296044032
+    },
+    {
+      "compute_capability": [
+        8,
+        6
+      ],
+      "device": "cuda:3",
+      "name": "NVIDIA GeForce RTX 3090",
+      "total_memory_bytes": 25296044032
+    }
+  ],
+  "input_provenance": {
+    "analysis_source": {
+      "commit": "8810257f6c33008f7c13c87b2de4169bbfd88662",
+      "dirty": true,
+      "status_sha256": "fad8466624e48e35c0773719903888b86e44b314d5f10fe49e1898024febc787"
+    },
+    "bundle_verification": {
+      "file_count": 33,
+      "present_file_count": 33,
+      "run_path": "/workspace/BAGM/artifacts/runs/2026/08/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "status": "failed",
+      "tombstoned_file_count": 0,
+      "valid": true
+    },
+    "campaign_id": "cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2",
+    "checkpoint": {
+      "completed_global_epochs": 175,
+      "independent_reload_replay_verified": true,
+      "maximum_prediction_replay_difference": 0.0,
+      "model_state_sha256": "a9446ea7aa158c21b4c12d69ad82f98bb7b1c934e106ed300aaa23029846386d",
+      "path": "/workspace/BAGM/artifacts/runs/2026/08/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/checkpoints/last.ckpt",
+      "schema": "so2_14core_relative_qkv_resume_v1",
+      "sha256": "01f3611897557add92b9733bff7e3940d6b19d22881bd8401340e255c9e355e2"
+    },
+    "checkpoint_replay_receipt": {
+      "sha256": "30175506bfc86a41c2fb3de5d8febb6389170a2b47371a58545971ae0314236c",
+      "size_bytes": 4300
+    },
+    "cohort_manifest": {
+      "content_sha256": "c7abbeddd8ed018d09163bb290224d3a92fd38ab3f3696d012b731f2f05f9bf0",
+      "file_sha256": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/manifest.json"
+    },
+    "dataset_fingerprint": "c7abbeddd8ed018d09163bb290224d3a92fd38ab3f3696d012b731f2f05f9bf0",
+    "finalization_failure_stage": "artifact_finalization_failure",
+    "graph_manifest": {
+      "content_sha256": "e41a4c92868bac96d05984b5a070d9984cda6ac04e3ad30458e5920259c573d5",
+      "file_sha256": "c4a632473e458ae6e6eeab92c026ebf6e4d18ae49b568723f0e66a67db4fc90f",
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/manifest.json"
+    },
+    "model_construction": {
+      "activation_checkpointing": true,
+      "attention_dropout": 0.0,
+      "attention_head_dim": 32,
+      "attention_heads": 8,
+      "class": "ReceiverChunkedRecurrentRelativeGeometryQKVGraphTransformer",
+      "decoder_dim": 1024,
+      "dropout": 0.1,
+      "edge_key_vectors": false,
+      "edge_value_gates": false,
+      "edge_value_vectors": false,
+      "effective_graph_depth": 4,
+      "embedding_dim": 256,
+      "exact_receiver_partitioning": true,
+      "family": "recurrent_relative_geometry_qkv_graph_transformer",
+      "ffn_dim": 1024,
+      "fp32_attention_accumulation": true,
+      "graph_block_weight_tying": "all_steps",
+      "graph_layers": 1,
+      "hidden_dim": 256,
+      "implicit_self_loops": false,
+      "max_edges_per_chunk": 200000,
+      "name": "recurrent-relative-qkv-gat",
+      "node_covariate_dim": 22,
+      "num_genes": 1000,
+      "positional_bias_final_zero_init": true,
+      "positional_bias_hidden_dim": 128,
+      "receiver_chunk_size": 512,
+      "recurrent_unroll_steps": 4,
+      "relative_geometry_dim": 70,
+      "relative_geometry_role": "attention_logit_bias_only",
+      "trainable_edge_identifiers": false,
+      "trainable_node_identifiers": false,
+      "unique_graph_blocks": 1,
+      "uses_edge_inputs": false,
+      "uses_graph_inputs": true,
+      "uses_relative_position": true
+    },
+    "model_seed": 0,
+    "preprocessing_version": "so2_14core_equal_core_log1p_metadata_v1",
+    "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+    "selection_policy": "explicit_training_complete_checkpoint_with_post_training_artifact_finalization_failure",
+    "source_run_canonical_completion_claimed": false,
+    "source_run_registry_status": "failed",
+    "source_run_training_completed": true,
+    "training_source": {
+      "commit": "4b03200af9168c535bde5c291cf5a00af054def7",
+      "dirty": true,
+      "dirty_fingerprint": "8e3802dc1c4e16b8fc2c6ad1f32b439c89052fbac7c5bf846a97865e6b12fd6b",
+      "untracked_file_count": 10
+    }
+  },
+  "manifest_content_sha256": "5cdc0b45ae7e5e13e11ecf5688a6ad916d3a5f33081ed600be28c7709010523c",
+  "parallel_schedule_after_pilots": {
+    "cuda:0": [
+      15,
+      18
+    ],
+    "cuda:1": [
+      27,
+      25,
+      22
+    ],
+    "cuda:2": [
+      19,
+      24,
+      20
+    ],
+    "cuda:3": [
+      16,
+      26,
+      28,
+      17
+    ]
+  },
+  "parallel_schedule_directed_edges": {
+    "cuda:0": 11282098,
+    "cuda:1": 11206776,
+    "cuda:2": 10431188,
+    "cuda:3": 11950232
+  },
+  "pilot_gates": [
+    {
+      "core_number": 21,
+      "cuda_total_memory_bytes": 25296044032,
+      "device": "cuda:0",
+      "elapsed_seconds": 1.4217179669067264,
+      "peak_cuda_allocated_bytes": 646514688,
+      "peak_cuda_reserved_bytes": 742391808,
+      "repeatability": {
+        "absolute_tolerance": 1e-05,
+        "allclose": true,
+        "exact_array_match": false,
+        "maximum_absolute_difference": 1.430511474609375e-06,
+        "note": "GPU receiver aggregation may vary at floating-point roundoff scale across repeated forwards.",
+        "performed": true,
+        "relative_tolerance": 1e-06,
+        "repeated_hL_array_sha256": "4fd7feb13a481c0401ddc8f5eeae59c7811f22877d82529605d5256be1fa8c25"
+      }
+    },
+    {
+      "core_number": 23,
+      "cuda_total_memory_bytes": 25296044032,
+      "device": "cuda:0",
+      "elapsed_seconds": 9.207846815232188,
+      "peak_cuda_allocated_bytes": 1036015104,
+      "peak_cuda_reserved_bytes": 2319450112,
+      "repeatability": {
+        "allclose": null,
+        "exact_array_match": null,
+        "maximum_absolute_difference": null,
+        "performed": false,
+        "repeated_hL_array_sha256": null
+      }
+    }
+  ],
+  "representation": "hL_after_recurrent_unroll_step_4_final_graph_pre_decoder",
+  "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+  "schema": "so2_14core_recurrent_hl_extraction_v1",
+  "status": "complete",
+  "total_cells": 246063
+}

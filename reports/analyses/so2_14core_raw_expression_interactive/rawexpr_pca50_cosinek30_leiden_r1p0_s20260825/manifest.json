@@ -1,0 +1,159 @@
+{
+  "analysis_scope": "raw_expression_resolution_1p0_visualization_only",
+  "cluster_count": 12,
+  "core_cell_counts": {
+    "15": 38145,
+    "16": 16229,
+    "17": 9041,
+    "18": 11696,
+    "19": 19119,
+    "20": 12155,
+    "21": 4897,
+    "22": 11443,
+    "23": 43462,
+    "24": 14506,
+    "25": 13147,
+    "26": 14856,
+    "27": 24245,
+    "28": 13122
+  },
+  "core_order": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+  ],
+  "created_at": "2026-08-26T11:47:39.642135+00:00",
+  "execution": {
+    "gpu_used": false,
+    "model_inference": false,
+    "model_training": false,
+    "normalization_or_pca": false,
+    "reclustering": false,
+    "visualization_only": true
+  },
+  "files": {
+    "README.md": {
+      "sha256": "a4e11aa675cf7bce5359cb3f284ce6e13c1127a1bea525ebde571a5b839ac817",
+      "size_bytes": 1881
+    },
+    "raw_expression_leiden_resolution_1p0_spatial_14cores_interactive.html": {
+      "sha256": "d3dffac6b4e81881859f27596825ad889b81d902b8fba187ff2a8e9c9c2fdb52",
+      "size_bytes": 5610467
+    },
+    "raw_expression_leiden_resolution_1p0_spatial_14cores_interactive.zip": {
+      "sha256": "ae5463b3ef93b3742bde6ec7025b41d33d57ebea5d3b6be936a198de2e4b3569",
+      "size_bytes": 3532406
+    }
+  },
+  "interaction": {
+    "cluster_click_highlight": true,
+    "combined_png_export": true,
+    "hover_fields": [
+      "numeric_core_number",
+      "expression_cluster",
+      "rounded_x_um",
+      "rounded_y_um"
+    ],
+    "nonselected_opacity": 0.09,
+    "pan": "pointer_drag",
+    "selected_draw_order": "last",
+    "show_all_and_escape_reset": true,
+    "zoom": "wheel"
+  },
+  "interpretation": {
+    "biological_influence_established": false,
+    "causality_established": false,
+    "cell_types_established": false,
+    "e1_low_count_depth_warning_visible": true,
+    "expression_derived_clusters": true,
+    "signaling_established": false
+  },
+  "leiden_resolution": 1.0,
+  "manifest_content_sha256": "b9ae166779a8689660a33144613190326888df85af41045e285a741eecec55dc",
+  "point_count": 246063,
+  "render_receipt": {
+    "browser_payload_fields": [
+      "numeric_core_number",
+      "x_um",
+      "y_um",
+      "expression_cluster_code"
+    ],
+    "clinical_fields_included": false,
+    "cluster_count": 12,
+    "core_order": [
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28
+    ],
+    "expression_values_included": false,
+    "html_sha256": "d3dffac6b4e81881859f27596825ad889b81d902b8fba187ff2a8e9c9c2fdb52",
+    "html_size_bytes": 5610467,
+    "manifest_content_sha256": "960ffecb41e6232b7b073372c814964e748e9462ebf0ad3c8d6d23cace927159",
+    "model_embeddings_included": false,
+    "offline_network_policy": "connect-src-none",
+    "pca_scores_included": false,
+    "point_count": 246063,
+    "schema": "so2_14core_raw_expression_interactive_v1",
+    "self_contained": true,
+    "source_manifest_sha256": "b9e9bc9dbc8d43d976b50e1d4492ea127a0116997a12969b593af0ab8cab3f6e",
+    "source_table_sha256": "12a5eee5211c6dc1273f58d570853920f518521268b7db9ce64292f9c412f7fc",
+    "stable_identifiers_included": false,
+    "status": "complete"
+  },
+  "schema": "so2_14core_raw_expression_interactive_v1",
+  "sharing": {
+    "authorized_collaborators_only": true,
+    "clinical_fields_included": false,
+    "exact_tissue_coordinates_included": true,
+    "expression_values_included": false,
+    "model_embeddings_included": false,
+    "pca_scores_included": false,
+    "self_contained_offline_html": true,
+    "stable_cell_identifiers_included": false
+  },
+  "source_analysis_id": "rawexpr_pca50_cosinek30_leiden_r1p0_s20260825",
+  "source_artifacts": {
+    "analysis_manifest": {
+      "sha256": "b9e9bc9dbc8d43d976b50e1d4492ea127a0116997a12969b593af0ab8cab3f6e",
+      "size_bytes": 17030
+    },
+    "cluster_table": {
+      "sha256": "12a5eee5211c6dc1273f58d570853920f518521268b7db9ce64292f9c412f7fc",
+      "size_bytes": 4476243
+    },
+    "palette": {
+      "sha256": "fb5eb95a8cde5f950dffdbda75ab276d7c7f3805fede158d64173f41018c3d43",
+      "size_bytes": 394
+    }
+  },
+  "status": "complete",
+  "zip_receipt": {
+    "deterministic_timestamp": "1980-01-01T00:00:00",
+    "member": "raw_expression_leiden_resolution_1p0_spatial_14cores_interactive.html",
+    "member_sha256": "d3dffac6b4e81881859f27596825ad889b81d902b8fba187ff2a8e9c9c2fdb52",
+    "zip_sha256": "ae5463b3ef93b3742bde6ec7025b41d33d57ebea5d3b6be936a198de2e4b3569",
+    "zip_size_bytes": 3532406
+  }
+}

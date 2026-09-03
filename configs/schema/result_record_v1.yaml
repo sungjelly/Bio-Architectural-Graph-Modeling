@@ -1,0 +1,158 @@
+schema_name: bagm_result_record
+schema_version: 1
+canonical_path: results/<experiment_type>/<method_family>/<result_id>/result.yaml
+purpose: Curated conclusion record referencing immutable execution and analysis evidence.
+
+identity:
+  result_id_pattern: "^res_[a-z0-9][a-z0-9_]*$"
+  path_components:
+    - experiment_type
+    - method_family
+    - result_id
+  date_free_identity: true
+  required:
+    - schema_name
+    - schema_version
+    - revision
+    - result_id
+    - title
+    - status
+    - outcome
+    - experiment_type
+    - method_family
+    - lifecycle_stage
+    - study_axis
+    - campaign_ids
+
+experiment_types:
+  - data_qc
+  - synthetic_recovery
+  - predictive_benchmark
+  - ablation
+  - stability_audit
+  - faithfulness_audit
+  - null_calibration
+  - niche_discovery
+  - external_validation
+  - perturbation
+  - descriptive_analysis
+  - infrastructure_validation
+
+statuses:
+  - draft
+  - verified
+  - superseded
+
+outcomes:
+  - supported
+  - negative
+  - inconclusive
+  - blocked
+
+required_method_fields:
+  - name
+  - model_family
+  - graph_context
+  - masking_or_perturbation
+  - evaluation_design
+  - implementation_version
+
+required_conclusion_fields:
+  - question
+  - estimand
+  - observed_result
+  - strongest_alternative_explanation
+  - controls
+  - remaining_uncertainty
+  - maximum_defensible_claim
+
+evidence_dimensions:
+  - predictive_gain
+  - stability
+  - faithfulness
+  - null_calibration
+  - patient_replication
+  - external_support
+  - perturbation_support
+
+evidence_statuses:
+  - pending
+  - not_tested
+  - not_applicable
+  - failed
+  - mixed
+  - supported
+
+required_provenance_fields:
+  - created_at_utc
+  - updated_at_utc
+  - git_commit
+  - run_ids
+  - expected_seeds
+  - included_seeds
+  - expected_folds
+  - included_folds
+  - failed_or_excluded_runs
+  - sources
+
+source_contract:
+  required:
+    - kind
+    - root
+    - path
+    - sha256
+    - verification_status
+  kinds:
+    - run_artifact
+    - evaluation
+    - report
+    - campaign_record
+    - external_record
+    - other
+  roots:
+    - project
+    - artifact
+    - report
+    - result
+  verification_statuses:
+    - pending
+    - verified
+    - tombstoned
+    - unavailable
+
+curated_file_contract:
+  required:
+    - path
+    - role
+    - sha256
+    - size_bytes
+  roles:
+    - figure
+    - table
+    - numeric_source
+    - summary
+    - attachment
+    - other
+
+verified_record_gates:
+  - no_todo_placeholders
+  - nonempty_human_readable_readme
+  - nonempty_controls
+  - all_evidence_dimensions_are_nonpending
+  - at_least_one_immutable_source
+  - all_source_run_ids_are_declared
+  - included_seeds_are_a_subset_of_expected_seeds
+  - included_folds_are_a_subset_of_expected_folds
+  - payload_paths_are_relative_and_confined_to_the_result_directory
+  - direct_patient_and_donor_identifier_fields_are_prohibited
+
+storage_boundaries:
+  canonical_run_payloads: artifacts/runs/YYYY/MM/<run_id>/
+  detailed_analysis_outputs: reports/
+  curated_conclusion_records: results/
+  forbidden_in_results:
+    - checkpoints
+    - copied_datasets
+    - registry_databases
+    - unrestricted_row_level_identifiers
+    - mutable_active_run_directories

@@ -40,6 +40,7 @@ than copying model implementations.
 | `cache/` | Rebuildable dataset, graph, model, package, and test caches. |
 | `exports/` | Derived run exports, variants, leaderboards, failure tables, and semantic checkpoint views; never a second registry. |
 | `reports/` | Cross-run figures, tables, analyses, and campaign reports with numeric source data. |
+| `results/` | Curated conclusion records organized by experiment type and method family; references immutable runs/reports and is never a second payload archive. |
 | `docs/` | Architecture, protocol, configuration, operations, data, and metrics contracts. |
 | `ops/` | Reviewable service, scheduler, container, and maintenance templates; nothing is installed automatically. |
 
@@ -66,13 +67,14 @@ changing immutable IDs, foreign keys, manifests, or paths.
 
 All reusable path resolution goes through `spatial_benchmark.paths`. The module
 exports `PROJECT_ROOT`, `CONFIG_ROOT`, `DATA_ROOT`, `ARTIFACT_ROOT`,
-`STATE_ROOT`, `SCRATCH_ROOT`, `CACHE_ROOT`, `EXPORT_ROOT`, and `REPORT_ROOT`.
+`STATE_ROOT`, `SCRATCH_ROOT`, `CACHE_ROOT`, `EXPORT_ROOT`, `REPORT_ROOT`, and
+`RESULT_ROOT`.
 `BAGM_ROOT` selects the project root. The corresponding overrides are
 `BAGM_CONFIG_ROOT`, `BAGM_DATA_ROOT`, `BAGM_ARTIFACT_ROOT`,
 `BAGM_STATE_ROOT`, `BAGM_SCRATCH_ROOT`, `BAGM_CACHE_ROOT`,
-`BAGM_EXPORT_ROOT`, and `BAGM_REPORT_ROOT`. Relative overrides resolve under
-the selected project root. Reusable code must not depend on the caller's
-working directory or embed a server home directory.
+`BAGM_EXPORT_ROOT`, `BAGM_REPORT_ROOT`, and `BAGM_RESULT_ROOT`. Relative
+overrides resolve under the selected project root. Reusable code must not
+depend on the caller's working directory or embed a server home directory.
 
 ## Runtime ownership
 

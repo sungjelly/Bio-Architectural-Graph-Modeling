@@ -1,0 +1,426 @@
+{
+  "analysis_id": "rawexpr_pca50_cosinek30_leiden_r1p0_s20260825",
+  "analysis_scope": "classical_raw_expression_only_joint_clustering",
+  "below_library_size_floor_cells": 5269,
+  "cluster_count": 14,
+  "cluster_size_range": [
+    1734,
+    44633
+  ],
+  "configuration": {
+    "batch_correction_applied": false,
+    "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+    "coordinates_used_for_clustering": false,
+    "core_identity_used_for_clustering": false,
+    "dense_cell_by_cell_matrix_constructed": false,
+    "device": "cpu",
+    "distance_metric": "cosine",
+    "figure_dpi": 300,
+    "gene_scaling": "joint_mean_center_unit_sample_variance_then_clip",
+    "gene_selection": "all_nonconstant_genes_from_fixed_targeted_panel",
+    "input_representation": "raw_nonnegative_integer_biological_probe_counts",
+    "joint_cell_count": 161596,
+    "joint_core_order": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "knn_implementation": "faiss.IndexHNSWFlat",
+    "knn_insertion_order": "deterministic_seeded_permutation_independent_of_core_labels",
+    "knn_insertion_permutation_seed_formula": "random_seed_xor_0x534f31",
+    "knn_symmetrization": "undirected_union_unweighted",
+    "label_prefix": "S1E",
+    "leiden_partition": "leidenalg.RBConfigurationVertexPartition",
+    "leiden_resolution": 1.0,
+    "library_size_floor": 20.0,
+    "metadata_used_for_clustering": false,
+    "model_checkpoint_used": false,
+    "model_embedding_used": false,
+    "n_neighbors": 30,
+    "nonlinear_transform": "log1p",
+    "normalization": "counts * target / max(cell_total, library_size_floor)",
+    "normalization_target": 162.0,
+    "pca": "exact_clipped_scaled_feature_covariance_eigendecomposition",
+    "pca_component_sign_rule": "largest_absolute_loading_positive",
+    "pca_components": 50,
+    "pca_scores_l2_normalized": true,
+    "random_seed": 20260825,
+    "scale_clip": 10.0,
+    "spatial_graph_used_for_clustering": false
+  },
+  "core_cell_counts": {
+    "1": 8924,
+    "10": 14756,
+    "11": 18145,
+    "12": 7816,
+    "13": 5345,
+    "14": 9785,
+    "2": 7450,
+    "3": 12190,
+    "4": 14657,
+    "5": 11399,
+    "6": 18212,
+    "7": 10722,
+    "8": 4972,
+    "9": 17223
+  },
+  "core_dominated_gt_90pct": [
+    "S1E10"
+  ],
+  "core_order": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "created_at": "2026-08-26T21:58:16.839480+00:00",
+  "execution": {
+    "cuda_visible_devices": "",
+    "device": "cpu",
+    "gpu_used": false,
+    "model_inference": false,
+    "model_training": false,
+    "numpy": "2.5.2",
+    "python": "3.12.13",
+    "scipy": "1.18.1"
+  },
+  "exploratory": true,
+  "figure_paths": [
+    "figures/per_core/so1_core_10_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_11_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_12_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_13_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_14_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_1_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_2_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_3_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_4_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_5_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_6_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_7_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_8_raw_expression_leiden_resolution_1p0.png",
+    "figures/per_core/so1_core_9_raw_expression_leiden_resolution_1p0.png",
+    "figures/so1_raw_expression_leiden_resolution_1p0_spatial_14cores.pdf",
+    "figures/so1_raw_expression_leiden_resolution_1p0_spatial_14cores.png"
+  ],
+  "files": {
+    "README.md": {
+      "sha256": "6ab5e34d20a58f63f0575668f621322ef7f508a4612d4c27af31467726066f63",
+      "size_bytes": 4622
+    },
+    "clustering/clustering_manifest.json": {
+      "sha256": "74fcebe82d4aafa5db31ae7e65ad03b73aceeff3f77a100509889a805dadc75d",
+      "size_bytes": 11662
+    },
+    "clustering/expression_clustering_parameters.json": {
+      "sha256": "5abf0739207614c58f351d45bab70a4514451cba8e59fbb5753a6b01e6f6b795",
+      "size_bytes": 2949
+    },
+    "clustering/expression_knn_undirected_edges.npy": {
+      "sha256": "7802692f4fef6d387cb6cfe3bd4faa1cc428a65e96ea492c7004a59f9c7beb0a",
+      "size_bytes": 65684224
+    },
+    "clustering/expression_labels.npy": {
+      "sha256": "0eb5aa7e755fe5d3dc67fff66f543b7490af724f870ea30eb9d7521c56be5605",
+      "size_bytes": 1292896
+    },
+    "clustering/expression_palette.json": {
+      "sha256": "a8dc024d19e6e56173e165ff83e0ce22d11c26b0966e21bb98b3bd09cde2f896",
+      "size_bytes": 468
+    },
+    "figures/figure_manifest.json": {
+      "sha256": "209d0bdcee9da69972a686bc6608621241e7bc4329a91904ad036f76200c907f",
+      "size_bytes": 4699
+    },
+    "figures/per_core/so1_core_10_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "6ee1f082188d7029136abce1aa1595459fbf6281502423a594b8dbe30e1ae515",
+      "size_bytes": 1416400
+    },
+    "figures/per_core/so1_core_11_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "73645829bb8c9f32a06fe4f677898f71086468a71968f2c703dc60bd1ea5335c",
+      "size_bytes": 1279116
+    },
+    "figures/per_core/so1_core_12_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "7338bf0ee31b6b8e2c36cafb0990e242d81bac6f9fbd85796947405dc893084d",
+      "size_bytes": 885613
+    },
+    "figures/per_core/so1_core_13_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "35fc1208965bb4bd85947db4920809657701c44c153c6b57542eaebbad5bdfcb",
+      "size_bytes": 676360
+    },
+    "figures/per_core/so1_core_14_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "4ab087617961c26904aed59d1bbfef82292b2a459425cd19428da52a26f92f39",
+      "size_bytes": 903843
+    },
+    "figures/per_core/so1_core_1_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "e2135f5f341dcf1ec7b65c9ad50c8a8ea2c9a48253ba1b4c5b9a84b4e2ca425a",
+      "size_bytes": 1018888
+    },
+    "figures/per_core/so1_core_2_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "519251eb39a4fcf78bb83473d059ae6cf5a373ea66a726d03e82af1d442f7941",
+      "size_bytes": 853822
+    },
+    "figures/per_core/so1_core_3_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "9c44bf7714b2c7b541fd32c403cbff70f4bcff33fc73fc72b3929edc588d2db5",
+      "size_bytes": 1030458
+    },
+    "figures/per_core/so1_core_4_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "1ce65ba876c96bbf67a2ef47fb242663ece3702795af16068a2bbfb33b702f3a",
+      "size_bytes": 1437979
+    },
+    "figures/per_core/so1_core_5_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "d0a371e1a25d118cfc9b586ab05cdddeb42237ac249726afc7c97e686d9cb10b",
+      "size_bytes": 1212826
+    },
+    "figures/per_core/so1_core_6_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "04e4a97c40bf28516f821a6830c11de0a7d0b314f26e8f0896d68f6c9306e479",
+      "size_bytes": 1612458
+    },
+    "figures/per_core/so1_core_7_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "83b9e75f294f76a6eee2a518819b30bd14699a4ba4f28017e9e7dee860ed5048",
+      "size_bytes": 1162317
+    },
+    "figures/per_core/so1_core_8_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "4d27749bd814e06354aa395f3965280fe7fc5c4f13b64e559031d9c35152cd8b",
+      "size_bytes": 621255
+    },
+    "figures/per_core/so1_core_9_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "0062ed8dbffb57ea5cb5afdb0ff4fcf242553b33e3425e15c3e2e112d0e7e29e",
+      "size_bytes": 1405329
+    },
+    "figures/so1_raw_expression_leiden_resolution_1p0_spatial_14cores.pdf": {
+      "sha256": "426dab1428446bd27137ff33765f4bc72f627f1b2bd88ed6efcdb139d3857d91",
+      "size_bytes": 4341440
+    },
+    "figures/so1_raw_expression_leiden_resolution_1p0_spatial_14cores.png": {
+      "sha256": "f52a8558b14684da97f95f1aa8859d8df9ae782f2d9d44eb0cd781d66a7471ea",
+      "size_bytes": 8408595
+    },
+    "preprocessing/cell_source_qc.parquet": {
+      "sha256": "f2b237106d4876f63581f8c47eebfc20e485b3ed57b0e74239235bbdd09bb39e",
+      "size_bytes": 1543727
+    },
+    "preprocessing/expression_gene_statistics.npz": {
+      "sha256": "f80195eb587e711ecbce76a2e8eaaf76014cd658415820430a6662c1a49fb415",
+      "size_bytes": 399214
+    },
+    "preprocessing/expression_pca_l2_normalized.npy": {
+      "sha256": "2db6c1dd9c0c5fc1ddbd5b320a6112b6c14592432b8c54a7829e03448460a098",
+      "size_bytes": 32319328
+    },
+    "preprocessing/expression_preprocessing_parameters.json": {
+      "sha256": "cdc08937b61b892d5f02387ecd73ad5d3739b13ac881c862b4d7e37b8d5824d4",
+      "size_bytes": 24983
+    },
+    "preprocessing/gene_names.json": {
+      "sha256": "a307a0c816a69a64ea39e78d023f9f7b836ed50de5e305841755bff451064347",
+      "size_bytes": 13118
+    },
+    "preprocessing/preprocessing_manifest.json": {
+      "sha256": "86d5e2d29fb8f02a9e5c05ff9815959283c4e8cd666b2015f45b4c6565b58925",
+      "size_bytes": 32804
+    },
+    "provenance/analysis_code_provenance.json": {
+      "sha256": "30074502807a0838b27f366398be6b0aeb15f1e218d0e6896eb3d76c316b40b6",
+      "size_bytes": 1389
+    },
+    "tables/cell_expression_clusters.parquet": {
+      "sha256": "013980dd32951d173adccce6351b8ae9fccfaced0c15ce683e8df830d13226e7",
+      "size_bytes": 3265382
+    },
+    "tables/expression_cluster_core_composition.csv": {
+      "sha256": "4a291d0d9bb256685e9e379047f15b664d8c9f9bfc59b853c39b0abe13476731",
+      "size_bytes": 12998
+    },
+    "tables/expression_cluster_qc_summary.csv": {
+      "sha256": "04866c2985d7795ef57eb681d7ff8e55767f03667a958accc634c5c801f201a4",
+      "size_bytes": 1616
+    },
+    "tables/expression_cluster_summary.csv": {
+      "sha256": "2702140d8daa5033111f5152078f042b68f08e1045bd2e1f74daad6d270b7588",
+      "size_bytes": 1039
+    }
+  },
+  "gene_count": 1000,
+  "input_exclusion_audit": {
+    "checkpoint_used": false,
+    "clinical_or_vendor_labels_used": false,
+    "coordinates_used_before_labels_frozen": false,
+    "core_identity_used_before_labels_frozen": false,
+    "delta_h_used": false,
+    "h0_used": false,
+    "hL_used": false,
+    "metadata_used": false,
+    "relative_geometry_used": false,
+    "spatial_graph_used": false,
+    "trained_model_used": false
+  },
+  "interpretation": {
+    "biological_influence_established": false,
+    "causality_established": false,
+    "cell_types_established": false,
+    "clusters_are_expression_derived": true,
+    "marker_and_pathology_validation_separate": true,
+    "signaling_established": false
+  },
+  "low_count_depth_warning": {
+    "cohort_below_threshold_cells": 5269,
+    "flag_rule": "cluster_contains_at_least_50pct_of_all_cohort_cells_below_threshold",
+    "flagged_clusters": [
+      {
+        "below_threshold_cells": 4996,
+        "cluster": "S1E1",
+        "cluster_cells": 32451,
+        "fraction_below_threshold": 0.15395519398477706
+      }
+    ],
+    "threshold_transcripts": 20.0
+  },
+  "manifest_content_sha256": "aeb3de639ad5bf5107f91a06ec01afc6b91145fd2d89ec0ad76fbc153502d620",
+  "schema": "so1_14core_raw_expression_clustering_v1",
+  "source_artifacts": {
+    "cohort_manifest": {
+      "content_sha256": "e006316e0f04afa645191544bcac8aa64f58c423e755f2f8d79bfd9db68a233d",
+      "sha256": "15f9da492959c35d89020b3956047ec163a5f3537eaaefd5b8a011cb9279b440",
+      "size_bytes": 40097
+    },
+    "cores": {
+      "SO1-C01": {
+        "cell_count": 8924,
+        "coordinates_component_sha256": "04328851c7ac330bdcffa9a2a38485a2bc1f577079ab050edec0fb7f40f9f8e5",
+        "core_number": 1,
+        "expression_counts_component_sha256": "039ea11e72eeb6181ed6d17c45f714f8b8a57a33baaa75e472623bb4d65a2b6e",
+        "file_sha256": "02999d0eebcb358485030b96d5cc7296fb2aa0ef7dd76de4364823f3b8a4e1d8"
+      },
+      "SO1-C02": {
+        "cell_count": 7450,
+        "coordinates_component_sha256": "c166d2aeaf2bd8933658ac8f6de1b8b8d4c8a95a5fc5740767e0a0b1a3a62c10",
+        "core_number": 2,
+        "expression_counts_component_sha256": "2b8d5f994d4156bfc0b53c6ed70a92f5e607875d0459ec1d21165d8301cfe5ae",
+        "file_sha256": "13980d7cdb401bd450af7daefbfaafe7b2bc4f11c97689619020ee5b2ae68b75"
+      },
+      "SO1-C03": {
+        "cell_count": 12190,
+        "coordinates_component_sha256": "5154b977ee6f8575284c604dde48e583431763a4010b8355437ad450af37f000",
+        "core_number": 3,
+        "expression_counts_component_sha256": "52886352ed4a1e7b6bd590cdcb2b0393fad9bdd3af21b91d005bcf95aa01c17b",
+        "file_sha256": "45303035fad000a8693e53a085d80ed01929ba7205bf53eb4f071d04d501e0a8"
+      },
+      "SO1-C04": {
+        "cell_count": 14657,
+        "coordinates_component_sha256": "0dbc102b5077cf86d75908a56e9ef9ed4f7c4a8d0b379bf866a4a8c72f836eb3",
+        "core_number": 4,
+        "expression_counts_component_sha256": "4c24b92d5d23edf293ca76b5c9a215b2a784f75d2ae68a43476df022268bd277",
+        "file_sha256": "94bed90ba5d6c4fe9534490c6f2d53e2fe15a07f9c8d2dd7c8350780afda9532"
+      },
+      "SO1-C05": {
+        "cell_count": 11399,
+        "coordinates_component_sha256": "e54d3d3e33bf9b10dc7db659a1b671e294d455da89c36f7c61a8fd6860042e9c",
+        "core_number": 5,
+        "expression_counts_component_sha256": "0f913636a596d421fa60f0fc8277edd2a0fe5cdcadbee138c3ac6bee804fff8b",
+        "file_sha256": "0dd7cfb3b7a225509eaac84e5b5ef3d19d1d954070e5dd1646d4237c3c40aac3"
+      },
+      "SO1-C06": {
+        "cell_count": 18212,
+        "coordinates_component_sha256": "0b5d8a72d4175beaba239c51697ca7d5dadc94032505dba63cf7edb7c9c39b40",
+        "core_number": 6,
+        "expression_counts_component_sha256": "f650efb2f1e60488505f460ca249d34f8c613d618f4785bfd120fd7e90c7cc1e",
+        "file_sha256": "f080ac63c37002b0f50fcfbc90c36ffb181e6155150def42677fea9c9a1e85bc"
+      },
+      "SO1-C07": {
+        "cell_count": 10722,
+        "coordinates_component_sha256": "05a75a43982efd10b39460b67562fabfe6b43ab0fb031f80605d6a0232cf547d",
+        "core_number": 7,
+        "expression_counts_component_sha256": "c842fcc6740aa653b703204094bffb76df1176435d7dcd7792ac667c2fa3388a",
+        "file_sha256": "5d6f24617fce4f2f35b373a9c2730aca992f3718e40d2590d9b7e7e8fcedda95"
+      },
+      "SO1-C08": {
+        "cell_count": 4972,
+        "coordinates_component_sha256": "8eaeee3579cb3151d8b6b861db45f8df8be86770abc44d5c034ced558fc7864f",
+        "core_number": 8,
+        "expression_counts_component_sha256": "8d3d160e06e3a25d31186b56c6b7b3969849cdef5f6e2982ed4a6eb0c7981173",
+        "file_sha256": "0fe4277b28cf439d18629ceb7855b0349fc3a6050e8efe3e23da804c9f731c4f"
+      },
+      "SO1-C09": {
+        "cell_count": 17223,
+        "coordinates_component_sha256": "ba34aa5c8a91e3c827588f3badc7c16dcc8f4cb0c09550a1a1f107647a155d5f",
+        "core_number": 9,
+        "expression_counts_component_sha256": "154a1fd0c27ce60b2a631f443d738951d6cd65d37b5b86df0ce8a8a4de854d3d",
+        "file_sha256": "e9ff5212ce862ac24a2cb26c22f950d1da2a3b30082785477f94c77549d9fa7e"
+      },
+      "SO1-C10": {
+        "cell_count": 14756,
+        "coordinates_component_sha256": "3753c8e2a33173f5944bda854098318f4b46ddf6e9aab2b7ef0f71a0d09f6d34",
+        "core_number": 10,
+        "expression_counts_component_sha256": "3ae86366da212901b3947cc725421bf201c38fc75598525819aa7d92cb79a195",
+        "file_sha256": "ade2b6cea3511bec08bc634e6c874e62a3a450d093ce25d8cbda91b84c78376b"
+      },
+      "SO1-C11": {
+        "cell_count": 18145,
+        "coordinates_component_sha256": "5f2f620dca02a4b68c6ef7b30cda1fc18e2c12b20408f7da8165cb15c66e0da7",
+        "core_number": 11,
+        "expression_counts_component_sha256": "431dd539db2d5c9faff0d60af919ab0cb0c43987b242bd4e2d58d0a115fd5f22",
+        "file_sha256": "3629533bcd809c26569a52b7b18118ae02220186c0df381938ee6e1056cd36d1"
+      },
+      "SO1-C12": {
+        "cell_count": 7816,
+        "coordinates_component_sha256": "102ca460b2fffa075facc6ce7e72995bf60aee06fd46b746d69b6db8ff05c4de",
+        "core_number": 12,
+        "expression_counts_component_sha256": "0ef87333e63fbd3b23b4a2cf2346c491a28f88a94e74b4a1d1311253c5c69227",
+        "file_sha256": "654e7bd3e6a888135fa9150220888056c8ce205f5f52dea57f7fc30c709c8902"
+      },
+      "SO1-C13": {
+        "cell_count": 5345,
+        "coordinates_component_sha256": "f9bbf33854682c10200468773615c5469a43d8d65293254618f8a02bc58cff9c",
+        "core_number": 13,
+        "expression_counts_component_sha256": "c39c431c6776c018a90b1eadf99b602fcb2f2191e79c998088b36e5a2d6600ee",
+        "file_sha256": "8ff4856e383edb96fc1199373e311c109bb48f7c3347fc96bb320d6162adfea3"
+      },
+      "SO1-C14": {
+        "cell_count": 9785,
+        "coordinates_component_sha256": "ae46757607b44b580a130e342e7412d8dd9914826e7e7392641bf2730a15ca24",
+        "core_number": 14,
+        "expression_counts_component_sha256": "c74fa19183175ac1c606854e85c9a1b4afc573f47a66f7c65f40ec94f063b1bc",
+        "file_sha256": "6cb94458651670e40cdc6dd3b92d5c0cb4f4fc81a0911fc4092d98a28f145699"
+      }
+    },
+    "gene_order_sha256": "046eb86c7ea8f1fe6977598a0190132340400fc61802fcde63ab5ac0e9502b03"
+  },
+  "stage_manifests": {
+    "clustering": {
+      "sha256": "74fcebe82d4aafa5db31ae7e65ad03b73aceeff3f77a100509889a805dadc75d",
+      "size_bytes": 11662
+    },
+    "figures": {
+      "sha256": "209d0bdcee9da69972a686bc6608621241e7bc4329a91904ad036f76200c907f",
+      "size_bytes": 4699
+    },
+    "preprocessing": {
+      "sha256": "86d5e2d29fb8f02a9e5c05ff9815959283c4e8cd666b2015f45b4c6565b58925",
+      "size_bytes": 32804
+    }
+  },
+  "status": "complete",
+  "total_cells": 161596
+}

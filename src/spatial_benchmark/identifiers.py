@@ -96,6 +96,7 @@ SCIENTIFIC_EXCLUDED_FIELDS = frozenset(
         "scratch_root",
         "cache_root",
         "export_root",
+        "result_root",
     }
 )
 

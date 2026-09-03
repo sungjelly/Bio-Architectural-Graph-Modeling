@@ -1,0 +1,30 @@
+{
+  "base_generator_namespace": "intrinsic_rekeyed_I_to_D",
+  "colors": {
+    "D0": "#0072B2",
+    "D1": "#0AF50A",
+    "D10": "#581A97",
+    "D11": "#1AA739",
+    "D12": "#1A7868",
+    "D13": "#E58739",
+    "D14": "#C6E597",
+    "D15": "#C697F5",
+    "D16": "#D60AF5",
+    "D17": "#F53968",
+    "D2": "#F50A0A",
+    "D3": "#0A0AF5",
+    "D4": "#68680A",
+    "D5": "#F539B6",
+    "D6": "#0AF5D6",
+    "D7": "#F5B6B6",
+    "D8": "#F5D60A",
+    "D9": "#781A1A"
+  },
+  "independent_from_prior_contextual_palette": true,
+  "label_prefix": "D",
+  "method": "deterministic_greedy_farthest_point_CIELAB",
+  "palette_namespace": "contextual_direct_hl_no_pca",
+  "pipeline_kind": "direct_hl_cosine_knn_leiden",
+  "representation": "contextual_direct_hL",
+  "semantic_palette_namespace": "contextual_direct_hl_no_pca"
+}

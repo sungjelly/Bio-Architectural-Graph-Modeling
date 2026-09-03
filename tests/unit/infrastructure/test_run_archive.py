@@ -103,6 +103,7 @@ def _write_analysis_success_support(
     (
         "held_in_full_core_fixed_budget",
         "held_in_pooled_10core_fixed_budget",
+        "held_in_pooled_so1_14core_relative_qkv_plateau_min150",
         "held_in_pooled_6core_relative_qkv_fixed_budget",
     ),
 )

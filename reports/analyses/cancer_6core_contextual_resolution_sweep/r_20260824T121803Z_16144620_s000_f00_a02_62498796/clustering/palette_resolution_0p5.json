@@ -1,0 +1,20 @@
+{
+  "colors": {
+    "R0p5_C0": "#E5D60A",
+    "R0p5_C1": "#F5B6B6",
+    "R0p5_C10": "#0A580A",
+    "R0p5_C11": "#0A3997",
+    "R0p5_C2": "#0AF5B6",
+    "R0p5_C3": "#781A29",
+    "R0p5_C4": "#D697F5",
+    "R0p5_C5": "#D55E00",
+    "R0p5_C6": "#0A0AF5",
+    "R0p5_C7": "#0AF50A",
+    "R0p5_C8": "#0AC6F5",
+    "R0p5_C9": "#F529A7"
+  },
+  "cross_resolution_cluster_identity_implied": false,
+  "leiden_resolution": 0.5,
+  "representation": "contextual_hL_only",
+  "resolution_qualified_prefix": "R0p5_C"
+}

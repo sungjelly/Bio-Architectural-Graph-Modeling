@@ -1,0 +1,19 @@
+{
+  "command": "/venv/main/bin/python -m spatial_benchmark analyze-so1-raw-expression-clusters --normalization-target 162 --library-size-floor 20 --scale-clip 10 --pca-components 50 --n-neighbors 30 --leiden-resolution 1.0 --random-seed 20260825 --device cpu --dpi 300",
+  "cuda_visible_devices": "",
+  "git_commit": "8810257f6c33008f7c13c87b2de4169bbfd88662",
+  "git_status_path_fingerprint_sha256": "19fc41699b1f102545066af0e242c5561648571c06f6ac6f3d64f55de9113568",
+  "git_worktree_clean": false,
+  "gpu_used": false,
+  "recorded_at_utc": "2026-08-26T21:33:33.258260+00:00",
+  "relevant_code": {
+    "experiments/campaigns/cmp_20260826_so1_14core_classical_raw_expression/README.md": "12cadae3e5575f80e8ed94229b04c81930c33406347d0c9bbf6417a583f5f0aa",
+    "src/spatial_benchmark/cli.py": "7e370acf5aaa15ab65b0a04d886d2fb2ab48eb247f34b2bad8c737128606a07c",
+    "src/spatial_benchmark/relative_qkv_embedding_clustering.py": "ce91615830cbb7ae96aecb7adfb21d33e0f6639f08e239e7ede788955f434c13",
+    "src/spatial_benchmark/so1_raw_expression_clustering.py": "094cd12cc6a9ed99f7c5534acf09d45b746528285c982fa6ab6e267859ec1595"
+  },
+  "schema": "so1_raw_expression_analysis_code_provenance_v1",
+  "tracked_diff_sha256": "31e81145f6ef0d3dd3b198a1cdb846724d1df46a9070874f4b8c45ab2ad3192d",
+  "workflow": "so1_14core_classical_raw_expression_clustering",
+  "working_directory": "/workspace/BAGM"
+}

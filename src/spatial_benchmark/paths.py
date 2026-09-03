@@ -2,7 +2,7 @@
 
 Reusable code must resolve repository resources through this module rather than
 through the process working directory.  ``BAGM_ROOT`` overrides the repository
-root.  The data, artifact, state, scratch, cache, export, report, and config
+root.  The data, artifact, state, scratch, cache, export, report, result, and config
 roots each have a corresponding ``BAGM_*_ROOT`` override; relative overrides are
 resolved beneath the selected project root.
 
@@ -78,6 +78,17 @@ class ProjectPaths:
     cache_root: Path
     export_root: Path
     report_root: Path
+    result_root: Path | None = None
+
+    def __post_init__(self) -> None:
+        """Preserve direct-constructor compatibility for older callers."""
+
+        if self.result_root is None:
+            object.__setattr__(
+                self,
+                "result_root",
+                _absolute(Path("results"), base=self.project_root),
+            )
 
     @classmethod
     def from_environment(
@@ -112,6 +123,7 @@ class ProjectPaths:
             cache_root=location("BAGM_CACHE_ROOT", "cache"),
             export_root=location("BAGM_EXPORT_ROOT", "exports"),
             report_root=location("BAGM_REPORT_ROOT", "reports"),
+            result_root=location("BAGM_RESULT_ROOT", "results"),
         )
 
     def validate(self, *, require_project_root: bool = True) -> None:
@@ -130,6 +142,7 @@ class ProjectPaths:
             "cache_root",
             "export_root",
             "report_root",
+            "result_root",
         ):
             value = getattr(self, field_name)
             if value.exists() and not value.is_dir():
@@ -173,6 +186,7 @@ SCRATCH_ROOT = _DEFAULT_PATHS.scratch_root
 CACHE_ROOT = _DEFAULT_PATHS.cache_root
 EXPORT_ROOT = _DEFAULT_PATHS.export_root
 REPORT_ROOT = _DEFAULT_PATHS.report_root
+RESULT_ROOT = _DEFAULT_PATHS.result_root
 
 
 __all__ = [
@@ -183,6 +197,7 @@ __all__ = [
     "EXPORT_ROOT",
     "PROJECT_ROOT",
     "REPORT_ROOT",
+    "RESULT_ROOT",
     "SCRATCH_ROOT",
     "STATE_ROOT",
     "PathConfigurationError",

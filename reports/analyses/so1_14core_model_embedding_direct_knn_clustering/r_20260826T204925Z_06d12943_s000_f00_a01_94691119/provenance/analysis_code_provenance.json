@@ -1,0 +1,20 @@
+{
+  "command": "/venv/main/bin/python -m spatial_benchmark --database state/tracking/bagm.sqlite3 analyze-so1-model-embedding-clusters --run-id r_20260826T204925Z_06d12943_s000_f00_a01_94691119 --n-neighbors 30 --leiden-resolution 1.0 --random-seed 20260825 --device cpu --cpu-threads 40 --dpi 300",
+  "cuda_visible_devices": "",
+  "git_commit": "8810257f6c33008f7c13c87b2de4169bbfd88662",
+  "git_status_path_fingerprint_sha256": "06703b12ee572f469d7d334258837537deb9d6fd097c7e05812a74d0fc3800c6",
+  "git_worktree_clean": false,
+  "gpu_used": false,
+  "recorded_at_utc": "2026-08-27T19:33:37.847719+00:00",
+  "relevant_code": {
+    "src/spatial_benchmark/models.py": "60f70bf9e91e7ba72289e539cfa607ae05901e5785f361de77b77c916869f969",
+    "src/spatial_benchmark/relative_qkv_embedding_clustering.py": "ce91615830cbb7ae96aecb7adfb21d33e0f6639f08e239e7ede788955f434c13",
+    "src/spatial_benchmark/relative_qkv_graph_transformer.py": "e79b4f4bcca7b08479a8e5f99d068ffd1346736c5e8d202872684d355ffa9d9e",
+    "src/spatial_benchmark/relative_qkv_post_training.py": "273fc377e28844a7408f2bf257a1d0d8a7bdfb8f27f4e13b06807e47662147ca",
+    "src/spatial_benchmark/so1_model_embedding_clustering.py": "f38a78fc7f57ab207c0c69c1dc0e528e6aad5c7a2a7514c49fffa1e02f1f9155"
+  },
+  "schema": "so1_model_embedding_analysis_code_provenance_v1",
+  "tracked_diff_sha256": "d34c407e0899f53a0f6d6c2e50333e3980966075b4d6ae0d6ce588a4ebe6c77f",
+  "workflow": "so1_14core_model_embedding_direct_knn_clustering",
+  "working_directory": "/workspace/BAGM"
+}

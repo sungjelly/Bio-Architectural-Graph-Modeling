@@ -8,8 +8,10 @@ import torch
 import spatial_benchmark.relative_qkv_graph_transformer as relative_qkv_module
 from spatial_benchmark.models import SharedEdgeEncoder
 from spatial_benchmark.relative_qkv_graph_transformer import (
+    ReceiverChunkedRecurrentRelativeGeometryQKVGraphTransformer,
     ReceiverChunkedRelativeGeometryQKVGraphTransformer,
     RelativeGeometryQKVGraphTransformer,
+    RelativeGeometryQKVGraphTransformerBlock,
     RelativePositionBiasEncoder,
 )
 
@@ -65,6 +67,27 @@ def _model(
     return cls(**kwargs)
 
 
+def _recurrent_model(
+    *, recurrent_unroll_steps: int = 4
+) -> ReceiverChunkedRecurrentRelativeGeometryQKVGraphTransformer:
+    return ReceiverChunkedRecurrentRelativeGeometryQKVGraphTransformer(
+        num_genes=6,
+        node_covariate_dim=3,
+        hidden_dim=16,
+        attention_heads=4,
+        attention_head_dim=4,
+        ffn_dim=32,
+        decoder_dim=24,
+        positional_bias_hidden_dim=12,
+        dropout=0.0,
+        attention_dropout=0.0,
+        recurrent_unroll_steps=recurrent_unroll_steps,
+        receiver_chunk_size=2,
+        max_edges_per_chunk=4,
+        activation_checkpointing=False,
+    )
+
+
 def test_positional_bias_starts_neutral_and_architecture_has_no_edge_values() -> None:
     encoder = RelativePositionBiasEncoder(attention_heads=4, hidden_dim=12)
     assert torch.count_nonzero(encoder.output_projection.weight) == 0
@@ -85,6 +108,109 @@ def test_positional_bias_starts_neutral_and_architecture_has_no_edge_values() ->
     parameters = inspect.signature(model.forward).parameters
     assert "coordinates" not in parameters
     assert "relative_geometry" in parameters
+
+
+def test_recurrent_model_registers_one_block_and_executes_it_four_times(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    expression, mask, metadata, edge_index, geometry = _inputs()
+    model = _recurrent_model().eval()
+
+    assert model.graph_layers == 1
+    assert model.unique_graph_blocks == 1
+    assert model.recurrent_unroll_steps == 4
+    assert model.effective_graph_depth == 4
+    assert model.graph_block_weight_tying == "all_steps"
+    assert len(model.blocks) == 1
+    assert [
+        module
+        for module in model.modules()
+        if isinstance(module, RelativeGeometryQKVGraphTransformerBlock)
+    ] == [model.blocks[0]]
+    assert not any(key.startswith("blocks.1.") for key in model.state_dict())
+
+    project_calls = 0
+    original_project_nodes = model.blocks[0].project_nodes
+
+    def counted_project_nodes(
+        node_embedding: torch.Tensor,
+    ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+        nonlocal project_calls
+        project_calls += 1
+        return original_project_nodes(node_embedding)
+
+    monkeypatch.setattr(model.blocks[0], "project_nodes", counted_project_nodes)
+    with torch.inference_mode():
+        model(
+            expression,
+            mask,
+            edge_index=edge_index,
+            relative_geometry=geometry,
+            node_covariates=metadata,
+        )
+    assert project_calls == 4
+
+
+def test_recurrent_forward_matches_four_tied_block_copies() -> None:
+    expression, mask, metadata, edge_index, geometry = _inputs()
+    torch.manual_seed(19)
+    recurrent = _recurrent_model().eval()
+    reference = ReceiverChunkedRelativeGeometryQKVGraphTransformer(
+        num_genes=6,
+        node_covariate_dim=3,
+        hidden_dim=16,
+        attention_heads=4,
+        attention_head_dim=4,
+        graph_layers=4,
+        ffn_dim=32,
+        decoder_dim=24,
+        positional_bias_hidden_dim=12,
+        dropout=0.0,
+        attention_dropout=0.0,
+        receiver_chunk_size=2,
+        max_edges_per_chunk=4,
+        activation_checkpointing=False,
+    ).eval()
+    reference.encoder.load_state_dict(recurrent.encoder.state_dict(), strict=True)
+    reference.decoder.load_state_dict(recurrent.decoder.state_dict(), strict=True)
+    for block in reference.blocks:
+        block.load_state_dict(recurrent.blocks[0].state_dict(), strict=True)
+
+    with torch.inference_mode():
+        observed = recurrent(
+            expression,
+            mask,
+            edge_index=edge_index,
+            relative_geometry=geometry,
+            node_covariates=metadata,
+            return_intermediate_embeddings=True,
+        )
+        expected = reference(
+            expression,
+            mask,
+            edge_index=edge_index,
+            relative_geometry=geometry,
+            node_covariates=metadata,
+            return_intermediate_embeddings=True,
+        )
+    torch.testing.assert_close(observed.prediction, expected.prediction)
+    torch.testing.assert_close(
+        observed.final_graph_embedding, expected.final_graph_embedding
+    )
+
+
+@pytest.mark.parametrize(
+    ("recurrent_unroll_steps", "error"),
+    [(0, ValueError), (-1, ValueError), (True, TypeError), (4.0, TypeError)],
+)
+def test_recurrent_unroll_steps_are_validated(
+    recurrent_unroll_steps: object,
+    error: type[Exception],
+) -> None:
+    with pytest.raises(error, match="recurrent_unroll_steps"):
+        _recurrent_model(  # type: ignore[arg-type]
+            recurrent_unroll_steps=recurrent_unroll_steps,
+        )
 
 
 def test_full_and_exact_receiver_chunked_outputs_gradients_and_explanations_match() -> None:
