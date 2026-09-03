@@ -411,7 +411,10 @@ def _canonical_prediction_split(root: Path) -> str:
             "held_in_full_core_fixed_budget",
             "held_in_pooled_10core_fixed_budget",
             "held_in_pooled_14core_relative_qkv_fixed_continuation_epoch300",
+            "held_in_pooled_14core_geometry_modulated_relative_qkv_seed_plateau",
+            "held_in_pooled_14core_recurrent_relative_qkv_seed_plateau",
             "held_in_pooled_14core_relative_qkv_seed_plateau",
+            "held_in_pooled_14core_untied8_relative_qkv_seed_plateau",
             "held_in_pooled_so1_14core_relative_qkv_plateau_min150",
             "held_in_pooled_6core_relative_qkv_fixed_budget",
             "held_in_pooled_6core_relative_qkv_joint_plateau",
@@ -419,8 +422,9 @@ def _canonical_prediction_split(root: Path) -> str:
         }
         if protocol not in held_in_protocols:
             raise RunValidationError(
-                "canonical fit predictions require an explicit held-in "
-                "full-core or pooled-ten-core evaluation protocol."
+                "canonical fit predictions require an explicitly supported "
+                "held-in full-core or pooled-core evaluation protocol; "
+                f"unsupported evaluation.protocol={protocol!r}."
             )
     return split
 

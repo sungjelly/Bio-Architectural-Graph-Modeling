@@ -421,6 +421,119 @@ def command_for_config(
             "--run-scratch",
             "{run_scratch}",
         ]
+    if protocol == "held_in_pooled_14core_untied8_relative_qkv_seed_plateau":
+        model = _section(configuration, "model")
+        campaign = _section(configuration, "campaign")
+        launcher = _section(configuration, "launcher")
+        if (
+            str(model.get("name", "")).strip().lower() != "relative-qkv-gat"
+            or campaign.get("campaign_id")
+            != "cmp_20260903_so2_14core_untied8_relative_qkv_seed0_batch2"
+            or launcher.get("requested_gpu") != "0,1,2,3"
+            or launcher.get("process_count") != 4
+            or launcher.get("elastic_max_restarts") != 0
+        ):
+            raise ConfigurationError(
+                "The untied8 SO2 14-core protocol requires its registered "
+                "four-rank Relative-QKV campaign with GPUs 0,1,2,3 and no "
+                "elastic restarts."
+            )
+        script = (
+            selected_paths.project_root
+            / "scripts/train/run_so2_14core_relative_qkv.py"
+        )
+        return [
+            sys.executable,
+            "-m",
+            "torch.distributed.run",
+            "--standalone",
+            "--nnodes=1",
+            "--nproc-per-node=4",
+            "--max-restarts=0",
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
+    if (
+        protocol
+        == "held_in_pooled_14core_geometry_modulated_relative_qkv_seed_plateau"
+    ):
+        model = _section(configuration, "model")
+        campaign = _section(configuration, "campaign")
+        launcher = _section(configuration, "launcher")
+        if (
+            str(model.get("name", "")).strip().lower()
+            != "geometry-modulated-relative-qkv-gat"
+            or campaign.get("campaign_id")
+            != (
+                "cmp_20260903_so2_14core_geometry_modulated_relative_qkv_"
+                "seed0_batch2"
+            )
+            or launcher.get("requested_gpu") != "0,1,2,3"
+            or launcher.get("process_count") != 4
+            or launcher.get("elastic_max_restarts") != 0
+        ):
+            raise ConfigurationError(
+                "The geometry-modulated SO2 14-core protocol requires its "
+                "registered four-rank campaign with GPUs 0,1,2,3 and no "
+                "elastic restarts."
+            )
+        script = (
+            selected_paths.project_root
+            / "scripts/train/run_so2_14core_relative_qkv.py"
+        )
+        return [
+            sys.executable,
+            "-m",
+            "torch.distributed.run",
+            "--standalone",
+            "--nnodes=1",
+            "--nproc-per-node=4",
+            "--max-restarts=0",
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
+    if protocol == "held_in_pooled_14core_recurrent_relative_qkv_seed_plateau":
+        model = _section(configuration, "model")
+        campaign = _section(configuration, "campaign")
+        launcher = _section(configuration, "launcher")
+        if (
+            str(model.get("name", "")).strip().lower()
+            != "recurrent-relative-qkv-gat"
+            or campaign.get("campaign_id")
+            != "cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2"
+            or launcher.get("requested_gpu") != "0,1,2,3"
+            or launcher.get("process_count") != 4
+            or launcher.get("elastic_max_restarts") != 0
+        ):
+            raise ConfigurationError(
+                "The recurrent SO2 14-core protocol requires its registered "
+                "four-rank recurrent Relative-QKV campaign with GPUs 0,1,2,3 "
+                "and no elastic restarts."
+            )
+        script = (
+            selected_paths.project_root
+            / "scripts/train/run_so2_14core_relative_qkv.py"
+        )
+        return [
+            sys.executable,
+            "-m",
+            "torch.distributed.run",
+            "--standalone",
+            "--nnodes=1",
+            "--nproc-per-node=4",
+            "--max-restarts=0",
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
     if protocol == "held_in_pooled_so1_14core_relative_qkv_plateau_min150":
         model = _section(configuration, "model")
         campaign = _section(configuration, "campaign")

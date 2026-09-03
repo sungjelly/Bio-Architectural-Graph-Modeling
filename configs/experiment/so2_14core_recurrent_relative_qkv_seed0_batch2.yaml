@@ -1,0 +1,66 @@
+version: 1
+defaults:
+  - model: recurrent_relative_qkv_gat_256_b1_t4_h8
+  - masking: uniform_per_cell_0_100
+  - dataset: so2_14core_pooled_fit_v1
+  - features: cosmx_so2_14core_metadata_relative_geometry
+  - graph: so2_radial_stratified_k200_r500_bidirectional
+  - trainer: pooled_relative_qkv_14core_batch2_plateau_min150
+  - evaluation: held_in_so2_14core_recurrent_relative_qkv_fit_diagnostics
+  - launcher: so2_14core_recurrent_relative_qkv_ddp4
+campaign:
+  campaign_id: cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2
+  display_name: SO2 cores 15-28 recurrent Relative-QKV seed-0 exploratory fit
+experiment:
+  variant_label: recurrent_relative_qkv_gat_256_b1_t4_h8_k200_r500_batch2_ddp4
+  estimand: held_in_all_cells_so2_14core_transductive_masked_reconstruction
+  permitted_claim: exploratory_fitted_cohort_architecture_comparison_only
+metadata:
+  analysis_design: exploratory_single_seed_architecture_comparison
+  gradient_diagnostics:
+    enabled: true
+    output_path: results/gradient_direction_metrics.csv
+    schema: so2_full_gradient_direction_metrics_v1
+    global_epoch_indexing: one_based
+    computation_rank: 0
+    vector_dtype: float32
+    gradient_scope: full_ddp_averaged_all_trainable_parameters
+    read_timing: after_amp_unscale_and_finite_check_before_gradient_clipping_or_optimizer_step
+    parameter_order: trainable_parameter_registration_order
+    missing_gradient_slices: zero_filled
+    persistence: global_epoch_scalars_only
+    ordered_columns:
+      - schema
+      - run_id
+      - model_seed
+      - global_epoch
+      - trainable_parameter_count
+      - optimizer_updates_observed
+      - gradient_norm_mean_before_clip
+      - gradient_norm_min_before_clip
+      - gradient_norm_max_before_clip
+      - consecutive_optimizer_step_cosine_mean
+      - consecutive_optimizer_step_cosine_median
+      - consecutive_optimizer_step_cosine_min
+      - consecutive_optimizer_step_cosine_max
+      - consecutive_optimizer_step_cosine_valid_pairs
+      - epoch_aggregate_gradient_cosine_to_previous_epoch
+      - resume_boundary_unavailable
+    consecutive_optimizer_step_cosine: true
+    epoch_aggregate_gradient_cosine_to_previous_epoch: true
+    zero_norm_cosines: invalid_and_omitted
+    resume_boundary_policy: boundary_pair_and_prior_epoch_aggregate_unavailable
+    persist_gradient_tensors: false
+    persist_per_optimizer_step_files: false
+    persist_gradient_vectors_in_checkpoints: false
+    affects_optimization_or_plateau_stopping: false
+classification:
+  schema_version: 1
+  lifecycle_stage: exploratory_screen
+  study_axis: so2_14core_recurrent_weight_tying_transductive_fit
+  scientific_variant: recurrent_relative_qkv_gat_256_b1_t4_h8_k200_r500_batch2_ddp4
+  retention_class: retain_exploratory_architecture_comparison
+  classification_confidence: high
+seed: 0
+fold: 0
+attempt: 1

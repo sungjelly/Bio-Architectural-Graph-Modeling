@@ -1,0 +1,38 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260903_so2_14core_untied8_relative_qkv_seed0_batch2
+display_name: SO2 cores 15-28 untied 8-block Relative-QKV seed-0 exploratory fit
+status: frozen_implementation_and_preflight_pending
+analysis_design: exploratory_single_seed_untied_depth_comparison
+definition: experiments/campaigns/cmp_20260903_so2_14core_untied8_relative_qkv_seed0_batch2/README.md
+frozen_task_contract: experiments/campaigns/cmp_20260903_so2_14core_untied8_relative_qkv_seed0_batch2/frozen_task_contract.yaml
+frozen_task_contract_sha256: 7f934383a96c7c5dcdda17f7a1b0a1947b35e9591f3f38ee2487a6475b397653
+variant:
+  name: relative_qkv_gat_256_l8_h8_radial_stratified_k200_r500_batch2_ddp4
+  model_seed: 0
+  graph_layers: 8
+  unique_graph_blocks: 8
+  effective_graph_depth: 8
+  graph_block_weight_tying: none
+  expected_trainable_parameter_count: 8199464
+reference_control_run_id: r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6
+production_run_count: 1
+production_minimum_global_epochs: 150
+production_stopping_policy: literal_august25_training_loss_plateau
+maximum_scientific_epoch_cap: null
+operational_review_if_unconverged_at_epoch: 300
+operational_review_outcome: deliberate_non_success_failed_inconclusive_resumable_only_after_explicit_amendment
+execution:
+  world_size: 4
+  backend: nccl
+  physical_gpu_ids: [0, 1, 2, 3]
+  elastic_max_restarts: 0
+  preflight_receipt: state/preflight/so2_14core_untied8_relative_qkv_ddp4.json
+  epoch_metrics_csv: results/epoch_metrics.csv
+  global_gradient_metrics_csv: results/gradient_direction_metrics.csv
+  block_gradient_metrics_csv: results/gradient_direction_by_block.csv
+  enqueue_max_attempts: 1
+checkpointing:
+  during_training: one_atomic_rolling_latest_only
+  after_success: one_last_only
+  epoch_archives_allowed: false
+automatic_enqueue: false

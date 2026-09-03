@@ -10,6 +10,7 @@ atomic epoch-boundary checkpoint rather than restarting inside an epoch.
 from __future__ import annotations
 
 import argparse
+import csv
 from dataclasses import asdict
 from datetime import timedelta
 import hashlib
@@ -36,6 +37,19 @@ from spatial_benchmark.configuration import (  # noqa: E402
     validate_experiment_config,
 )
 from spatial_benchmark.fingerprints import sha256_file  # noqa: E402
+from spatial_benchmark.gradient_direction_observability import (  # noqa: E402
+    BLOCK_GRADIENT_DIRECTION_METRICS_COLUMNS,
+    BLOCK_GRADIENT_DIRECTION_METRICS_SCHEMA,
+    GRADIENT_DIRECTION_METRICS_COLUMNS,
+    GRADIENT_DIRECTION_METRICS_SCHEMA,
+    BlockGradientDirectionTracker,
+    DurableBlockGradientDirectionCSV,
+    DurableGradientDirectionCSV,
+    FullGradientDirectionTracker,
+)
+from spatial_benchmark.geometry_modulated_relative_qkv_graph_transformer import (  # noqa: E402
+    ReceiverChunkedGeometryModulatedRelativeQKVGraphTransformer,
+)
 from spatial_benchmark.masking import derive_mask_seed  # noqa: E402
 from spatial_benchmark.paths import ProjectPaths, current_paths  # noqa: E402
 from spatial_benchmark.pooled_relative_qkv_training import (  # noqa: E402
@@ -53,6 +67,7 @@ from spatial_benchmark.pooled_relative_qkv_training_v2 import (  # noqa: E402
     fit_cohort_relative_qkv_segment,
 )
 from spatial_benchmark.relative_qkv_graph_transformer import (  # noqa: E402
+    ReceiverChunkedRecurrentRelativeGeometryQKVGraphTransformer,
     ReceiverChunkedRelativeGeometryQKVGraphTransformer,
 )
 from spatial_benchmark.run_archive import (  # noqa: E402
@@ -74,11 +89,34 @@ from spatial_benchmark.so2_training_observability import (  # noqa: E402
     require_latest_only_checkpoint_layout,
     strict_plateau_monitor_fields,
 )
+from spatial_benchmark.so2_training_plots import (  # noqa: E402
+    GRADIENT_FIGURE_RELATIVE_PATH,
+    LOSS_FIGURE_RELATIVE_PATH,
+    write_so2_training_plots,
+)
 from spatial_benchmark.training import _autocast_context, set_deterministic_seed  # noqa: E402
 
 
 CAMPAIGN_ID = "cmp_20260825_so2_14core_relative_qkv_seed0_batch2"
 PLATEAU_PROTOCOL = "held_in_pooled_14core_relative_qkv_seed_plateau"
+RECURRENT_CAMPAIGN_ID = (
+    "cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2"
+)
+RECURRENT_PLATEAU_PROTOCOL = (
+    "held_in_pooled_14core_recurrent_relative_qkv_seed_plateau"
+)
+UNTIED8_CAMPAIGN_ID = (
+    "cmp_20260903_so2_14core_untied8_relative_qkv_seed0_batch2"
+)
+UNTIED8_PLATEAU_PROTOCOL = (
+    "held_in_pooled_14core_untied8_relative_qkv_seed_plateau"
+)
+GEOMETRY_MODULATED_CAMPAIGN_ID = (
+    "cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2"
+)
+GEOMETRY_MODULATED_PLATEAU_PROTOCOL = (
+    "held_in_pooled_14core_geometry_modulated_relative_qkv_seed_plateau"
+)
 FIXED_CONTINUATION_PROTOCOL = (
     "held_in_pooled_14core_relative_qkv_fixed_continuation_epoch300"
 )
@@ -101,10 +139,42 @@ FIXED_CONTINUATION_SOURCE_CHECKPOINT_SHA256 = (
 FIXED_CONTINUATION_PREFLIGHT = (
     "state/preflight/so2_14core_relative_qkv_ddp4_resume175_fixed300.json"
 )
+BASELINE_PREFLIGHT = "state/preflight/so2_14core_relative_qkv_ddp4.json"
+RECURRENT_PREFLIGHT = (
+    "state/preflight/so2_14core_recurrent_relative_qkv_ddp4.json"
+)
+UNTIED8_PREFLIGHT = (
+    "state/preflight/so2_14core_untied8_relative_qkv_ddp4.json"
+)
+GEOMETRY_MODULATED_PREFLIGHT = (
+    "state/preflight/so2_14core_geometry_modulated_relative_qkv_ddp4.json"
+)
+BASELINE_PREFLIGHT_SCHEMA = "so2_14core_relative_qkv_ddp4_preflight_v1"
+RECURRENT_PREFLIGHT_SCHEMA = (
+    "so2_14core_recurrent_relative_qkv_ddp4_preflight_v1"
+)
+UNTIED8_PREFLIGHT_SCHEMA = (
+    "so2_14core_untied8_relative_qkv_ddp4_preflight_v1"
+)
+GEOMETRY_MODULATED_PREFLIGHT_SCHEMA = (
+    "so2_14core_geometry_modulated_relative_qkv_ddp4_preflight_v1"
+)
+EXPECTED_RECURRENT_PARAMETER_COUNT = 2_605_680
+EXPECTED_UNTIED8_PARAMETER_COUNT = 8_199_464
+EXPECTED_GEOMETRY_MODULATED_PARAMETER_COUNT = 5_134_088
+UNTIED8_PREFLIGHT_MAX_VRAM_GIB = 22.0
+UNTIED8_MINIMUM_VRAM_HEADROOM_GIB = 2.0
+GEOMETRY_MODULATED_PREFLIGHT_MAX_VRAM_GIB = 22.0
+GEOMETRY_MODULATED_MINIMUM_VRAM_HEADROOM_GIB = 2.0
+UNTIED8_OPERATIONAL_REVIEW_EPOCH = 300
 
 
 class SO214CoreRunnerError(RuntimeError):
     """Raised before a run can violate the four-rank production contract."""
+
+
+class SO214CoreOperationalReviewRequired(SO214CoreRunnerError):
+    """Raised after a durable untied-8 epoch-300 boundary needs human review."""
 
 
 def _section(config: Mapping[str, Any], name: str) -> Mapping[str, Any]:
@@ -129,6 +199,117 @@ def _is_fixed_continuation(config: Mapping[str, Any]) -> bool:
         and isinstance(trainer, Mapping)
         and evaluation.get("protocol") == FIXED_CONTINUATION_PROTOCOL
         and trainer.get("execution_mode") == "resume_fixed_final_epoch"
+    )
+
+
+def _protocol(config: Mapping[str, Any]) -> str:
+    return str(_section(config, "evaluation").get("protocol", ""))
+
+
+def _is_recurrent(config: Mapping[str, Any]) -> bool:
+    return _protocol(config) == RECURRENT_PLATEAU_PROTOCOL
+
+
+def _is_untied8(config: Mapping[str, Any]) -> bool:
+    return _protocol(config) == UNTIED8_PLATEAU_PROTOCOL
+
+
+def _is_geometry_modulated(config: Mapping[str, Any]) -> bool:
+    return _protocol(config) == GEOMETRY_MODULATED_PLATEAU_PROTOCOL
+
+
+def _block_gradient_count(config: Mapping[str, Any]) -> int:
+    if _is_untied8(config):
+        return 8
+    if _is_geometry_modulated(config):
+        return 4
+    return 0
+
+
+def _block_trainable_parameter_count(config: Mapping[str, Any]) -> int | None:
+    if _is_untied8(config):
+        return 799_112
+    if _is_geometry_modulated(config):
+        return 831_880
+    return None
+
+
+def _block_vram_limits(config: Mapping[str, Any]) -> tuple[float, float] | None:
+    if _is_untied8(config):
+        return (
+            UNTIED8_PREFLIGHT_MAX_VRAM_GIB,
+            UNTIED8_MINIMUM_VRAM_HEADROOM_GIB,
+        )
+    if _is_geometry_modulated(config):
+        return (
+            GEOMETRY_MODULATED_PREFLIGHT_MAX_VRAM_GIB,
+            GEOMETRY_MODULATED_MINIMUM_VRAM_HEADROOM_GIB,
+        )
+    return None
+
+
+def _gradient_direction_enabled(config: Mapping[str, Any]) -> bool:
+    return _is_recurrent(config) or _block_gradient_count(config) > 0
+
+
+def _expected_parameter_count(config: Mapping[str, Any]) -> int | None:
+    if _is_recurrent(config):
+        return EXPECTED_RECURRENT_PARAMETER_COUNT
+    if _is_untied8(config):
+        return EXPECTED_UNTIED8_PARAMETER_COUNT
+    if _is_geometry_modulated(config):
+        return EXPECTED_GEOMETRY_MODULATED_PARAMETER_COUNT
+    return None
+
+
+def _campaign_id(config: Mapping[str, Any]) -> str:
+    value = _section(config, "campaign").get("campaign_id")
+    if not isinstance(value, str) or not value.strip():
+        raise SO214CoreRunnerError(
+            "Resolved config requires a non-empty campaign.campaign_id."
+        )
+    return value.strip()
+
+
+def _expected_campaign_id(config: Mapping[str, Any]) -> str:
+    protocol = _protocol(config)
+    if protocol == RECURRENT_PLATEAU_PROTOCOL:
+        return RECURRENT_CAMPAIGN_ID
+    if protocol == UNTIED8_PLATEAU_PROTOCOL:
+        return UNTIED8_CAMPAIGN_ID
+    if protocol == GEOMETRY_MODULATED_PLATEAU_PROTOCOL:
+        return GEOMETRY_MODULATED_CAMPAIGN_ID
+    if protocol in {PLATEAU_PROTOCOL, FIXED_CONTINUATION_PROTOCOL}:
+        return CAMPAIGN_ID
+    raise SO214CoreRunnerError(
+        "evaluation.protocol is not an SO2 Relative-QKV training protocol."
+    )
+
+
+def _preflight_schema(config: Mapping[str, Any]) -> str:
+    if _is_recurrent(config):
+        return RECURRENT_PREFLIGHT_SCHEMA
+    if _is_untied8(config):
+        return UNTIED8_PREFLIGHT_SCHEMA
+    if _is_geometry_modulated(config):
+        return GEOMETRY_MODULATED_PREFLIGHT_SCHEMA
+    return BASELINE_PREFLIGHT_SCHEMA
+
+
+def _preflight_path(config: Mapping[str, Any]) -> str:
+    protocol = _protocol(config)
+    if protocol == RECURRENT_PLATEAU_PROTOCOL:
+        return RECURRENT_PREFLIGHT
+    if protocol == UNTIED8_PLATEAU_PROTOCOL:
+        return UNTIED8_PREFLIGHT
+    if protocol == GEOMETRY_MODULATED_PLATEAU_PROTOCOL:
+        return GEOMETRY_MODULATED_PREFLIGHT
+    if protocol == FIXED_CONTINUATION_PROTOCOL:
+        return FIXED_CONTINUATION_PREFLIGHT
+    if protocol == PLATEAU_PROTOCOL:
+        return BASELINE_PREFLIGHT
+    raise SO214CoreRunnerError(
+        "evaluation.protocol is not an SO2 Relative-QKV training protocol."
     )
 
 
@@ -159,12 +340,18 @@ def _validate_contract(config: Mapping[str, Any]) -> None:
     validate_experiment_config(config)
     _require_equal(config.get("seed"), MODEL_SEED, field="seed")
     _require_equal(
-        _section(config, "campaign").get("campaign_id"),
-        CAMPAIGN_ID,
+        _campaign_id(config),
+        _expected_campaign_id(config),
         field="campaign.campaign_id",
     )
-    protocol = _section(config, "evaluation").get("protocol")
-    if protocol not in {PLATEAU_PROTOCOL, FIXED_CONTINUATION_PROTOCOL}:
+    protocol = _protocol(config)
+    if protocol not in {
+        PLATEAU_PROTOCOL,
+        RECURRENT_PLATEAU_PROTOCOL,
+        UNTIED8_PLATEAU_PROTOCOL,
+        GEOMETRY_MODULATED_PLATEAU_PROTOCOL,
+        FIXED_CONTINUATION_PROTOCOL,
+    }:
         raise SO214CoreRunnerError(
             "evaluation.protocol is not an SO2 Relative-QKV training protocol."
         )
@@ -177,9 +364,7 @@ def _validate_contract(config: Mapping[str, Any]) -> None:
     )
     model = _section(config, "model")
     locked_model = {
-        "name": "relative-qkv-gat",
         "hidden_dim": 256,
-        "graph_layers": 4,
         "attention_heads": 8,
         "attention_head_dim": 32,
         "ffn_dim": 1024,
@@ -189,6 +374,90 @@ def _validate_contract(config: Mapping[str, Any]) -> None:
         "activation_checkpointing": True,
         "uses_edge_inputs": False,
     }
+    if protocol == GEOMETRY_MODULATED_PLATEAU_PROTOCOL:
+        locked_model.update(
+            {
+                "name": "geometry-modulated-relative-qkv-gat",
+                "family": "geometry_modulated_relative_qkv_graph_transformer",
+                "embedding_dim": 256,
+                "graph_layers": 4,
+                "unique_graph_blocks": 4,
+                "effective_graph_depth": 4,
+                "graph_block_weight_tying": "none",
+                "geometry_hidden_dim": 128,
+                "attention_score_mechanism": (
+                    "geometry_modulated_cosine_qkv_v1"
+                ),
+                "qk_normalization": "per_head_l2",
+                "qk_normalization_epsilon": 0.000001,
+                "modulation_activation": "tanh",
+                "modulation_amplitude": 0.5,
+                "modulation_raw_range": [0.5, 1.5],
+                "modulation_mean_normalization": True,
+                "modulation_mean_clamp_min": 0.000001,
+                "modulation_projection_bias": False,
+                "modulation_final_zero_init": True,
+                "geometry_bias_activation": "tanh",
+                "geometry_bias_bound": 1.0,
+                "geometry_bias_projection_bias": False,
+                "geometry_bias_final_zero_init": True,
+                "logit_scale_parameterization": "bounded_sigmoid",
+                "logit_scale_minimum": 0.1,
+                "logit_scale_initial": 1.8856180831641267,
+                "logit_scale_maximum": 20.0,
+                "relative_geometry_role": (
+                    "attention_logit_modulation_and_bias_only"
+                ),
+                "relative_geometry_value_injection": False,
+                "value_content_source": (
+                    "expression_derived_node_embedding_only"
+                ),
+                "receiver_chunk_size": 128,
+                "max_edges_per_chunk": 50000,
+                "exact_receiver_partitioning": True,
+                "fp32_attention_scoring": True,
+                "fp32_attention_accumulation": True,
+                "implicit_self_loops": False,
+                "trainable_node_identifiers": False,
+                "trainable_edge_identifiers": False,
+                "uses_graph_inputs": True,
+                "uses_relative_position": True,
+                "edge_key_vectors": False,
+                "edge_value_vectors": False,
+                "edge_value_gates": False,
+            }
+        )
+    elif protocol == RECURRENT_PLATEAU_PROTOCOL:
+        locked_model.update(
+            {
+                "name": "recurrent-relative-qkv-gat",
+                "family": "recurrent_relative_geometry_qkv_graph_transformer",
+                "graph_layers": 1,
+                "unique_graph_blocks": 1,
+                "recurrent_unroll_steps": 4,
+                "effective_graph_depth": 4,
+                "graph_block_weight_tying": "all_steps",
+            }
+        )
+    elif protocol == UNTIED8_PLATEAU_PROTOCOL:
+        locked_model.update(
+            {
+                "name": "relative-qkv-gat",
+                "family": "relative_geometry_qkv_graph_transformer",
+                "graph_layers": 8,
+                "unique_graph_blocks": 8,
+                "effective_graph_depth": 8,
+                "graph_block_weight_tying": "none",
+            }
+        )
+    else:
+        locked_model.update(
+            {
+                "name": "relative-qkv-gat",
+                "family": "relative_geometry_qkv_graph_transformer",
+                "graph_layers": 4,
+            }
+        )
     for field, expected in locked_model.items():
         _require_equal(model.get(field), expected, field=f"model.{field}")
     trainer = _section(config, "trainer")
@@ -205,7 +474,12 @@ def _validate_contract(config: Mapping[str, Any]) -> None:
         "early_stopping": False,
         "restore_best": False,
     }
-    if protocol == PLATEAU_PROTOCOL:
+    if protocol in {
+        PLATEAU_PROTOCOL,
+        RECURRENT_PLATEAU_PROTOCOL,
+        UNTIED8_PLATEAU_PROTOCOL,
+        GEOMETRY_MODULATED_PLATEAU_PROTOCOL,
+    }:
         locked_trainer.update(
             {
                 "minimum_global_epochs": 150,
@@ -255,14 +529,103 @@ def _validate_contract(config: Mapping[str, Any]) -> None:
         "require_exact_visible_devices": VISIBLE_DEVICES,
         "process_count": WORLD_SIZE,
         "elastic_max_restarts": 0,
-        "hardware_preflight_receipt": (
-            FIXED_CONTINUATION_PREFLIGHT
-            if protocol == FIXED_CONTINUATION_PROTOCOL
-            else "state/preflight/so2_14core_relative_qkv_ddp4.json"
-        ),
+        "hardware_preflight_receipt": _preflight_path(config),
     }
     for field, expected in locked_launcher.items():
         _require_equal(launcher.get(field), expected, field=f"launcher.{field}")
+    block_gradient_count = _block_gradient_count(config)
+    if block_gradient_count:
+        metadata = _section(config, "metadata")
+        gradient_diagnostics = metadata.get("gradient_diagnostics")
+        if not isinstance(gradient_diagnostics, Mapping):
+            raise SO214CoreRunnerError(
+                "Block-observed training requires metadata.gradient_diagnostics."
+            )
+        for field, expected in {
+            "enabled": True,
+            "output_path": "results/gradient_direction_metrics.csv",
+            "schema": GRADIENT_DIRECTION_METRICS_SCHEMA,
+            "ordered_columns": list(GRADIENT_DIRECTION_METRICS_COLUMNS),
+            "persist_gradient_tensors": False,
+            "persist_per_optimizer_step_files": False,
+            "persist_gradient_vectors_in_checkpoints": False,
+            "affects_optimization_or_plateau_stopping": False,
+        }.items():
+            _require_equal(
+                gradient_diagnostics.get(field),
+                expected,
+                field=f"metadata.gradient_diagnostics.{field}",
+            )
+        layerwise = gradient_diagnostics.get("layerwise")
+        if not isinstance(layerwise, Mapping):
+            raise SO214CoreRunnerError(
+                "Block-observed training requires graph-block gradient diagnostics."
+            )
+        for field, expected in {
+            "enabled": True,
+            "scope": "graph_blocks_only",
+            "block_names": [
+                f"blocks.{index}" for index in range(block_gradient_count)
+            ],
+            "output_path": "results/gradient_direction_by_block.csv",
+            "schema": BLOCK_GRADIENT_DIRECTION_METRICS_SCHEMA,
+            "ordered_columns": list(BLOCK_GRADIENT_DIRECTION_METRICS_COLUMNS),
+            "rows_per_completed_global_epoch": block_gradient_count,
+            "persist_gradient_tensors": False,
+            "persist_per_optimizer_step_files": False,
+            "persist_gradient_vectors_in_checkpoints": False,
+            "affects_optimization_or_plateau_stopping": False,
+        }.items():
+            _require_equal(
+                layerwise.get(field),
+                expected,
+                field=f"metadata.gradient_diagnostics.layerwise.{field}",
+            )
+    if protocol == UNTIED8_PLATEAU_PROTOCOL:
+        metadata = _section(config, "metadata")
+        operational_review = metadata.get("operational_review")
+        if not isinstance(operational_review, Mapping):
+            raise SO214CoreRunnerError(
+                "Untied-8 requires its epoch-300 operational review gate."
+            )
+        for field, expected in {
+            "enabled": True,
+            "trigger_completed_global_epoch": UNTIED8_OPERATIONAL_REVIEW_EPOCH,
+            "trigger_only_if_plateau_unconfirmed": True,
+            "action": (
+                "deliberate_non_success_exit_after_durable_epoch300_latest_"
+                "checkpoint"
+            ),
+            "queue_bundle_outcome": "failed_inconclusive",
+            "resumable_only_after_explicit_campaign_amendment": True,
+            "automatic_retry_allowed": False,
+            "scientific_convergence_criterion": False,
+            "scientific_maximum_epoch_cap": None,
+            "modifies_literal_plateau_rule": False,
+        }.items():
+            _require_equal(
+                operational_review.get(field),
+                expected,
+                field=f"metadata.operational_review.{field}",
+            )
+    if block_gradient_count:
+        metadata = _section(config, "metadata")
+        preflight_acceptance = metadata.get("preflight_acceptance")
+        if not isinstance(preflight_acceptance, Mapping):
+            raise SO214CoreRunnerError(
+                "Block-observed training requires an explicit preflight VRAM "
+                "acceptance gate."
+            )
+        for field, expected in {
+            "peak_vram_gib_all_ranks_max": 22.0,
+            "minimum_vram_headroom_gib_each_rank": 2.0,
+            "gpu_memory_gib_each_rank": 24.0,
+        }.items():
+            _require_equal(
+                preflight_acceptance.get(field),
+                expected,
+                field=f"metadata.preflight_acceptance.{field}",
+            )
     if protocol == FIXED_CONTINUATION_PROTOCOL and not str(
         launcher.get("resume_checkpoint", "")
     ).endswith(
@@ -331,7 +694,7 @@ def _validate_hardware_preflight(
     if expected_checksum != _canonical_sha256(content):
         raise SO214CoreRunnerError("Hardware preflight receipt checksum mismatch.")
     required = {
-        "schema": "so2_14core_relative_qkv_ddp4_preflight_v1",
+        "schema": _preflight_schema(config),
         "status": "passed",
         "all_required_gates_passed": True,
         "completed_experiment": False,
@@ -345,8 +708,62 @@ def _validate_hardware_preflight(
         "finite_loss_and_gradients": True,
         "so2_c23_prior_equivalence_verified": True,
     }
+    if _gradient_direction_enabled(config):
+        expected_parameter_count = _expected_parameter_count(config)
+        assert expected_parameter_count is not None
+        required.update(
+            {
+                "campaign_id": _campaign_id(config),
+                "parameter_count": expected_parameter_count,
+                "gradient_direction_observer_verified": True,
+            }
+        )
+        block_count = _block_gradient_count(config)
+        if block_count:
+            limits = _block_vram_limits(config)
+            assert limits is not None
+            maximum_vram_gib, minimum_headroom_gib = limits
+            required.update(
+                {
+                    "all_unique_graph_blocks_receive_gradients": True,
+                    "block_gradient_direction_observer_verified": True,
+                    "peak_vram_gib_all_ranks_max": maximum_vram_gib,
+                    "minimum_vram_headroom_gib_each_rank": minimum_headroom_gib,
+                    "vram_acceptance_passed": True,
+                }
+            )
     for field, expected in required.items():
         _require_equal(value.get(field), expected, field=f"preflight.{field}")
+    if _is_geometry_modulated(config):
+        numerical_gates = value.get("geometry_modulated_numerical_gates")
+        if not isinstance(numerical_gates, Mapping):
+            raise SO214CoreRunnerError(
+                "Geometry-modulated preflight lacks its numerical gates."
+            )
+        _require_equal(
+            numerical_gates.get("passed"),
+            True,
+            field="preflight.geometry_modulated_numerical_gates.passed",
+        )
+        for gate_name in (
+            "full_chunk_exactness",
+            "amp_fp32_equivalence",
+            "learned_geometry_heads",
+        ):
+            gate = numerical_gates.get(gate_name)
+            if not isinstance(gate, Mapping):
+                raise SO214CoreRunnerError(
+                    "Geometry-modulated preflight lacks numerical gate "
+                    f"{gate_name!r}."
+                )
+            _require_equal(
+                gate.get("passed"),
+                True,
+                field=(
+                    "preflight.geometry_modulated_numerical_gates."
+                    f"{gate_name}.passed"
+                ),
+            )
     if value.get("cohort_manifest_sha256") != sha256_file(
         cohort_dir / "manifest.json"
     ):
@@ -359,11 +776,204 @@ def _validate_hardware_preflight(
         _preflight_bound_config(config)
     ):
         raise SO214CoreRunnerError("Resolved production config changed after preflight.")
+    if _gradient_direction_enabled(config):
+        expected_parameter_count = _expected_parameter_count(config)
+        assert expected_parameter_count is not None
+        receipt_model = value.get("model")
+        if not isinstance(receipt_model, Mapping):
+            raise SO214CoreRunnerError(
+                "Gradient-observed preflight lacks its exact model construction."
+            )
+        expected_model = {
+            "class": (
+                "ReceiverChunkedRecurrentRelativeGeometryQKVGraphTransformer"
+                if _is_recurrent(config)
+                else (
+                    "ReceiverChunkedGeometryModulatedRelativeQKVGraphTransformer"
+                    if _is_geometry_modulated(config)
+                    else "ReceiverChunkedRelativeGeometryQKVGraphTransformer"
+                )
+            ),
+            "num_genes": 1000,
+            "node_covariate_dim": 22,
+            **dict(_section(config, "model")),
+        }
+        for field, expected in expected_model.items():
+            _require_equal(
+                receipt_model.get(field),
+                expected,
+                field=f"preflight.model.{field}",
+            )
+        gradient_summary = value.get("gradient_direction_preflight_summary")
+        if not isinstance(gradient_summary, Mapping):
+            raise SO214CoreRunnerError(
+                "Gradient-observed preflight lacks its scalar gradient summary."
+            )
+        for field, expected in {
+            "schema": GRADIENT_DIRECTION_METRICS_SCHEMA,
+            "global_epoch": 1,
+            "trainable_parameter_count": expected_parameter_count,
+            "optimizer_updates_observed": 1,
+            "consecutive_optimizer_step_cosine_valid_pairs": 0,
+            "epoch_aggregate_gradient_cosine_to_previous_epoch": None,
+            "resume_boundary_unavailable": False,
+        }.items():
+            _require_equal(
+                gradient_summary.get(field),
+                expected,
+                field=f"preflight.gradient_direction.{field}",
+            )
+        observed_gradient_norm = gradient_summary.get(
+            "gradient_norm_mean_before_clip"
+        )
+        trainer_gradient_norm = value.get("gradient_norm_before_clip")
+        if any(
+            isinstance(item, bool)
+            or not isinstance(item, (int, float))
+            or not math.isfinite(float(item))
+            for item in (observed_gradient_norm, trainer_gradient_norm)
+        ) or not math.isclose(
+            float(observed_gradient_norm),
+            float(trainer_gradient_norm),
+            rel_tol=1e-6,
+            abs_tol=1e-6,
+        ):
+            raise SO214CoreRunnerError(
+                "Preflight gradient observer norm did not match the "
+                "trainer's pre-clip norm."
+            )
+        block_count = _block_gradient_count(config)
+        if block_count:
+            block_parameter_count = _block_trainable_parameter_count(config)
+            assert block_parameter_count is not None
+            topology_field = (
+                "geometry_modulated_graph_block_topology"
+                if _is_geometry_modulated(config)
+                else "untied_graph_block_topology"
+            )
+            topology = value.get(topology_field)
+            expected_topology = {
+                "verified": True,
+                "graph_block_count": block_count,
+                "unique_graph_block_objects": block_count,
+                "unique_graph_block_parameter_sets": block_count,
+                "state_dict_block_indices": list(range(block_count)),
+                "graph_block_weight_tying": "none",
+            }
+            _require_equal(
+                topology,
+                expected_topology,
+                field=f"preflight.{topology_field}",
+            )
+            block_gradients = value.get("graph_block_gradient_diagnostics")
+            if not isinstance(block_gradients, Sequence) or isinstance(
+                block_gradients, (str, bytes)
+            ):
+                raise SO214CoreRunnerError(
+                    "Block-observed preflight lacks per-block gradient diagnostics."
+                )
+            if len(block_gradients) != block_count:
+                raise SO214CoreRunnerError(
+                    "Block-observed preflight reported an invalid block-gradient "
+                    "count."
+                )
+            for index, record in enumerate(block_gradients):
+                if not isinstance(record, Mapping):
+                    raise SO214CoreRunnerError(
+                        "Block gradient diagnostics must be mappings."
+                    )
+                for field, expected in {
+                    "block_index": index,
+                    "block_name": f"blocks.{index}",
+                    "trainable_parameter_count": block_parameter_count,
+                    "parameters_missing_gradient": 0,
+                }.items():
+                    _require_equal(
+                        record.get(field),
+                        expected,
+                        field=f"preflight.block_gradient[{index}].{field}",
+                    )
+                norm = record.get("gradient_norm_before_clip")
+                if (
+                    isinstance(norm, bool)
+                    or not isinstance(norm, (int, float))
+                    or not math.isfinite(float(norm))
+                    or float(norm) <= 0.0
+                ):
+                    raise SO214CoreRunnerError(
+                        "Every observed graph block must receive a finite, "
+                        "non-zero pre-clip gradient."
+                    )
+            block_summaries = value.get(
+                "block_gradient_direction_preflight_summary"
+            )
+            if not isinstance(block_summaries, Sequence) or isinstance(
+                block_summaries, (str, bytes)
+            ) or len(block_summaries) != block_count:
+                raise SO214CoreRunnerError(
+                    "Block-observed preflight has an invalid number of "
+                    "block-direction summaries."
+                )
+            for index, summary in enumerate(block_summaries):
+                if not isinstance(summary, Mapping):
+                    raise SO214CoreRunnerError(
+                        "Block-direction summaries must be mappings."
+                    )
+                for field, expected in {
+                    "schema": BLOCK_GRADIENT_DIRECTION_METRICS_SCHEMA,
+                    "global_epoch": 1,
+                    "block_index": index,
+                    "block_name": f"blocks.{index}",
+                    "trainable_parameter_count": block_parameter_count,
+                    "optimizer_updates_observed": 1,
+                    "consecutive_optimizer_step_cosine_valid_pairs": 0,
+                    "epoch_aggregate_gradient_cosine_to_previous_epoch": None,
+                    "resume_boundary_unavailable": False,
+                }.items():
+                    _require_equal(
+                        summary.get(field),
+                        expected,
+                        field=f"preflight.block_direction[{index}].{field}",
+                    )
+                norm = summary.get("gradient_norm_mean_before_clip")
+                if (
+                    isinstance(norm, bool)
+                    or not isinstance(norm, (int, float))
+                    or not math.isfinite(float(norm))
+                    or float(norm) <= 0.0
+                ):
+                    raise SO214CoreRunnerError(
+                        "Block direction norm must be finite and positive."
+                    )
     peak = value.get("peak_vram_gib_all_ranks")
     if isinstance(peak, bool) or not isinstance(peak, (int, float)) or not math.isfinite(
         float(peak)
     ) or float(peak) <= 0:
         raise SO214CoreRunnerError("Preflight peak VRAM measurement is invalid.")
+    limits = _block_vram_limits(config)
+    if limits is not None and float(peak) > limits[0]:
+        raise SO214CoreRunnerError(
+            "Architecture preflight exceeds the 22.0 GiB peak VRAM "
+            "acceptance gate."
+        )
+    if limits is not None:
+        _, minimum_headroom_gib = limits
+        headroom = value.get("measured_vram_headroom_gib_each_rank")
+        if (
+            isinstance(headroom, bool)
+            or not isinstance(headroom, (int, float))
+            or not math.isfinite(float(headroom))
+            or float(headroom) < minimum_headroom_gib
+            or not math.isclose(
+                float(headroom),
+                24.0 - float(peak),
+                rel_tol=0.0,
+                abs_tol=1e-9,
+            )
+        ):
+            raise SO214CoreRunnerError(
+                "Architecture preflight VRAM headroom receipt is invalid."
+            )
     return value
 
 
@@ -432,7 +1042,7 @@ def _model_from_config(
     *,
     num_genes: int,
     node_covariate_dim: int,
-) -> ReceiverChunkedRelativeGeometryQKVGraphTransformer:
+) -> torch.nn.Module:
     model = _section(config, "model")
     trainer = _section(config, "trainer")
     set_deterministic_seed(
@@ -440,23 +1050,241 @@ def _model_from_config(
         deterministic=bool(trainer["deterministic"]),
         warn_only=bool(trainer["deterministic_warn_only"]),
     )
-    return ReceiverChunkedRelativeGeometryQKVGraphTransformer(
-        num_genes=num_genes,
-        node_covariate_dim=node_covariate_dim,
-        hidden_dim=int(model["hidden_dim"]),
-        attention_heads=int(model["attention_heads"]),
-        attention_head_dim=int(model["attention_head_dim"]),
-        graph_layers=int(model["graph_layers"]),
-        ffn_dim=int(model["ffn_dim"]),
-        decoder_dim=int(model["decoder_dim"]),
+    common = {
+        "num_genes": int(num_genes),
+        "node_covariate_dim": int(node_covariate_dim),
+        "hidden_dim": int(model["hidden_dim"]),
+        "attention_heads": int(model["attention_heads"]),
+        "attention_head_dim": int(model["attention_head_dim"]),
+        "ffn_dim": int(model["ffn_dim"]),
+        "decoder_dim": int(model["decoder_dim"]),
+        "dropout": float(model["dropout"]),
+        "attention_dropout": float(model["attention_dropout"]),
+        "relative_geometry_dim": int(model["relative_geometry_dim"]),
+        "receiver_chunk_size": int(model["receiver_chunk_size"]),
+        "max_edges_per_chunk": int(model["max_edges_per_chunk"]),
+        "activation_checkpointing": bool(model["activation_checkpointing"]),
+    }
+    if _is_geometry_modulated(config):
+        built = ReceiverChunkedGeometryModulatedRelativeQKVGraphTransformer(
+            **common,
+            graph_layers=int(model["graph_layers"]),
+            geometry_hidden_dim=int(model["geometry_hidden_dim"]),
+            qk_normalization_epsilon=float(
+                model["qk_normalization_epsilon"]
+            ),
+            logit_scale_initial=float(model["logit_scale_initial"]),
+            logit_scale_minimum=float(model["logit_scale_minimum"]),
+            logit_scale_maximum=float(model["logit_scale_maximum"]),
+            modulation_amplitude=float(model["modulation_amplitude"]),
+            geometry_bias_bound=float(model["geometry_bias_bound"]),
+        )
+        _geometry_modulated4_block_topology(built)
+        for field in (
+            "unique_graph_blocks",
+            "effective_graph_depth",
+            "graph_block_weight_tying",
+            "attention_score_mechanism",
+            "geometry_hidden_dim",
+            "qk_normalization_epsilon",
+            "logit_scale_initial",
+            "logit_scale_minimum",
+            "logit_scale_maximum",
+            "modulation_amplitude",
+            "geometry_bias_bound",
+        ):
+            _require_equal(
+                getattr(built, field, None),
+                model[field],
+                field=f"constructed_model.{field}",
+            )
+        _require_equal(
+            getattr(built, "qk_l2_normalized", None),
+            True,
+            field="constructed_model.qk_l2_normalized",
+        )
+        _require_equal(
+            getattr(built, "geometry_values_enabled", None),
+            False,
+            field="constructed_model.geometry_values_enabled",
+        )
+        if int(num_genes) == 1000 and int(node_covariate_dim) == 22:
+            _require_equal(
+                sum(parameter.numel() for parameter in built.parameters()),
+                EXPECTED_GEOMETRY_MODULATED_PARAMETER_COUNT,
+                field="constructed_model.parameter_count",
+            )
+        return built
+    if _is_recurrent(config):
+        built: torch.nn.Module = (
+            ReceiverChunkedRecurrentRelativeGeometryQKVGraphTransformer(
+                **common,
+                positional_bias_hidden_dim=int(
+                    model["positional_bias_hidden_dim"]
+                ),
+                recurrent_unroll_steps=int(model["recurrent_unroll_steps"]),
+            )
+        )
+        for field, expected in {
+            "graph_layers": 1,
+            "unique_graph_blocks": 1,
+            "recurrent_unroll_steps": 4,
+            "effective_graph_depth": 4,
+            "graph_block_weight_tying": "all_steps",
+        }.items():
+            _require_equal(
+                getattr(built, field, None),
+                expected,
+                field=f"constructed_model.{field}",
+            )
+        block_keys = tuple(
+            name for name in built.state_dict() if name.startswith("blocks.")
+        )
+        if not block_keys or any(
+            not name.startswith("blocks.0.") for name in block_keys
+        ):
+            raise SO214CoreRunnerError(
+                "Recurrent model must register exactly one graph block at blocks.0."
+            )
+        if int(num_genes) == 1000 and int(node_covariate_dim) == 22:
+            _require_equal(
+                sum(parameter.numel() for parameter in built.parameters()),
+                EXPECTED_RECURRENT_PARAMETER_COUNT,
+                field="constructed_model.parameter_count",
+            )
+        return built
+    built = ReceiverChunkedRelativeGeometryQKVGraphTransformer(
+        **common,
         positional_bias_hidden_dim=int(model["positional_bias_hidden_dim"]),
-        dropout=float(model["dropout"]),
-        attention_dropout=float(model["attention_dropout"]),
-        relative_geometry_dim=int(model["relative_geometry_dim"]),
-        receiver_chunk_size=int(model["receiver_chunk_size"]),
-        max_edges_per_chunk=int(model["max_edges_per_chunk"]),
-        activation_checkpointing=bool(model["activation_checkpointing"]),
+        graph_layers=int(model["graph_layers"]),
     )
+    if _is_untied8(config):
+        _untied8_block_topology(built)
+        if int(num_genes) == 1000 and int(node_covariate_dim) == 22:
+            _require_equal(
+                sum(parameter.numel() for parameter in built.parameters()),
+                EXPECTED_UNTIED8_PARAMETER_COUNT,
+                field="constructed_model.parameter_count",
+            )
+    return built
+
+
+def _untied8_block_topology(model: torch.nn.Module) -> dict[str, Any]:
+    """Verify eight independently parameterized graph blocks without aliases."""
+
+    if type(model) is not ReceiverChunkedRelativeGeometryQKVGraphTransformer:
+        raise SO214CoreRunnerError(
+            "Untied-8 requires the non-recurrent Relative-QKV model class."
+        )
+    blocks = getattr(model, "blocks", None)
+    if not isinstance(blocks, torch.nn.ModuleList) or len(blocks) != 8:
+        raise SO214CoreRunnerError(
+            "Untied-8 must register exactly eight graph blocks."
+        )
+    _require_equal(
+        getattr(model, "graph_layers", None),
+        8,
+        field="constructed_model.graph_layers",
+    )
+    object_ids = tuple(id(block) for block in blocks)
+    if len(set(object_ids)) != 8:
+        raise SO214CoreRunnerError("Untied-8 graph block modules may not be shared.")
+    parameter_ids = tuple(
+        frozenset(id(parameter) for parameter in block.parameters())
+        for block in blocks
+    )
+    if any(not identifiers for identifiers in parameter_ids):
+        raise SO214CoreRunnerError("Every untied graph block must own parameters.")
+    for left in range(len(parameter_ids)):
+        for right in range(left + 1, len(parameter_ids)):
+            if parameter_ids[left].intersection(parameter_ids[right]):
+                raise SO214CoreRunnerError(
+                    "Untied-8 graph block parameters may not be shared."
+                )
+    state_indices: set[int] = set()
+    for name in model.state_dict():
+        if not name.startswith("blocks."):
+            continue
+        try:
+            state_indices.add(int(name.split(".", 2)[1]))
+        except (IndexError, ValueError) as exc:
+            raise SO214CoreRunnerError(
+                "Untied-8 graph block state names are malformed."
+            ) from exc
+    if state_indices != set(range(8)):
+        raise SO214CoreRunnerError(
+            "Untied-8 state_dict must contain blocks.0 through blocks.7."
+        )
+    return {
+        "verified": True,
+        "graph_block_count": 8,
+        "unique_graph_block_objects": 8,
+        "unique_graph_block_parameter_sets": 8,
+        "state_dict_block_indices": list(range(8)),
+        "graph_block_weight_tying": "none",
+    }
+
+
+def _geometry_modulated4_block_topology(
+    model: torch.nn.Module,
+) -> dict[str, Any]:
+    """Verify four independently parameterized geometry-modulated blocks."""
+
+    if type(model) is not ReceiverChunkedGeometryModulatedRelativeQKVGraphTransformer:
+        raise SO214CoreRunnerError(
+            "Geometry-modulated training requires its receiver-chunked model class."
+        )
+    blocks = getattr(model, "blocks", None)
+    if not isinstance(blocks, torch.nn.ModuleList) or len(blocks) != 4:
+        raise SO214CoreRunnerError(
+            "Geometry-modulated training must register exactly four graph blocks."
+        )
+    _require_equal(
+        getattr(model, "graph_layers", None),
+        4,
+        field="constructed_model.graph_layers",
+    )
+    object_ids = tuple(id(block) for block in blocks)
+    if len(set(object_ids)) != 4:
+        raise SO214CoreRunnerError(
+            "Geometry-modulated graph block modules may not be shared."
+        )
+    parameter_ids = tuple(
+        frozenset(id(parameter) for parameter in block.parameters())
+        for block in blocks
+    )
+    if any(not identifiers for identifiers in parameter_ids):
+        raise SO214CoreRunnerError(
+            "Every geometry-modulated graph block must own parameters."
+        )
+    for left in range(len(parameter_ids)):
+        for right in range(left + 1, len(parameter_ids)):
+            if parameter_ids[left].intersection(parameter_ids[right]):
+                raise SO214CoreRunnerError(
+                    "Geometry-modulated graph block parameters may not be shared."
+                )
+    state_indices: set[int] = set()
+    for name in model.state_dict():
+        if not name.startswith("blocks."):
+            continue
+        try:
+            state_indices.add(int(name.split(".", 2)[1]))
+        except (IndexError, ValueError) as exc:
+            raise SO214CoreRunnerError(
+                "Geometry-modulated graph block state names are malformed."
+            ) from exc
+    if state_indices != set(range(4)):
+        raise SO214CoreRunnerError(
+            "Geometry-modulated state_dict must contain blocks.0 through blocks.3."
+        )
+    return {
+        "verified": True,
+        "graph_block_count": 4,
+        "unique_graph_block_objects": 4,
+        "unique_graph_block_parameter_sets": 4,
+        "state_dict_block_indices": list(range(4)),
+        "graph_block_weight_tying": "none",
+    }
 
 
 def _training_config(
@@ -591,7 +1419,7 @@ def _checkpoint_payload(
         "checkpoint_schema": CHECKPOINT_SCHEMA,
         "resume_schema": resume.resume_schema,
         "run_id": str(run_id),
-        "campaign_id": CAMPAIGN_ID,
+        "campaign_id": _campaign_id(config),
         "model_seed": MODEL_SEED,
         "completed_global_epochs": resume.completed_global_epochs,
         "optimizer_updates_completed": resume.optimizer_updates_completed,
@@ -664,7 +1492,7 @@ def _load_resume_checkpoint(
     payload = dict(value)
     for field, expected in {
         "checkpoint_schema": CHECKPOINT_SCHEMA,
-        "campaign_id": CAMPAIGN_ID,
+        "campaign_id": _campaign_id(config),
         "model_seed": MODEL_SEED,
         "cohort_aliases": list(SO2_ALIASES),
         "model_construction": dict(model_construction),
@@ -788,6 +1616,223 @@ def _copy_resume_csv(
     writer.reconcile(checkpoint_epoch=int(completed_epoch))
 
 
+def _copy_resume_gradient_direction_csv(
+    *,
+    run_id: str,
+    source_checkpoint: Path,
+    archive: RunArchive,
+    completed_epoch: int,
+) -> dict[str, Any]:
+    """Copy the scalar gradient history required for a directional resume.
+
+    Full gradient vectors are intentionally transient and never serialized.
+    The source scalar rows are required so a resumed run retains one contiguous
+    per-epoch diagnostic series; the first new row explicitly marks that its
+    cross-checkpoint cosine is unavailable.
+    """
+
+    destination = (
+        archive.scratch_path / "results" / "gradient_direction_metrics.csv"
+    )
+    writer = DurableGradientDirectionCSV(
+        archive.scratch_path,
+        run_id=run_id,
+        model_seed=MODEL_SEED,
+    )
+    completed = int(completed_epoch)
+    if destination.exists():
+        writer.reconcile(checkpoint_epoch=completed)
+        return {
+            "schema": "so2_gradient_direction_resume_import_v1",
+            "source_csv": str(destination),
+            "source_csv_sha256": sha256_file(destination),
+            "source_run_id": run_id,
+            "destination_run_id": run_id,
+            "model_seed": MODEL_SEED,
+            "imported_rows": completed,
+            "run_id_rebound": False,
+            "existing_destination_reconciled": True,
+        }
+
+    source = (
+        source_checkpoint.parent.parent
+        / "results"
+        / "gradient_direction_metrics.csv"
+    )
+    if not source.is_file() or source.is_symlink():
+        raise SO214CoreRunnerError(
+            "Directional resume requires its sibling scalar-only "
+            "results/gradient_direction_metrics.csv."
+        )
+    source_sha256 = sha256_file(source)
+    try:
+        with source.open("r", encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            fieldnames = tuple(reader.fieldnames or ())
+            raw_rows = list(reader)
+    except (OSError, csv.Error) as exc:
+        raise SO214CoreRunnerError(
+            "Directional resume source CSV cannot be read."
+        ) from exc
+    if fieldnames != GRADIENT_DIRECTION_METRICS_COLUMNS or not raw_rows:
+        raise SO214CoreRunnerError(
+            "Directional resume source CSV schema is incompatible."
+        )
+    source_run_ids = {str(row.get("run_id", "")) for row in raw_rows}
+    source_model_seeds = {str(row.get("model_seed", "")) for row in raw_rows}
+    if len(source_run_ids) != 1 or "" in source_run_ids:
+        raise SO214CoreRunnerError(
+            "Directional resume source CSV requires one source run ID."
+        )
+    if source_model_seeds != {str(MODEL_SEED)}:
+        raise SO214CoreRunnerError(
+            "Directional resume source CSV model seed drifted."
+        )
+    source_run_id = next(iter(source_run_ids))
+    source_writer = DurableGradientDirectionCSV(
+        source_checkpoint.parent.parent,
+        run_id=source_run_id,
+        model_seed=MODEL_SEED,
+    )
+    source_rows = source_writer.read_rows()
+    if len(source_rows) < completed:
+        raise SO214CoreRunnerError(
+            "Directional resume source CSV ends before its checkpoint."
+        )
+    for row in source_rows[:completed]:
+        if row.get("schema") != GRADIENT_DIRECTION_METRICS_SCHEMA:
+            raise SO214CoreRunnerError(
+                "Directional resume source row schema drifted."
+            )
+        rebound = dict(row)
+        rebound["run_id"] = run_id
+        writer.append(rebound)
+    writer.reconcile(checkpoint_epoch=completed)
+    return {
+        "schema": "so2_gradient_direction_resume_import_v1",
+        "source_csv": str(source.resolve(strict=True)),
+        "source_csv_sha256": source_sha256,
+        "source_run_id": source_run_id,
+        "destination_run_id": run_id,
+        "model_seed": MODEL_SEED,
+        "source_rows": len(source_rows),
+        "imported_rows": completed,
+        "run_id_rebound": source_run_id != run_id,
+        "existing_destination_reconciled": False,
+    }
+
+
+def _copy_resume_block_gradient_direction_csv(
+    *,
+    run_id: str,
+    source_checkpoint: Path,
+    archive: RunArchive,
+    completed_epoch: int,
+    expected_blocks: int = 8,
+) -> dict[str, Any]:
+    """Rebind and import complete per-block gradient epoch groups."""
+
+    destination = (
+        archive.scratch_path / "results" / "gradient_direction_by_block.csv"
+    )
+    writer = DurableBlockGradientDirectionCSV(
+        archive.scratch_path,
+        run_id=run_id,
+        model_seed=MODEL_SEED,
+        expected_blocks=expected_blocks,
+    )
+    completed = int(completed_epoch)
+    if destination.exists():
+        writer.reconcile(checkpoint_epoch=completed)
+        return {
+            "schema": "so2_block_gradient_direction_resume_import_v1",
+            "source_csv": str(destination),
+            "source_csv_sha256": sha256_file(destination),
+            "source_run_id": run_id,
+            "destination_run_id": run_id,
+            "model_seed": MODEL_SEED,
+            "source_epoch_groups": writer.completed_epochs,
+            "imported_epoch_groups": completed,
+            "imported_rows": completed * expected_blocks,
+            "run_id_rebound": False,
+            "existing_destination_reconciled": True,
+        }
+
+    source = (
+        source_checkpoint.parent.parent
+        / "results"
+        / "gradient_direction_by_block.csv"
+    )
+    if not source.is_file() or source.is_symlink():
+        raise SO214CoreRunnerError(
+            "Block-observed resume requires its sibling scalar-only "
+            "results/gradient_direction_by_block.csv."
+        )
+    source_sha256 = sha256_file(source)
+    try:
+        with source.open("r", encoding="utf-8", newline="") as handle:
+            reader = csv.DictReader(handle)
+            fieldnames = tuple(reader.fieldnames or ())
+            raw_rows = list(reader)
+    except (OSError, csv.Error) as exc:
+        raise SO214CoreRunnerError(
+            "Block-gradient resume source CSV cannot be read."
+        ) from exc
+    if fieldnames != BLOCK_GRADIENT_DIRECTION_METRICS_COLUMNS or not raw_rows:
+        raise SO214CoreRunnerError(
+            "Block-gradient resume source CSV schema is incompatible."
+        )
+    source_run_ids = {str(row.get("run_id", "")) for row in raw_rows}
+    source_model_seeds = {str(row.get("model_seed", "")) for row in raw_rows}
+    if len(source_run_ids) != 1 or "" in source_run_ids:
+        raise SO214CoreRunnerError(
+            "Block-gradient resume source CSV requires one source run ID."
+        )
+    if source_model_seeds != {str(MODEL_SEED)}:
+        raise SO214CoreRunnerError(
+            "Block-gradient resume source CSV model seed drifted."
+        )
+    source_run_id = next(iter(source_run_ids))
+    source_writer = DurableBlockGradientDirectionCSV(
+        source_checkpoint.parent.parent,
+        run_id=source_run_id,
+        model_seed=MODEL_SEED,
+        expected_blocks=expected_blocks,
+    )
+    source_rows = source_writer.read_rows()
+    if source_writer.completed_epochs < completed:
+        raise SO214CoreRunnerError(
+            "Block-gradient resume source CSV ends before its checkpoint."
+        )
+    for epoch_index in range(completed):
+        offset = epoch_index * expected_blocks
+        rebound_group: list[dict[str, str]] = []
+        for row in source_rows[offset : offset + expected_blocks]:
+            if row.get("schema") != BLOCK_GRADIENT_DIRECTION_METRICS_SCHEMA:
+                raise SO214CoreRunnerError(
+                    "Block-gradient resume source row schema drifted."
+                )
+            rebound = dict(row)
+            rebound["run_id"] = run_id
+            rebound_group.append(rebound)
+        writer.append(rebound_group)
+    writer.reconcile(checkpoint_epoch=completed)
+    return {
+        "schema": "so2_block_gradient_direction_resume_import_v1",
+        "source_csv": str(source.resolve(strict=True)),
+        "source_csv_sha256": source_sha256,
+        "source_run_id": source_run_id,
+        "destination_run_id": run_id,
+        "model_seed": MODEL_SEED,
+        "source_epoch_groups": source_writer.completed_epochs,
+        "source_rows": len(source_rows),
+        "imported_epoch_groups": completed,
+        "imported_rows": completed * expected_blocks,
+        "run_id_rebound": source_run_id != run_id,
+        "existing_destination_reconciled": False,
+    }
+
+
 def _is_fixed_plateau_audit_boundary(
     completed_global_epochs: int,
     *,
@@ -863,6 +1908,158 @@ def _plateau_payload(
         "validation_or_test_metric": False,
         "checkpoint_selection_metric": False,
     }
+
+
+def _untied8_operational_review_required(
+    config: Mapping[str, Any],
+    decision: SingleSeedPlateauDecision,
+) -> bool:
+    """Stop an unconfirmed untied-8 run at epoch 300 for explicit review."""
+
+    return bool(
+        _is_untied8(config)
+        and decision.completed_global_epochs == UNTIED8_OPERATIONAL_REVIEW_EPOCH
+        and not decision.should_stop
+    )
+
+
+def _untied8_operational_review_payload(
+    *,
+    run_id: str,
+    parameter_count: int,
+    plateau: Mapping[str, Any],
+    checkpoint_sha256: str,
+    epoch_metrics_rows: int,
+    gradient_direction_rows: int,
+    block_gradient_rows: int,
+) -> dict[str, Any]:
+    """Describe an honest non-success boundary without claiming convergence."""
+
+    _require_equal(
+        parameter_count,
+        EXPECTED_UNTIED8_PARAMETER_COUNT,
+        field="operational_review.parameter_count",
+    )
+    _require_equal(
+        plateau.get("completed_global_epochs"),
+        UNTIED8_OPERATIONAL_REVIEW_EPOCH,
+        field="operational_review.completed_global_epochs",
+    )
+    _require_equal(
+        plateau.get("should_stop"),
+        False,
+        field="operational_review.plateau_should_stop",
+    )
+    for field, observed, expected in (
+        ("epoch_metrics_rows", epoch_metrics_rows, UNTIED8_OPERATIONAL_REVIEW_EPOCH),
+        (
+            "gradient_direction_rows",
+            gradient_direction_rows,
+            UNTIED8_OPERATIONAL_REVIEW_EPOCH,
+        ),
+        (
+            "block_gradient_rows",
+            block_gradient_rows,
+            UNTIED8_OPERATIONAL_REVIEW_EPOCH * 8,
+        ),
+    ):
+        _require_equal(observed, expected, field=f"operational_review.{field}")
+    if (
+        not isinstance(checkpoint_sha256, str)
+        or len(checkpoint_sha256) != 64
+        or any(character not in "0123456789abcdef" for character in checkpoint_sha256)
+    ):
+        raise SO214CoreRunnerError(
+            "Operational review checkpoint requires a SHA-256 identity."
+        )
+    return {
+        "schema": "so2_14core_untied8_operational_review_required_v1",
+        "run_id": run_id,
+        "status": "operational_review_required",
+        "completed_global_epochs": UNTIED8_OPERATIONAL_REVIEW_EPOCH,
+        "optimizer_updates_completed": UNTIED8_OPERATIONAL_REVIEW_EPOCH * 7,
+        "parameter_count": EXPECTED_UNTIED8_PARAMETER_COUNT,
+        "checkpoint": "checkpoints/latest.ckpt",
+        "checkpoint_role": "resumable_epoch_boundary_not_final_model",
+        "checkpoint_sha256": checkpoint_sha256,
+        "epoch_metrics_rows": epoch_metrics_rows,
+        "gradient_direction_rows": gradient_direction_rows,
+        "block_gradient_rows": block_gradient_rows,
+        "plateau": dict(plateau),
+        "plateau_confirmed": False,
+        "scientific_convergence_claim": False,
+        "scientific_maximum_epoch_cap": None,
+        "further_training_authorized": False,
+        "resume_requires_explicit_contract_amendment_and_approval": True,
+        "queue_terminal_representation": "failed_inconclusive",
+        "reason": (
+            "Literal plateau stopping had not passed by epoch 300; the durable "
+            "rolling checkpoint is preserved for explicit operational review."
+        ),
+    }
+
+
+def _write_and_verify_untied8_training_plots(
+    run_root: Path,
+    *,
+    expected_blocks: int = 8,
+) -> dict[str, Any]:
+    """Create the block-observed protocols' scalar-derived PNG artifacts."""
+
+    written = write_so2_training_plots(
+        run_root,
+        expected_blocks=expected_blocks,
+    )
+    expected = {
+        "loss_vs_epoch": str(LOSS_FIGURE_RELATIVE_PATH),
+        "gradient_direction_vs_epoch": str(GRADIENT_FIGURE_RELATIVE_PATH),
+    }
+    _require_equal(written, expected, field="training_plots.relative_paths")
+    checksums: dict[str, str] = {}
+    for name, relative in expected.items():
+        path = run_root / relative
+        if path.is_symlink() or not path.is_file() or path.stat().st_size == 0:
+            raise SO214CoreRunnerError(
+                f"Required training plot is missing: {relative}."
+            )
+        checksums[name] = sha256_file(path)
+    return {
+        "enabled": True,
+        "descriptive_only": True,
+        "affects_optimization_or_stopping": False,
+        "paths": expected,
+        "sha256": checksums,
+    }
+
+
+def _validate_gradient_direction_scalar_files(
+    run_root: Path,
+    *,
+    gradient_csv: Path,
+    block_gradient_csv: Path | None,
+) -> tuple[Path, ...]:
+    """Require exactly the protocol's durable scalar direction CSV artifacts."""
+
+    expected = [gradient_csv]
+    if block_gradient_csv is not None:
+        expected.append(block_gradient_csv)
+    expected_files = tuple(sorted(expected, key=lambda path: path.name))
+    observed_files = tuple(
+        sorted(
+            (
+                path
+                for path in (run_root / "results").glob("gradient_direction*")
+                if path.is_file()
+            ),
+            key=lambda path: path.name,
+        )
+    )
+    _require_equal(
+        observed_files,
+        expected_files,
+        field="gradient_direction.scalar_only_files",
+    )
+    return observed_files
 
 
 def _strict_plateau_payload(
@@ -1487,6 +2684,13 @@ def run_distributed(
         node_covariate_dim=int(batches[0].node_covariates.shape[1]),
     )
     parameter_count = sum(parameter.numel() for parameter in model.parameters())
+    expected_parameter_count = _expected_parameter_count(config)
+    if expected_parameter_count is not None:
+        _require_equal(
+            parameter_count,
+            expected_parameter_count,
+            field="parameter_count",
+        )
     resume_path = _configured_resume_path(args, config, paths)
     resume: CohortRelativeQKVEpochBoundaryResume | None = None
     resume_receipt: dict[str, Any] | None = None
@@ -1496,14 +2700,44 @@ def run_distributed(
             config=config,
             model_construction=construction,
         )
+        if (
+            _is_untied8(config)
+            and resume.completed_global_epochs > UNTIED8_OPERATIONAL_REVIEW_EPOCH
+        ):
+            raise SO214CoreRunnerError(
+                "Untied-8 checkpoints past the epoch-300 operational review "
+                "boundary require an explicit campaign amendment and approval."
+            )
     if fixed_mode and (resume is None or resume_receipt is None):
         raise SO214CoreRunnerError(
             "Fixed continuation requires its locked epoch-175 resume checkpoint."
         )
 
+    gradient_direction_enabled = _gradient_direction_enabled(config)
+    block_gradient_count = _block_gradient_count(config)
+    block_gradient_direction_enabled = block_gradient_count > 0
+    block_parameter_count = _block_trainable_parameter_count(config)
+    gradient_tracker: FullGradientDirectionTracker | None = None
+    block_gradient_tracker: BlockGradientDirectionTracker | None = None
+    if gradient_direction_enabled and rank == 0:
+        gradient_tracker = FullGradientDirectionTracker(
+            expected_optimizer_updates_per_epoch=7,
+            resume_boundary_unavailable=resume is not None,
+        )
+    if block_gradient_direction_enabled and rank == 0:
+        block_gradient_tracker = BlockGradientDirectionTracker(
+            expected_blocks=block_gradient_count,
+            expected_optimizer_updates_per_epoch=7,
+            resume_boundary_unavailable=resume is not None,
+        )
+
     trainer = _section(config, "trainer")
     archive: RunArchive | None = None
     metrics_writer: DurableEpochMetricsCSV | None = None
+    gradient_writer: DurableGradientDirectionCSV | None = None
+    block_gradient_writer: DurableBlockGradientDirectionCSV | None = None
+    gradient_resume_lineage: dict[str, Any] | None = None
+    block_gradient_resume_lineage: dict[str, Any] | None = None
     checkpoint_store: AtomicLatestCheckpointStore | None = None
     if rank == 0:
         archive = RunArchive.attach_active(
@@ -1516,6 +2750,31 @@ def run_distributed(
                 archive=archive,
                 completed_epoch=resume.completed_global_epochs,
             )
+            if gradient_direction_enabled:
+                gradient_resume_lineage = _copy_resume_gradient_direction_csv(
+                    run_id=run_id,
+                    source_checkpoint=resume_path,
+                    archive=archive,
+                    completed_epoch=resume.completed_global_epochs,
+                )
+                archive.write_json(
+                    "provenance/gradient_direction_resume_import.json",
+                    gradient_resume_lineage,
+                )
+            if block_gradient_direction_enabled:
+                block_gradient_resume_lineage = (
+                    _copy_resume_block_gradient_direction_csv(
+                        run_id=run_id,
+                        source_checkpoint=resume_path,
+                        archive=archive,
+                        completed_epoch=resume.completed_global_epochs,
+                        expected_blocks=block_gradient_count,
+                    )
+                )
+                archive.write_json(
+                    "provenance/block_gradient_direction_resume_import.json",
+                    block_gradient_resume_lineage,
+                )
             archive.write_json("provenance/resume_source.json", resume_receipt)
             if fixed_mode:
                 assert resume_receipt is not None
@@ -1567,6 +2826,29 @@ def run_distributed(
         metrics_writer.reconcile(
             checkpoint_epoch=0 if resume is None else resume.completed_global_epochs
         )
+        if gradient_direction_enabled:
+            gradient_writer = DurableGradientDirectionCSV(
+                archive.scratch_path,
+                run_id=run_id,
+                model_seed=MODEL_SEED,
+            )
+            gradient_writer.reconcile(
+                checkpoint_epoch=(
+                    0 if resume is None else resume.completed_global_epochs
+                )
+            )
+        if block_gradient_direction_enabled:
+            block_gradient_writer = DurableBlockGradientDirectionCSV(
+                archive.scratch_path,
+                run_id=run_id,
+                model_seed=MODEL_SEED,
+                expected_blocks=block_gradient_count,
+            )
+            block_gradient_writer.reconcile(
+                checkpoint_epoch=(
+                    0 if resume is None else resume.completed_global_epochs
+                )
+            )
         checkpoint_store = AtomicLatestCheckpointStore(
             archive.scratch_path,
             completed_global_epochs=(
@@ -1583,6 +2865,60 @@ def run_distributed(
                 "fsync": True,
                 "core_loss_columns": list(SO2_ALIASES),
                 "gradient_norm_unit": "seven_paired_core_optimizer_updates",
+                "gradient_direction_observability": (
+                    {
+                        "enabled": True,
+                        "schema": GRADIENT_DIRECTION_METRICS_SCHEMA,
+                        "csv": "results/gradient_direction_metrics.csv",
+                        "columns": list(GRADIENT_DIRECTION_METRICS_COLUMNS),
+                        "sampling_point": (
+                            "rank0_full_ddp_averaged_fp32_trainable_gradient_"
+                            "after_amp_unscale_and_finite_check_before_clipping"
+                        ),
+                        "optimizer_step_pairing": (
+                            "consecutive_updates_across_epoch_boundaries_when_"
+                            "uninterrupted"
+                        ),
+                        "epoch_aggregate": "sum_of_seven_preclip_update_gradients",
+                        "serialized_values": "epoch_scalars_only",
+                        "gradient_tensors_serialized": False,
+                        "checkpoint_state_saved": False,
+                        "resume_behavior": (
+                            "first_new_epoch_marks_cross_boundary_cosines_"
+                            "unavailable"
+                        ),
+                        "interpretation": (
+                            "directional_diagnostics_must_be_interpreted_jointly_"
+                            "with_training_loss_and_gradient_norm_not_as_a_"
+                            "standalone_convergence_criterion"
+                        ),
+                        "block_gradient_direction_observability": (
+                            {
+                                "enabled": True,
+                                "scope": "graph_blocks_only",
+                                "schema": BLOCK_GRADIENT_DIRECTION_METRICS_SCHEMA,
+                                "csv": "results/gradient_direction_by_block.csv",
+                                "columns": list(
+                                    BLOCK_GRADIENT_DIRECTION_METRICS_COLUMNS
+                                ),
+                                "rows_per_completed_global_epoch": (
+                                    block_gradient_count
+                                ),
+                                "block_names": [
+                                    f"blocks.{index}"
+                                    for index in range(block_gradient_count)
+                                ],
+                                "serialized_values": "epoch_block_scalars_only",
+                                "gradient_tensors_serialized": False,
+                                "checkpoint_state_saved": False,
+                            }
+                            if block_gradient_direction_enabled
+                            else {"enabled": False}
+                        ),
+                    }
+                    if gradient_direction_enabled
+                    else {"enabled": False, "legacy_protocol_preserved": True}
+                ),
                 "throughput_scope": "140_complete_graph_mask_views_per_epoch",
                 "checkpoint_policy": (
                     "final_last_only_no_intermediate"
@@ -1685,6 +3021,63 @@ def run_distributed(
             ),
         )
         metrics_writer.append(row)
+        gradient_summary = None
+        block_gradient_summaries = ()
+        if gradient_direction_enabled:
+            assert gradient_tracker is not None and gradient_writer is not None
+            gradient_summary = gradient_tracker.complete_epoch(epoch.global_epoch)
+            _require_equal(
+                gradient_summary.global_epoch,
+                epoch.completed_global_epochs,
+                field="gradient_direction.global_epoch",
+            )
+            _require_equal(
+                gradient_summary.trainable_parameter_count,
+                parameter_count,
+                field="gradient_direction.trainable_parameter_count",
+            )
+            _require_equal(
+                gradient_summary.optimizer_updates_observed,
+                epoch.optimizer_updates_this_epoch,
+                field="gradient_direction.optimizer_updates_observed",
+            )
+            gradient_writer.append(gradient_summary)
+        if block_gradient_direction_enabled:
+            assert (
+                block_gradient_tracker is not None
+                and block_gradient_writer is not None
+                and block_parameter_count is not None
+            )
+            block_gradient_summaries = block_gradient_tracker.complete_epoch(
+                epoch.global_epoch
+            )
+            _require_equal(
+                len(block_gradient_summaries),
+                block_gradient_count,
+                field="block_gradient_direction.summary_count",
+            )
+            for index, summary in enumerate(block_gradient_summaries):
+                for field, actual, expected in (
+                    ("global_epoch", summary.global_epoch, epoch.completed_global_epochs),
+                    ("block_index", summary.block_index, index),
+                    ("block_name", summary.block_name, f"blocks.{index}"),
+                    (
+                        "trainable_parameter_count",
+                        summary.trainable_parameter_count,
+                        block_parameter_count,
+                    ),
+                    (
+                        "optimizer_updates_observed",
+                        summary.optimizer_updates_observed,
+                        epoch.optimizer_updates_this_epoch,
+                    ),
+                ):
+                    _require_equal(
+                        actual,
+                        expected,
+                        field=f"block_gradient_direction[{index}].{field}",
+                    )
+            block_gradient_writer.append(block_gradient_summaries)
         if fixed_mode and bool(row["plateau_audit_performed"]):
             strict_payload = _strict_plateau_payload(
                 observed_losses,
@@ -1700,6 +3093,7 @@ def run_distributed(
                 "monitor": row,
             }
         )
+
         print(
             STDOUT_PREFIX
             + " "
@@ -1713,6 +3107,19 @@ def run_distributed(
                     "gradient_norm_mean_before_clip": row[
                         "gradient_norm_mean_before_clip"
                     ],
+                    "consecutive_optimizer_step_cosine_mean": (
+                        None
+                        if gradient_summary is None
+                        else gradient_summary.consecutive_optimizer_step_cosine_mean
+                    ),
+                    "epoch_aggregate_gradient_cosine_to_previous_epoch": (
+                        None
+                        if gradient_summary is None
+                        else getattr(
+                            gradient_summary,
+                            "epoch_aggregate_gradient_cosine_to_previous_epoch",
+                        )
+                    ),
                     "epoch_duration_seconds": row["epoch_duration_seconds"],
                     "eta_to_epoch_200_seconds": row["eta_to_epoch_200_seconds"],
                     "peak_vram_gib_all_ranks": row["peak_vram_gib_all_ranks"],
@@ -1724,6 +3131,15 @@ def run_distributed(
             ),
             flush=True,
         )
+
+    def observe_gradient_direction(
+        model_with_gradients: torch.nn.Module,
+        context: Any,
+    ) -> None:
+        if gradient_tracker is not None:
+            gradient_tracker.observe(model_with_gradients, context)
+        if block_gradient_tracker is not None:
+            block_gradient_tracker.observe(model_with_gradients, context)
 
     def checkpoint_callback(state: CohortRelativeQKVEpochBoundaryResume) -> None:
         assert rank == 0 and checkpoint_store is not None
@@ -1737,6 +3153,167 @@ def run_distributed(
             ),
             completed_global_epochs=state.completed_global_epochs,
         )
+
+    def persist_untied8_operational_review(
+        state: CohortRelativeQKVEpochBoundaryResume,
+        plateau_payload: Mapping[str, Any],
+    ) -> dict[str, Any]:
+        """Persist a resumable, explicitly non-success epoch-300 boundary."""
+
+        assert (
+            rank == 0
+            and archive is not None
+            and checkpoint_store is not None
+            and metrics_writer is not None
+            and gradient_writer is not None
+            and block_gradient_writer is not None
+        )
+        _require_equal(
+            state.completed_global_epochs,
+            UNTIED8_OPERATIONAL_REVIEW_EPOCH,
+            field="operational_review.resume_epoch",
+        )
+        review_checkpoint_store = checkpoint_store
+        if not checkpoint_store.latest_path.is_file():
+            # A process launched directly from an epoch-300 source checkpoint
+            # still materializes a current-run, run-ID-bound rolling checkpoint
+            # before taking the deliberate non-success exit.
+            review_checkpoint_store = AtomicLatestCheckpointStore(
+                archive.scratch_path,
+                completed_global_epochs=0,
+            )
+            review_checkpoint_store.save(
+                _checkpoint_payload(
+                    run_id=run_id,
+                    config=config,
+                    model_construction=construction,
+                    parameter_count=parameter_count,
+                    resume=state,
+                ),
+                completed_global_epochs=state.completed_global_epochs,
+            )
+        loaded_checkpoint = review_checkpoint_store.load_latest()
+        _require_equal(
+            int(loaded_checkpoint["completed_global_epochs"]),
+            UNTIED8_OPERATIONAL_REVIEW_EPOCH,
+            field="operational_review.checkpoint_epoch",
+        )
+        latest = require_latest_only_checkpoint_layout(scratch_path, final=False)
+        reloaded_state, checkpoint_reload_verification = _load_resume_checkpoint(
+            latest,
+            config=config,
+            model_construction=construction,
+            require_fixed_source=False,
+        )
+        for field in (
+            "completed_global_epochs",
+            "optimizer_updates_completed",
+            "model_state_checksum",
+            "optimizer_state_checksum",
+            "scaler_state_checksum",
+            "history_checksum",
+            "resume_checksum",
+        ):
+            _require_equal(
+                getattr(reloaded_state, field),
+                getattr(state, field),
+                field=f"operational_review.checkpoint_reload.{field}",
+            )
+        model.load_state_dict(reloaded_state.model_state_dict, strict=True)
+        checkpoint_reload_verification = {
+            **checkpoint_reload_verification,
+            "strict_model_state_reload_verified": True,
+        }
+        _require_equal(
+            loaded_checkpoint.get("run_id"),
+            run_id,
+            field="operational_review.checkpoint_reload.run_id",
+        )
+        _require_equal(
+            loaded_checkpoint.get("parameter_count"),
+            parameter_count,
+            field="operational_review.checkpoint_reload.parameter_count",
+        )
+        checkpoint_sha256 = sha256_file(latest)
+        epoch_rows = metrics_writer.read_rows()
+        gradient_rows = gradient_writer.read_rows()
+        block_rows = block_gradient_writer.read_rows()
+        review = _untied8_operational_review_payload(
+            run_id=run_id,
+            parameter_count=parameter_count,
+            plateau=plateau_payload,
+            checkpoint_sha256=checkpoint_sha256,
+            epoch_metrics_rows=len(epoch_rows),
+            gradient_direction_rows=len(gradient_rows),
+            block_gradient_rows=len(block_rows),
+        )
+        _validate_gradient_direction_scalar_files(
+            archive.scratch_path,
+            gradient_csv=gradient_writer.path,
+            block_gradient_csv=block_gradient_writer.path,
+        )
+        plots = _write_and_verify_untied8_training_plots(archive.scratch_path)
+        review.update(
+            {
+                "campaign_id": _campaign_id(config),
+                "model_name": str(_section(config, "model")["name"]),
+                "peak_vram_gib": max(
+                    float(row["peak_vram_gib_all_ranks"]) for row in epoch_rows
+                ),
+                "duration_seconds": time.monotonic() - started,
+                "epoch_metrics_csv": "results/epoch_metrics.csv",
+                "gradient_direction_observability": {
+                    "schema": GRADIENT_DIRECTION_METRICS_SCHEMA,
+                    "csv": "results/gradient_direction_metrics.csv",
+                    "csv_sha256": sha256_file(gradient_writer.path),
+                    "completed_epoch_rows": len(gradient_rows),
+                    "final_epoch_summary": dict(gradient_rows[-1]),
+                },
+                "block_gradient_direction_observability": {
+                    "schema": BLOCK_GRADIENT_DIRECTION_METRICS_SCHEMA,
+                    "csv": "results/gradient_direction_by_block.csv",
+                    "csv_sha256": sha256_file(block_gradient_writer.path),
+                    "completed_epoch_rows": len(block_rows),
+                    "completed_epochs": block_gradient_writer.completed_epochs,
+                    "rows_per_completed_global_epoch": 8,
+                    "final_epoch_summaries": [
+                        dict(row) for row in block_rows[-8:]
+                    ],
+                },
+                "gradient_direction_resume_lineage": gradient_resume_lineage,
+                "block_gradient_direction_resume_lineage": (
+                    block_gradient_resume_lineage
+                ),
+                "training_plots": plots,
+                "checkpoint_reload_verified": True,
+                "checkpoint_reload_verification": (
+                    checkpoint_reload_verification
+                ),
+                "checkpoint_layout": "active_latest_only",
+            }
+        )
+        archive.write_json(
+            "diagnostics/operational_review_required_epoch_0300.json",
+            review,
+        )
+        archive.write_json(
+            "provenance/untied8_operational_review.json",
+            review,
+        )
+        archive.append_metric_event(
+            {
+                "name": "fit/operational_review/plateau_confirmed",
+                "value": 0.0,
+                "step": UNTIED8_OPERATIONAL_REVIEW_EPOCH,
+                "phase": "operational_review_required",
+            }
+        )
+        archive.write_summary(review)
+        print(
+            STDOUT_PREFIX + " " + json.dumps(review, sort_keys=True, allow_nan=False),
+            flush=True,
+        )
+        return review
 
     start_epoch = 0 if resume is None else resume.completed_global_epochs
     final_resume: CohortRelativeQKVEpochBoundaryResume | None = None
@@ -1775,6 +3352,11 @@ def run_distributed(
             # epoch-175 source checkpoint.
             checkpoint_callback=None,
             epoch_callback=epoch_callback if rank == 0 else None,
+            gradient_observer=(
+                observe_gradient_direction
+                if rank == 0 and gradient_direction_enabled
+                else None
+            ),
         )
         final_resume = segment_result.resume
         _require_equal(
@@ -1846,6 +3428,16 @@ def run_distributed(
                 model.load_state_dict(resume.model_state_dict, strict=True)
                 model.to(torch.device(f"cuda:{local_rank}"))
                 final_resume = resume
+            elif _untied8_operational_review_required(config, resume_decision):
+                assert resume is not None and plateau is not None
+                if rank == 0:
+                    persist_untied8_operational_review(resume, plateau)
+                torch.distributed.barrier()
+                raise SO214CoreOperationalReviewRequired(
+                    "operational_review_required: untied-8 plateau was not "
+                    "confirmed at the durable epoch-300 boundary; resumption "
+                    "requires an explicit campaign amendment and approval."
+                )
 
         end_epoch = _next_fixed_plateau_audit_epoch(
             start_epoch,
@@ -1866,6 +3458,11 @@ def run_distributed(
                 resume=resume,
                 checkpoint_callback=checkpoint_callback if rank == 0 else None,
                 epoch_callback=epoch_callback if rank == 0 else None,
+                gradient_observer=(
+                    observe_gradient_direction
+                    if rank == 0 and gradient_direction_enabled
+                    else None
+                ),
             )
             losses = [
                 record.equal_core_mean_masked_huber
@@ -1895,6 +3492,19 @@ def run_distributed(
             if int(should_stop.item()) == 1:
                 final_resume = segment_result.resume
                 break
+            if _untied8_operational_review_required(config, decision):
+                assert plateau is not None
+                if rank == 0:
+                    persist_untied8_operational_review(
+                        segment_result.resume,
+                        plateau,
+                    )
+                torch.distributed.barrier()
+                raise SO214CoreOperationalReviewRequired(
+                    "operational_review_required: untied-8 plateau was not "
+                    "confirmed at the durable epoch-300 boundary; resumption "
+                    "requires an explicit campaign amendment and approval."
+                )
             resume = segment_result.resume
             start_epoch = end_epoch
             end_epoch = _next_fixed_plateau_audit_epoch(
@@ -1943,6 +3553,134 @@ def run_distributed(
         return None
 
     assert archive is not None and final_receipt is not None
+    epoch_metric_rows = DurableEpochMetricsCSV(archive.scratch_path).read_rows()
+    _require_equal(
+        len(epoch_metric_rows),
+        final_resume.completed_global_epochs,
+        field="epoch_metrics.completed_rows",
+    )
+    gradient_direction_provenance: dict[str, Any] = {
+        "enabled": False,
+        "legacy_protocol_preserved": True,
+    }
+    block_gradient_direction_provenance: dict[str, Any] = {
+        "enabled": False,
+        "non_untied8_protocol_preserved": True,
+    }
+    if gradient_direction_enabled:
+        assert gradient_writer is not None
+        gradient_rows = gradient_writer.read_rows()
+        _require_equal(
+            len(gradient_rows),
+            final_resume.completed_global_epochs,
+            field="gradient_direction.completed_rows",
+        )
+        _require_equal(
+            int(gradient_rows[-1]["global_epoch"]),
+            final_resume.completed_global_epochs,
+            field="gradient_direction.final_epoch",
+        )
+        gradient_direction_provenance = {
+            "enabled": True,
+            "schema": GRADIENT_DIRECTION_METRICS_SCHEMA,
+            "csv": "results/gradient_direction_metrics.csv",
+            "csv_sha256": sha256_file(gradient_writer.path),
+            "completed_epoch_rows": len(gradient_rows),
+            "final_epoch_summary": dict(gradient_rows[-1]),
+            "sampling_point": (
+                "rank0_full_ddp_averaged_fp32_trainable_gradient_after_amp_"
+                "unscale_and_finite_check_before_clipping"
+            ),
+            "gradient_tensors_serialized": False,
+            "checkpoint_state_saved": False,
+            "interpretation": (
+                "directional_diagnostics_are_interpreted_jointly_with_training_"
+                "loss_and_gradient_norm_and_are_not_a_standalone_convergence_"
+                "criterion"
+            ),
+        }
+    if block_gradient_direction_enabled:
+        assert block_gradient_writer is not None
+        block_gradient_rows = block_gradient_writer.read_rows()
+        _require_equal(
+            len(block_gradient_rows),
+            final_resume.completed_global_epochs * block_gradient_count,
+            field="block_gradient_direction.completed_rows",
+        )
+        _require_equal(
+            block_gradient_writer.completed_epochs,
+            final_resume.completed_global_epochs,
+            field="block_gradient_direction.completed_epochs",
+        )
+        final_block_rows = tuple(block_gradient_rows[-block_gradient_count:])
+        _require_equal(
+            tuple(int(row["block_index"]) for row in final_block_rows),
+            tuple(range(block_gradient_count)),
+            field="block_gradient_direction.final_block_indices",
+        )
+        _require_equal(
+            tuple(row["block_name"] for row in final_block_rows),
+            tuple(
+                f"blocks.{index}" for index in range(block_gradient_count)
+            ),
+            field="block_gradient_direction.final_block_names",
+        )
+        _require_equal(
+            {int(row["global_epoch"]) for row in final_block_rows},
+            {final_resume.completed_global_epochs},
+            field="block_gradient_direction.final_epoch",
+        )
+        block_gradient_direction_provenance = {
+            "enabled": True,
+            "scope": "graph_blocks_only",
+            "schema": BLOCK_GRADIENT_DIRECTION_METRICS_SCHEMA,
+            "csv": "results/gradient_direction_by_block.csv",
+            "csv_sha256": sha256_file(block_gradient_writer.path),
+            "completed_epoch_rows": len(block_gradient_rows),
+            "completed_epochs": block_gradient_writer.completed_epochs,
+            "rows_per_completed_global_epoch": block_gradient_count,
+            "block_names": [
+                f"blocks.{index}" for index in range(block_gradient_count)
+            ],
+            "final_epoch_summaries": [dict(row) for row in final_block_rows],
+            "sampling_point": (
+                "rank0_per_block_ddp_averaged_fp32_trainable_gradient_after_"
+                "amp_unscale_and_finite_check_before_clipping"
+            ),
+            "gradient_tensors_serialized": False,
+            "checkpoint_state_saved": False,
+            "interpretation": (
+                "block_direction_diagnostics_are_interpreted_jointly_with_"
+                "training_loss_full_gradient_direction_and_gradient_norm"
+            ),
+        }
+    if gradient_direction_enabled:
+        assert gradient_writer is not None
+        _validate_gradient_direction_scalar_files(
+            archive.scratch_path,
+            gradient_csv=gradient_writer.path,
+            block_gradient_csv=(
+                block_gradient_writer.path
+                if block_gradient_writer is not None
+                else None
+            ),
+        )
+        if any(
+            str(field).startswith(("gradient_direction", "block_gradient"))
+            for field in final_payload
+        ):
+            raise SO214CoreRunnerError(
+                "Gradient direction tensors may not enter the checkpoint payload."
+            )
+    training_plots: dict[str, Any] = {
+        "enabled": False,
+        "non_untied8_protocol_preserved": True,
+    }
+    if block_gradient_direction_enabled:
+        training_plots = _write_and_verify_untied8_training_plots(
+            archive.scratch_path,
+            expected_blocks=block_gradient_count,
+        )
     replay_batch = min(batches, key=lambda batch: (batch.n_nodes, batch.alias))
     checkpoint_verification = _verify_final_checkpoint_reload(
         final_receipt.path,
@@ -1973,7 +3711,9 @@ def run_distributed(
     )
     salt = os.environ.get("BAGM_SAMPLE_KEY_SALT", "").strip()
     if len(salt.encode("utf-8")) < 16:
-        salt = hashlib.sha256(f"{run_id}:{CAMPAIGN_ID}".encode("utf-8")).hexdigest()
+        salt = hashlib.sha256(
+            f"{run_id}:{_campaign_id(config)}".encode("utf-8")
+        ).hexdigest()
     deidentified = deidentify_prediction_rows(
         prediction_rows,
         identifier_fields=["core_alias"],
@@ -2037,7 +3777,7 @@ def run_distributed(
     archive.write_json(
         "provenance/so2_relative_qkv_training.json",
         {
-            "campaign_id": CAMPAIGN_ID,
+            "campaign_id": _campaign_id(config),
             "model_seed": MODEL_SEED,
             "mask_base_seed": int(_section(config, "masking")["mask_base_seed"]),
             "held_in_mask_base_seed": HELD_IN_MASK_BASE_SEED,
@@ -2069,13 +3809,27 @@ def run_distributed(
             "execution_mode": (
                 "resume_fixed_final_epoch" if fixed_mode else "plateau_continuation"
             ),
+            "epoch_loss_recording": {
+                "frequency": "every_completed_global_epoch",
+                "csv": "results/epoch_metrics.csv",
+                "completed_epoch_rows": len(epoch_metric_rows),
+            },
+            "gradient_direction_observability": gradient_direction_provenance,
+            "gradient_direction_resume_lineage": gradient_resume_lineage,
+            "block_gradient_direction_observability": (
+                block_gradient_direction_provenance
+            ),
+            "block_gradient_direction_resume_lineage": (
+                block_gradient_resume_lineage
+            ),
+            "training_plots": training_plots,
         },
     )
     summary = {
         "run_id": run_id,
         "status": "success",
-        "campaign_id": CAMPAIGN_ID,
-        "model_name": "relative-qkv-gat",
+        "campaign_id": _campaign_id(config),
+        "model_name": str(_section(config, "model")["name"]),
         "model_seed": MODEL_SEED,
         "final_epoch": final_resume.completed_global_epochs,
         "optimizer_steps": final_resume.optimizer_updates_completed,
@@ -2083,12 +3837,18 @@ def run_distributed(
         "primary_metric_name": evaluation["primary_metric"],
         "primary_metric_value": held_in[evaluation["primary_metric"]],
         "peak_vram_gib": max(
-            float(row["peak_vram_gib_all_ranks"])
-            for row in DurableEpochMetricsCSV(archive.scratch_path).read_rows()
+            float(row["peak_vram_gib_all_ranks"]) for row in epoch_metric_rows
         ),
         "duration_seconds": time.monotonic() - started,
         "checkpoint": "checkpoints/last.ckpt",
         "epoch_metrics_csv": "results/epoch_metrics.csv",
+        "epoch_loss_recorded_every_global_epoch": True,
+        "epoch_metrics_rows": len(epoch_metric_rows),
+        "gradient_direction_observability": gradient_direction_provenance,
+        "block_gradient_direction_observability": (
+            block_gradient_direction_provenance
+        ),
+        "training_plots": training_plots,
         "plateau_confirmed": bool(not fixed_mode),
         "source_plateau_confirmed_epoch": (
             FIXED_CONTINUATION_SOURCE_EPOCH if fixed_mode else None

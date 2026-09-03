@@ -328,6 +328,176 @@ def test_so2_fixed_continuation_uses_the_same_tracked_torchrun_agent(
     ]
 
 
+def test_so2_recurrent_protocol_uses_existing_tracked_torchrun_agent(
+    tmp_path: Path,
+) -> None:
+    command = command_for_config(
+        {
+            "evaluation": {
+                "protocol": (
+                    "held_in_pooled_14core_recurrent_relative_qkv_seed_plateau"
+                ),
+            },
+            "model": {"name": "recurrent-relative-qkv-gat"},
+            "campaign": {
+                "campaign_id": (
+                    "cmp_20260831_so2_14core_recurrent_relative_qkv_"
+                    "seed0_batch2"
+                )
+            },
+            "launcher": {
+                "requested_gpu": "0,1,2,3",
+                "process_count": 4,
+                "elastic_max_restarts": 0,
+            },
+        },
+        paths=_paths(tmp_path),
+    )
+
+    assert command[:8] == [
+        sys.executable,
+        "-m",
+        "torch.distributed.run",
+        "--standalone",
+        "--nnodes=1",
+        "--nproc-per-node=4",
+        "--max-restarts=0",
+        str(tmp_path / "scripts/train/run_so2_14core_relative_qkv.py"),
+    ]
+    assert command[8:] == [
+        "--config",
+        "{run_scratch}/config.resolved.yaml",
+        "--run-scratch",
+        "{run_scratch}",
+    ]
+
+
+def test_so2_recurrent_protocol_rejects_model_campaign_or_launcher_drift(
+    tmp_path: Path,
+) -> None:
+    base = {
+        "evaluation": {
+            "protocol": (
+                "held_in_pooled_14core_recurrent_relative_qkv_seed_plateau"
+            ),
+        },
+        "model": {"name": "recurrent-relative-qkv-gat"},
+        "campaign": {
+            "campaign_id": (
+                "cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2"
+            )
+        },
+        "launcher": {
+            "requested_gpu": "0,1,2,3",
+            "process_count": 4,
+            "elastic_max_restarts": 0,
+        },
+    }
+    invalid_variants = (
+        {**base, "model": {"name": "relative-qkv-gat"}},
+        {
+            **base,
+            "campaign": {
+                "campaign_id": (
+                    "cmp_20260825_so2_14core_relative_qkv_seed0_batch2"
+                )
+            },
+        },
+        {
+            **base,
+            "launcher": {**base["launcher"], "elastic_max_restarts": 1},
+        },
+    )
+    for invalid in invalid_variants:
+        with pytest.raises(ConfigurationError, match="recurrent.*four-rank"):
+            command_for_config(invalid, paths=_paths(tmp_path))
+
+
+def test_so2_untied8_protocol_uses_existing_tracked_torchrun_agent(
+    tmp_path: Path,
+) -> None:
+    command = command_for_config(
+        {
+            "evaluation": {
+                "protocol": (
+                    "held_in_pooled_14core_untied8_relative_qkv_seed_plateau"
+                ),
+            },
+            "model": {"name": "relative-qkv-gat"},
+            "campaign": {
+                "campaign_id": (
+                    "cmp_20260903_so2_14core_untied8_relative_qkv_"
+                    "seed0_batch2"
+                )
+            },
+            "launcher": {
+                "requested_gpu": "0,1,2,3",
+                "process_count": 4,
+                "elastic_max_restarts": 0,
+            },
+        },
+        paths=_paths(tmp_path),
+    )
+
+    assert command[:8] == [
+        sys.executable,
+        "-m",
+        "torch.distributed.run",
+        "--standalone",
+        "--nnodes=1",
+        "--nproc-per-node=4",
+        "--max-restarts=0",
+        str(tmp_path / "scripts/train/run_so2_14core_relative_qkv.py"),
+    ]
+    assert command[8:] == [
+        "--config",
+        "{run_scratch}/config.resolved.yaml",
+        "--run-scratch",
+        "{run_scratch}",
+    ]
+
+
+def test_so2_untied8_protocol_rejects_model_campaign_or_launcher_drift(
+    tmp_path: Path,
+) -> None:
+    base = {
+        "evaluation": {
+            "protocol": (
+                "held_in_pooled_14core_untied8_relative_qkv_seed_plateau"
+            ),
+        },
+        "model": {"name": "relative-qkv-gat"},
+        "campaign": {
+            "campaign_id": (
+                "cmp_20260903_so2_14core_untied8_relative_qkv_seed0_batch2"
+            )
+        },
+        "launcher": {
+            "requested_gpu": "0,1,2,3",
+            "process_count": 4,
+            "elastic_max_restarts": 0,
+        },
+    }
+    invalid_variants = (
+        {**base, "model": {"name": "recurrent-relative-qkv-gat"}},
+        {
+            **base,
+            "campaign": {
+                "campaign_id": (
+                    "cmp_20260825_so2_14core_relative_qkv_seed0_batch2"
+                )
+            },
+        },
+        {
+            **base,
+            "launcher": {**base["launcher"], "elastic_max_restarts": 1},
+        },
+    )
+    for invalid in invalid_variants:
+        with pytest.raises(ConfigurationError, match="untied8.*four-rank"):
+            command_for_config(invalid, paths=_paths(tmp_path))
+
+
 def test_so1_strict_plateau_protocol_uses_tracked_four_rank_runner(
     tmp_path: Path,
 ) -> None:

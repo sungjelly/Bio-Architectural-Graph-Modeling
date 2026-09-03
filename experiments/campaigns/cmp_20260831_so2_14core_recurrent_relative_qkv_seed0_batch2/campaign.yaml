@@ -1,0 +1,70 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2
+display_name: SO2 cores 15-28 recurrent Relative-QKV seed-0 exploratory fit
+status: active_training
+analysis_design: exploratory_single_seed_architecture_comparison
+definition: experiments/campaigns/cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2/README.md
+frozen_task_contract: experiments/campaigns/cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2/frozen_task_contract.yaml
+frozen_task_contract_sha256: 8ce265229ae76b67bc8b4adf97dc6a61c571d68c7eaa4b51e1be4191baa0365f
+cohort:
+  source_slide: SO_2
+  aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26, SO2-C27, SO2-C28]
+  independent_core_count: 14
+  total_fit_cells: 246063
+  fit_scope: all_cells_so2_cores_15_through_28_transductive
+  validation_or_test_partition_present: false
+variant:
+  name: recurrent_relative_qkv_gat_256_b1_t4_h8_radial_stratified_k200_r500_batch2_ddp4
+  model_seeds: [0]
+  unique_graph_blocks: 1
+  recurrent_unroll_steps: 4
+  graph_block_weight_tying: all_steps
+  initialization: fresh_from_scratch
+reference_control:
+  run_id: r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6
+  unique_graph_blocks: 4
+  effective_graph_depth: 4
+production_run_count: 1
+production_minimum_global_epochs: 150
+production_optimizer_updates_per_global_epoch: 7
+production_masks_per_cell_per_epoch: 10
+production_stopping_policy: literal_august25_two_consecutive_training_loss_plateau_audits_after_epoch150
+production_continuation_block_global_epochs: 25
+production_maximum_scientific_epoch_cap: null
+gradient_diagnostics:
+  timing: after_amp_unscale_and_finite_check_before_gradient_clipping_or_optimizer_step
+  scope: full_ddp_averaged_trainable_gradient
+  persistence: per_epoch_scalars_only
+  output_path: results/gradient_direction_metrics.csv
+  schema: so2_full_gradient_direction_metrics_v1
+  resume_boundaries_explicitly_unavailable: true
+  gradient_tensor_files_allowed: false
+  gradient_vector_checkpoint_payload_allowed: false
+checkpointing:
+  during_training: one_atomic_rolling_latest_only
+  final: one_last_checkpoint_only
+  epoch_archives_allowed: false
+execution:
+  world_size: 4
+  backend: nccl
+  physical_gpu_ids: [0, 1, 2, 3]
+  elastic_max_restarts: 0
+  preflight_receipt: state/preflight/so2_14core_recurrent_relative_qkv_ddp4.json
+  preflight_receipt_content_sha256: 3ee624d94a9474a07251a5db304d62140921bc42156d37972d6e530f50f6a03a
+  preflight_completed_at: 2026-08-31T10:00:38Z
+  measured_preflight_peak_vram_gib: 15.14723825454712
+  epoch_metrics_csv: results/epoch_metrics.csv
+  gradient_direction_metrics_csv: results/gradient_direction_metrics.csv
+  queue_job_id: q_c050c006f112aadad43c
+  active_run_id: r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf
+  production_started_at: 2026-08-31T10:02:21.590222Z
+  first_completed_epoch:
+    global_epoch: 1
+    equal_core_mean_masked_huber: 0.28640682942100926
+    consecutive_optimizer_step_cosine_mean: 0.4629239911834399
+    epoch_aggregate_gradient_cosine_to_previous_epoch: null
+    gradient_norm_mean_before_clip: 0.13317846187523433
+    epoch_duration_seconds: 200.51808994822204
+    peak_vram_gib_all_ranks: 15.158123016357422
+production_maximum_attempts: 2
+automatic_enqueue: false

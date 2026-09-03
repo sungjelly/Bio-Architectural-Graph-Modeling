@@ -1,0 +1,153 @@
+schema_version: 1
+campaign_id: cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2
+status: frozen_before_launch
+analysis_design: exploratory_single_seed_attention_score_comparison
+outcome_status: pending
+objective: compare_four_block_geometry_modulated_cosine_qkv_with_the_august25_four_block_relative_qkv_reference
+scientific_question: does_geometry_conditioned_dimensionwise_qk_modulation_improve_the_fitted_so2_masked_expression_objective_without_optimization_failure
+estimand: held_in_all_cells_so2_14core_transductive_partial_gene_masked_expression_reconstruction
+permitted_claim: exploratory_seed0_fitted_cohort_attention_score_comparison_only
+generalization_claim_supported: false
+validation_or_test_partition_present: false
+cohort:
+  aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26, SO2-C27, SO2-C28]
+  total_fit_cells: 246063
+  biological_target_count: 1000
+  node_covariate_count: 22
+architecture:
+  model_name: geometry-modulated-relative-qkv-gat
+  family: geometry_modulated_relative_qkv_graph_transformer
+  hidden_dim: 256
+  graph_layers: 4
+  unique_graph_blocks: 4
+  effective_graph_depth: 4
+  graph_block_weight_tying: none
+  attention_heads: 8
+  attention_head_dim: 32
+  ffn_dim: 1024
+  decoder_dim: 1024
+  expected_trainable_parameter_count: 5134088
+  per_block_trainable_parameter_count: 831880
+attention_score:
+  mechanism: geometry_modulated_cosine_qkv_v1
+  qk_normalization: per_head_l2_fp32
+  qk_normalization_epsilon: 0.000001
+  modulation_raw: 1_plus_0.5_tanh_geometry_projection
+  modulation_raw_range: [0.5, 1.5]
+  modulation_normalization: per_edge_head_dimension_mean_one
+  geometry_bias: tanh_geometry_projection
+  geometry_bias_range: [-1.0, 1.0]
+  geometry_output_projection_biases: false
+  geometry_output_projections_zero_initialized: true
+  logit_scale_parameterization: bounded_sigmoid
+  logit_scale_range: [0.1, 20.0]
+  logit_scale_initial: 1.8856180831641267
+  values_receive_geometry: false
+  value_content_source: expression_derived_node_embedding_only
+reference_control:
+  campaign_id: cmp_20260825_so2_14core_relative_qkv_seed0_batch2
+  run_id: r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6
+  graph_layers: 4
+  trainable_parameter_count: 5003016
+  epoch150_equal_core_training_masked_huber: 0.2416047074965068
+comparison_scope:
+  changed:
+    - l2_normalized_queries_and_keys
+    - bounded_learned_per_head_logit_scale
+    - geometry_conditioned_dimensionwise_qk_modulation
+    - bounded_geometry_only_bias
+  unchanged:
+    - four_unique_graph_blocks
+    - expression_only_values
+    - cohort_graph_masking_optimizer_and_stopping_protocol
+  interpretation: whole_attention_score_mechanism_comparison_not_an_isolated_modulation_ablation
+matched_configs:
+  dataset: configs/dataset/so2_14core_pooled_fit_v1.yaml
+  graph: configs/graph/so2_radial_stratified_k200_r500_bidirectional.yaml
+  masking: configs/masking/uniform_per_cell_0_100.yaml
+  trainer: configs/trainer/pooled_relative_qkv_14core_batch2_plateau_min150.yaml
+  model_seed: 0
+  initialization: fresh_from_scratch
+  pretrained_or_cross_campaign_resume_allowed: false
+training:
+  optimizer: AdamW
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  gradient_clip_norm: 1.0
+  huber_delta: 1.0
+  scheduler: none
+  distributed_world_size: 4
+  distributed_backend: nccl
+  gpu_ids: [0, 1, 2, 3]
+  core_visits_per_global_epoch: 14
+  optimizer_updates_per_global_epoch: 7
+  complete_graph_mask_views_per_global_epoch: 140
+execution:
+  receiver_chunk_size: 128
+  max_edges_per_chunk: 50000
+  activation_checkpointing: true
+  fp32_attention_scoring_and_accumulation: true
+  chunk_change_is_memory_only_and_preserves_receiver_softmax: true
+stopping:
+  source: literal_cmp_20260825_original_plateau_policy
+  minimum_global_epochs: 150
+  first_audit_global_epoch: 150
+  audit_interval_global_epochs: 25
+  window_global_epochs: 50
+  relative_mean_improvement_max: 0.002
+  normalized_absolute_slope_per_epoch_max: 0.0001
+  consecutive_passing_audits_required: 2
+  earliest_possible_stop_global_epoch: 175
+  continuation_block_global_epochs: 25
+  fixed_epoch_budget: false
+  maximum_scientific_epoch_cap: null
+gradient_diagnostics:
+  read_timing: after_amp_unscale_and_finite_check_before_gradient_clipping_or_optimizer_step
+  source: full_fp32_ddp_averaged_trainable_gradient
+  global_output_path: results/gradient_direction_metrics.csv
+  block_output_path: results/gradient_direction_by_block.csv
+  block_names: [blocks.0, blocks.1, blocks.2, blocks.3]
+  rows_per_completed_epoch_global: 1
+  rows_per_completed_epoch_block: 4
+  gradient_tensor_persistence_allowed: false
+  per_optimizer_step_file_persistence_allowed: false
+  gradient_vector_checkpoint_payload_allowed: false
+  affects_optimization_or_stopping: false
+checkpointing:
+  epoch_loss_recording: every_completed_epoch_fsynced
+  in_training_path: checkpoints/latest.ckpt
+  in_training_checkpoint_count: 1
+  replacement: atomic_every_completed_epoch
+  epoch_archive_allowed: false
+  best_checkpoint_selection_allowed: false
+  successful_final_path: checkpoints/last.ckpt
+  successful_final_checkpoint_count: 1
+acceptance:
+  focused_model_tests_pass: true
+  four_unique_block_parameter_sets_verified: true
+  parameter_count_is_5134088: true
+  all_four_blocks_receive_finite_gradient: true
+  zero_initialization_g_one_beta_zero_verified: true
+  chunk_full_edge_forward_and_gradient_equivalence: true
+  four_rank_one_update_preflight_pass: true
+  preflight_peak_vram_gib_all_ranks_max: 22.0
+  preflight_minimum_vram_headroom_gib_each_rank: 2.0
+  checkpoint_reload_verified: true
+  epoch_and_gradient_scalar_rows_contiguous: true
+  final_checkpoint_single_loadable_and_verified: true
+resources:
+  gpu_count: 4
+  gpu_model: NVIDIA_GeForce_RTX_3090
+  gpu_memory_gib_each: 24
+  minimum_free_disk_gib: 25
+artifacts:
+  experiment_config: configs/experiment/so2_14core_geometry_modulated_relative_qkv_seed0_batch2.yaml
+  preflight_receipt: state/preflight/so2_14core_geometry_modulated_relative_qkv_ddp4.json
+  epoch_metrics: results/epoch_metrics.csv
+  global_gradient_metrics: results/gradient_direction_metrics.csv
+  block_gradient_metrics: results/gradient_direction_by_block.csv
+  rolling_checkpoint: checkpoints/latest.ckpt
+  final_checkpoint: checkpoints/last.ckpt
+  loss_figure: figures/loss_vs_epoch.png
+  gradient_direction_figure: figures/gradient_direction_vs_epoch.png
+automatic_enqueue: false

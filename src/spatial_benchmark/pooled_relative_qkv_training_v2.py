@@ -23,6 +23,7 @@ from torch import Tensor, nn
 from torch.nn.parallel import DistributedDataParallel
 
 from .adjacency_ablation import mask_realization_sha256, sample_uniform_mask_numpy
+from .gradient_direction_observability import GradientDirectionUpdateContext
 from .masking import derive_mask_seed
 from .pooled_relative_qkv_training import (
     CORE_ORDER_SEED,
@@ -941,6 +942,7 @@ EpochCallback = Callable[
     ],
     None,
 ]
+GradientObserver = Callable[[nn.Module, GradientDirectionUpdateContext], None]
 
 
 def fit_cohort_relative_qkv_segment(
@@ -951,6 +953,7 @@ def fit_cohort_relative_qkv_segment(
     resume: CohortRelativeQKVEpochBoundaryResume | None = None,
     checkpoint_callback: CheckpointCallback | None = None,
     epoch_callback: EpochCallback | None = None,
+    gradient_observer: GradientObserver | None = None,
 ) -> CohortRelativeQKVTrainingResult:
     """Fit a deterministic segment with two cores and 20 losses per update."""
 
@@ -1315,6 +1318,17 @@ def fit_cohort_relative_qkv_segment(
             _assert_finite_gradients(
                 training_model, epoch=global_epoch, alias="+".join(pair)
             )
+            if gradient_observer is not None and config.distributed_rank == 0:
+                gradient_observer(
+                    model,
+                    GradientDirectionUpdateContext(
+                        global_epoch=global_epoch,
+                        completed_global_epoch=global_epoch + 1,
+                        optimizer_update_in_epoch=update_index,
+                        cumulative_optimizer_update=cumulative_update,
+                        aliases=pair,
+                    ),
+                )
             gradient_norm = torch.nn.utils.clip_grad_norm_(
                 training_model.parameters(),
                 config.gradient_clip_norm,
@@ -1490,6 +1504,7 @@ __all__ = [
     "CohortRelativeQKVOptimizerUpdateRecord",
     "CohortRelativeQKVTrainingConfig",
     "CohortRelativeQKVTrainingResult",
+    "GradientObserver",
     "SO2_14CORE_ALIASES",
     "SO2_CORES_PER_OPTIMIZER_UPDATE",
     "SO2_LOSSES_PER_OPTIMIZER_UPDATE",

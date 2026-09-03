@@ -1,0 +1,209 @@
+schema_version: 1
+campaign_id: cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2
+status: frozen_before_training_launch
+analysis_design: exploratory_single_seed_architecture_comparison
+outcome_status: pending
+objective: compare_one_fully_tied_recurrent_graph_block_unrolled_four_times_with_the_august25_four_unique_block_reference
+scientific_question: can_full_graph_block_weight_tying_reduce_parameters_while_retaining_the_fitted_so2_masked_expression_objective
+hypothesis:
+  primary: recurrent_all_step_weight_tying_reaches_the_literal_august25_plateau_and_epoch150_loss_is_within_five_percent_of_the_untied_reference
+  epoch150_reference_equal_core_masked_huber: 0.2416047074965068
+  maximum_epoch150_recurrent_loss_for_exploratory_support: 0.2536849428713321
+  margin_role: pragmatic_exploratory_not_statistical_equivalence
+alternative_explanations:
+  - independent_depth_specific_parameters_are_needed_for_this_fitted_objective
+  - same_cell_expression_and_morphology_dominate_so_architecture_has_little_effect
+  - recurrent_reuse_causes_state_collapse_or_unstable_optimization
+estimand: held_in_all_cells_so2_14core_transductive_partial_gene_masked_expression_reconstruction
+permitted_claim: exploratory_seed0_fitted_cohort_architecture_comparison_only
+generalization_claim_supported: false
+validation_or_test_partition_present: false
+experimental_unit: complete_spatial_core_graph
+observational_units:
+  core_aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26, SO2-C27, SO2-C28]
+  total_fit_cells: 246063
+  biological_target_count: 1000
+  explicitly_excluded_unmapped_fov: 246
+  explicitly_excluded_unmapped_fov_cells: 340
+architecture:
+  model_name: recurrent-relative-qkv-gat
+  family: recurrent_relative_geometry_qkv_graph_transformer
+  hidden_dim: 256
+  graph_layers: 1
+  unique_graph_blocks: 1
+  recurrent_unroll_steps: 4
+  effective_graph_depth: 4
+  graph_block_weight_tying: all_steps
+  tied_components: [attention_layernorm, q_projection, k_projection, v_projection, positional_bias_network, attention_output_projection, ffn_layernorm, ffn]
+  encoder_calls: 1
+  decoder_calls: 1
+  expected_trainable_parameters: 2605680
+  reference_trainable_parameters: 5003016
+  expected_parameter_reduction_fraction: 0.4792
+reference_control:
+  campaign_id: cmp_20260825_so2_14core_relative_qkv_seed0_batch2
+  run_id: r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6
+  architecture: four_unique_relative_qkv_graph_blocks
+  model_seed: 0
+  epoch150_equal_core_training_masked_huber: 0.2416047074965068
+  final_epoch: 175
+  final_epoch_equal_core_training_masked_huber: 0.24084819033741953
+  later_fixed_epoch300_continuation_is_primary_control: false
+matched_controls:
+  dataset_config: configs/dataset/so2_14core_pooled_fit_v1.yaml
+  features_config: configs/features/cosmx_so2_14core_metadata_relative_geometry.yaml
+  graph_config: configs/graph/so2_radial_stratified_k200_r500_bidirectional.yaml
+  masking_config: configs/masking/uniform_per_cell_0_100.yaml
+  trainer_config: configs/trainer/pooled_relative_qkv_14core_batch2_plateau_min150.yaml
+  mask_base_seed: 2026082401
+  core_order_seed: 2026082402
+  model_seed: 0
+  initialization: fresh_from_scratch
+  pretrained_or_cross_campaign_resume_allowed: false
+graph:
+  kind: radial_stratified_knn
+  nominal_k: 200
+  maximum_range_um: 500
+  radial_quotas: [48, 64, 48, 40]
+  bidirectional_union: true
+  self_loops: false
+  cross_core_edges: false
+  graph_manifest_file_sha256: c4a632473e458ae6e6eeab92c026ebf6e4d18ae49b568723f0e66a67db4fc90f
+  graph_manifest_content_sha256: e41a4c92868bac96d05984b5a070d9984cda6ac04e3ad30458e5920259c573d5
+training:
+  optimizer: AdamW
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  gradient_clip_norm: 1.0
+  huber_delta: 1.0
+  scheduler: none
+  precision: mixed
+  distributed_world_size: 4
+  distributed_backend: nccl
+  gpu_ids: [0, 1, 2, 3]
+  core_visits_per_global_epoch: 14
+  cores_per_optimizer_update: 2
+  optimizer_updates_per_global_epoch: 7
+  complete_graph_mask_views_per_global_epoch: 140
+  mask_views_per_core_epoch: 10
+stopping_policy:
+  source: literal_cmp_20260825_original_plateau_policy
+  metric: equal_core_mean_training_masked_huber
+  minimum_global_epochs: 150
+  first_audit_global_epoch: 150
+  audit_interval_global_epochs: 25
+  window_global_epochs: 50
+  relative_mean_improvement_max: 0.002
+  normalized_absolute_slope_per_epoch_max: 0.0001
+  consecutive_passing_audits_required: 2
+  earliest_possible_stop_global_epoch: 175
+  continuation_block_global_epochs: 25
+  fixed_epoch_budget: false
+  maximum_scientific_epoch_cap: null
+gradient_diagnostics:
+  source_gradient: full_ddp_averaged_gradient_over_all_trainable_parameters
+  computation_rank: 0
+  vector_dtype: float32
+  read_timing: after_amp_unscale_and_finite_check_before_gradient_clipping_or_optimizer_step
+  parameter_order: trainable_parameter_registration_order
+  missing_gradient_slices: zero_filled
+  persistence_granularity: global_epoch_scalars_only
+  output_path: results/gradient_direction_metrics.csv
+  schema: so2_full_gradient_direction_metrics_v1
+  global_epoch_indexing: one_based
+  ordered_columns:
+    - schema
+    - run_id
+    - model_seed
+    - global_epoch
+    - trainable_parameter_count
+    - optimizer_updates_observed
+    - gradient_norm_mean_before_clip
+    - gradient_norm_min_before_clip
+    - gradient_norm_max_before_clip
+    - consecutive_optimizer_step_cosine_mean
+    - consecutive_optimizer_step_cosine_median
+    - consecutive_optimizer_step_cosine_min
+    - consecutive_optimizer_step_cosine_max
+    - consecutive_optimizer_step_cosine_valid_pairs
+    - epoch_aggregate_gradient_cosine_to_previous_epoch
+    - resume_boundary_unavailable
+  fresh_epoch1:
+    expected_consecutive_valid_pairs_without_zero_norm: 6
+    epoch_aggregate_gradient_cosine_to_previous_epoch: null
+    resume_boundary_unavailable: false
+  later_uninterrupted_epoch:
+    expected_consecutive_valid_pairs_without_zero_norm: 7
+    prior_epoch_aggregate_cosine_available: true
+    resume_boundary_unavailable: false
+  first_epoch_after_process_or_checkpoint_resume:
+    expected_consecutive_valid_pairs_without_zero_norm: 6
+    epoch_aggregate_gradient_cosine_to_previous_epoch: null
+    resume_boundary_unavailable: true
+  zero_norm_cosine_policy: invalid_omitted_and_valid_pair_count_reduced
+  gradient_tensor_persistence_allowed: false
+  per_optimizer_step_file_persistence_allowed: false
+  gradient_vector_checkpoint_payload_allowed: false
+  affects_optimization_or_stopping: false
+  interpretation: cosine_is_diagnostic_only_and_must_be_interpreted_with_gradient_norm_and_loss
+checkpointing:
+  loss_recording: every_completed_global_epoch_fsynced
+  in_training_checkpoint_count: 1
+  in_training_path: checkpoints/latest.ckpt
+  replacement: atomic_every_completed_global_epoch
+  epoch_numbered_archive_allowed: false
+  best_checkpoint_selection_allowed: false
+  successful_final_checkpoint_count: 1
+  final_path: checkpoints/last.ckpt
+  latest_retained_after_success: false
+acceptance:
+  focused_configuration_and_queue_tests_pass: true
+  one_unique_block_and_four_calls_verified: true
+  shared_parameter_identity_and_all_call_gradient_flow_verified: true
+  forcibly_tied_four_block_equivalence_verified: true
+  amp_fp32_and_chunked_full_edge_equivalence_verified: true
+  four_rank_largest_core_preflight_pass: true
+  immutable_dataset_and_graph_checksums_match: true
+  epoch_records_complete_and_fsynced: true
+  literal_august25_plateau_confirmed: true
+  scalar_only_gradient_diagnostics_complete: true
+  final_checkpoint_loadable_and_single: true
+  finalized_bundle_and_checkpoint_catalog_verify: true
+  exploratory_support_requires_epoch150_loss_at_most: 0.2536849428713321
+failure_or_stop_criteria:
+  - architecture_or_weight_tying_contract_drift
+  - incomplete_gradient_flow_from_any_recurrent_application
+  - immutable_input_or_graph_checksum_drift
+  - invalid_ddp_gradient_averaging
+  - nonfinite_loss_or_full_gradient
+  - unrecoverable_peak_memory_failure
+  - nondeterministic_epoch_boundary_resume
+  - missing_or_gapped_epoch_loss_or_gradient_scalar_records
+  - any_persisted_gradient_tensor_vector_checkpoint_payload_or_per_optimizer_step_diagnostic_file
+  - more_than_one_rolling_or_final_checkpoint_or_any_epoch_archive
+  - final_checkpoint_reload_or_bundle_verification_failure
+  - failure_to_plateau_without_an_explicit_contract_amendment
+resources:
+  gpu_model: NVIDIA_GeForce_RTX_3090
+  gpu_count: 4
+  gpu_memory_gib_each: 24
+  baseline_peak_vram_gib: 15.21
+  minimum_free_disk_gib: 25
+  expected_hours_through_epoch150: 8.3
+  expected_hours_per_25_epoch_continuation: 1.4
+artifacts:
+  experiment_config: configs/experiment/so2_14core_recurrent_relative_qkv_seed0_batch2.yaml
+  preflight_receipt: state/preflight/so2_14core_recurrent_relative_qkv_ddp4.json
+  active_root: scratch/active_runs/RUN_ID
+  epoch_metrics: results/epoch_metrics.csv
+  gradient_direction_metrics: results/gradient_direction_metrics.csv
+  rolling_checkpoint: checkpoints/latest.ckpt
+  final_checkpoint: checkpoints/last.ckpt
+  finalized_root: artifacts/runs/YYYY/MM/RUN_ID
+  required_provenance: [resolved_config, code, data, graph, seeds, environment, hardware, logs, metrics, checksums, completion_marker]
+reproduction:
+  working_directory: /workspace/BAGM-relative-qkv-analysis
+  preflight_command: CUDA_VISIBLE_DEVICES=0,1,2,3 /venv/main/bin/python -m torch.distributed.run --standalone --nnodes=1 --nproc-per-node=4 --max-restarts=0 scripts/diagnostics/preflight_so2_14core_relative_qkv_ddp.py --config configs/experiment/so2_14core_recurrent_relative_qkv_seed0_batch2.yaml
+  enqueue_command: /venv/main/bin/python -m spatial_benchmark --database "$BAGM_STATE_ROOT/tracking/bagm.sqlite3" enqueue-experiment --campaign-id cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2 --config configs/experiment/so2_14core_recurrent_relative_qkv_seed0_batch2.yaml --priority 100 --max-attempts 2 --gpu 0,1,2,3
+  derived_runner: scripts/train/run_so2_14core_relative_qkv.py
+automatic_enqueue: false

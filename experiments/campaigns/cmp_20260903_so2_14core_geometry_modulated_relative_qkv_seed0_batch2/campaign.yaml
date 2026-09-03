@@ -1,0 +1,36 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2
+display_name: SO2 cores 15-28 four-block geometry-modulated Relative-QKV seed-0 exploratory fit
+status: active_training
+analysis_design: exploratory_single_seed_attention_score_comparison
+definition: experiments/campaigns/cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2/README.md
+frozen_task_contract: experiments/campaigns/cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2/frozen_task_contract.yaml
+frozen_task_contract_sha256: 38c3e32c6bd16eb19c0d8da05db30faa3d12b9360d23fcb8f0dafe20005a1efa
+variant:
+  name: geometry_modulated_relative_qkv_gat_256_l4_h8_radial_stratified_k200_r500_batch2_ddp4
+  model_seed: 0
+  graph_layers: 4
+  unique_graph_blocks: 4
+  effective_graph_depth: 4
+  graph_block_weight_tying: none
+  expected_trainable_parameter_count: 5134088
+reference_control_run_id: r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6
+production_run_count: 1
+production_minimum_global_epochs: 150
+production_stopping_policy: literal_august25_training_loss_plateau
+maximum_scientific_epoch_cap: null
+execution:
+  world_size: 4
+  backend: nccl
+  physical_gpu_ids: [0, 1, 2, 3]
+  elastic_max_restarts: 0
+  preflight_receipt: state/preflight/so2_14core_geometry_modulated_relative_qkv_ddp4.json
+  epoch_metrics_csv: results/epoch_metrics.csv
+  global_gradient_metrics_csv: results/gradient_direction_metrics.csv
+  block_gradient_metrics_csv: results/gradient_direction_by_block.csv
+  enqueue_max_attempts: 1
+checkpointing:
+  during_training: one_atomic_rolling_latest_only
+  after_success: one_last_only
+  epoch_archives_allowed: false
+automatic_enqueue: false

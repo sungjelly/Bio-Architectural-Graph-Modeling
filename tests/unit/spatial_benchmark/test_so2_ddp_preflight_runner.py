@@ -18,7 +18,17 @@ _SPEC.loader.exec_module(_PREFLIGHT)
 
 def test_preflight_import_and_locked_pair() -> None:
     assert _PREFLIGHT.PREFLIGHT_ALIASES == ("SO2-C22", "SO2-C23")
-    assert _PREFLIGHT.PREFLIGHT_SCHEMA.endswith("ddp4_preflight_v1")
+    assert _PREFLIGHT.PREFLIGHT_SCHEMA == (
+        "so2_14core_relative_qkv_ddp4_preflight_v1"
+    )
+    assert _PREFLIGHT.RECURRENT_PREFLIGHT_SCHEMA == (
+        "so2_14core_recurrent_relative_qkv_ddp4_preflight_v1"
+    )
+    assert _PREFLIGHT.UNTIED8_PREFLIGHT_SCHEMA == (
+        "so2_14core_untied8_relative_qkv_ddp4_preflight_v1"
+    )
+    assert _PREFLIGHT.UNTIED8_PREFLIGHT_MAX_VRAM_GIB == 22.0
+    assert _PREFLIGHT.UNTIED8_MINIMUM_VRAM_HEADROOM_GIB == 2.0
     parsed = _PREFLIGHT.build_parser().parse_args(["--config", "experiment.yaml"])
     assert parsed.config == Path("experiment.yaml")
     assert parsed.output is None

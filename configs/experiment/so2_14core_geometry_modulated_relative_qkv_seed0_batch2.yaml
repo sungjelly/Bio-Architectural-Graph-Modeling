@@ -1,0 +1,101 @@
+version: 1
+defaults:
+  - model: geometry_modulated_relative_qkv_gat_256_l4_h8
+  - masking: uniform_per_cell_0_100
+  - dataset: so2_14core_pooled_fit_v1
+  - features: cosmx_so2_14core_metadata_relative_geometry_routing
+  - graph: so2_radial_stratified_k200_r500_bidirectional
+  - trainer: pooled_relative_qkv_14core_batch2_plateau_min150
+  - evaluation: held_in_so2_14core_geometry_modulated_relative_qkv_fit_diagnostics
+  - launcher: so2_14core_geometry_modulated_relative_qkv_ddp4
+campaign:
+  campaign_id: cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2
+  display_name: SO2 cores 15-28 four-block geometry-modulated Relative-QKV seed-0 exploratory fit
+experiment:
+  variant_label: geometry_modulated_relative_qkv_gat_256_l4_h8_k200_r500_batch2_ddp4
+  estimand: held_in_all_cells_so2_14core_transductive_masked_reconstruction
+  permitted_claim: exploratory_fitted_cohort_attention_score_comparison_only
+metadata:
+  analysis_design: exploratory_single_seed_attention_score_comparison
+  preflight_acceptance:
+    peak_vram_gib_all_ranks_max: 22.0
+    minimum_vram_headroom_gib_each_rank: 2.0
+    gpu_memory_gib_each_rank: 24.0
+  gradient_diagnostics:
+    enabled: true
+    output_path: results/gradient_direction_metrics.csv
+    schema: so2_full_gradient_direction_metrics_v1
+    global_epoch_indexing: one_based
+    computation_rank: 0
+    vector_dtype: float32
+    gradient_scope: full_ddp_averaged_all_trainable_parameters
+    read_timing: after_amp_unscale_and_finite_check_before_gradient_clipping_or_optimizer_step
+    parameter_order: trainable_parameter_registration_order
+    missing_gradient_slices: zero_filled
+    persistence: global_epoch_scalars_only
+    ordered_columns:
+      - schema
+      - run_id
+      - model_seed
+      - global_epoch
+      - trainable_parameter_count
+      - optimizer_updates_observed
+      - gradient_norm_mean_before_clip
+      - gradient_norm_min_before_clip
+      - gradient_norm_max_before_clip
+      - consecutive_optimizer_step_cosine_mean
+      - consecutive_optimizer_step_cosine_median
+      - consecutive_optimizer_step_cosine_min
+      - consecutive_optimizer_step_cosine_max
+      - consecutive_optimizer_step_cosine_valid_pairs
+      - epoch_aggregate_gradient_cosine_to_previous_epoch
+      - resume_boundary_unavailable
+    consecutive_optimizer_step_cosine: true
+    epoch_aggregate_gradient_cosine_to_previous_epoch: true
+    zero_norm_cosines: invalid_and_omitted
+    resume_boundary_policy: boundary_pair_and_prior_epoch_aggregate_unavailable
+    persist_gradient_tensors: false
+    persist_per_optimizer_step_files: false
+    persist_gradient_vectors_in_checkpoints: false
+    affects_optimization_or_plateau_stopping: false
+    layerwise:
+      enabled: true
+      scope: graph_blocks_only
+      block_names: [blocks.0, blocks.1, blocks.2, blocks.3]
+      output_path: results/gradient_direction_by_block.csv
+      schema: so2_block_gradient_direction_metrics_v1
+      row_granularity: one_row_per_block_per_completed_global_epoch
+      rows_per_completed_global_epoch: 4
+      ordered_columns:
+        - schema
+        - run_id
+        - model_seed
+        - global_epoch
+        - block_index
+        - block_name
+        - trainable_parameter_count
+        - optimizer_updates_observed
+        - gradient_norm_mean_before_clip
+        - gradient_norm_min_before_clip
+        - gradient_norm_max_before_clip
+        - consecutive_optimizer_step_cosine_mean
+        - consecutive_optimizer_step_cosine_median
+        - consecutive_optimizer_step_cosine_min
+        - consecutive_optimizer_step_cosine_max
+        - consecutive_optimizer_step_cosine_valid_pairs
+        - epoch_aggregate_gradient_cosine_to_previous_epoch
+        - resume_boundary_unavailable
+      persist_gradient_tensors: false
+      persist_per_optimizer_step_files: false
+      persist_gradient_vectors_in_checkpoints: false
+      affects_optimization_or_plateau_stopping: false
+classification:
+  schema_version: 1
+  lifecycle_stage: exploratory_screen
+  study_axis: so2_14core_geometry_modulated_relative_qkv_attention_routing
+  scientific_variant: geometry_modulated_relative_qkv_gat_256_l4_h8_k200_r500_batch2_ddp4
+  retention_class: retain_exploratory_architecture_comparison
+  classification_confidence: high
+seed: 0
+fold: 0
+attempt: 1

@@ -75,6 +75,8 @@ def _write_success_support(archive: RunArchive) -> None:
     (
         "held_in_full_core_fixed_budget",
         "held_in_pooled_10core_fixed_budget",
+        "held_in_pooled_14core_recurrent_relative_qkv_seed_plateau",
+        "held_in_pooled_14core_untied8_relative_qkv_seed_plateau",
         "held_in_pooled_6core_relative_qkv_fixed_budget",
     ),
 )
@@ -90,6 +92,26 @@ def test_canonical_fit_prediction_accepts_explicit_held_in_protocols(
     )
 
     assert _canonical_prediction_split(tmp_path) == "fit"
+
+
+def test_canonical_fit_prediction_rejects_unsupported_protocol_clearly(
+    tmp_path: Path,
+) -> None:
+    (tmp_path / "config.resolved.yaml").write_text(
+        "evaluation:\n"
+        "  protocol: held_in_unregistered_protocol\n"
+        "  canonical_prediction_split: fit\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        RunValidationError,
+        match=(
+            "explicitly supported held-in full-core or pooled-core.*"
+            "held_in_unregistered_protocol"
+        ),
+    ):
+        _canonical_prediction_split(tmp_path)
 
 
 def test_prediction_deidentification_is_copying_and_salted() -> None:
@@ -186,6 +208,144 @@ def test_successful_run_is_published_after_required_contract(
     assert verify_run_bundle(final_path)["status"] == "success"
     with pytest.raises(RunImmutableError):
         archive.write_text("logs/late.log", "not allowed")
+
+
+@pytest.mark.parametrize(
+    ("protocol", "campaign_id", "model"),
+    (
+        (
+            "held_in_pooled_14core_recurrent_relative_qkv_seed_plateau",
+            "cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2",
+            {
+                "name": "recurrent-relative-qkv-gat",
+                "family": "recurrent_relative_geometry_qkv_graph_transformer",
+                "graph_layers": 1,
+                "unique_graph_blocks": 1,
+                "recurrent_unroll_steps": 4,
+                "effective_graph_depth": 4,
+                "graph_block_weight_tying": "all_steps",
+            },
+        ),
+        (
+            "held_in_pooled_14core_untied8_relative_qkv_seed_plateau",
+            "cmp_20260903_so2_14core_untied8_relative_qkv_seed0_batch2",
+            {
+                "name": "relative-qkv-gat",
+                "family": "relative_geometry_qkv_graph_transformer",
+                "graph_layers": 8,
+                "unique_graph_blocks": 8,
+                "effective_graph_depth": 8,
+                "graph_block_weight_tying": "none",
+            },
+        ),
+    ),
+)
+def test_so2_fit_protocol_passes_queue_publish_success_path(
+    tmp_path: Path,
+    protocol: str,
+    campaign_id: str,
+    model: dict[str, object],
+) -> None:
+    """Regress the queue's validate, publish-unmarked, then mark-success path."""
+
+    run_id = _run_id("so2fitok")
+    primary_metric = "fit/uniform_per_cell/masked_huber"
+    resolved_config = {
+        "campaign": {"campaign_id": campaign_id},
+        "model": model,
+        "trainer": {
+            "primary_checkpoint_role": "last",
+            "restore_best": False,
+            "checkpoint_policy": "atomic_latest_then_final_last_only",
+        },
+        "evaluation": {
+            "registry_version": 1,
+            "task_family": "masked_expression_regression",
+            "protocol": protocol,
+            "canonical_prediction_split": "fit",
+            "primary_metric": primary_metric,
+            "primary_direction": "minimize",
+            "splits": ["fit"],
+            "mask_modes": ["uniform_per_cell_0_100"],
+            "fixed_mask_bundle": True,
+            "mask_seed_namespace": (
+                "held_in_fit_diagnostic_disjoint_from_epoch_masks"
+            ),
+            "metrics": [
+                "fit/uniform_per_cell/masked_huber",
+                "fit/uniform_per_cell/masked_mae",
+                "fit/uniform_per_cell/masked_mse",
+                "fit/uniform_per_cell/masked_r2",
+            ],
+            "uncertainty_unit": "model_seed",
+            "active_model_seeds": [0],
+            "independent_biological_replicates": 14,
+            "generalization_estimate": False,
+            "validation_or_test_selection": False,
+            "diagnostic_name": "held_in_fit_diagnostic",
+            "save_fixed_prediction_checks": True,
+            "save_curve_numeric_data": True,
+        },
+    }
+    archive = RunArchive.create(
+        run_id,
+        paths=_paths(tmp_path),
+        manifest={"lifecycle_status_source": "registry_and_completion_marker"},
+        resolved_config=resolved_config,
+    )
+    archive.write_summary(
+        {
+            "status": "success",
+            "campaign_id": campaign_id,
+            "primary_metric_name": primary_metric,
+            "primary_metric_value": 0.241,
+            "generalization_estimate": False,
+        }
+    )
+    archive.write_bytes("checkpoints/last.ckpt", b"last-verified-checkpoint")
+    archive.append_metric_event(
+        {"name": primary_metric, "value": 0.241, "step": 175}
+    )
+    archive.write_json("metrics/final.json", {primary_metric: 0.241})
+    archive.write_table(
+        "metrics/history",
+        [
+            {
+                "global_epoch": 175,
+                "equal_core_mean_masked_huber": 0.241,
+            }
+        ],
+    )
+    archive.prepare_log_files()
+    archive.write_json("provenance/git.json", {"commit": "test", "dirty": False})
+    archive.write_text("provenance/uncommitted_changes.patch", "")
+    archive.write_text("provenance/environment.txt", "python=test\n")
+    archive.write_json("provenance/hardware.json", {"device": "cuda", "gpus": 4})
+    archive.write_json(
+        "provenance/data_fingerprints.json", {"dataset": "so2_14core"}
+    )
+    archive.write_json(
+        "provenance/split_fingerprint.json",
+        {"split": "held_in_pooled_14core_fit"},
+    )
+    archive.write_text(
+        "provenance/command.txt", '{"argv":["torchrun","so2"],"cwd":"/workspace"}\n'
+    )
+    archive.write_predictions(
+        "fit",
+        [{**_prediction(run_id), "split": "fit", "fold": 0}],
+    )
+
+    published = archive.publish_success_pending()
+
+    assert published == archive.artifact_path
+    assert not archive.scratch_path.exists()
+    assert not (published / "_SUCCESS").exists()
+    assert not (published / "_FAILED").exists()
+    final_path = archive.mark_success()
+    assert (final_path / "_SUCCESS").is_file()
+    assert verify_run_bundle(final_path)["status"] == "success"
+    assert not any((final_path / "predictions").glob("validation.*"))
 
 
 def test_analysis_only_run_requires_outputs_but_not_checkpoint_or_predictions(

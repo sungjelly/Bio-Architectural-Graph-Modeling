@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from copy import deepcopy
+import hashlib
 from pathlib import Path
 
 import pytest
@@ -391,6 +392,241 @@ def test_so2_14core_relative_qkv_config_locks_ddp_and_latest_only_policy() -> No
         invalid[section][field] = value
         with pytest.raises(ConfigurationError, match="14core|14-core"):
             validate_experiment_config(invalid)
+
+
+def test_so2_recurrent_relative_qkv_config_locks_tying_and_august25_policy() -> None:
+    project_root = Path(__file__).resolve().parents[3]
+    recurrent = compose_config(
+        project_root
+        / "configs/experiment/"
+        "so2_14core_recurrent_relative_qkv_seed0_batch2.yaml",
+        config_root=project_root / "configs",
+    )
+    baseline = compose_config(
+        project_root
+        / "configs/experiment/so2_14core_relative_qkv_seed0_batch2.yaml",
+        config_root=project_root / "configs",
+    )
+
+    validate_experiment_config(recurrent)
+    assert recurrent["model"]["name"] == "recurrent-relative-qkv-gat"
+    assert recurrent["model"]["family"] == (
+        "recurrent_relative_geometry_qkv_graph_transformer"
+    )
+    assert recurrent["model"]["graph_layers"] == 1
+    assert recurrent["model"]["unique_graph_blocks"] == 1
+    assert recurrent["model"]["recurrent_unroll_steps"] == 4
+    assert recurrent["model"]["effective_graph_depth"] == 4
+    assert recurrent["model"]["graph_block_weight_tying"] == "all_steps"
+    for section in ("dataset", "features", "graph", "masking", "trainer"):
+        assert recurrent[section] == baseline[section]
+    assert recurrent["classification"]["lifecycle_stage"] == (
+        "exploratory_screen"
+    )
+    assert recurrent["launcher"]["hardware_preflight_receipt"] == (
+        "state/preflight/so2_14core_recurrent_relative_qkv_ddp4.json"
+    )
+    diagnostics = recurrent["metadata"]["gradient_diagnostics"]
+    assert diagnostics["output_path"] == (
+        "results/gradient_direction_metrics.csv"
+    )
+    assert diagnostics["schema"] == "so2_full_gradient_direction_metrics_v1"
+    assert diagnostics["gradient_scope"] == (
+        "full_ddp_averaged_all_trainable_parameters"
+    )
+    assert diagnostics["read_timing"] == (
+        "after_amp_unscale_and_finite_check_before_gradient_clipping_or_"
+        "optimizer_step"
+    )
+    assert diagnostics["persistence"] == "global_epoch_scalars_only"
+    assert diagnostics["persist_gradient_tensors"] is False
+    assert diagnostics["persist_per_optimizer_step_files"] is False
+    assert diagnostics["persist_gradient_vectors_in_checkpoints"] is False
+    assert diagnostics["ordered_columns"][-2:] == [
+        "epoch_aggregate_gradient_cosine_to_previous_epoch",
+        "resume_boundary_unavailable",
+    ]
+
+    mutations = (
+        ("model", "graph_layers", 4),
+        ("model", "unique_graph_blocks", 4),
+        ("model", "recurrent_unroll_steps", 16),
+        ("model", "graph_block_weight_tying", "none"),
+        ("trainer", "plateau_relative_mean_improvement_max", 0.0005),
+        ("masking", "mask_base_seed", 9),
+        ("graph", "neighbor_k", 199),
+        (
+            "launcher",
+            "hardware_preflight_receipt",
+            "state/preflight/so2_14core_relative_qkv_ddp4.json",
+        ),
+    )
+    for section, field, value in mutations:
+        invalid = deepcopy(recurrent)
+        invalid[section][field] = value
+        with pytest.raises(ConfigurationError, match="recurrent|Recurrent"):
+            validate_experiment_config(invalid)
+
+    wrong_family = deepcopy(recurrent)
+    wrong_family["model"]["family"] = (
+        "relative_geometry_qkv_graph_transformer"
+    )
+    with pytest.raises(
+        ConfigurationError,
+        match="model.family=recurrent_relative_geometry_qkv_graph_transformer",
+    ):
+        validate_experiment_config(wrong_family)
+
+    unsafe_gradient_storage = deepcopy(recurrent)
+    unsafe_gradient_storage["metadata"]["gradient_diagnostics"][
+        "persist_gradient_tensors"
+    ] = True
+    with pytest.raises(ConfigurationError, match="gradient_diagnostics"):
+        validate_experiment_config(unsafe_gradient_storage)
+
+
+def test_so2_untied8_relative_qkv_config_is_frozen_to_august25_policy() -> None:
+    project_root = Path(__file__).resolve().parents[3]
+    untied8 = compose_config(
+        project_root
+        / "configs/experiment/"
+        "so2_14core_untied8_relative_qkv_seed0_batch2.yaml",
+        config_root=project_root / "configs",
+    )
+    baseline = compose_config(
+        project_root
+        / "configs/experiment/so2_14core_relative_qkv_seed0_batch2.yaml",
+        config_root=project_root / "configs",
+    )
+
+    validate_experiment_config(untied8)
+    assert untied8["evaluation"]["protocol"] == (
+        "held_in_pooled_14core_untied8_relative_qkv_seed_plateau"
+    )
+    assert untied8["campaign"]["campaign_id"] == (
+        "cmp_20260903_so2_14core_untied8_relative_qkv_seed0_batch2"
+    )
+    assert untied8["model"]["name"] == "relative-qkv-gat"
+    assert untied8["model"]["family"] == (
+        "relative_geometry_qkv_graph_transformer"
+    )
+    assert untied8["model"]["graph_layers"] == 8
+    assert untied8["model"]["unique_graph_blocks"] == 8
+    assert untied8["model"]["effective_graph_depth"] == 8
+    assert untied8["model"]["graph_block_weight_tying"] == "none"
+    assert "recurrent_unroll_steps" not in untied8["model"]
+    assert 518400 + 8 * 799112 + 1288168 == 8199464
+    for section in ("dataset", "features", "graph", "masking", "trainer"):
+        assert untied8[section] == baseline[section]
+    assert untied8["trainer"]["maximum_scientific_epoch_cap"] is None
+    assert untied8["classification"]["lifecycle_stage"] == (
+        "exploratory_screen"
+    )
+    assert untied8["launcher"]["hardware_preflight_receipt"] == (
+        "state/preflight/so2_14core_untied8_relative_qkv_ddp4.json"
+    )
+    assert "max_attempts" not in untied8["launcher"]
+
+    metadata = untied8["metadata"]
+    assert metadata["preflight_acceptance"] == {
+        "peak_vram_gib_all_ranks_max": 22.0,
+        "minimum_vram_headroom_gib_each_rank": 2.0,
+        "gpu_memory_gib_each_rank": 24.0,
+    }
+    diagnostics = metadata["gradient_diagnostics"]
+    assert diagnostics["output_path"] == "results/gradient_direction_metrics.csv"
+    assert diagnostics["schema"] == "so2_full_gradient_direction_metrics_v1"
+    assert diagnostics["ordered_columns"][-2:] == [
+        "epoch_aggregate_gradient_cosine_to_previous_epoch",
+        "resume_boundary_unavailable",
+    ]
+    block_diagnostics = diagnostics["layerwise"]
+    assert block_diagnostics["scope"] == "graph_blocks_only"
+    assert block_diagnostics["block_names"] == [
+        f"blocks.{index}" for index in range(8)
+    ]
+    assert block_diagnostics["output_path"] == (
+        "results/gradient_direction_by_block.csv"
+    )
+    assert block_diagnostics["schema"] == (
+        "so2_block_gradient_direction_metrics_v1"
+    )
+    assert block_diagnostics["rows_per_completed_global_epoch"] == 8
+    assert block_diagnostics["ordered_columns"][:6] == [
+        "schema",
+        "run_id",
+        "model_seed",
+        "global_epoch",
+        "block_index",
+        "block_name",
+    ]
+    assert metadata["operational_review"] == {
+        "enabled": True,
+        "trigger_completed_global_epoch": 300,
+        "trigger_only_if_plateau_unconfirmed": True,
+        "action": (
+            "deliberate_non_success_exit_after_durable_epoch300_latest_checkpoint"
+        ),
+        "queue_bundle_outcome": "failed_inconclusive",
+        "resumable_only_after_explicit_campaign_amendment": True,
+        "automatic_retry_allowed": False,
+        "scientific_convergence_criterion": False,
+        "scientific_maximum_epoch_cap": None,
+        "modifies_literal_plateau_rule": False,
+    }
+
+    campaign_directory = (
+        project_root
+        / "experiments/campaigns/"
+        "cmp_20260903_so2_14core_untied8_relative_qkv_seed0_batch2"
+    )
+    frozen_contract = campaign_directory / "frozen_task_contract.yaml"
+    expected_sha = (campaign_directory / "frozen_task_contract.sha256").read_text(
+        encoding="utf-8"
+    ).split()[0]
+    assert hashlib.sha256(frozen_contract.read_bytes()).hexdigest() == expected_sha
+    campaign_definition = load_yaml_mapping(campaign_directory / "campaign.yaml")
+    assert campaign_definition["frozen_task_contract_sha256"] == expected_sha
+    assert campaign_definition["execution"]["enqueue_max_attempts"] == 1
+
+    mutations = (
+        ("model", "graph_layers", 7),
+        ("model", "unique_graph_blocks", 7),
+        ("model", "graph_block_weight_tying", "all_steps"),
+        ("trainer", "plateau_relative_mean_improvement_max", 0.0005),
+        ("masking", "mask_base_seed", 9),
+        ("graph", "neighbor_k", 199),
+        ("dataset", "total_fit_cells", 246062),
+        (
+            "launcher",
+            "hardware_preflight_receipt",
+            "state/preflight/so2_14core_relative_qkv_ddp4.json",
+        ),
+    )
+    for section, field, value in mutations:
+        invalid = deepcopy(untied8)
+        invalid[section][field] = value
+        with pytest.raises(ConfigurationError, match="untied8"):
+            validate_experiment_config(invalid)
+
+    recurrent_field = deepcopy(untied8)
+    recurrent_field["model"]["recurrent_unroll_steps"] = 8
+    with pytest.raises(ConfigurationError, match="prohibits.*recurrent"):
+        validate_experiment_config(recurrent_field)
+
+    unsafe_block_storage = deepcopy(untied8)
+    unsafe_block_storage["metadata"]["gradient_diagnostics"]["layerwise"][
+        "persist_gradient_tensors"
+    ] = True
+    with pytest.raises(ConfigurationError, match="untied8"):
+        validate_experiment_config(unsafe_block_storage)
+
+    excessive_preflight_vram = deepcopy(untied8)
+    excessive_preflight_vram["metadata"]["preflight_acceptance"][
+        "peak_vram_gib_all_ranks_max"
+    ] = 22.1
+    with pytest.raises(ConfigurationError, match="untied8"):
+        validate_experiment_config(excessive_preflight_vram)
 
 
 def test_so2_fixed_epoch300_continuation_locks_lineage_and_no_checkpoints() -> None:
