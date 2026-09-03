@@ -65,6 +65,40 @@ SUCCESS_REQUIRED = (
     "logs/stdout.log",
     "logs/stderr.log",
 )
+ATTENTION_NICHE_VISUALIZATION_PATCH_MODE = (
+    "verified_completed_run_visualization_only_v1"
+)
+ATTENTION_NICHE_VISUALIZATION_PATCH_SPEC = {
+    "mode": ATTENTION_NICHE_VISUALIZATION_PATCH_MODE,
+    "source_run_id": "r_20260825T110043Z_0da9fbf2_s000_f00_a01_5e477ab9",
+    "source_queue_job_id": "q_b549591aeff683de350f",
+    "source_success_marker_file_sha256": (
+        "accccfaf2bbde183423fb4580e690e9cbaee48e47b0c98603781ee25eef2fcd4"
+    ),
+    "source_artifact_checksum_manifest_sha256": (
+        "30f73654a09a135a59b6a3f85b5c8322f2d44f63af8d403a0a0595187951f0fe"
+    ),
+    "expected_renderer_source_sha256": (
+        "d08e6ee4d18c0aab89a437baf3e1c1b40eb29bd986697179b8a6c93bd2d18d02"
+    ),
+    "minimum_figure_headroom_gib": 2.0,
+}
+ATTENTION_NICHE_VISUALIZATION_PATCH_OUTPUTS = (
+    "six_core_attention_niche_map.png",
+    "six_core_attention_niche_map.pdf",
+    "six_core_attention_niche_map.svg",
+    "six_core_mutual_attention_network_overlay.png",
+    "six_core_mutual_attention_network_overlay.pdf",
+    "core_01_attention_niche_map.png",
+    "core_09_attention_niche_map.png",
+    "core_13_attention_niche_map.png",
+    "core_15_attention_niche_map.png",
+    "core_21_attention_niche_map.png",
+    "core_23_attention_niche_map.png",
+    "analysis_manifest.yaml",
+    "analysis_qc_report.md",
+    "README.md",
+)
 PREDICTION_REQUIRED_COLUMNS = frozenset(
     {"run_id", "sample_key", "dataset_id", "split", "y_true", "y_pred"}
 )
@@ -541,6 +575,28 @@ def _validate_success_contract_at(
                 "Analysis-only bundle configuration is malformed."
             )
         required_analysis = metadata.get("required_analysis_outputs")
+        launcher = resolved_config.get("launcher", {})
+        if not isinstance(launcher, Mapping):
+            raise RunValidationError(
+                "Analysis-only bundle launcher configuration is malformed."
+            )
+        if "visualization_patch" in launcher:
+            visualization_patch = launcher.get("visualization_patch")
+            campaign = resolved_config.get("campaign", {})
+            if (
+                not isinstance(visualization_patch, Mapping)
+                or dict(visualization_patch)
+                != ATTENTION_NICHE_VISUALIZATION_PATCH_SPEC
+                or evaluation.get("protocol")
+                != "posthoc_attention_routing_niche_v1"
+                or not isinstance(campaign, Mapping)
+                or campaign.get("campaign_id")
+                != "cmp_20260825_six_core_attention_routing_niches"
+            ):
+                raise RunValidationError(
+                    "Unsupported attention-niche visualization patch mode."
+                )
+            required_analysis = ATTENTION_NICHE_VISUALIZATION_PATCH_OUTPUTS
         if (
             not isinstance(required_analysis, Sequence)
             or isinstance(required_analysis, (str, bytes))

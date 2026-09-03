@@ -2,7 +2,9 @@
 
 ## Status and scope
 
-Phase: pilot. Outcome: pending full four-model analysis.
+Phase: complete. Outcome: negative for the hypothesis of broad coherent
+attention-routing regions; the requested four-model computational map and all
+locked QC deliverables are complete.
 
 This post-training analysis constructs a parameter-locked spatial partition from
 the completed Relative-Geometric QKV Graph Transformer fits for Cancer cores
@@ -164,7 +166,11 @@ attention normalization, reciprocal-pair construction, and deterministic
 rerun checksums. Negative controls are rejection of one-directional pairs,
 cross-core edges, smoke checkpoints, incomplete runs, checksum drift, and
 disconnected components sharing an ID. The all-visible replay is a masking
-sensitivity analysis, not an independent null.
+sensitivity analysis, not an independent null. The degree-adjusted reference
+`E=1` is uniform routing over the receiver's available neighbors. No planted or
+mechanism-breaking biological null is included, so this analysis cannot
+establish faithfulness, communication, or a mechanism even when its
+computational QC passes.
 
 The exact training normalization, metadata transform, ordered genes, prepared
 node order, graph, and relative geometry are reloaded and checksum verified;
@@ -211,6 +217,21 @@ memory are recorded. The run requires at least 40 GiB free
 at launch, records a seed-aware table-size estimate and sampled filesystem
 high-water receipts, streams each core into the canonical Parquet files, and
 removes a verified staging shard immediately after it is appended.
+
+The primary metric is `analysis/attention_niche_qc_pass_fraction`, maximized
+with a required target of `1.0`; it is a completeness/correctness gate rather
+than evidence that the regions are biological niches. Checkpoint discovery for
+the full run resolved the following immutable upstream members. Registry-audited
+retention removed only superseded periodic checkpoints from their bundles; the
+protected catalog-verified `last.ckpt` members below remain present and are
+hashed again before and after analysis.
+
+| Seed | Immutable upstream run ID | Epoch | `last.ckpt` SHA-256 | State-dict SHA-256 | Audited periodic-checkpoint tombstones |
+|---:|---|---:|---|---|---:|
+| 0 | `r_20260824T121803Z_16144620_s000_f00_a02_62498796` | 200 | `c5b7fdd6e3192c3146d415f1c77474f9e4483bba090c4fc9c2ac7d79ab554c0c` | `4a8f2ad335d8c61d29f2fe5864cad425239227524fb5b5a26946bdb142b6941f` | 8 |
+| 1 | `r_20260824T124852Z_95591978_s001_f00_a01_266e6db4` | 225 | `3ce4a0e7983a14cba34a32e182800c62ed0184377247443da6bbec72531d0d3c` | `50313eadac8a8fb8228890d667d5393d0b2e8af7278a9f9a517cb5dfa96dc5cc` | 9 |
+| 2 | `r_20260824T124855Z_95591978_s002_f00_a01_3d4cbf7d` | 175 | `91f3f8bfe03ee1624c6ac954a612c65fd6cabc4bf0cce03dc2debf1c44de6411` | `0fb026dbf51fd32af774baf0bdd821b9ffaefce0906702c5c85afa5a530fc23d` | 7 |
+| 3 | `r_20260824T125052Z_95591978_s003_f00_a01_c02388f5` | 200 | `b8943dcb21bac2ea7b3077f1c51e7b6b24b31effe3d23ce471aa05201a3f36d4` | `12be22e276726cccf88fe34900edc0a38555afec332ddcfeef33f441b8d9196f` | 8 |
 
 Required bundle paths are:
 
@@ -277,6 +298,229 @@ audit before release. This lifecycle-only repair changes neither the computed
 routing values nor any scientific parameter. The incomplete attempt remains a
 failed immutable bundle and was not used as a scientific result.
 
+The subsequent full attempt,
+`r_20260825T055100Z_0da9fbf2_s000_f00_a01_ead1d2c2`, completed all six cores,
+canonical consolidation, sensitivity analysis, summaries, colors, and region
+geometry. It then failed before figures and final QC because the renderer
+incorrectly treated the composite `assignment_confidence` and the distinct
+`niche_assignment_agreement` diagnostic as aliases. Only 0.722% of assignment
+rows have numerically equal values in those two fields, so they must remain
+separate; the renderer now consumes the canonical composite confidence.
+
+This failed bundle is immutable and checksum-bound by `_FAILED` content digest
+`99b34e17d2fd1e0d4c52ef564b7ea119242e0fa332f5b40e6a3ee6de008e7b3f`.
+The later registry-audited retention decision
+`cleanup_20260825_relative_qkv_final_only_v2` tombstoned its failed-run directed
+and mutual Parquet files. The remaining receipts retain their checksums and the
+audit result, but the missing values cannot support a continuation. A fresh
+registered full run from the unchanged catalog-verified checkpoints is
+therefore required; the tombstones are not bypassed or reconstructed from
+summaries.
+
+An independent post-failure audit also found that six-decimal GeoJSON rounding
+made 234 of 10,063 serialized region features invalid even though the dissolved
+pre-serialization geometries were valid. GeoJSON generation now validates the
+serialized coordinates, applies `make_valid` only when needed, retains
+Polygon/MultiPolygon parts, and requires every feature to be valid and nonempty.
+Maximum area change in the failed output audit was `1.12e-6 um2`, and repaired
+geometry remained within `1e-4 um2` of the locked summary area. This
+serialization repair does not change niche membership or any routing result.
+
+The next registered full attempt,
+`r_20260825T081845Z_0da9fbf2_s000_f00_a01_dc19543d`, completed all four-model,
+ten-mask attention extraction, all-visible sensitivity, reciprocal scoring,
+consensus construction, parameter sensitivities, clustering, spatial splitting,
+summaries, deterministic colors, and serialized region geometry for all six
+cores. It failed only when Matplotlib constructed the first figure: an
+untranslated shoelace calculation lost the nonzero area of a tiny valid interior
+ring in `C01-N1785` at the large original coordinate offset. The renderer now
+translates every ring to its first vertex before calculating signed area. A
+full read-only traversal then identified three exact-zero interior rings in the
+otherwise valid GEOS geometry (`C23-N695`, `C23-N940`, and `C23-N1417`). These
+zero-area holes have no fill effect and are omitted only from Matplotlib paths;
+their count, identifiers, and digest are recorded in the visualization receipt.
+No exterior ring or nondegenerate hole is omitted, and the scientific GeoJSON
+is not edited.
+
+The failed source bundle is immutable and checksum-bound by `_FAILED` content
+digest `403887f52f7b7132409e2efdd2b3c4bef22751fa82f4f9a99c1fccd06254087c`.
+The archive verifier found all 53 indexed files present and correct; the
+registry has 54 present artifact records and no tombstones. Its scientific ID
+is `sci_0da9fbf2afff6323`. The completed canonical products contain 117,996
+cell assignments, 13,480,576 reciprocal pairs, 26,961,152 directed edges, and
+10,063 connected region features. The source artifact manifest is SHA-256
+`9799ded54f7d27376e377cf3e15e25a8703a0f08ee4b906a632499f80ea8d776`.
+
+### Locked render-only continuation contract
+
+Re-extracting the same deterministic scientific values would add no evidence
+and would require another roughly 21.42 GiB output allocation. A registered
+analysis-only continuation may therefore consume only the exact failed source
+run above. Recovery selection lives under `launcher.recovery`, which preserves
+the scientific configuration and ID; it is never accepted from a free-form
+source path.
+
+Before rendering, the continuation must verify the exact source run, failed
+marker digest, resolved-config checksum, renderer failure signature, archive
+checksums, registry and queue failure status, six complete core receipts,
+streamed table schemas/counts/core coverage, all four checkpoint receipts and
+current hashes, and the prepared-input checksums. It renders directly from the
+read-only source tables and geometry, projecting only retained columns from the
+large mutual-edge table. It streams only scalar identity and degree fields from
+the directed table for exact graph-alignment QC; it never loads that full table
+into memory or modifies it.
+
+Only after every figure renders successfully may the seven canonical scientific
+products be cloned into the new worker-owned scratch bundle with Linux FICLONE.
+Every clone must be a regular non-symlink file on the same filesystem, have a
+distinct inode and link count one, and match source size and SHA-256 exactly.
+The operation fails closed: there is no hard-link, symlink, reference-only, or
+full-copy fallback. Inputs and checkpoints are hashed again afterward, and the
+source bundle is verified unchanged. The new manifest and QC report must state
+`scientific_values_recomputed: false` and `visualizations_recomputed: true`,
+bind both source and continuation provenance, distinguish source-attributed
+scientific QC from continuation-rerun QC, and include the required limitation.
+The source failed bundle is protected from retention until a new registered
+`_SUCCESS` bundle passes archive and registry verification.
+
+A complete read-only continuation preflight passed before enqueueing. It
+reverified all 35 immutable input receipts, all four final checkpoints, the
+53-file failed-bundle checksum contract, all six completed core receipts,
+26,961,152 directed rows, and 13,480,576 mutual rows. Every directed export
+position, source, receiver, and receiver in-degree matched the immutable
+per-core graph; degree adjustment matched receiver in-degree multiplication
+within floating-point tolerance; and every directed edge appeared in exactly
+one reciprocal pair with reversed endpoints. No source artifact was changed.
+
+The first render-continuation attempt,
+`r_20260825T105008Z_0da9fbf2_s000_f00_a01_21554c05`, was deliberately
+interrupted during the second per-core figure after visual inspection of the
+already written combined map found that its two-line figure heading overlapped
+the Core 9 panel title. The attempt had not materialized any canonical
+scientific table. Its partial failed bundle is retained with failure category
+`interrupted`; neither the immutable source run nor any checkpoint was changed.
+The combined figure now reserves a larger top margin, and an automated
+renderer-bounds test requires the complete suptitle to remain above every
+top-row panel title before another registered continuation is launched.
+
+## Full result and locked visualization correction
+
+The corrected registered continuation
+`r_20260825T110043Z_0da9fbf2_s000_f00_a01_5e477ab9` completed with primary QC
+metric `1.0` (29/29 explicit checks). The repository verifier subsequently
+reported no bundle or registry issues. It preserved scientific ID
+`sci_0da9fbf2afff6323`, used all four completed model seeds and ten common mask
+views, and materialized the seven canonical scientific products byte-identical
+to the verified extraction source. No checkpoint or prepared input changed.
+
+| Core | Cells | Directed edges | Reciprocal pairs | Retained mutual edges | Preliminary communities | Final connected niches | Micro-niches | Median confidence | Cells below 0.60 |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 8,924 | 2,028,020 | 1,014,010 | 46,046 | 41 | 1,882 | 1,802 | 0.8861 | 460 |
+| 9 | 17,223 | 3,990,012 | 1,995,006 | 87,541 | 65 | 2,520 | 2,346 | 0.8941 | 591 |
+| 13 | 5,345 | 1,225,416 | 612,708 | 28,656 | 37 | 113 | 78 | 0.7119 | 1,028 |
+| 15 | 38,145 | 8,607,462 | 4,303,731 | 225,194 | 69 | 2,977 | 2,758 | 0.7384 | 8,982 |
+| 21 | 4,897 | 1,137,942 | 568,971 | 27,048 | 41 | 865 | 806 | 0.8297 | 319 |
+| 23 | 43,462 | 9,972,300 | 4,986,150 | 267,158 | 101 | 1,706 | 1,544 | 0.7783 | 6,899 |
+| **Total** | **117,996** | **26,961,152** | **13,480,576** | **681,643** | **354** | **10,063** | **9,334** | — | **18,279** |
+
+The computational partition exists and passes its locked correctness gates, but
+the broad coherent-region hypothesis is weakened: spatial connectedness split
+354 preliminary communities into 10,063 final components, and 9,334 (92.76%)
+are micro-niches. This fragmentation is retained as negative evidence and no
+threshold was relaxed. Overall cell confidence has mean `0.7451` and median
+`0.7964`; low-confidence cells remain visible. Core 13 used the prespecified
+Delaunay fallback capped at `75 um` because segmentation-polygon adjacency had
+only `0.828` non-isolated coverage, below the locked `0.90` audit threshold;
+the other five cores used polygon adjacency.
+
+Human visual QC found the primary combined map and all six individual maps
+clean, but found one presentation-only defect in the optional network overlay:
+its second suptitle line overlapped the Core 9 panel header. The completed run is
+immutable and is not edited. A separate registered visualization-only patch is
+therefore permitted to read the exact completed source run above, verify its
+registry and checksum identities, hash only the assignment, retained-mutual,
+and region files it actually reads, and render the eleven figures with the
+corrected layout. It must not instantiate a model, extract attention, recompute
+scientific tables, copy the 21 GB directed table, or mutate the source. Its
+acceptance gate is source identity plus complete figure output, title/panel
+bounding-box separation, exact core order/counts/scale bars, and an independent
+archive verification. This is a versioned figure correction, not a new
+scientific result.
+
+That correction completed as registered run
+`r_20260825T120155Z_0da9fbf2_s000_f00_a01_a41036ce` at Git commit
+`967357b7ac04a169f04a14ab502508ae0dee3378`. Its 15/15 QC checks passed, the
+archive and registry verifier reported no issues, and visual inspection
+confirmed the two-line heading remains fully above all first-row panel titles.
+It freshly rendered all eleven figures, while the 21 GB directed table was not
+opened, hashed, copied, or modified. Scientific tables and values were not
+recomputed.
+
+The historical canonical scientific bundle was:
+
+```text
+artifacts/runs/2026/08/r_20260825T110043Z_0da9fbf2_s000_f00_a01_5e477ab9/
+```
+
+Before the local retention decision below, it contained all requested
+assignment, directed-edge, mutual-edge, niche summary, color, region,
+sensitivity, manifest, QC, README, and original static figure files. The
+historical corrected final static figures were the versioned supplement:
+
+```text
+artifacts/runs/2026/08/r_20260825T120155Z_0da9fbf2_s000_f00_a01_a41036ce/
+```
+
+Both bundle roots are now locally retired and absent; their immutable run IDs,
+checksums, statuses, metrics, and external retirement receipts remain in the
+registry. Recreate the products with the full registered execution below.
+
+The historical core-to-figure mapping is
+`CAN-01 -> core_01_attention_niche_map.png`,
+`CAN-09 -> core_09_attention_niche_map.png`,
+`CAN-13 -> core_13_attention_niche_map.png`,
+`CAN-15 -> core_15_attention_niche_map.png`,
+`CAN-21 -> core_21_attention_niche_map.png`, and
+`CAN-23 -> core_23_attention_niche_map.png`. The combined and corrected overlay
+figures use `six_core_attention_niche_map.*` and
+`six_core_mutual_attention_network_overlay.*`, respectively.
+
+## Local run-bundle retirement
+
+On 2026-08-25 the repository owner explicitly requested deletion of all local
+run artifacts created by this campaign to recover storage, accepting that the
+maps and scientific tables must be recreated from the retained code and
+upstream checkpoints. Decision
+`retire_20260825_six_core_attention_niche_runs` retired exactly all seven
+campaign runs: five failed or interrupted attempts and the two completed runs
+identified above. No upstream trained-model run or checkpoint was included.
+
+The checksum-bound plan covers all 244 original artifact rows and seven
+terminal markers. Application rehashed every one of the 240 files still
+present, preserved four earlier tombstones from
+`cleanup_20260825_relative_qkv_final_only_v2`, created an SQLite-consistent
+pre-deletion snapshot, removed the 240 files and seven markers, and registered
+one external full-run receipt for each absent bundle. Apparent deleted size was
+47,115,175,143 bytes; measured free space increased by 47,114,747,904 bytes
+(`43.879 GiB`).
+
+The complete decision, plan, application receipt, per-run receipts, hashes, and
+pre/post validation are in
+`reports/retention/retire_20260825_six_core_attention_niche_runs/`. The plan
+SHA-256 is
+`f152f35df6a8f227d3ba70a03f5b1cf7039091d81196910c4bd4c42ad3c20c0d`;
+the application-receipt SHA-256 is
+`7fa7d496434a88221846658896e7e135093f66dbe6afce26c7e1bcc58ef88ee6`.
+
+All 244 original registry rows now have status `deleted_by_retention`; seven
+external receipt rows are present and no deletion is pending. Historical run,
+queue, failure, metric, alias, category, scientific/reproduction identity, and
+retention-class records remain unchanged. The original recovery and figure
+patch configurations remain unchanged for provenance and will fail explicitly
+while their pinned local source bundles are retired. Run the full analysis
+first to create a new immutable scientific bundle before producing another
+versioned figure supplement.
+
 ## Verification and full commands
 
 Focused tests:
@@ -301,5 +545,59 @@ PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
 
 PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
   --database state/tracking/bagm.sqlite3 worker \
-  --worker-id attention-niche-multigpu --gpu 0,2,3 --once
+  --worker-id attention-niche-multigpu --gpu 0,2,3 \
+  --min-free-gb 40 --once
 ```
+
+For the one approved renderer-only continuation of the exact immutable failed
+source documented above:
+
+```bash
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
+  --database state/tracking/bagm.sqlite3 enqueue-experiment \
+  --campaign-id cmp_20260825_six_core_attention_routing_niches \
+  --config experiments/campaigns/cmp_20260825_six_core_attention_routing_niches/render_recovery_config.yaml \
+  --priority 0 --max-attempts 1 --gpu 0,2,3
+
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
+  --database state/tracking/bagm.sqlite3 worker \
+  --worker-id attention-niche-render-recovery --gpu 0,2,3 \
+  --min-free-gb 25 --once
+```
+
+To reproduce the versioned final figure suite from the immutable completed
+scientific bundle, without copying or recomputing its tables:
+
+```bash
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
+  --database state/tracking/bagm.sqlite3 enqueue-experiment \
+  --campaign-id cmp_20260825_six_core_attention_routing_niches \
+  --config experiments/campaigns/cmp_20260825_six_core_attention_routing_niches/figure_patch_config.yaml \
+  --priority 0 --max-attempts 1 --gpu 0,2,3
+
+PYTHONPATH=src /venv/main/bin/python -m spatial_benchmark \
+  --database state/tracking/bagm.sqlite3 worker \
+  --worker-id attention-niche-visualization-patch --gpu 0,2,3 \
+  --min-free-gb 4 --once
+```
+
+## Final verification status
+
+- Focused attention-niche, configuration, and archive tests: `84 passed` with
+  two upstream Torch JIT deprecation warnings.
+- Full-run retirement infrastructure and relevant archive/attention-niche
+  tests after implementation: `109 passed` with two upstream Torch JIT
+  deprecation warnings.
+- After retention, all seven external run receipts, 244 original tombstones,
+  and absent roots verify with no registry or bundle issues; repository-wide
+  `verify-artifacts` returns `valid: true`.
+- Full repository suite after retirement: `1,144 passed`, `1 skipped`, and
+  `34 failed`. The
+  failures are confined to unrelated campaigns whose required local fixtures
+  are unavailable: an adjacency-ablation locked smoke materialization,
+  multiscale-synthetic prepared geometry, MyJJu locked materializations, and an
+  external MyJJu audit source. No attention-niche or run-archive test failed.
+- Repository doctor after retention: `ok: true`, database integrity `ok`, no
+  issues or warnings, and `50.545 GiB` free against the `25 GiB` threshold.
+- All four upstream final checkpoint SHA-256 values match their pre-retention
+  catalog receipts.

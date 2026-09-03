@@ -25,12 +25,13 @@ Use `predictive dependency`, `model-implied sensitivity`, or `candidate mechanis
 ## Repository and Experiment Operations
 
 - This repository contains only Bio-Architectural Graph Modeling. Its project
-  root is `/workspace/Bio-Architectural-Graph-Modeling`; `/workspace` may contain
+  root is `/workspace/BAGM`; `/workspace` may contain
   other projects. Keep BAGM content within this root and do not add another
   internal project wrapper or multi-project hierarchy.
 - Resolve all reusable paths through `spatial_benchmark.paths`. Respect the
-  `BAGM_ROOT`, `BAGM_DATA_ROOT`, `BAGM_ARTIFACT_ROOT`, `BAGM_SCRATCH_ROOT`, and
-  `BAGM_STATE_ROOT` overrides; do not hard-code a user home directory.
+  `BAGM_ROOT`, `BAGM_DATA_ROOT`, `BAGM_ARTIFACT_ROOT`, `BAGM_SCRATCH_ROOT`,
+  `BAGM_STATE_ROOT`, and `BAGM_RESULT_ROOT` overrides; do not hard-code a user
+  home directory.
 - Treat `data/raw/` and `data/clinical/` as immutable protected inputs. Never
   upload source data, results, or metadata to an external service, and never put
   direct patient identifiers in tracked metadata or exported predictions.
@@ -56,6 +57,14 @@ Use `predictive dependency`, `model-implied sensitivity`, or `candidate mechanis
 - Write active output only under `scratch/active_runs/<run_id>/`; publish verified
   immutable bundles to `artifacts/runs/YYYY/MM/<run_id>/`. Do not alter a
   successful bundle except through an explicitly versioned post-hoc evaluation.
+- Promote important conclusion-bearing outcomes to
+  `results/<experiment_type>/<method_family>/<result_id>/` using
+  `configs/schema/result_record_v1.yaml` and `docs/result_management.md`.
+  `results/` is a curated discovery layer, not a second run archive: every
+  record must reference immutable runs/reports by ID and checksum, keep the
+  evidence dimensions separate, include negative or inconclusive outcomes
+  when decision-relevant, and never copy checkpoints, datasets, registry
+  databases, or unrestricted row-level outputs.
 - Campaigns contain variants; variants exclude seed/fold/attempt/runtime fields;
   runs identify one seed, fold, and attempt. Never report the best seed as the
   complete scientific result—select and interpret checkpoints through
@@ -197,6 +206,11 @@ Cross-workflow dependencies must use declared artifacts identified by an immutab
 Keep active generated files under `scratch/active_runs/` and finalized run bundles
 under `artifacts/runs/`. Cross-run reports belong under `reports/`; historical
 workflow outputs remain immutable under `artifacts/legacy_runs/`.
+When a completed workflow changes the project evidence record or a documented
+scientific decision, add or supersede its curated `results/` record and
+regenerate `results/catalog.json` and `results/CATALOG.md`. Do not promote a
+smoke run, transient training curve, attractive visualization, or best seed as
+a verified result.
 
 ## Experimental Design Requirements
 
@@ -378,6 +392,15 @@ Report stable, faithful, and biologically supported evidence as separate dimensi
 
 Keep reports concise and figure-led. Do not dump full dataframes into the narrative. Store complete cross-run tables under `reports/tables/` or the owning campaign report directory, with run IDs and provenance. If HTML reports are produced, make them portable single files with embedded `data:` images, semantic structure, readable contrast, captions, alt text, and print-safe styling.
 
+Store important, decision-relevant conclusions in `results/` only after the
+record passes the result schema. The result path must expose experiment type,
+method family, and a date-free semantic result ID. The record must state the
+question, estimand, outcome, observed result, strongest alternative, controls,
+remaining uncertainty, maximum defensible claim, expected/included seeds and
+folds, failures/exclusions, immutable sources, and separate predictive-gain,
+stability, faithfulness, null, patient-replication, external-support, and
+perturbation evidence statuses.
+
 ## Definition of Done
 
 Do not declare a task complete until:
@@ -391,6 +414,8 @@ Do not declare a task complete until:
 - claims match the study design and evidence;
 - uncertainty, limitations, negative results, and failed runs are reported;
 - the relevant README contains exact reproduction commands and current status;
+- any decision-relevant conclusion has a validated curated result record and
+  the deterministic result catalogs are current;
 - `git status --short` has been reviewed and unrelated changes remain untouched.
 
 Finish the scientific task, not merely the code.

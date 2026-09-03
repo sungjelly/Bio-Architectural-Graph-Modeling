@@ -1,24 +1,32 @@
 from __future__ import annotations
 
+import errno
 from pathlib import Path
 from types import SimpleNamespace
 
 import numpy as np
 import pandas as pd
 import pytest
+import yaml
 
 import spatial_benchmark.attention_niche_pipeline as pipeline
 from spatial_benchmark.attention_niche_pipeline import (
     CoreJobSpec,
+    _bundle_retention_tombstones,
     _combine_parquet_files,
     _incident_median,
     _integer_partition,
+    _materialize_ficlone_reflink,
     _portable_core_receipts,
     _portable_file_receipts,
     _required_analysis_free_disk_gib,
+    _scientific_config_without_recovery_runtime,
     _remove_verified_core_work_tree,
     _stream_one_view,
     _validate_interpretation_identifier_minimization,
+    _stream_validate_recovery_edge_alignment,
+    _validated_render_recovery_request,
+    _validated_visualization_patch_request,
     _write_directed_core_table,
     _write_mutual_core_table,
 )
@@ -74,6 +82,316 @@ def test_interpretation_assignments_reject_source_identifiers() -> None:
             match="prohibited source identifiers",
         ):
             _validate_interpretation_identifier_minimization(exposed)
+
+
+def test_render_recovery_requires_exact_launcher_identity() -> None:
+    assert _validated_render_recovery_request({}) is None
+    recovery = {
+        "mode": pipeline.RENDER_RECOVERY_MODE,
+        "source_run_id": pipeline.RENDER_RECOVERY_SOURCE_RUN_ID,
+        "source_queue_job_id": pipeline.RENDER_RECOVERY_SOURCE_QUEUE_JOB_ID,
+        "source_failed_marker_content_sha256": (
+            pipeline.RENDER_RECOVERY_FAILED_CONTENT_SHA256
+        ),
+        "expected_renderer_failure_signature": (
+            pipeline.RENDER_RECOVERY_FAILURE_SIGNATURE
+        ),
+        "minimum_figure_headroom_gib": 2.0,
+    }
+    request = _validated_render_recovery_request({"recovery": recovery})
+
+    assert request is not None
+    assert request.source_run_id == pipeline.RENDER_RECOVERY_SOURCE_RUN_ID
+    drifted = {**recovery, "source_queue_job_id": "q_wrong"}
+    with pytest.raises(pipeline.AttentionNichePipelineError, match="drifted"):
+        _validated_render_recovery_request({"recovery": drifted})
+    with pytest.raises(pipeline.AttentionNichePipelineError, match="unrecognized"):
+        _validated_render_recovery_request(
+            {"recovery": {**recovery, "copy_fallback": True}}
+        )
+
+
+def test_visualization_patch_requires_exact_launcher_identity() -> None:
+    assert _validated_visualization_patch_request({}) is None
+    patch = {
+        "mode": pipeline.VISUALIZATION_PATCH_MODE,
+        "source_run_id": pipeline.VISUALIZATION_PATCH_SOURCE_RUN_ID,
+        "source_queue_job_id": pipeline.VISUALIZATION_PATCH_SOURCE_QUEUE_JOB_ID,
+        "source_success_marker_file_sha256": (
+            pipeline.VISUALIZATION_PATCH_SUCCESS_FILE_SHA256
+        ),
+        "source_artifact_checksum_manifest_sha256": (
+            pipeline.VISUALIZATION_PATCH_CHECKSUM_MANIFEST_SHA256
+        ),
+        "expected_renderer_source_sha256": (
+            pipeline.VISUALIZATION_PATCH_RENDERER_SHA256
+        ),
+        "minimum_figure_headroom_gib": 2.0,
+    }
+
+    request = _validated_visualization_patch_request(
+        {"visualization_patch": patch}
+    )
+
+    assert request is not None
+    assert request.source_run_id == pipeline.VISUALIZATION_PATCH_SOURCE_RUN_ID
+    with pytest.raises(pipeline.AttentionNichePipelineError, match="drifted"):
+        _validated_visualization_patch_request(
+            {
+                "visualization_patch": {
+                    **patch,
+                    "source_queue_job_id": "q_wrong",
+                }
+            }
+        )
+    with pytest.raises(pipeline.AttentionNichePipelineError, match="unrecognized"):
+        _validated_visualization_patch_request(
+            {"visualization_patch": {**patch, "copy_source_bundle": True}}
+        )
+
+
+def test_visualization_patch_dispatches_before_checkpoint_or_input_loading(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from spatial_benchmark.configuration import compose_config
+    from spatial_benchmark.paths import ProjectPaths
+
+    project_root = Path(__file__).resolve().parents[3]
+    config = compose_config(
+        project_root
+        / "experiments/campaigns/"
+        "cmp_20260825_six_core_attention_routing_niches/"
+        "figure_patch_config.yaml",
+        config_root=project_root / "configs",
+    )
+    config_path = tmp_path / "config.resolved.yaml"
+    config_path.write_text(yaml.safe_dump(config), encoding="utf-8")
+    paths = ProjectPaths.from_environment({"BAGM_ROOT": str(tmp_path)})
+    run_id = "r_20260825T120000Z_0da9fbf2_s000_f00_a01_patch001"
+    run_scratch = paths.scratch_root / "active_runs" / run_id
+    run_scratch.mkdir(parents=True)
+    expected = {"status": "success", "execution_mode": "visualization_patch"}
+
+    def patch_runner(**kwargs: object) -> dict[str, str]:
+        assert kwargs["run_id"] == run_id
+        return expected
+
+    monkeypatch.setattr(
+        pipeline,
+        "_run_attention_niche_visualization_patch",
+        patch_runner,
+    )
+    monkeypatch.setattr(
+        pipeline,
+        "discover_completed_checkpoint_members",
+        lambda *args, **kwargs: pytest.fail(
+            "visualization patch reached checkpoint discovery"
+        ),
+    )
+
+    observed = pipeline.run_attention_niche_pipeline(
+        config_path=config_path,
+        run_id=run_id,
+        run_scratch=run_scratch,
+        database=tmp_path / "unused.sqlite3",
+        paths=paths,
+    )
+
+    assert observed == expected
+
+
+def test_recovery_launcher_is_excluded_but_metadata_is_scientific() -> None:
+    source = {
+        "metadata": {"analysis_mask_views": 10},
+        "launcher": {"requested_gpu": "0,2,3"},
+        "seed": 0,
+    }
+    recovery = {
+        **source,
+        "launcher": {
+            "requested_gpu": "0,2,3",
+            "recovery": {"mode": pipeline.RENDER_RECOVERY_MODE},
+        },
+    }
+
+    assert _scientific_config_without_recovery_runtime(
+        source
+    ) == _scientific_config_without_recovery_runtime(recovery)
+    metadata_drift = {
+        **recovery,
+        "metadata": {"analysis_mask_views": 9},
+    }
+    assert _scientific_config_without_recovery_runtime(
+        source
+    ) != _scientific_config_without_recovery_runtime(metadata_drift)
+
+    visualization_patch = {
+        **source,
+        "launcher": {
+            "requested_gpu": "0,2,3",
+            "visualization_patch": {
+                "mode": pipeline.VISUALIZATION_PATCH_MODE
+            },
+        },
+    }
+    assert _scientific_config_without_recovery_runtime(
+        source
+    ) == _scientific_config_without_recovery_runtime(visualization_patch)
+
+
+def test_recovery_materialization_uses_distinct_inode_ficlone(
+    tmp_path: Path,
+) -> None:
+    source = tmp_path / "source.bin"
+    destination = tmp_path / "destination.bin"
+    source.write_bytes(b"locked recovery payload" * 1024)
+
+    receipt = _materialize_ficlone_reflink(
+        source,
+        destination,
+        expected_sha256=pipeline.sha256_file(source),
+    )
+
+    assert receipt["method"] == "linux_ficlone_reflink"
+    assert receipt["distinct_inode"] is True
+    assert receipt["copy_fallback_permitted"] is False
+    assert source.stat().st_ino != destination.stat().st_ino
+    assert source.read_bytes() == destination.read_bytes()
+
+
+def test_recovery_ficlone_failure_has_no_copy_fallback(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    source = tmp_path / "source.bin"
+    destination = tmp_path / "destination.bin"
+    source.write_bytes(b"locked recovery payload")
+
+    def fail_ioctl(*args: object, **kwargs: object) -> None:
+        raise OSError(errno.EOPNOTSUPP, "not supported")
+
+    monkeypatch.setattr(pipeline.fcntl, "ioctl", fail_ioctl)
+    with pytest.raises(pipeline.AttentionNichePipelineError, match="no copy fallback"):
+        _materialize_ficlone_reflink(
+            source,
+            destination,
+            expected_sha256=pipeline.sha256_file(source),
+        )
+    assert not destination.exists()
+
+
+def test_recovery_streams_exact_directed_and_reciprocal_edge_alignment(
+    tmp_path: Path,
+) -> None:
+    graph_dir = tmp_path / "graph"
+    core_dir = graph_dir / "cores" / "CAN-01"
+    core_dir.mkdir(parents=True)
+    np.save(
+        core_dir / "edge_index.npy",
+        np.asarray([[0, 1], [1, 0]], dtype=np.int64),
+        allow_pickle=False,
+    )
+    pd.DataFrame(
+        {
+            "core_number": [1, 1],
+            "core_alias": ["CAN-01", "CAN-01"],
+            "edge_index_position": [0, 1],
+            "source_cell_index": [0, 1],
+            "receiver_cell_index": [1, 0],
+            "receiver_in_degree": [1, 1],
+            "head_mean_attention_mean": [0.75, 0.50],
+            "degree_adjusted_routing_mean": [0.75, 0.50],
+        }
+    ).to_parquet(tmp_path / "directed_attention_edges.parquet", index=False)
+    mutual = pd.DataFrame(
+        {
+            "core_number": [1],
+            "core_alias": ["CAN-01"],
+            "mutual_pair_position": [0],
+            "cell_i_index": [0],
+            "cell_j_index": [1],
+            "i_to_j_edge_index_position": [0],
+            "j_to_i_edge_index_position": [1],
+        }
+    )
+    mutual.to_parquet(tmp_path / "mutual_attention_edges.parquet", index=False)
+    contract = pipeline.PreparedInputContract(
+        cohort_dir=tmp_path / "cohort",
+        graph_dir=graph_dir,
+        raw_dir=tmp_path / "raw",
+        core_map_path=tmp_path / "map.csv",
+        reconciliation_path=tmp_path / "policy.yaml",
+        cohort_manifest={},
+        graph_manifest={},
+        core_records={},
+        gene_names=(),
+        metadata_names=(),
+        pre_analysis_file_receipts={},
+    )
+    receipt = {
+        "core_number": 1,
+        "core_alias": "CAN-01",
+        "cell_count": 2,
+        "directed_edge_count": 2,
+        "reciprocal_pair_count": 1,
+    }
+
+    audit = _stream_validate_recovery_edge_alignment(
+        tmp_path,
+        input_contract=contract,
+        core_receipts=[receipt],
+    )
+
+    assert audit["edge_index_source_receiver_alignment_exact"] is True
+    assert audit["receiver_indegree_exact"] is True
+    assert audit["degree_adjustment_uses_receiver_indegree"] is True
+    assert audit["every_mutual_pair_has_two_reversed_exported_edges"] is True
+    assert audit["every_directed_edge_covered_by_exactly_one_mutual_pair"] is True
+
+    mutual["j_to_i_edge_index_position"] = 0
+    mutual.to_parquet(tmp_path / "mutual_attention_edges.parquet", index=False)
+    with pytest.raises(
+        pipeline.AttentionNichePipelineError,
+        match="reciprocal-edge alignment",
+    ):
+        _stream_validate_recovery_edge_alignment(
+            tmp_path,
+            input_contract=contract,
+            core_receipts=[receipt],
+        )
+
+
+def test_checkpoint_bundle_tombstones_require_audited_checkpoint_metadata(
+    tmp_path: Path,
+) -> None:
+    bundle = tmp_path / "artifacts" / "runs" / "2026" / "08" / "r_source"
+    bundle.mkdir(parents=True)
+    deleted = bundle / "checkpoints" / "epoch_0025.ckpt"
+    records = [
+        {
+            "path": str(deleted),
+            "sha256": "a" * 64,
+            "size_bytes": 123,
+            "status": "deleted_by_retention",
+        }
+    ]
+
+    assert _bundle_retention_tombstones(
+        bundle, records, project_root=tmp_path
+    ) == {
+        "checkpoints/epoch_0025.ckpt": {
+            "type": "file",
+            "size": 123,
+            "sha256": "a" * 64,
+        }
+    }
+    with pytest.raises(pipeline.AttentionNichePipelineError, match="pending"):
+        _bundle_retention_tombstones(
+            bundle,
+            [{**records[0], "status": "retention_pending"}],
+            project_root=tmp_path,
+        )
 
 
 def test_incident_medians_and_partition_codes_are_deterministic() -> None:

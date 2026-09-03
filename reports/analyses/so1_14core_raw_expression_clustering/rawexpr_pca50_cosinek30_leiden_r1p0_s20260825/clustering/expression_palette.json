@@ -1,0 +1,21 @@
+{
+  "colors": {
+    "S1E0": "#0AF50A",
+    "S1E1": "#F50A0A",
+    "S1E10": "#1AA739",
+    "S1E11": "#1A7868",
+    "S1E12": "#E58739",
+    "S1E13": "#0072B2",
+    "S1E2": "#0A0AF5",
+    "S1E3": "#68680A",
+    "S1E4": "#F539B6",
+    "S1E5": "#0AF5D6",
+    "S1E6": "#F5B6B6",
+    "S1E7": "#F5D60A",
+    "S1E8": "#781A1A",
+    "S1E9": "#581A97"
+  },
+  "label_prefix": "S1E",
+  "method": "deterministic_greedy_farthest_point_CIELAB",
+  "representation": "raw_expression"
+}

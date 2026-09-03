@@ -9,6 +9,7 @@ fixed panel order and terminology are part of the analysis contract.
 from __future__ import annotations
 
 from dataclasses import dataclass
+import hashlib
 import math
 import os
 from pathlib import Path
@@ -78,7 +79,6 @@ _ASSIGNMENT_ALIASES: Mapping[str, tuple[str, ...]] = {
     "niche_color": ("niche_color", "niche colour", "niche color"),
     "assignment_confidence": (
         "assignment_confidence",
-        "niche_assignment_agreement",
         "confidence",
         "assignment confidence",
     ),
@@ -472,7 +472,9 @@ def _prepare_regions(
     return by_core
 
 
-def _ring_array(ring: Any, *, context: str) -> np.ndarray:
+def _ring_array(
+    ring: Any, *, context: str, allow_zero_area: bool = False
+) -> np.ndarray | None:
     try:
         values = np.asarray(ring, dtype=np.float64)
     except (TypeError, ValueError) as error:
@@ -491,13 +493,29 @@ def _ring_array(ring: Any, *, context: str) -> np.ndarray:
     unique = values[:-1]
     if len(unique) < 3:
         raise AttentionNicheVisualizationError(f"{context} has fewer than three vertices.")
-    area_twice = float(
-        np.dot(unique[:, 0], np.roll(unique[:, 1], -1))
-        - np.dot(unique[:, 1], np.roll(unique[:, 0], -1))
-    )
-    if not math.isfinite(area_twice) or abs(area_twice) <= 1e-12:
+    area_twice = _stable_signed_area_twice(unique)
+    if not math.isfinite(area_twice):
+        raise AttentionNicheVisualizationError(f"{context} has zero signed area.")
+    if area_twice == 0.0:
+        if allow_zero_area:
+            return None
         raise AttentionNicheVisualizationError(f"{context} has zero signed area.")
     return unique
+
+
+def _stable_signed_area_twice(vertices: np.ndarray) -> float:
+    """Return shoelace area after translation to avoid cancellation.
+
+    Tissue coordinates can be orders of magnitude larger than tiny valid
+    polygon slivers.  Subtracting one vertex preserves signed area while
+    preventing the two large shoelace sums from rounding to the same float.
+    """
+
+    translated = np.asarray(vertices, dtype=np.float64) - vertices[0]
+    return float(
+        np.dot(translated[:, 0], np.roll(translated[:, 1], -1))
+        - np.dot(translated[:, 1], np.roll(translated[:, 0], -1))
+    )
 
 
 def _polygon_path(rings: Any, *, context: str) -> Any:
@@ -508,11 +526,17 @@ def _polygon_path(rings: Any, *, context: str) -> Any:
     vertices: list[np.ndarray] = []
     codes: list[np.ndarray] = []
     for ring_index, raw_ring in enumerate(rings):
-        ring = _ring_array(raw_ring, context=f"{context} ring {ring_index}")
-        area_twice = float(
-            np.dot(ring[:, 0], np.roll(ring[:, 1], -1))
-            - np.dot(ring[:, 1], np.roll(ring[:, 0], -1))
+        ring = _ring_array(
+            raw_ring,
+            context=f"{context} ring {ring_index}",
+            # GEOS permits a zero-area interior ring in an otherwise valid
+            # polygon.  It has no fill effect, so omit it from the plotting
+            # path while continuing to reject a degenerate exterior.
+            allow_zero_area=ring_index > 0,
         )
+        if ring is None:
+            continue
+        area_twice = _stable_signed_area_twice(ring)
         want_counter_clockwise = ring_index == 0
         if (area_twice > 0) != want_counter_clockwise:
             ring = ring[::-1]
@@ -537,6 +561,46 @@ def _geometry_paths(region: Mapping[str, Any]) -> list[Any]:
         _polygon_path(polygon, context=f"{context} polygon {position}")
         for position, polygon in enumerate(coordinates)
     ]
+
+
+def _omitted_zero_area_interior_ring_receipt(
+    regions_by_core: Mapping[int, Sequence[Mapping[str, Any]]],
+) -> dict[str, Any]:
+    """Describe degenerate interior rings omitted only from Matplotlib paths."""
+
+    identifiers: list[str] = []
+    for core_number in sorted(regions_by_core):
+        for region in regions_by_core[core_number]:
+            polygons = (
+                [region["coordinates"]]
+                if region["geometry_type"] == "Polygon"
+                else region["coordinates"]
+            )
+            for polygon_index, rings in enumerate(polygons):
+                for ring_index, raw_ring in enumerate(rings[1:], start=1):
+                    ring = _ring_array(
+                        raw_ring,
+                        context=(
+                            f"core region {region['niche_id']!r} polygon "
+                            f"{polygon_index} ring {ring_index}"
+                        ),
+                        allow_zero_area=True,
+                    )
+                    if ring is None:
+                        identifiers.append(
+                            f"C{int(core_number):02d}|{region['niche_id']}|"
+                            f"feature={int(region['position'])}|"
+                            f"polygon={polygon_index}|ring={ring_index}"
+                        )
+    identifiers.sort()
+    encoded = "\n".join(identifiers).encode("utf-8")
+    return {
+        "count": len(identifiers),
+        "identifiers": identifiers,
+        "identifier_list_sha256": hashlib.sha256(encoded).hexdigest(),
+        "signed_area_um2": 0.0,
+        "scientific_geometry_modified": False,
+    }
 
 
 def _all_region_points(regions: Sequence[Mapping[str, Any]]) -> np.ndarray:
@@ -815,6 +879,24 @@ def _add_confidence_note(
     )
 
 
+def _require_suptitle_clearance(figure: Any) -> None:
+    """Fail closed when a two-line heading overlaps a top-row panel title."""
+
+    if figure._suptitle is None:
+        raise AttentionNicheVisualizationError("Figure suptitle is absent.")
+    figure.canvas.draw()
+    renderer = figure.canvas.get_renderer()
+    suptitle_bounds = figure._suptitle.get_window_extent(renderer=renderer)
+    if any(
+        suptitle_bounds.y0
+        <= axis.title.get_window_extent(renderer=renderer).y1
+        for axis in figure.axes[:3]
+    ):
+        raise AttentionNicheVisualizationError(
+            "Figure suptitle overlaps a top-row panel title."
+        )
+
+
 def create_combined_attention_niche_figure(
     assignments: pd.DataFrame,
     regions: Mapping[str, Any],
@@ -835,7 +917,7 @@ def create_combined_attention_niche_figure(
     )
     prepared_regions = _prepare_regions(regions, prepared)
     with _visualization_context():
-        figure, axes = plt.subplots(2, 3, figsize=(18.0, 11.5))
+        figure, axes = plt.subplots(2, 3, figsize=(18.0, 12.0))
         for axis, core_number in zip(axes.ravel(), CORE_ORDER, strict=True):
             cells = prepared.loc[prepared["core_number"] == core_number]
             _draw_niche_panel(
@@ -852,15 +934,16 @@ def create_combined_attention_niche_figure(
             title += f"\n{map_label}"
         figure.suptitle(
             title,
-            fontsize=16.0,
+            fontsize=15.0,
             fontweight="bold",
-            y=0.985,
+            y=0.992,
+            linespacing=1.12,
         )
         figure.subplots_adjust(
             left=0.035,
             right=0.985,
             bottom=0.035,
-            top=0.935,
+            top=0.89,
             wspace=0.12,
             hspace=0.17,
         )
@@ -868,6 +951,7 @@ def create_combined_attention_niche_figure(
             figure,
             low_confidence_threshold=low_confidence_threshold,
         )
+        _require_suptitle_clearance(figure)
     return figure
 
 
@@ -1316,7 +1400,7 @@ def create_mutual_attention_network_overlay_figure(
         max_edges_total=max_edges_total,
     )
     with _visualization_context():
-        figure, axes = plt.subplots(2, 3, figsize=(18.0, 11.5))
+        figure, axes = plt.subplots(2, 3, figsize=(18.0, 12.0))
         for axis, core_number in zip(axes.ravel(), CORE_ORDER, strict=True):
             cells = prepared.loc[prepared["core_number"] == core_number]
             edges = selected_edges.loc[selected_edges["core_number"] == core_number]
@@ -1334,15 +1418,16 @@ def create_mutual_attention_network_overlay_figure(
             title += f"\n{map_label}"
         figure.suptitle(
             title,
-            fontsize=16.0,
+            fontsize=15.0,
             fontweight="bold",
-            y=0.985,
+            y=0.992,
+            linespacing=1.12,
         )
         figure.subplots_adjust(
             left=0.035,
             right=0.985,
             bottom=0.035,
-            top=0.935,
+            top=0.89,
             wspace=0.12,
             hspace=0.17,
         )
@@ -1350,6 +1435,7 @@ def create_mutual_attention_network_overlay_figure(
             figure,
             low_confidence_threshold=low_confidence_threshold,
         )
+        _require_suptitle_clearance(figure)
     return figure
 
 
@@ -1413,6 +1499,9 @@ def _visualization_receipt(
         allow_cross_core_color_reuse=allow_cross_core_color_reuse,
     )
     prepared_regions = _prepare_regions(regions, prepared)
+    omitted_zero_area_rings = _omitted_zero_area_interior_ring_receipt(
+        prepared_regions
+    )
     if include_overlay:
         displayed_edges = select_strongest_mutual_edges(
             mutual_edges,
@@ -1457,7 +1546,7 @@ def _visualization_receipt(
                 (cells["assignment_confidence"] < low_confidence_threshold).sum()
             )
     return {
-        "schema": "attention_niche_visualization_receipt_v1",
+        "schema": "attention_niche_visualization_receipt_v2",
         "status": "complete",
         "terminology": "model-defined attention-routing niches",
         "map_label": _optional_map_label(assignments),
@@ -1485,7 +1574,9 @@ def _visualization_receipt(
         ),
         "low_confidence_cells_per_core": low_confidence_cells,
         "region_geometry_types": ["Polygon", "MultiPolygon"],
-        "region_holes_preserved": True,
+        "region_holes_preserved": "all_nondegenerate",
+        "nondegenerate_region_holes_preserved": True,
+        "zero_area_interior_rings_omitted_from_render": omitted_zero_area_rings,
         "cell_facecolor_matches_niche_fill_color": True,
         "overlay": {
             "included": bool(include_overlay),

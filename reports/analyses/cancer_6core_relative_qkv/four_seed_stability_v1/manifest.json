@@ -1,0 +1,156 @@
+{
+  "active_model_seeds": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "analysis_schema": "cancer_6core_relative_qkv_four_seed_stability_v1",
+  "calibrated_biological_confidence_interval": false,
+  "campaign_id": "cmp_20260824_cancer_6core_relative_qkv_multiseed",
+  "deferred_model_seeds": [
+    4
+  ],
+  "files": {
+    "arrays/attention_head_stability.npz": {
+      "sha256": "017b1d6e3b482c1cd0bf83b8f383686b1fe6d6b9b926fe21aea24547a40f9df5",
+      "size_bytes": 5606
+    },
+    "arrays/embedding_stability.npz": {
+      "sha256": "f1cac10e459cdac3c2ceae7867beef4e60c167d0c150d37a9f7e6f3f3c7598dd",
+      "size_bytes": 722
+    },
+    "arrays/node_embeddings.npz": {
+      "sha256": "40fc9ba71d675af3a4d4d5927ab946758865e320746df183c9003408281f98a4",
+      "size_bytes": 446400725
+    },
+    "arrays/selected_gradient_stability.npz": {
+      "sha256": "11f9081a1e741206be2416774dc320b0c0313652803e07f49a23592d6e0d2606",
+      "size_bytes": 2395
+    },
+    "provenance/analysis_execution_provenance.json": {
+      "sha256": "08a3487708716792b555744378960beed56d831754f247c5335c10adfffabae5",
+      "size_bytes": 7377
+    },
+    "provenance/analysis_git_dirty.diff": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "provenance/analysis_protocol_selected_gradient_stability_v1.sha256": {
+      "sha256": "f51cd076eef23cccc91f55d868dda234f9bf0ff014dceca223a54f962895fd87",
+      "size_bytes": 120
+    },
+    "provenance/analysis_protocol_selected_gradient_stability_v1.yaml": {
+      "sha256": "ec7c57df87083a54a81a661e50319fdb614993992701f48a620efaa80622696e",
+      "size_bytes": 11518
+    },
+    "provenance/analysis_source_prepare_relative_qkv_gradient_requests.py": {
+      "sha256": "2e0e5200c6a518e71cb2e8b66a67e55c520286a1bf27e5d4816f04998bdacb53",
+      "size_bytes": 3960
+    },
+    "provenance/analysis_source_relative_qkv_four_seed_stability.py": {
+      "sha256": "0f7e4f79a884b6f02c010c363fb6f93a2789c90a65f53f247c9d2773e961e2a4",
+      "size_bytes": 241027
+    },
+    "provenance/analysis_source_relative_qkv_gradient_requests.py": {
+      "sha256": "6c518d4284ecd564b1395adc9f6baf545b36aedd6023ec8088f34e3d1a32796a",
+      "size_bytes": 29222
+    },
+    "provenance/analysis_source_relative_qkv_graph_transformer.py": {
+      "sha256": "db7f3a18da0155c69bf43874b33d2ad1d888fa860c836dec782064e5dbcab8ba",
+      "size_bytes": 41333
+    },
+    "provenance/analysis_source_relative_qkv_post_training.py": {
+      "sha256": "273fc377e28844a7408f2bf257a1d0d8a7bdfb8f27f4e13b06807e47662147ca",
+      "size_bytes": 28139
+    },
+    "provenance/analysis_source_relative_qkv_stability.py": {
+      "sha256": "ecb6751eec050cb8d97ba1735cf8e73c38ddfa7e4d3bef492060cbc6058ec10e",
+      "size_bytes": 38834
+    },
+    "provenance/analysis_source_run_relative_qkv_four_seed_stability.py": {
+      "sha256": "5f05f6f51731db1d01a1c8843a5021a20bdbb58e59f9fa6e1a37775487165bb2",
+      "size_bytes": 4640
+    },
+    "provenance/cohort_manifest.json": {
+      "sha256": "9c4ea4c9445f5230c5f823b4b1cd7a5b230767b43daa7018c99dc27bbf9613ad",
+      "size_bytes": 28209
+    },
+    "provenance/graph_manifest.json": {
+      "sha256": "20caa27c4d0a816a01475eda321e1910505b3b7849bc8eaa22a56e3cbfd1b48d",
+      "size_bytes": 53530
+    },
+    "provenance/seed_0_strict_checkpoint_verification.json": {
+      "sha256": "d7181690624d4817580c33eb9ba8560775358b55a3d10844345b3c0dcad73e90",
+      "size_bytes": 44426
+    },
+    "provenance/seed_1_strict_checkpoint_verification.json": {
+      "sha256": "28fed53486ef90d5759c8849221b56f367addd1800372b456100bd46dcab6a3e",
+      "size_bytes": 44459
+    },
+    "provenance/seed_2_strict_checkpoint_verification.json": {
+      "sha256": "5ee909a20abb094afc731c05ea3456ef89fb596e71d02a78557e24599724a89b",
+      "size_bytes": 44442
+    },
+    "provenance/seed_3_strict_checkpoint_verification.json": {
+      "sha256": "66dca152cbb8efa54fdae7339072a8c5c811886016a7869dd17c805da5ed169a",
+      "size_bytes": 44397
+    },
+    "provenance/selected_gradient_requests_v1.csv": {
+      "sha256": "2ebe0d5fbf59f268d8b60d9b634a4ecf5d2621083ee05257eabb568af0bec4d2",
+      "size_bytes": 9185
+    },
+    "provenance/selected_gradient_requests_v1.sha256": {
+      "sha256": "f639752ddb8e2a9ed95cceb2ee0511a084049d3179bbebe2e07da776da569b3a",
+      "size_bytes": 100
+    },
+    "report.json": {
+      "sha256": "0049e99f17174c6248129e578784a7558bc4873b4c8e49eb63dbf6086b9a4086",
+      "size_bytes": 54230
+    },
+    "report.md": {
+      "sha256": "01039a0f357796b7e5f919f5af25acebe98b57d7f19947fcbe5b7b5713adfec7",
+      "size_bytes": 4433
+    },
+    "tables/fixed_edge_summary.parquet": {
+      "sha256": "aa5d342c6a578c8378bf87c9a6b911adb6e731c347ac413feeae78ed7511c453",
+      "size_bytes": 41753805
+    },
+    "tables/fixed_metric_summary.parquet": {
+      "sha256": "192b221c7991c29adb10fd0b35b8ff8f4b7a32d4abbbcbfa901715ad8e4dff38",
+      "size_bytes": 5111
+    },
+    "tables/fixed_metrics.parquet": {
+      "sha256": "24ad12d3fc575dcbb04135d0db1e632f1ba4a75b2629093827381616e87b86e8",
+      "size_bytes": 3058
+    },
+    "tables/fixed_probe_edges.parquet": {
+      "sha256": "13d75692a6897ad3caa610336a0ce7f65a441ee0e373ab3d9347ca03cff50a1b",
+      "size_bytes": 58480263
+    },
+    "tables/mutual_pair_stability.parquet": {
+      "sha256": "93c4b3e488ad5bd343ade2414ce8b9790d19339724153b8805721099e5f44d04",
+      "size_bytes": 160342
+    },
+    "tables/node_identity.parquet": {
+      "sha256": "5cd4b8ecd4f147341a8d43a56c3b4d466f303803feb47b1fd5289856ff133509",
+      "size_bytes": 147550
+    },
+    "tables/selected_gradient_stability.parquet": {
+      "sha256": "1a6e7589e20bdedfef725d2419d5c9089ef4d6c219bb6933c40582b22ed1586c",
+      "size_bytes": 14804
+    },
+    "tables/selected_gradients.parquet": {
+      "sha256": "237920f24d3f41ae16c068a8a1745dec6fd4eecd0789c66402d5495fa8b08aa0",
+      "size_bytes": 14731
+    },
+    "tables/training_curves.parquet": {
+      "sha256": "0861e9ae1e6010548d33053dfda34e6402d5de754418cc40559ce2ba37cc44fe",
+      "size_bytes": 8641
+    }
+  },
+  "manifest_content_sha256": "f390d59b57726b0079648186e9ce819c6fe42ccca0d51591a5b861c72217b99a",
+  "schema": "cancer_6core_relative_qkv_four_seed_stability_manifest_v1",
+  "spread_label": "four-seed ensemble spread",
+  "status": "complete"
+}

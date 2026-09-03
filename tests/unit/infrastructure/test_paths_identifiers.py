@@ -23,6 +23,7 @@ def test_project_paths_honor_relative_and_absolute_overrides(tmp_path: Path) -> 
             "BAGM_ROOT": str(tmp_path),
             "BAGM_DATA_ROOT": "protected-data",
             "BAGM_STATE_ROOT": str(external_state),
+            "BAGM_RESULT_ROOT": "curated-results",
         }
     )
 
@@ -33,6 +34,24 @@ def test_project_paths_honor_relative_and_absolute_overrides(tmp_path: Path) -> 
     assert paths.scratch_root == (tmp_path / "scratch").resolve()
     assert paths.config_root == (tmp_path / "configs").resolve()
     assert paths.export_root == (tmp_path / "exports").resolve()
+    assert paths.report_root == (tmp_path / "reports").resolve()
+    assert paths.result_root == (tmp_path / "curated-results").resolve()
+
+
+def test_project_paths_direct_constructor_defaults_result_root(tmp_path: Path) -> None:
+    paths = ProjectPaths(
+        project_root=tmp_path,
+        config_root=tmp_path / "configs",
+        data_root=tmp_path / "data",
+        artifact_root=tmp_path / "artifacts",
+        state_root=tmp_path / "state",
+        scratch_root=tmp_path / "scratch",
+        cache_root=tmp_path / "cache",
+        export_root=tmp_path / "exports",
+        report_root=tmp_path / "reports",
+    )
+
+    assert paths.result_root == (tmp_path / "results").resolve()
 
 
 def test_explicit_anchor_wins_over_unrelated_cwd(
@@ -58,9 +77,11 @@ def test_canonical_json_and_scientific_exclusions_are_deterministic() -> None:
         "fold": 0,
         "launcher": {"kind": "local", "heartbeat_seconds": 30},
         "artifact_path": "/one",
+        "result_root": "/one/results",
     }
     second = {
         "artifact_path": "/different",
+        "result_root": "/different/results",
         "launcher": {"kind": "slurm", "heartbeat_seconds": 90},
         "fold": 4,
         "seed": 99,

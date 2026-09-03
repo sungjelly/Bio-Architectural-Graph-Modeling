@@ -1,0 +1,132 @@
+{
+  "cosine_distance_setup": {
+    "cell_by_cell_matrix_constructed": false,
+    "input_dtype": "float32",
+    "input_hL_sha256": "23ad813b7aed5a8988463cb7a1bdef6039774dd6d3a31b41559700ab98514e44",
+    "input_shape": [
+      246063,
+      256
+    ],
+    "l2_normalize_for_cosine": true,
+    "maximum_input_l2_norm": 41.676056307208675,
+    "mean_center": false,
+    "minimum_input_l2_norm": 9.051253635916702,
+    "normalized_array_persisted": false,
+    "normalized_cosine_search_array_sha256": "749725a06c9c69ece96ddc9254701d684c7c87047c44afa80d651d504764203e",
+    "operation": "row_l2_normalization_for_cosine_distance_only",
+    "output_dtype": "float32",
+    "output_shape": [
+      246063,
+      256
+    ],
+    "pca": false,
+    "raw_hL_mutated": false,
+    "representation_learning_or_reduction": false
+  },
+  "embedding_array": "hL",
+  "joint_embedding_sha256": "23ad813b7aed5a8988463cb7a1bdef6039774dd6d3a31b41559700ab98514e44",
+  "joint_embedding_shape": [
+    246063,
+    256
+  ],
+  "knn": {
+    "approximate_neighbor_index": true,
+    "cell_by_cell_matrix_constructed": false,
+    "directed_neighbor_entries": 7381890,
+    "distance_metric": "cosine_via_l2_normalized_inner_product",
+    "edge_weights": "unweighted",
+    "ef_construction": 200,
+    "ef_search": 128,
+    "faiss_version": "1.15.0",
+    "hnsw_m": 32,
+    "implementation": "faiss.IndexHNSWFlat",
+    "input_order": "locked_global_core_then_cell_index",
+    "maximum_explicit_pairwise_array_shape": [
+      246063,
+      38
+    ],
+    "n_neighbors": 30,
+    "neighbor_cosine_sha256": "2c3c9841628bea5fb8b973b16880ba7e2e24db7757613d6544ef4b297a957904",
+    "neighbor_storage_shape": [
+      246063,
+      30
+    ],
+    "neighbors_sha256": "4a2deeccea39d58e7f77e830cda10dd870384cf817e235c618733a04039b7238",
+    "random_seed": 20260825,
+    "random_seed_role": "Leiden; FAISS HNSW uses fixed library RNG with stable insertion order",
+    "single_threaded_index_and_search": true,
+    "symmetrization": "undirected_union",
+    "undirected_edges": 6365298,
+    "undirected_edges_sha256": "065a9259e23a27483a4f8eed623ac4a75f32a8be6fdb0191db825192ac336e39"
+  },
+  "knn_exact_recall_audit": {
+    "cell_by_cell_matrix_constructed": false,
+    "exact_neighbors_sha256": "9346bbaa074e386445e92b0a69ff8f2c766dc3e5a5cba85845ea6695ee7cd436",
+    "exact_similarity_matrix_persisted": false,
+    "maximum_explicit_pairwise_array_elements": 1968504,
+    "maximum_explicit_pairwise_array_shape": [
+      8,
+      246063
+    ],
+    "mean_recall_acceptance_passed": true,
+    "method": "deterministic_evenly_spaced_queries_exact_cosine",
+    "minimum_accepted_mean_recall_at_k": 0.9,
+    "n_neighbors": 30,
+    "per_query_recall_sha256": "5260e6408ce6cd14caef31a7f2fc3c782e61a3610565e37a66b885211cf6eaff",
+    "purpose": "approximate_HNSW_neighbor_recall_quality_control",
+    "query_batch_size": 8,
+    "query_count_evaluated": 128,
+    "query_count_requested": 128,
+    "query_indices_sha256": "b01d7e9835839c916cd7a4394372c65d52f80714b5aa9279c74d15e8534024e0",
+    "recall_at_k_maximum": 1.0,
+    "recall_at_k_mean": 0.9947916666666666,
+    "recall_at_k_median": 1.0,
+    "recall_at_k_minimum": 0.7
+  },
+  "l2_normalize_for_cosine": true,
+  "leiden": {
+    "cluster_count": 18,
+    "cluster_size_max": 27650,
+    "cluster_size_min": 1228,
+    "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+    "igraph_version": "1.0.0",
+    "implementation": "leidenalg.RBConfigurationVertexPartition",
+    "labels_sha256": "c871b0901a8f50b8927001b587b02c548599d5599c77fd986c27dffae0ec4117",
+    "largest_graph_component_proportion": 1.0,
+    "largest_graph_component_size": 246063,
+    "leidenalg_version": "0.12.0",
+    "modularity": 0.8535143869575308,
+    "n_iterations": -1,
+    "number_of_graph_components": 1,
+    "quality": 10865746.840543993,
+    "random_seed": 20260825,
+    "raw_to_sorted_cluster": {
+      "0": 0,
+      "1": 1,
+      "10": 10,
+      "11": 11,
+      "12": 12,
+      "13": 13,
+      "14": 14,
+      "15": 15,
+      "16": 16,
+      "17": 17,
+      "2": 2,
+      "3": 3,
+      "4": 4,
+      "5": 5,
+      "6": 6,
+      "7": 7,
+      "8": 8,
+      "9": 9
+    },
+    "resolution": 1.0
+  },
+  "mean_center": false,
+  "method": "direct_hl_cosine_knn_leiden",
+  "pca": false,
+  "pipeline_kind": "direct_hl_cosine_knn_leiden",
+  "raw_hL_mutated": false,
+  "raw_hL_sha256_after_complete_pipeline": "23ad813b7aed5a8988463cb7a1bdef6039774dd6d3a31b41559700ab98514e44",
+  "representation": "hL_final_graph_pre_decoder"
+}

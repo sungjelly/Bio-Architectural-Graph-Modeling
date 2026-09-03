@@ -6,6 +6,8 @@ from pathlib import Path
 
 import yaml
 
+import spatial_benchmark.cli as cli
+import spatial_benchmark.so1_hl_direct_interactive as so1_hl_interactive
 from spatial_benchmark.cli import build_parser, main
 from spatial_benchmark.registry import Registry
 
@@ -32,6 +34,9 @@ def test_cli_exposes_required_commands() -> None:
         "resolve-checkpoint",
         "export-checkpoint-catalog",
         "analyze-embedding-clusters",
+        "analyze-contextual-resolution-sweep",
+        "analyze-so1-model-embedding-clusters",
+        "render-so1-hl-direct-interactive",
         "summarize-variants",
         "export-leaderboard",
         "promote-run",
@@ -108,6 +113,121 @@ def test_embedding_analysis_parser_accepts_explicit_overrides(tmp_path: Path) ->
     assert arguments.pca_components == 32
     assert arguments.random_seed == 19
     assert arguments.device == "cpu"
+    assert arguments.output_dir == output
+
+
+def test_so1_post_training_parser_defaults_and_registry_free_viewer(
+    tmp_path: Path, monkeypatch, capsys
+) -> None:
+    parser = build_parser()
+    analysis = parser.parse_args(["analyze-so1-model-embedding-clusters"])
+    assert analysis.device == "cpu"
+    assert analysis.cpu_threads == 40
+    assert analysis.n_neighbors == 30
+    assert analysis.leiden_resolution == 1.0
+    assert analysis.random_seed == 20260825
+
+    viewer = parser.parse_args(
+        ["render-so1-hl-direct-interactive", "--run-id", "r_final"]
+    )
+    assert viewer.run_id == "r_final"
+
+    def fail_registry(*args, **kwargs):  # pragma: no cover - assertion helper
+        raise AssertionError("viewer CLI must not open the experiment registry")
+
+    monkeypatch.setattr(cli, "Registry", fail_registry)
+    monkeypatch.setattr(
+        so1_hl_interactive,
+        "run_so1_hl_direct_interactive",
+        lambda **kwargs: {"status": "complete", "run_id": kwargs["run_id"]},
+    )
+    assert cli.main(
+        [
+            "--root",
+            str(tmp_path),
+            "render-so1-hl-direct-interactive",
+            "--run-id",
+            "r_final",
+        ]
+    ) == 0
+    assert json.loads(capsys.readouterr().out)["run_id"] == "r_final"
+
+
+def test_so1_model_analysis_cli_opens_registry_without_initialization(
+    tmp_path: Path, monkeypatch, capsys
+) -> None:
+    observed: dict[str, object] = {}
+
+    class ReadOnlyRegistrySentinel:
+        def __init__(self, path: Path, *, initialize: bool = True) -> None:
+            observed["path"] = path
+            observed["initialize"] = initialize
+
+    monkeypatch.setattr(cli, "Registry", ReadOnlyRegistrySentinel)
+    monkeypatch.setattr(
+        cli,
+        "_dispatch",
+        lambda arguments, *, registry, paths: {"status": "gated"},
+    )
+    assert cli.main(
+        ["--root", str(tmp_path), "analyze-so1-model-embedding-clusters"]
+    ) == 0
+    assert observed["initialize"] is False
+    assert json.loads(capsys.readouterr().out)["status"] == "gated"
+
+
+def test_contextual_resolution_sweep_parser_defaults_and_help() -> None:
+    parser = build_parser()
+    arguments = parser.parse_args(
+        [
+            "analyze-contextual-resolution-sweep",
+            "--run-id",
+            "r_test_contextual_sweep",
+        ]
+    )
+    assert arguments.command_name == "analyze-contextual-resolution-sweep"
+    assert arguments.run_id == "r_test_contextual_sweep"
+    assert arguments.resolutions == [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
+    assert arguments.random_seed == 20260825
+    assert arguments.output_dir is None
+
+    subparsers = next(
+        action
+        for action in parser._actions
+        if isinstance(action, argparse._SubParsersAction)
+    )
+    help_text = subparsers.choices[
+        "analyze-contextual-resolution-sweep"
+    ].format_help()
+    for option in (
+        "--run-id",
+        "--resolutions",
+        "--random-seed",
+        "--output-dir",
+    ):
+        assert option in help_text
+
+
+def test_contextual_resolution_sweep_parser_accepts_overrides(
+    tmp_path: Path,
+) -> None:
+    output = tmp_path / "contextual-resolution-sweep"
+    arguments = build_parser().parse_args(
+        [
+            "analyze-contextual-resolution-sweep",
+            "--resolutions",
+            "0.4",
+            "0.8",
+            "1.6",
+            "--random-seed",
+            "73",
+            "--output-dir",
+            str(output),
+        ]
+    )
+    assert arguments.run_id is None
+    assert arguments.resolutions == [0.4, 0.8, 1.6]
+    assert arguments.random_seed == 73
     assert arguments.output_dir == output
 
 

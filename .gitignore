@@ -33,8 +33,11 @@ state/**/pids/
 state/**/logs/process_records/
 state/tracking/*.sqlite*
 state/tracking/backups/
+state/backups/
 state/queue/
 state/optimization/
+state/monitoring/
+state/preflight/
 state/pids/
 
 # Shared data inputs and generated outputs
@@ -84,6 +87,11 @@ exports/runs/checkpoints/
 !results/
 !results/**/
 !results/**/.gitkeep
+!results/README.md
+!results/CATALOG.md
+!results/catalog.json
+!results/**/README.md
+!results/**/result.yaml
 !artifacts/
 !artifacts/**/
 !artifacts/**/.gitkeep

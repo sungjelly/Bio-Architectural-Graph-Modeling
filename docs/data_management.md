@@ -73,8 +73,9 @@ manifest.
 
 ## Privacy and storage
 
-Tracked files, logs, registries, predictions, and reports must not contain
-direct patient/donor identifiers or restricted row-level metadata. Prediction
+Tracked files, logs, registries, predictions, reports, and curated result
+records must not contain direct patient/donor identifiers or restricted
+row-level metadata. Prediction
 tables use opaque registry keys or an HMAC with an untracked secret; an
 unsalted hash of a direct identifier is not sufficient protection. Do not
 upload source data, artifacts, metadata, or fingerprints to an external

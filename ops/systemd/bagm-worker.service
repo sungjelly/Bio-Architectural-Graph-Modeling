@@ -4,19 +4,19 @@ After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/workspace/Bio-Architectural-Graph-Modeling
-Environment=PYTHONPATH=/workspace/Bio-Architectural-Graph-Modeling/src
+WorkingDirectory=/workspace/BAGM
+Environment=PYTHONPATH=/workspace/BAGM/src
 Environment=BAGM_GPU_DEVICE=0
-EnvironmentFile=-/workspace/Bio-Architectural-Graph-Modeling/.env
-ExecStartPre=/usr/bin/mkdir -p /workspace/Bio-Architectural-Graph-Modeling/state/logs
+EnvironmentFile=-/workspace/BAGM/.env
+ExecStartPre=/usr/bin/mkdir -p /workspace/BAGM/state/logs
 ExecStart=/venv/main/bin/python -m spatial_benchmark worker
 Restart=on-failure
 RestartSec=15
 TimeoutStopSec=90
 KillSignal=SIGTERM
 SendSIGKILL=no
-StandardOutput=append:/workspace/Bio-Architectural-Graph-Modeling/state/logs/worker.stdout.log
-StandardError=append:/workspace/Bio-Architectural-Graph-Modeling/state/logs/worker.stderr.log
+StandardOutput=append:/workspace/BAGM/state/logs/worker.stdout.log
+StandardError=append:/workspace/BAGM/state/logs/worker.stderr.log
 
 [Install]
 WantedBy=default.target

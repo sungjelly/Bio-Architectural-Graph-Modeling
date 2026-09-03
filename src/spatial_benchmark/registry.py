@@ -27,6 +27,7 @@ SCHEMA_VERSION = 4
 DEFAULT_BUSY_TIMEOUT_MS = 30_000
 ARTIFACT_STATUS_DELETED_BY_RETENTION = "deleted_by_retention"
 ARTIFACT_STATUS_RETENTION_PENDING = "retention_deletion_pending"
+FULL_RUN_RETENTION_RECEIPT_KIND = "full_run_retention_receipt"
 _ANY_GPU = object()
 RUN_STATUSES = frozenset(
     {
@@ -85,6 +86,23 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="microseconds").replace(
         "+00:00", "Z"
     )
+
+
+def full_run_artifact_inventory_sha256(rows: Sequence[Mapping[str, Any]]) -> str:
+    """Hash stable registered identities for a fully retired run bundle."""
+
+    inventory = [
+        {
+            "artifact_id": int(row["artifact_id"]),
+            "kind": str(row["kind"]),
+            "path": str(row["path"]),
+            "sha256": str(row["sha256"] or ""),
+            "size_bytes": int(row["size_bytes"]),
+        }
+        for row in rows
+    ]
+    inventory.sort(key=lambda item: item["artifact_id"])
+    return hashlib.sha256(canonical_json(inventory).encode("utf-8")).hexdigest()
 
 
 def _json(value: Any) -> str:
@@ -3065,7 +3083,344 @@ class Registry:
         )
         return summaries
 
+    def verify_full_run_retirements(
+        self, *, run_id: str | None = None
+    ) -> tuple[set[str], list[dict[str, Any]]]:
+        """Validate external receipts before treating run bundle roots as retired."""
+
+        parameters: tuple[Any, ...] = (run_id,) if run_id is not None else ()
+        with self.connect() as connection:
+            runs = connection.execute(
+                """
+                SELECT r.run_id, r.campaign_id, r.status, r.artifact_path
+                FROM runs r
+                WHERE EXISTS(
+                    SELECT 1 FROM artifacts a
+                    WHERE a.run_id = r.run_id AND a.kind = ?
+                )
+                """
+                + (" AND r.run_id = ?" if run_id is not None else "")
+                + " ORDER BY r.run_id",
+                (FULL_RUN_RETENTION_RECEIPT_KIND, *parameters),
+            ).fetchall()
+            artifacts_by_run = {
+                str(row["run_id"]): connection.execute(
+                    """
+                    SELECT artifact_id, run_id, kind, path, sha256, size_bytes,
+                           status
+                    FROM artifacts WHERE run_id = ? ORDER BY artifact_id
+                    """,
+                    (str(row["run_id"]),),
+                ).fetchall()
+                for row in runs
+            }
+
+        verified: set[str] = set()
+        issues: list[dict[str, Any]] = []
+        marker_for_status = {
+            "completed": "_SUCCESS",
+            "failed": "_FAILED",
+            "pruned": "_PRUNED",
+        }
+        for run in runs:
+            selected_run_id = str(run["run_id"])
+            local_issues: list[dict[str, Any]] = []
+
+            def issue(reason: str, path: str | Path | None = None) -> None:
+                local_issues.append(
+                    {
+                        "run_id": selected_run_id,
+                        "path": str(path or run["artifact_path"] or ""),
+                        "issue": reason,
+                    }
+                )
+
+            rows = artifacts_by_run[selected_run_id]
+            receipt_rows = [
+                row
+                for row in rows
+                if str(row["kind"]) == FULL_RUN_RETENTION_RECEIPT_KIND
+            ]
+            if len(receipt_rows) != 1:
+                issue(f"full_retirement_receipt_count_{len(receipt_rows)}")
+                issues.extend(local_issues)
+                continue
+            receipt_row = receipt_rows[0]
+            if str(receipt_row["status"]) != "present":
+                issue("full_retirement_receipt_not_present", receipt_row["path"])
+            receipt_path = Path(str(receipt_row["path"]))
+            if receipt_path.is_symlink() or not receipt_path.is_file():
+                issue("full_retirement_receipt_missing_or_symlink", receipt_path)
+            elif receipt_row["size_bytes"] is None or (
+                receipt_path.stat().st_size != int(receipt_row["size_bytes"])
+            ):
+                issue("full_retirement_receipt_size_mismatch", receipt_path)
+            elif not receipt_row["sha256"] or _sha256_file(receipt_path) != str(
+                receipt_row["sha256"]
+            ):
+                issue("full_retirement_receipt_checksum_mismatch", receipt_path)
+
+            root = Path(str(run["artifact_path"]))
+            if root.exists() or root.is_symlink():
+                issue("full_retirement_root_still_exists", root)
+            resolved_root = root.resolve(strict=False)
+            if receipt_path.resolve(strict=False).is_relative_to(resolved_root):
+                issue("full_retirement_receipt_inside_retired_root", receipt_path)
+
+            receipt_artifact_id = int(receipt_row["artifact_id"])
+            inventory_rows = [
+                row
+                for row in rows
+                if int(row["artifact_id"]) != receipt_artifact_id
+            ]
+            if not inventory_rows:
+                issue("full_retirement_inventory_empty")
+            for artifact in inventory_rows:
+                artifact_path = Path(str(artifact["path"]))
+                if not artifact_path.resolve(strict=False).is_relative_to(resolved_root):
+                    issue(
+                        "full_retirement_inventory_path_outside_root",
+                        artifact_path,
+                    )
+                if str(artifact["status"]) != ARTIFACT_STATUS_DELETED_BY_RETENTION:
+                    issue(
+                        "full_retirement_inventory_not_tombstoned",
+                        artifact_path,
+                    )
+                if artifact_path.exists() or artifact_path.is_symlink():
+                    issue("full_retirement_tombstone_path_exists", artifact_path)
+                if artifact["size_bytes"] is None or int(artifact["size_bytes"]) < 0:
+                    issue("full_retirement_inventory_size_invalid", artifact_path)
+                digest = str(artifact["sha256"] or "")
+                if len(digest) != 64 or any(
+                    character not in "0123456789abcdef" for character in digest.lower()
+                ):
+                    issue("full_retirement_inventory_checksum_invalid", artifact_path)
+
+            receipt: Mapping[str, Any] = {}
+            if not local_issues:
+                try:
+                    parsed = json.loads(receipt_path.read_text(encoding="utf-8"))
+                except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+                    issue(f"full_retirement_receipt_invalid_json:{error}", receipt_path)
+                else:
+                    if isinstance(parsed, Mapping):
+                        receipt = parsed
+                    else:
+                        issue("full_retirement_receipt_not_mapping", receipt_path)
+
+            if receipt:
+                expected_marker = marker_for_status.get(str(run["status"]))
+                expected_inventory_sha = full_run_artifact_inventory_sha256(
+                    inventory_rows
+                )
+                expected_inventory_bytes = sum(
+                    int(row["size_bytes"]) for row in inventory_rows
+                )
+                exact_fields = {
+                    "schema_version": 1,
+                    "receipt_kind": FULL_RUN_RETENTION_RECEIPT_KIND,
+                    "run_id": selected_run_id,
+                    "campaign_id": str(run["campaign_id"]),
+                    "run_status": str(run["status"]),
+                    "artifact_root": str(root),
+                }
+                for field, expected in exact_fields.items():
+                    if receipt.get(field) != expected:
+                        issue(f"full_retirement_receipt_{field}_mismatch", receipt_path)
+                inventory = receipt.get("artifact_inventory")
+                expected_inventory = {
+                    "count": len(inventory_rows),
+                    "size_bytes": expected_inventory_bytes,
+                    "sha256": expected_inventory_sha,
+                }
+                if inventory != expected_inventory:
+                    issue("full_retirement_receipt_inventory_mismatch", receipt_path)
+                manifest_rows = [
+                    row
+                    for row in inventory_rows
+                    if Path(str(row["path"])).resolve(strict=False)
+                    == (resolved_root / "provenance/artifact_checksums.json")
+                ]
+                if (
+                    len(manifest_rows) != 1
+                    or receipt.get("checksum_manifest_sha256")
+                    != str(manifest_rows[0]["sha256"] if manifest_rows else "")
+                ):
+                    issue(
+                        "full_retirement_receipt_checksum_manifest_mismatch",
+                        receipt_path,
+                    )
+                marker = receipt.get("completion_marker")
+                if not isinstance(marker, Mapping):
+                    issue("full_retirement_receipt_marker_missing", receipt_path)
+                else:
+                    marker_path = root / str(expected_marker or "")
+                    if (
+                        marker.get("name") != expected_marker
+                        or marker.get("path") != str(marker_path)
+                        or not isinstance(marker.get("size_bytes"), int)
+                        or int(marker.get("size_bytes", -1)) < 0
+                        or not _valid_sha256_text(marker.get("file_sha256"))
+                        or not _valid_sha256_text(marker.get("content_sha256"))
+                    ):
+                        issue("full_retirement_receipt_marker_mismatch", receipt_path)
+                plan_path_raw = receipt.get("deletion_plan_path")
+                plan_sha256 = receipt.get("deletion_plan_sha256")
+                plan_path = Path(str(plan_path_raw or ""))
+                if (
+                    not plan_path_raw
+                    or plan_path.is_symlink()
+                    or not plan_path.is_file()
+                    or plan_path.resolve(strict=False).is_relative_to(resolved_root)
+                    or not _valid_sha256_text(plan_sha256)
+                    or _sha256_file(plan_path) != str(plan_sha256)
+                ):
+                    issue("full_retirement_deletion_plan_invalid", plan_path)
+                else:
+                    try:
+                        plan_records = [
+                            json.loads(line)
+                            for line in plan_path.read_text(encoding="utf-8").splitlines()
+                            if line.strip()
+                        ]
+                    except (OSError, UnicodeDecodeError, json.JSONDecodeError) as error:
+                        issue(
+                            f"full_retirement_deletion_plan_unreadable:{error}",
+                            plan_path,
+                        )
+                    else:
+                        artifact_records = [
+                            record
+                            for record in plan_records
+                            if isinstance(record, Mapping)
+                            and record.get("record_type") == "registered_artifact"
+                            and record.get("run_id") == selected_run_id
+                        ]
+                        expected_by_id = {
+                            int(row["artifact_id"]): {
+                                "artifact_id": int(row["artifact_id"]),
+                                "run_id": selected_run_id,
+                                "kind": str(row["kind"]),
+                                "path": str(row["path"]),
+                                "size_bytes": int(row["size_bytes"]),
+                                "sha256": str(row["sha256"]),
+                            }
+                            for row in inventory_rows
+                        }
+                        planned_by_id: dict[int, Mapping[str, Any]] = {}
+                        for record in artifact_records:
+                            try:
+                                planned_id = int(record["artifact_id"])
+                            except (KeyError, TypeError, ValueError):
+                                issue(
+                                    "full_retirement_deletion_plan_artifact_invalid",
+                                    plan_path,
+                                )
+                                continue
+                            if planned_id in planned_by_id:
+                                issue(
+                                    "full_retirement_deletion_plan_artifact_duplicate",
+                                    plan_path,
+                                )
+                            planned_by_id[planned_id] = record
+                        planned_identities = {
+                            artifact_id: {
+                                field: record.get(field)
+                                for field in (
+                                    "artifact_id",
+                                    "run_id",
+                                    "kind",
+                                    "path",
+                                    "size_bytes",
+                                    "sha256",
+                                )
+                            }
+                            for artifact_id, record in planned_by_id.items()
+                        }
+                        if planned_identities != expected_by_id:
+                            issue(
+                                "full_retirement_deletion_plan_inventory_mismatch",
+                                plan_path,
+                            )
+                        prior_ids = sorted(
+                            artifact_id
+                            for artifact_id, record in planned_by_id.items()
+                            if record.get("pre_retirement_status")
+                            == ARTIFACT_STATUS_DELETED_BY_RETENTION
+                        )
+                        if any(
+                            record.get("pre_retirement_status")
+                            not in {
+                                "present",
+                                ARTIFACT_STATUS_DELETED_BY_RETENTION,
+                            }
+                            for record in planned_by_id.values()
+                        ):
+                            issue(
+                                "full_retirement_deletion_plan_status_invalid",
+                                plan_path,
+                            )
+                        prior_receipt = receipt.get("prior_tombstones")
+                        if (
+                            not isinstance(prior_receipt, Mapping)
+                            or prior_receipt.get("artifact_ids") != prior_ids
+                            or prior_receipt.get("count") != len(prior_ids)
+                        ):
+                            issue(
+                                "full_retirement_receipt_prior_tombstone_mismatch",
+                                receipt_path,
+                            )
+                        marker_records = [
+                            record
+                            for record in plan_records
+                            if isinstance(record, Mapping)
+                            and record.get("record_type") == "completion_marker"
+                            and record.get("run_id") == selected_run_id
+                        ]
+                        if len(marker_records) != 1:
+                            issue(
+                                "full_retirement_deletion_plan_marker_count_mismatch",
+                                plan_path,
+                            )
+                        else:
+                            plan_marker = marker_records[0]
+                            marker = receipt.get("completion_marker", {})
+                            required_plan_values = {
+                                "artifact_root": str(root),
+                                "completion_marker": marker.get("path"),
+                                "completion_marker_size": marker.get("size_bytes"),
+                                "completion_marker_sha256": marker.get("file_sha256"),
+                                "completion_marker_content_sha256": marker.get(
+                                    "content_sha256"
+                                ),
+                                "artifact_inventory_count": len(inventory_rows),
+                                "artifact_inventory_bytes": expected_inventory_bytes,
+                                "artifact_inventory_sha256": expected_inventory_sha,
+                                "checksum_manifest_sha256": receipt.get(
+                                    "checksum_manifest_sha256"
+                                ),
+                                "prior_tombstone_artifact_ids": prior_ids,
+                                "prior_tombstone_count": len(prior_ids),
+                            }
+                            if any(
+                                plan_marker.get(field) != expected
+                                for field, expected in required_plan_values.items()
+                            ):
+                                issue(
+                                    "full_retirement_deletion_plan_binding_mismatch",
+                                    plan_path,
+                                )
+            if local_issues:
+                issues.extend(local_issues)
+            else:
+                verified.add(selected_run_id)
+        return verified, issues
+
     def verify_artifacts(self, *, run_id: str | None = None) -> list[dict[str, Any]]:
+        verified_retirements, retirement_issues = self.verify_full_run_retirements(
+            run_id=run_id
+        )
         parameters: list[Any] = []
         where = ""
         if run_id is not None:
@@ -3102,7 +3457,7 @@ class Registry:
                 ),
                 parameters,
             ).fetchall()
-        issues: list[dict[str, Any]] = []
+        issues: list[dict[str, Any]] = list(retirement_issues)
         for row in rows:
             path = Path(str(row["path"]))
             artifact_status = str(row["status"])
@@ -3154,9 +3509,13 @@ class Registry:
             "pruned": "_PRUNED",
         }
         for row in runs:
-            if bool(row["is_legacy_native"]) or bool(row["is_deferred_stale"]):
+            if (
+                bool(row["is_legacy_native"])
+                or bool(row["is_deferred_stale"])
+                or str(row["run_id"]) in verified_retirements
+            ):
                 # Legacy bundles retain their native manifest/checksum contract;
-                # they are never rewritten merely to add canonical markers.
+                # fully retired bundles retain an external checksum-bound receipt.
                 continue
             marker = marker_for_status.get(str(row["status"]))
             artifact_path = row["artifact_path"]
@@ -3256,6 +3615,13 @@ def _sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
 
+def _valid_sha256_text(value: Any) -> bool:
+    text = str(value or "").lower()
+    return len(text) == 64 and all(
+        character in "0123456789abcdef" for character in text
+    )
+
+
 def _required_sha256(name: str, value: Any) -> str:
     text = str(value).strip().lower()
     is_hex = all(character in "0123456789abcdef" for character in text)
@@ -3290,6 +3656,7 @@ def _optional_registry_text(value: Any | None) -> str | None:
 
 __all__ = [
     "DEFAULT_BUSY_TIMEOUT_MS",
+    "FULL_RUN_RETENTION_RECEIPT_KIND",
     "QUEUE_STATUSES",
     "RUN_STATUSES",
     "SCHEMA_VERSION",
@@ -3297,5 +3664,6 @@ __all__ = [
     "Registry",
     "RegistryConflictError",
     "RegistryError",
+    "full_run_artifact_inventory_sha256",
     "utc_now",
 ]

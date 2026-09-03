@@ -241,6 +241,240 @@ def build_parser() -> argparse.ArgumentParser:
     embedding_analysis.add_argument("--device", default="cuda:0")
     embedding_analysis.add_argument("--output-dir", type=Path)
 
+    contextual_resolution_sweep = subparsers.add_parser(
+        "analyze-contextual-resolution-sweep",
+        help=(
+            "Reuse completed contextual embeddings to run and plot a "
+            "Leiden resolution sweep."
+        ),
+    )
+    contextual_resolution_sweep.add_argument("--run-id")
+    contextual_resolution_sweep.add_argument(
+        "--resolutions",
+        nargs="+",
+        type=float,
+        default=[0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0],
+    )
+    contextual_resolution_sweep.add_argument(
+        "--random-seed", type=int, default=20260825
+    )
+    contextual_resolution_sweep.add_argument("--output-dir", type=Path)
+
+    so2_hl_analysis = subparsers.add_parser(
+        "analyze-so2-hl-clusters",
+        help=(
+            "Extract CPU-only contextual hL embeddings and create the joint "
+            "SO2 14-core Leiden spatial map."
+        ),
+    )
+    so2_hl_analysis.add_argument("--run-id")
+    so2_hl_analysis.add_argument("--checkpoint", type=Path)
+    so2_hl_analysis.add_argument("--n-neighbors", type=int, default=30)
+    so2_hl_analysis.add_argument(
+        "--leiden-resolution", type=float, default=1.0
+    )
+    so2_hl_analysis.add_argument("--pca-components", type=int, default=50)
+    so2_hl_analysis.add_argument("--random-seed", type=int, default=20260825)
+    so2_hl_analysis.add_argument("--device", default="cpu")
+    so2_hl_analysis.add_argument("--cpu-threads", type=int, default=40)
+    so2_hl_analysis.add_argument("--dpi", type=int, default=300)
+    so2_hl_analysis.add_argument("--output-dir", type=Path)
+
+    so2_recurrent_hl_analysis = subparsers.add_parser(
+        "analyze-so2-recurrent-hl-clusters",
+        help=(
+            "Extract recurrent one-block contextual hL embeddings and create "
+            "one joint SO2 14-core Leiden PNG."
+        ),
+    )
+    so2_recurrent_hl_analysis.add_argument("--run-id")
+    so2_recurrent_hl_analysis.add_argument("--checkpoint", type=Path)
+    so2_recurrent_hl_analysis.add_argument("--n-neighbors", type=int, default=30)
+    so2_recurrent_hl_analysis.add_argument(
+        "--leiden-resolution", type=float, default=1.0
+    )
+    so2_recurrent_hl_analysis.add_argument(
+        "--pca-components", type=int, default=50
+    )
+    so2_recurrent_hl_analysis.add_argument(
+        "--random-seed", type=int, default=20260825
+    )
+    so2_recurrent_hl_analysis.add_argument(
+        "--extract-devices", default="cuda:0,cuda:1,cuda:2,cuda:3"
+    )
+    so2_recurrent_hl_analysis.add_argument(
+        "--cpu-threads-per-worker", type=int, default=4
+    )
+    so2_recurrent_hl_analysis.add_argument("--dpi", type=int, default=300)
+    so2_recurrent_hl_analysis.add_argument("--output-dir", type=Path)
+
+    so2_hl_interactive = subparsers.add_parser(
+        "render-so2-hl-interactive",
+        help=(
+            "Create a self-contained interactive HTML viewer from the completed "
+            "SO2 14-core contextual hL clustering."
+        ),
+    )
+    so2_hl_interactive.add_argument("--run-id")
+    so2_hl_interactive.add_argument("--output-dir", type=Path)
+
+    so2_hl_direct_analysis = subparsers.add_parser(
+        "analyze-so2-hl-direct-clusters",
+        help=(
+            "Cluster the verified SO2 contextual hL representation directly "
+            "with cosine kNN and Leiden, without PCA or mean-centering."
+        ),
+    )
+    so2_hl_direct_analysis.add_argument("--run-id")
+    so2_hl_direct_analysis.add_argument("--checkpoint", type=Path)
+    so2_hl_direct_analysis.add_argument("--n-neighbors", type=int, default=30)
+    so2_hl_direct_analysis.add_argument(
+        "--leiden-resolution", type=float, default=1.0
+    )
+    so2_hl_direct_analysis.add_argument(
+        "--random-seed", type=int, default=20260825
+    )
+    so2_hl_direct_analysis.add_argument("--device", default="cpu")
+    so2_hl_direct_analysis.add_argument("--cpu-threads", type=int, default=40)
+    so2_hl_direct_analysis.add_argument("--dpi", type=int, default=300)
+    so2_hl_direct_analysis.add_argument("--source-output-dir", type=Path)
+    so2_hl_direct_analysis.add_argument("--output-dir", type=Path)
+
+    so2_hl_direct_interactive = subparsers.add_parser(
+        "render-so2-hl-direct-interactive",
+        help=(
+            "Create a self-contained interactive HTML viewer from the "
+            "completed direct-hL SO2 clustering report."
+        ),
+    )
+    so2_hl_direct_interactive.add_argument("--run-id")
+    so2_hl_direct_interactive.add_argument("--source-report-dir", type=Path)
+    so2_hl_direct_interactive.add_argument("--output-dir", type=Path)
+
+    so2_hl_umap = subparsers.add_parser(
+        "render-so2-hl-umap",
+        help=(
+            "Create a deterministic CPU-only UMAP from the completed SO2 "
+            "contextual hL clustering."
+        ),
+    )
+    so2_hl_umap.add_argument("--run-id")
+    so2_hl_umap.add_argument("--n-neighbors", type=int, default=30)
+    so2_hl_umap.add_argument("--min-dist", type=float, default=0.3)
+    so2_hl_umap.add_argument("--epochs", type=int, default=200)
+    so2_hl_umap.add_argument("--random-seed", type=int, default=20260825)
+    so2_hl_umap.add_argument("--device", default="cpu")
+    so2_hl_umap.add_argument("--dpi", type=int, default=300)
+    so2_hl_umap.add_argument("--output-dir", type=Path)
+
+    so2_raw_expression = subparsers.add_parser(
+        "analyze-so2-raw-expression-clusters",
+        help=(
+            "Run the CPU-only joint SO2 14-core classical raw-expression "
+            "PCA, cosine kNN, and Leiden baseline."
+        ),
+    )
+    so2_raw_expression.add_argument("--cohort-dir", type=Path)
+    so2_raw_expression.add_argument(
+        "--normalization-target", type=float, default=197.0
+    )
+    so2_raw_expression.add_argument(
+        "--library-size-floor", type=float, default=20.0
+    )
+    so2_raw_expression.add_argument("--scale-clip", type=float, default=10.0)
+    so2_raw_expression.add_argument("--pca-components", type=int, default=50)
+    so2_raw_expression.add_argument("--n-neighbors", type=int, default=30)
+    so2_raw_expression.add_argument(
+        "--leiden-resolution", type=float, default=1.0
+    )
+    so2_raw_expression.add_argument(
+        "--random-seed", type=int, default=20260825
+    )
+    so2_raw_expression.add_argument("--device", default="cpu")
+    so2_raw_expression.add_argument("--dpi", type=int, default=300)
+    so2_raw_expression.add_argument("--output-dir", type=Path)
+
+    so2_raw_interactive = subparsers.add_parser(
+        "render-so2-raw-expression-interactive",
+        help=(
+            "Create a self-contained interactive HTML viewer from the "
+            "completed SO2 raw-expression clustering."
+        ),
+    )
+    so2_raw_interactive.add_argument("--source-analysis-id")
+    so2_raw_interactive.add_argument("--output-dir", type=Path)
+
+    so1_raw_expression = subparsers.add_parser(
+        "analyze-so1-raw-expression-clusters",
+        help=(
+            "Run the CPU-only joint SO1 14-core classical raw-expression "
+            "PCA, cosine kNN, and Leiden baseline."
+        ),
+    )
+    so1_raw_expression.add_argument("--cohort-dir", type=Path)
+    so1_raw_expression.add_argument(
+        "--normalization-target", type=float, default=162.0
+    )
+    so1_raw_expression.add_argument(
+        "--library-size-floor", type=float, default=20.0
+    )
+    so1_raw_expression.add_argument("--scale-clip", type=float, default=10.0)
+    so1_raw_expression.add_argument("--pca-components", type=int, default=50)
+    so1_raw_expression.add_argument("--n-neighbors", type=int, default=30)
+    so1_raw_expression.add_argument(
+        "--leiden-resolution", type=float, default=1.0
+    )
+    so1_raw_expression.add_argument(
+        "--random-seed", type=int, default=20260825
+    )
+    so1_raw_expression.add_argument("--device", default="cpu")
+    so1_raw_expression.add_argument("--dpi", type=int, default=300)
+    so1_raw_expression.add_argument("--output-dir", type=Path)
+
+    so1_raw_interactive = subparsers.add_parser(
+        "render-so1-raw-expression-interactive",
+        help=(
+            "Create a self-contained interactive HTML viewer from the "
+            "completed SO1 raw-expression clustering."
+        ),
+    )
+    so1_raw_interactive.add_argument("--source-analysis-id")
+    so1_raw_interactive.add_argument("--source-report-dir", type=Path)
+    so1_raw_interactive.add_argument("--output-dir", type=Path)
+
+    so1_model_embeddings = subparsers.add_parser(
+        "analyze-so1-model-embedding-clusters",
+        help=(
+            "After the SO1 training run is finalized, extract CPU-only h0/hL "
+            "embeddings and create separate direct-kNN Leiden maps plus the "
+            "delta-h magnitude map."
+        ),
+    )
+    so1_model_embeddings.add_argument("--run-id")
+    so1_model_embeddings.add_argument("--checkpoint", type=Path)
+    so1_model_embeddings.add_argument("--n-neighbors", type=int, default=30)
+    so1_model_embeddings.add_argument(
+        "--leiden-resolution", type=float, default=1.0
+    )
+    so1_model_embeddings.add_argument(
+        "--random-seed", type=int, default=20260825
+    )
+    so1_model_embeddings.add_argument("--device", default="cpu")
+    so1_model_embeddings.add_argument("--cpu-threads", type=int, default=40)
+    so1_model_embeddings.add_argument("--dpi", type=int, default=300)
+    so1_model_embeddings.add_argument("--output-dir", type=Path)
+
+    so1_hl_direct_interactive = subparsers.add_parser(
+        "render-so1-hl-direct-interactive",
+        help=(
+            "Create a self-contained interactive HTML viewer from the "
+            "completed direct-hL SO1 clustering report."
+        ),
+    )
+    so1_hl_direct_interactive.add_argument("--run-id", required=True)
+    so1_hl_direct_interactive.add_argument("--source-report-dir", type=Path)
+    so1_hl_direct_interactive.add_argument("--output-dir", type=Path)
+
     summarize = subparsers.add_parser("summarize-variants")
     summarize.add_argument("--campaign-id")
 
@@ -324,7 +558,30 @@ def main(argv: Sequence[str] | None = None) -> int:
             database = paths.state_root / "tracking" / "bagm.sqlite3"
         elif not database.is_absolute():
             database = paths.project_root / database
-        registry = Registry(database)
+        # This portable viewer consumes only the already-verified static report.
+        # Keep its documented registry-free contract literal: do not even open
+        # SQLite on the CLI path.
+        if arguments.command_name == "render-so1-hl-direct-interactive":
+            from spatial_benchmark.so1_hl_direct_interactive import (
+                run_so1_hl_direct_interactive,
+            )
+
+            result = run_so1_hl_direct_interactive(
+                paths=paths,
+                run_id=arguments.run_id,
+                source_report_dir=arguments.source_report_dir,
+                output_dir=arguments.output_dir,
+            )
+            print(json.dumps(result, indent=2, sort_keys=True, default=str))
+            return 0
+        # Post-training SO1 analysis must remain inert while an upstream run is
+        # active.  Its resolver needs only SELECT access to the already-created
+        # registry, so skip schema initialization/DDL and any write-lock attempt.
+        registry = Registry(
+            database,
+            initialize=arguments.command_name
+            != "analyze-so1-model-embedding-clusters",
+        )
         result = _dispatch(arguments, registry=registry, paths=paths)
         if result is not None:
             print(json.dumps(result, indent=2, sort_keys=True, default=str))
@@ -630,6 +887,196 @@ def _dispatch(
             device=arguments.device,
             output_dir=arguments.output_dir,
         )
+    if command == "analyze-contextual-resolution-sweep":
+        from spatial_benchmark.relative_qkv_contextual_resolution_sweep import (
+            run_contextual_resolution_sweep,
+        )
+
+        return run_contextual_resolution_sweep(
+            registry=registry,
+            paths=paths,
+            run_id=arguments.run_id,
+            resolutions=arguments.resolutions,
+            random_seed=arguments.random_seed,
+            output_dir=arguments.output_dir,
+        )
+    if command == "analyze-so2-hl-clusters":
+        from spatial_benchmark.so2_hl_clustering import run_so2_hl_clustering
+
+        return run_so2_hl_clustering(
+            registry=registry,
+            paths=paths,
+            run_id=arguments.run_id,
+            checkpoint=arguments.checkpoint,
+            n_neighbors=arguments.n_neighbors,
+            leiden_resolution=arguments.leiden_resolution,
+            pca_components=arguments.pca_components,
+            random_seed=arguments.random_seed,
+            device=arguments.device,
+            cpu_threads=arguments.cpu_threads,
+            dpi=arguments.dpi,
+            output_dir=arguments.output_dir,
+        )
+    if command == "analyze-so2-recurrent-hl-clusters":
+        from spatial_benchmark.so2_recurrent_hl_clustering import (
+            run_so2_recurrent_hl_clustering,
+        )
+
+        return run_so2_recurrent_hl_clustering(
+            registry=registry,
+            paths=paths,
+            run_id=arguments.run_id,
+            checkpoint=arguments.checkpoint,
+            n_neighbors=arguments.n_neighbors,
+            leiden_resolution=arguments.leiden_resolution,
+            pca_components=arguments.pca_components,
+            random_seed=arguments.random_seed,
+            extract_devices=arguments.extract_devices,
+            cpu_threads_per_worker=arguments.cpu_threads_per_worker,
+            dpi=arguments.dpi,
+            output_dir=arguments.output_dir,
+        )
+    if command == "render-so2-hl-interactive":
+        from spatial_benchmark.so2_hl_interactive import run_so2_hl_interactive
+
+        return run_so2_hl_interactive(
+            paths=paths,
+            run_id=arguments.run_id,
+            output_dir=arguments.output_dir,
+        )
+    if command == "analyze-so2-hl-direct-clusters":
+        from spatial_benchmark.so2_hl_direct_clustering import (
+            run_so2_hl_direct_clustering,
+        )
+
+        return run_so2_hl_direct_clustering(
+            registry=registry,
+            paths=paths,
+            run_id=arguments.run_id,
+            checkpoint=arguments.checkpoint,
+            n_neighbors=arguments.n_neighbors,
+            leiden_resolution=arguments.leiden_resolution,
+            random_seed=arguments.random_seed,
+            device=arguments.device,
+            cpu_threads=arguments.cpu_threads,
+            dpi=arguments.dpi,
+            source_output_dir=arguments.source_output_dir,
+            output_dir=arguments.output_dir,
+        )
+    if command == "render-so2-hl-direct-interactive":
+        from spatial_benchmark.so2_hl_clustering import EXPECTED_RUN_ID
+        from spatial_benchmark.so2_hl_direct_interactive import (
+            run_so2_hl_direct_interactive,
+        )
+
+        return run_so2_hl_direct_interactive(
+            paths=paths,
+            run_id=arguments.run_id or EXPECTED_RUN_ID,
+            source_report_dir=arguments.source_report_dir,
+            output_dir=arguments.output_dir,
+        )
+    if command == "render-so2-hl-umap":
+        from spatial_benchmark.so2_hl_umap import run_so2_hl_umap
+
+        return run_so2_hl_umap(
+            paths=paths,
+            run_id=arguments.run_id,
+            n_neighbors=arguments.n_neighbors,
+            min_dist=arguments.min_dist,
+            epochs=arguments.epochs,
+            random_seed=arguments.random_seed,
+            device=arguments.device,
+            dpi=arguments.dpi,
+            output_dir=arguments.output_dir,
+        )
+    if command == "analyze-so2-raw-expression-clusters":
+        from spatial_benchmark.so2_raw_expression_clustering import (
+            run_so2_raw_expression_clustering,
+        )
+
+        return run_so2_raw_expression_clustering(
+            paths=paths,
+            cohort_dir=arguments.cohort_dir,
+            normalization_target=arguments.normalization_target,
+            library_size_floor=arguments.library_size_floor,
+            scale_clip=arguments.scale_clip,
+            pca_components=arguments.pca_components,
+            n_neighbors=arguments.n_neighbors,
+            leiden_resolution=arguments.leiden_resolution,
+            random_seed=arguments.random_seed,
+            device=arguments.device,
+            dpi=arguments.dpi,
+            output_dir=arguments.output_dir,
+        )
+    if command == "render-so2-raw-expression-interactive":
+        from spatial_benchmark.so2_raw_expression_interactive import (
+            run_so2_raw_expression_interactive,
+        )
+
+        return run_so2_raw_expression_interactive(
+            paths=paths,
+            source_analysis_id=arguments.source_analysis_id,
+            output_dir=arguments.output_dir,
+        )
+    if command == "analyze-so1-raw-expression-clusters":
+        from spatial_benchmark.so1_raw_expression_clustering import (
+            run_so1_raw_expression_clustering,
+        )
+
+        return run_so1_raw_expression_clustering(
+            paths=paths,
+            cohort_dir=arguments.cohort_dir,
+            normalization_target=arguments.normalization_target,
+            library_size_floor=arguments.library_size_floor,
+            scale_clip=arguments.scale_clip,
+            pca_components=arguments.pca_components,
+            n_neighbors=arguments.n_neighbors,
+            leiden_resolution=arguments.leiden_resolution,
+            random_seed=arguments.random_seed,
+            device=arguments.device,
+            dpi=arguments.dpi,
+            output_dir=arguments.output_dir,
+        )
+    if command == "render-so1-raw-expression-interactive":
+        from spatial_benchmark.so1_raw_expression_interactive import (
+            run_so1_raw_expression_interactive,
+        )
+
+        return run_so1_raw_expression_interactive(
+            paths=paths,
+            source_analysis_id=arguments.source_analysis_id,
+            source_report_dir=arguments.source_report_dir,
+            output_dir=arguments.output_dir,
+        )
+    if command == "analyze-so1-model-embedding-clusters":
+        from spatial_benchmark.so1_model_embedding_clustering import (
+            run_so1_model_embedding_clustering,
+        )
+
+        return run_so1_model_embedding_clustering(
+            registry=registry,
+            paths=paths,
+            run_id=arguments.run_id,
+            checkpoint=arguments.checkpoint,
+            n_neighbors=arguments.n_neighbors,
+            leiden_resolution=arguments.leiden_resolution,
+            random_seed=arguments.random_seed,
+            device=arguments.device,
+            cpu_threads=arguments.cpu_threads,
+            dpi=arguments.dpi,
+            output_dir=arguments.output_dir,
+        )
+    if command == "render-so1-hl-direct-interactive":
+        from spatial_benchmark.so1_hl_direct_interactive import (
+            run_so1_hl_direct_interactive,
+        )
+
+        return run_so1_hl_direct_interactive(
+            paths=paths,
+            run_id=arguments.run_id,
+            source_report_dir=arguments.source_report_dir,
+            output_dir=arguments.output_dir,
+        )
     if command == "summarize-variants":
         return {
             "variants": registry.summarize_variants(
@@ -838,6 +1285,17 @@ def _doctor(registry: Registry, paths: ProjectPaths) -> dict[str, Any]:
     missing_artifact_paths: list[str] = []
     retention_state_issues: list[dict[str, str]] = []
     missing_canonical_markers: list[str] = []
+    verified_retirements, full_retirement_issues = (
+        registry.verify_full_run_retirements()
+    )
+    if full_retirement_issues:
+        issues.append(
+            {
+                "kind": "full_run_retirement_issues",
+                "count": len(full_retirement_issues),
+                "items": full_retirement_issues[:20],
+            }
+        )
     with registry.connect() as connection:
         for row in connection.execute(
             "SELECT dataset_id, dataset_version, protected_source_path FROM datasets"
@@ -904,6 +1362,8 @@ def _doctor(registry: Registry, paths: ProjectPaths) -> dict[str, Any]:
               )
             """
         ):
+            if str(row["run_id"]) in verified_retirements:
+                continue
             marker = {
                 "completed": "_SUCCESS",
                 "failed": "_FAILED",
@@ -1161,6 +1621,9 @@ def _verify_bundles(
     run_id: str | None,
     paths: ProjectPaths,
 ) -> list[dict[str, Any]]:
+    verified_retirements, retirement_issues = (
+        registry.verify_full_run_retirements(run_id=run_id)
+    )
     parameters: tuple[str, ...] = (run_id,) if run_id else ()
     with registry.connect() as connection:
         records = [
@@ -1199,7 +1662,7 @@ def _verify_bundles(
                 ),
             ).fetchall()
         ]
-    issues: list[dict[str, Any]] = []
+    issues: list[dict[str, Any]] = list(retirement_issues)
     tombstones_by_run: dict[str, dict[str, dict[str, Any]]] = {}
     for tombstone in tombstone_rows:
         tombstone_run_id = str(tombstone["run_id"])
@@ -1232,9 +1695,11 @@ def _verify_bundles(
     for record in records:
         if not record or not record.get("artifact_path"):
             continue
-        if record.get("is_legacy_native"):
+        if record.get("is_legacy_native") or str(record["run_id"]) in (
+            verified_retirements
+        ):
             # Registry.verify_artifacts validates the native files against the
-            # audited legacy manifest; do not demand canonical BAGM markers.
+            # audited legacy manifest or full-retirement receipt.
             continue
         try:
             verify_run_bundle(

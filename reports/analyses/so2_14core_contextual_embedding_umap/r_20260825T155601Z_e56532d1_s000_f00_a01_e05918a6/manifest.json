@@ -1,0 +1,146 @@
+{
+  "analysis_scope": "contextual_hL_resolution_1p0_umap_visualization_only",
+  "cluster_count": 19,
+  "coordinate_sha256": "6430c609c9265fa5a30e9a29ecd5b986ea1386335fa09a4133579fb9b925ec53",
+  "core_cell_counts": {
+    "15": 38145,
+    "16": 16229,
+    "17": 9041,
+    "18": 11696,
+    "19": 19119,
+    "20": 12155,
+    "21": 4897,
+    "22": 11443,
+    "23": 43462,
+    "24": 14506,
+    "25": 13147,
+    "26": 14856,
+    "27": 24245,
+    "28": 13122
+  },
+  "core_order": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+  ],
+  "created_at": "2026-08-26T14:26:28.916028+00:00",
+  "execution": {
+    "cpu_only": true,
+    "cuda_visible_devices": "",
+    "dense_cell_by_cell_matrix_constructed": false,
+    "device": "cpu",
+    "faiss": "1.15.0",
+    "igraph": "1.0.0",
+    "layout_elapsed_seconds_including_repeat": 6358.314093980007,
+    "matplotlib": "3.11.1",
+    "model_inference": false,
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "pyarrow": "25.0.1",
+    "python": "3.12.13",
+    "reclustering": false,
+    "retraining": false
+  },
+  "files": {
+    "README.md": {
+      "sha256": "e49f5e9892a8a36b73a8b1e1497fd8dc685ab29b867413c49885f91e79f6c404",
+      "size_bytes": 2859
+    },
+    "figures/contextual_leiden_resolution_1p0_umap.pdf": {
+      "sha256": "d8689ac4b02f6b8b89550a59e5b11a0771c81c26128f591112ee971f1409971e",
+      "size_bytes": 5018282
+    },
+    "figures/contextual_leiden_resolution_1p0_umap.png": {
+      "sha256": "5f46aac455efde7f750ca521fd4e0dad51e07544ec832980106e07d971fd63e5",
+      "size_bytes": 7556239
+    },
+    "tables/cell_contextual_hl_umap.parquet": {
+      "sha256": "247a972536f19ca519171a6879e42bdb1cfa456e003b3c16395debfcfd71acde",
+      "size_bytes": 4999970
+    },
+    "umap/contextual_hl_umap_coordinates.npy": {
+      "sha256": "4ddcfc88062aaf18c49263425d42b3ce0facad5e6dd531bfeb9d424bccc43b5c",
+      "size_bytes": 3937136
+    },
+    "umap/umap_receipt.json": {
+      "sha256": "4ca2ca878c2d35c2bad29f870775d10713110fe68b9df49ab35478b10390e8dc",
+      "size_bytes": 6500
+    }
+  },
+  "finalized_at": "2026-08-26T14:34:07.541893+00:00",
+  "interpretation": {
+    "biological_influence_established": false,
+    "causality_established": false,
+    "cell_types_established": false,
+    "core_colored_confounding_control_included": true,
+    "exploratory_visualization": true,
+    "fixed_model_derived_clusters": true,
+    "observed_visual_result": "Fixed labels are locally coherent, but prominent detached islands track cores 15, 23, and 25; the central manifold is more core-mixed.",
+    "patient_generalization_established": false,
+    "strongest_alternative_explanation": "Source-core structure contributes materially to the visible separation of several clusters."
+  },
+  "leiden_resolution": 1.0,
+  "manifest_content_sha256": "2cdf01c0a0a3be819570807e9c6b763f6e245f71f0b5ca639ea686227e343055",
+  "parameters": {
+    "dpi": 300,
+    "epochs": 200,
+    "leiden_labels_recomputed": false,
+    "metric": "cosine",
+    "min_dist": 0.3,
+    "n_neighbors": 30,
+    "random_seed": 20260825
+  },
+  "point_count": 246063,
+  "privacy": {
+    "clinical_or_donor_fields_included": false,
+    "embedding_vectors_included": false,
+    "expression_included": false,
+    "global_cell_index_is_source_row_position_only": true,
+    "stable_cell_key_included": false,
+    "tissue_coordinates_included": false
+  },
+  "run_id": "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+  "schema": "so2_14core_contextual_hl_umap_v1",
+  "source_artifacts": {
+    "analysis_manifest": {
+      "sha256": "8f771e55272fa0139a1292766a594fda57acf0446a5fc2c94370d10c9b72d086",
+      "size_bytes": 29417
+    },
+    "cluster_table": {
+      "sha256": "89f188d9704944bf2484774a995f43c9146fca8cfccd9879dbbfcd3b78af5d2d",
+      "size_bytes": 3580746
+    },
+    "clustering_manifest": {
+      "sha256": "ea8ffd9b569b61098a7d549c4bdb342d0ccbf0dc589f7f52314821b0f17bf86e",
+      "size_bytes": 9774
+    },
+    "labels": {
+      "sha256": "a450e83ba84a9c5af2fa51eaf9294660595bbc8ecf79cd7b9c8cdec938568d8e",
+      "size_bytes": 1968632
+    },
+    "palette": {
+      "sha256": "84cfade18d2697dcc11a0db52e8bab2b3f8b0f01a460e5fac1eedd2bb4f7048a",
+      "size_bytes": 547
+    },
+    "pca": {
+      "sha256": "41de72118c1d5861e7b915e3b0f505ab97ea432899bdf6a20010bfed956988aa",
+      "size_bytes": 49212728
+    }
+  },
+  "status": "complete",
+  "umap_receipt": {
+    "sha256": "4ca2ca878c2d35c2bad29f870775d10713110fe68b9df49ab35478b10390e8dc",
+    "size_bytes": 6500
+  }
+}

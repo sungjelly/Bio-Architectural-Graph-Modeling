@@ -1,0 +1,252 @@
+{
+  "analysis_scope": "so1_raw_expression_resolution_1p0_visualization_only",
+  "cluster_count": 14,
+  "cluster_labels": [
+    "S1E0",
+    "S1E1",
+    "S1E2",
+    "S1E3",
+    "S1E4",
+    "S1E5",
+    "S1E6",
+    "S1E7",
+    "S1E8",
+    "S1E9",
+    "S1E10",
+    "S1E11",
+    "S1E12",
+    "S1E13"
+  ],
+  "core_cell_counts": {
+    "1": 8924,
+    "10": 14756,
+    "11": 18145,
+    "12": 7816,
+    "13": 5345,
+    "14": 9785,
+    "2": 7450,
+    "3": 12190,
+    "4": 14657,
+    "5": 11399,
+    "6": 18212,
+    "7": 10722,
+    "8": 4972,
+    "9": 17223
+  },
+  "core_order": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+  ],
+  "created_at": "2026-08-26T21:58:48.443512+00:00",
+  "execution": {
+    "code_provenance": {
+      "command": "/venv/main/bin/python -m spatial_benchmark render-so1-raw-expression-interactive",
+      "cuda_visible_devices": "",
+      "git_commit": "8810257f6c33008f7c13c87b2de4169bbfd88662",
+      "git_status_path_fingerprint_sha256": "d675292a4b47d22aa6eab2035e53940981679e70384746c7fa510b1f8352e618",
+      "git_worktree_clean": false,
+      "gpu_used": false,
+      "recorded_at_utc": "2026-08-26T21:58:48.489022+00:00",
+      "relevant_code": {
+        "experiments/campaigns/cmp_20260826_so1_14core_classical_raw_expression/INTERACTIVE_MAP.md": "25d8fb8ef3b9256ba226d28488c8b9269410b7f26c77437c8dad3fd778eccf45",
+        "src/spatial_benchmark/cli.py": "7e370acf5aaa15ab65b0a04d886d2fb2ab48eb247f34b2bad8c737128606a07c",
+        "src/spatial_benchmark/relative_qkv_embedding_clustering.py": "ce91615830cbb7ae96aecb7adfb21d33e0f6639f08e239e7ede788955f434c13",
+        "src/spatial_benchmark/so1_raw_expression_clustering.py": "094cd12cc6a9ed99f7c5534acf09d45b746528285c982fa6ab6e267859ec1595",
+        "src/spatial_benchmark/so1_raw_expression_interactive.py": "58c1fc42c62011a92ff96eccb14d3b500d9c77baedab14d74968a9b668e9bf0d",
+        "src/spatial_benchmark/so2_hl_interactive.py": "d8325f57845fe64be5bd46b5c3c37bb397ac28e3adbc932fc577b51d3c3ef964",
+        "src/spatial_benchmark/so2_raw_expression_interactive.py": "49d0c9b22fa2c21c521fca00505ae8627ce823d6b628602829aaff4f6211d315"
+      },
+      "schema": "so1_raw_expression_analysis_code_provenance_v1",
+      "tracked_diff_sha256": "31e81145f6ef0d3dd3b198a1cdb846724d1df46a9070874f4b8c45ab2ad3192d",
+      "workflow": "so1_14core_raw_expression_interactive",
+      "working_directory": "/workspace/BAGM"
+    },
+    "gpu_used": false,
+    "model_inference": false,
+    "model_training": false,
+    "neighbor_construction": false,
+    "normalization_or_pca": false,
+    "reclustering": false,
+    "visualization_only": true
+  },
+  "files": {
+    "README.md": {
+      "sha256": "df06e8a80e770817b681e65bef2ead5682adebbfd3cc4b36e59422cb4acb16bf",
+      "size_bytes": 2010
+    },
+    "so1_raw_expression_leiden_resolution_1p0_spatial_14cores_interactive.html": {
+      "sha256": "8cafbc7521ee3d3801ce99b82fcbc5d7a08f88a4e0a4ae5117ccc282c4be4fa3",
+      "size_bytes": 3696859
+    },
+    "so1_raw_expression_leiden_resolution_1p0_spatial_14cores_interactive.zip": {
+      "sha256": "ac6beb974143964a38813059230421f6b1e1f41fbd74cfc059cd5f986f56813a",
+      "size_bytes": 2368061
+    }
+  },
+  "interaction": {
+    "cluster_click_highlight": true,
+    "combined_png_export": true,
+    "hover_fields": [
+      "numeric_core_number",
+      "so1_expression_cluster",
+      "rounded_x_um",
+      "rounded_y_um"
+    ],
+    "nonselected_opacity": 0.09,
+    "pan": "pointer_drag",
+    "selected_draw_order": "last",
+    "show_all_and_escape_reset": true,
+    "zoom": "wheel"
+  },
+  "interpretation": {
+    "biological_influence_established": false,
+    "causality_established": false,
+    "cell_types_established": false,
+    "expression_derived_clusters": true,
+    "low_count_warning_source_derived": true,
+    "signaling_established": false,
+    "so1_labels_map_to_so2_labels": false
+  },
+  "leiden_resolution": 1.0,
+  "low_count_depth_warning": {
+    "cohort_below_threshold_cells": 5269,
+    "flag_rule": "cluster_contains_at_least_50pct_of_all_cohort_cells_below_threshold",
+    "flagged_clusters": [
+      {
+        "below_threshold_cells": 4996,
+        "cluster": "S1E1",
+        "cluster_cells": 32451,
+        "fraction_below_threshold": 0.15395519398477706
+      }
+    ],
+    "source_derived": true,
+    "threshold_transcripts": 20
+  },
+  "manifest_content_sha256": "7dfeb9e6cd78fea707d6989abe39acf98383e51242662bbf120751e34e62293a",
+  "point_count": 161596,
+  "render_receipt": {
+    "browser_payload_fields": [
+      "numeric_core_number",
+      "x_um",
+      "y_um",
+      "so1_expression_cluster_code"
+    ],
+    "browser_payload_sha256": "a386fbf1f41a37e7e630a55bd0e7f97ca2f465d3b2d9b86725dda663ee6c6153",
+    "clinical_fields_included": false,
+    "cluster_count": 14,
+    "cluster_labels": [
+      "S1E0",
+      "S1E1",
+      "S1E2",
+      "S1E3",
+      "S1E4",
+      "S1E5",
+      "S1E6",
+      "S1E7",
+      "S1E8",
+      "S1E9",
+      "S1E10",
+      "S1E11",
+      "S1E12",
+      "S1E13"
+    ],
+    "core_order": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "expression_values_included": false,
+    "html_sha256": "8cafbc7521ee3d3801ce99b82fcbc5d7a08f88a4e0a4ae5117ccc282c4be4fa3",
+    "html_size_bytes": 3696859,
+    "low_count_depth_warning": {
+      "cohort_below_threshold_cells": 5269,
+      "flag_rule": "cluster_contains_at_least_50pct_of_all_cohort_cells_below_threshold",
+      "flagged_clusters": [
+        {
+          "below_threshold_cells": 4996,
+          "cluster": "S1E1",
+          "cluster_cells": 32451,
+          "fraction_below_threshold": 0.15395519398477706
+        }
+      ],
+      "source_derived": true,
+      "threshold_transcripts": 20
+    },
+    "manifest_content_sha256": "63d240a27afd8388f319e741a38b503d1daf3d628bc2c4ceb7324040e11c5c59",
+    "model_data_included": false,
+    "neighbor_edges_included": false,
+    "offline_network_policy": "connect-src-none",
+    "pca_scores_included": false,
+    "point_count": 161596,
+    "schema": "so1_14core_raw_expression_interactive_v1",
+    "self_contained": true,
+    "source_manifest_sha256": "6e97c096390cf5edd35a0fef7179f87d7c20f8df937eb26b4d149c32081c798f",
+    "source_table_sha256": "013980dd32951d173adccce6351b8ae9fccfaced0c15ce683e8df830d13226e7",
+    "stable_identifiers_included": false,
+    "status": "complete",
+    "vendor_qc_fields_included": false
+  },
+  "schema": "so1_14core_raw_expression_interactive_v1",
+  "sharing": {
+    "authorized_collaborators_only": true,
+    "clinical_fields_included": false,
+    "exact_tissue_coordinates_included": true,
+    "expression_values_included": false,
+    "model_data_included": false,
+    "neighbor_edges_included": false,
+    "pca_scores_included": false,
+    "self_contained_offline_html": true,
+    "stable_cell_identifiers_included": false,
+    "vendor_qc_fields_included": false
+  },
+  "source_analysis_id": "rawexpr_pca50_cosinek30_leiden_r1p0_s20260825",
+  "source_artifacts": {
+    "analysis_manifest": {
+      "sha256": "6e97c096390cf5edd35a0fef7179f87d7c20f8df937eb26b4d149c32081c798f",
+      "size_bytes": 17841
+    },
+    "cluster_table": {
+      "sha256": "013980dd32951d173adccce6351b8ae9fccfaced0c15ce683e8df830d13226e7",
+      "size_bytes": 3265382
+    },
+    "palette": {
+      "sha256": "a8dc024d19e6e56173e165ff83e0ce22d11c26b0966e21bb98b3bd09cde2f896",
+      "size_bytes": 468
+    },
+    "static_png": {
+      "sha256": "f52a8558b14684da97f95f1aa8859d8df9ae782f2d9d44eb0cd781d66a7471ea",
+      "size_bytes": 8408595
+    }
+  },
+  "status": "complete",
+  "zip_receipt": {
+    "deterministic_timestamp": "1980-01-01T00:00:00",
+    "member": "so1_raw_expression_leiden_resolution_1p0_spatial_14cores_interactive.html",
+    "member_sha256": "8cafbc7521ee3d3801ce99b82fcbc5d7a08f88a4e0a4ae5117ccc282c4be4fa3",
+    "zip_sha256": "ac6beb974143964a38813059230421f6b1e1f41fbd74cfc059cd5f986f56813a",
+    "zip_size_bytes": 2368061
+  }
+}

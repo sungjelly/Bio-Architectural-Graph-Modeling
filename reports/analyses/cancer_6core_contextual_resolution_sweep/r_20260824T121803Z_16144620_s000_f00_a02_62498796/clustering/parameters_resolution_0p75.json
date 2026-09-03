@@ -1,0 +1,43 @@
+{
+  "leiden": {
+    "cluster_count": 17,
+    "cluster_size_max": 13510,
+    "cluster_size_min": 874,
+    "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+    "igraph_version": "1.0.0",
+    "implementation": "leidenalg.RBConfigurationVertexPartition",
+    "labels_sha256": "fd85f89e2f2957f408c38a02b95d1e969ee4b2782c29dcedc7b6bdeab52b9d2d",
+    "largest_graph_component_proportion": 1.0,
+    "largest_graph_component_size": 117996,
+    "leidenalg_version": "0.12.0",
+    "modularity": 0.855014974511469,
+    "n_iterations": -1,
+    "number_of_graph_components": 1,
+    "quality": 4894726.258960968,
+    "random_seed": 20260825,
+    "raw_to_sorted_cluster": {
+      "0": 0,
+      "1": 1,
+      "10": 10,
+      "11": 11,
+      "12": 12,
+      "13": 13,
+      "14": 14,
+      "15": 15,
+      "16": 16,
+      "2": 2,
+      "3": 3,
+      "4": 4,
+      "5": 5,
+      "6": 6,
+      "7": 7,
+      "8": 8,
+      "9": 9
+    },
+    "resolution": 0.75
+  },
+  "leiden_resolution": 0.75,
+  "representation": "contextual_hL_only",
+  "resolution_token": "0p75",
+  "shared_knn_edges_sha256": "180afebe30ee6232c8c39368f7da18d420680ed290e4d56670820f3f383dd037"
+}

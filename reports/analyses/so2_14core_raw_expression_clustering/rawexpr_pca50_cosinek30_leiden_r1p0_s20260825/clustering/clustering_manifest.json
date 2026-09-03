@@ -1,0 +1,308 @@
+{
+  "cluster_count": 12,
+  "cluster_size_range": [
+    1353,
+    56156
+  ],
+  "clustering_input_fields": [
+    "normalized_log1p_scaled_raw_expression_pca"
+  ],
+  "configuration": {
+    "batch_correction_applied": false,
+    "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+    "coordinates_used_for_clustering": false,
+    "core_identity_used_for_clustering": false,
+    "dense_cell_by_cell_matrix_constructed": false,
+    "device": "cpu",
+    "distance_metric": "cosine",
+    "gene_scaling": "joint_mean_center_unit_sample_variance_then_clip",
+    "gene_selection": "all_nonconstant_genes_from_fixed_targeted_panel",
+    "input_representation": "raw_nonnegative_integer_biological_probe_counts",
+    "joint_cell_count": 246063,
+    "joint_core_order": [
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28
+    ],
+    "knn_implementation": "faiss.IndexHNSWFlat",
+    "knn_symmetrization": "undirected_union_unweighted",
+    "label_prefix": "E",
+    "leiden_partition": "leidenalg.RBConfigurationVertexPartition",
+    "leiden_resolution": 1.0,
+    "library_size_floor": 20.0,
+    "metadata_used_for_clustering": false,
+    "model_checkpoint_used": false,
+    "model_embedding_used": false,
+    "n_neighbors": 30,
+    "nonlinear_transform": "log1p",
+    "normalization": "counts * target / max(cell_total, library_size_floor)",
+    "normalization_target": 197.0,
+    "pca": "exact_clipped_scaled_feature_covariance_eigendecomposition",
+    "pca_component_sign_rule": "largest_absolute_loading_positive",
+    "pca_components": 50,
+    "pca_scores_l2_normalized": true,
+    "random_seed": 20260825,
+    "scale_clip": 10.0,
+    "spatial_graph_used_for_clustering": false
+  },
+  "coordinate_receipts": [
+    {
+      "alias": "SO2-C15",
+      "cell_count": 38145,
+      "coordinates_component_sha256": "8c120469b073294b3db9d98b7b2ffade9663ab379a1d72be2f00105bbb32b623",
+      "core_number": 15,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C16",
+      "cell_count": 16229,
+      "coordinates_component_sha256": "429a08402556016484553985835eb2bda709af98edf781ac8511d17f49173c3a",
+      "core_number": 16,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C17",
+      "cell_count": 9041,
+      "coordinates_component_sha256": "c47060ec85668da535f8782c498504c5da9113a46ed09a62336731fd73680783",
+      "core_number": 17,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C18",
+      "cell_count": 11696,
+      "coordinates_component_sha256": "0888b4c5a5409bbd952280266e1df3cd652248a46fd229c6a6caceff7c129566",
+      "core_number": 18,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C19",
+      "cell_count": 19119,
+      "coordinates_component_sha256": "7b42b392d45cb02fd03b547bd6fbb166cd5201a07f0afbef6cf6f46b125aa458",
+      "core_number": 19,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C20",
+      "cell_count": 12155,
+      "coordinates_component_sha256": "ceabb9a78607a624d17917c2e311a1c1d3f7f5fcac1a2e230b2068e92e4d460e",
+      "core_number": 20,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C21",
+      "cell_count": 4897,
+      "coordinates_component_sha256": "34b099a8c913c6d4fdf91e81f361477dd6b4a35725651e2a3cf9246f166f5747",
+      "core_number": 21,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C22",
+      "cell_count": 11443,
+      "coordinates_component_sha256": "395d78bc25c78e6eb8c91d22e765cba3cd8561df7cdef196115b0826c69b78f6",
+      "core_number": 22,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C23",
+      "cell_count": 43462,
+      "coordinates_component_sha256": "33a13891dc2e65a67921552f8a479f4dee70848616b70c75caac72bdc2678967",
+      "core_number": 23,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C24",
+      "cell_count": 14506,
+      "coordinates_component_sha256": "e8d181dc704cf994a31d45a25d8f45a85d6a60403829f9b253762ad2beef7b7c",
+      "core_number": 24,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C25",
+      "cell_count": 13147,
+      "coordinates_component_sha256": "65ae72c29b1b9e9d5a56d4d22df4bfcb50bb77f71bd292822414616529c693ab",
+      "core_number": 25,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C26",
+      "cell_count": 14856,
+      "coordinates_component_sha256": "35fc7d9ab0e211e4a7ca8c5efb187c72ad91a76755c88838ca7373c07fa24e87",
+      "core_number": 26,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C27",
+      "cell_count": 24245,
+      "coordinates_component_sha256": "e583cbb92781062726aca31ec042308e62e32c9887a4d7470db3d13df5720216",
+      "core_number": 27,
+      "role": "post_clustering_spatial_plotting_only"
+    },
+    {
+      "alias": "SO2-C28",
+      "cell_count": 13122,
+      "coordinates_component_sha256": "fa6885e1012f5028c6dc6f1945e599add4d3df17f8fbf3de43b34356fdbe9ae6",
+      "core_number": 28,
+      "role": "post_clustering_spatial_plotting_only"
+    }
+  ],
+  "coordinates_loaded_after_labels_frozen": true,
+  "coordinates_used_for_clustering": false,
+  "core_dominated_gt_90pct": [],
+  "core_identity_used_for_clustering": false,
+  "core_order": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+  ],
+  "created_at": "2026-08-26T10:34:33.673608+00:00",
+  "elapsed_seconds": 2055.6859899628907,
+  "files": {
+    "clustering/expression_clustering_parameters.json": {
+      "sha256": "947b1b690323b28f022844ed7e7b9cfc4b414d5509f8be6d9e7db601561a5ef8",
+      "size_bytes": 2240
+    },
+    "clustering/expression_knn_undirected_edges.npy": {
+      "sha256": "7dfee478fb503272e993c6e9d62bd8e80877a9e145b36d72a48b373356ac7eed",
+      "size_bytes": 103074416
+    },
+    "clustering/expression_labels.npy": {
+      "sha256": "1ac85f0a0e043bfc2b5939d60527724c9cbf975271635b6d952e4e652ccdaab1",
+      "size_bytes": 1968632
+    },
+    "clustering/expression_palette.json": {
+      "sha256": "fb5eb95a8cde5f950dffdbda75ab276d7c7f3805fede158d64173f41018c3d43",
+      "size_bytes": 394
+    },
+    "tables/cell_expression_clusters.parquet": {
+      "sha256": "12a5eee5211c6dc1273f58d570853920f518521268b7db9ce64292f9c412f7fc",
+      "size_bytes": 4476243
+    },
+    "tables/expression_cluster_core_composition.csv": {
+      "sha256": "b73b6c60d3f290e721601c25d6aa815de16eb3fad5df3e366d9a814a96d44f92",
+      "size_bytes": 11061
+    },
+    "tables/expression_cluster_qc_summary.csv": {
+      "sha256": "ab58b2b87bb7b937a77083921266e1590e41df419d227a2cfc6d97d0d239431c",
+      "size_bytes": 1380
+    },
+    "tables/expression_cluster_summary.csv": {
+      "sha256": "ccafa13605931640b6d7624a6cc08ec0ffbd8dafd5dba536fb5429fb9685951c",
+      "size_bytes": 897
+    }
+  },
+  "frozen_labels_sha256_before_plotting_fields": "8757e3c31a2cb4293b8195c91fe76ac9138120be81dfc1f893d15b1e14977e7a",
+  "manifest_content_sha256": "b52e7d18423dfe0d9b5a82355e2798f38080f2f7d4f5d32e5229aab93051024f",
+  "metadata_used_for_clustering": false,
+  "model_or_embedding_used_for_clustering": false,
+  "palette": {
+    "E0": "#0AF50A",
+    "E1": "#F50A0A",
+    "E10": "#1AA739",
+    "E11": "#0072B2",
+    "E2": "#0A0AF5",
+    "E3": "#68680A",
+    "E4": "#F539B6",
+    "E5": "#0AF5D6",
+    "E6": "#F5B6B6",
+    "E7": "#F5D60A",
+    "E8": "#781A1A",
+    "E9": "#581A97"
+  },
+  "pipeline": {
+    "knn": {
+      "approximate_neighbor_index": true,
+      "cell_by_cell_matrix_constructed": false,
+      "directed_neighbor_entries": 7381890,
+      "distance_metric": "cosine_via_l2_normalized_inner_product",
+      "edge_weights": "unweighted",
+      "ef_construction": 200,
+      "ef_search": 128,
+      "faiss_version": "1.15.0",
+      "hnsw_m": 32,
+      "implementation": "faiss.IndexHNSWFlat",
+      "input_order": "locked_global_core_then_cell_index",
+      "maximum_explicit_pairwise_array_shape": [
+        246063,
+        38
+      ],
+      "n_neighbors": 30,
+      "neighbor_cosine_sha256": "5899b90eaa38e2115b86948feed448bdd800870066b94aa4c582c8d2cff7cdab",
+      "neighbor_storage_shape": [
+        246063,
+        30
+      ],
+      "neighbors_sha256": "2b80b690848192771d3ca9598d5af5eda948885393e71d615431413302a39a69",
+      "random_seed": 20260825,
+      "random_seed_role": "Leiden; FAISS HNSW uses fixed library RNG with stable insertion order",
+      "single_threaded_index_and_search": true,
+      "symmetrization": "undirected_union",
+      "undirected_edges": 6442143,
+      "undirected_edges_sha256": "51af4efb2b263d5d54d00a45ccce46505d8f64b54aabe938dce80a0398b35b35"
+    },
+    "leiden": {
+      "cluster_count": 12,
+      "cluster_size_max": 56156,
+      "cluster_size_min": 1353,
+      "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+      "igraph_version": "1.0.0",
+      "implementation": "leidenalg.RBConfigurationVertexPartition",
+      "labels_sha256": "8757e3c31a2cb4293b8195c91fe76ac9138120be81dfc1f893d15b1e14977e7a",
+      "largest_graph_component_proportion": 1.0,
+      "largest_graph_component_size": 246063,
+      "leidenalg_version": "0.12.0",
+      "modularity": 0.7276234382452155,
+      "n_iterations": -1,
+      "number_of_graph_components": 1,
+      "quality": 9374908.478654698,
+      "random_seed": 20260825,
+      "raw_to_sorted_cluster": {
+        "0": 0,
+        "1": 1,
+        "10": 10,
+        "11": 11,
+        "2": 2,
+        "3": 3,
+        "4": 4,
+        "5": 5,
+        "6": 6,
+        "7": 7,
+        "8": 8,
+        "9": 9
+      },
+      "resolution": 1.0
+    },
+    "pca_score_shape": [
+      246063,
+      50
+    ],
+    "pca_scores_sha256": "da28abc64053a2401f04465f96157937f53ebc0c8f5c9da4cd3dae595064051e",
+    "representation": "normalized_log1p_scaled_raw_expression_pca"
+  },
+  "preprocessing_manifest_sha256": "366ce01642a0eadc5a4b529a5235f1d53a60c0a14d18b1b64e515d62354bb746",
+  "schema": "so2_14core_raw_expression_leiden_v1",
+  "spatial_graph_used_for_clustering": false,
+  "status": "complete",
+  "total_cells": 246063
+}

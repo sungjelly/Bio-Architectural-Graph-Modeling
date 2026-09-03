@@ -44,7 +44,8 @@ cuda_visible_devices, worker_id, job_id, run_id, status, runtime,
 launcher, heartbeat_seconds, stale_after_seconds,
 disk_safety_min_free_gb, capture_stdout, capture_stderr,
 output_dir, output_path, artifact_dir, artifact_path,
-log_dir, log_path, state_root, scratch_root, cache_root, export_root
+log_dir, log_path, state_root, scratch_root, cache_root, export_root,
+result_root
 ```
 
 The exported `SCIENTIFIC_EXCLUDED_FIELDS` constant is the source of truth. Any
@@ -223,6 +224,22 @@ confirmation. Promoted runs may retain test/external predictions, selected
 additional checkpoints, interpretation arrays, or larger embeddings. The
 formula of any operational `selection_score` must be versioned and explicit;
 it is not the scientific outcome.
+
+An important conclusion is separately promoted into the curated result layer:
+
+```text
+results/<experiment_type>/<method_family>/<result_id>/result.yaml
+```
+
+This promotion records an aggregate conclusion, not a preferred execution.
+The result ID is date-free, the directory classification must match the
+manifest, and every source run/report is identified and checksum-bound.
+Verified results require complete expected/included seed and fold coverage,
+visible failures or exclusions, a human-readable summary, and non-pending
+statuses for predictive gain, stability, faithfulness, null calibration,
+patient replication, external support, and perturbation support. Negative and
+inconclusive outcomes remain eligible when they change the evidence record or
+a documented decision. See `docs/result_management.md`.
 
 For every major result report the question, observed result, strongest
 alternative, controls, remaining uncertainty, and maximum defensible claim.

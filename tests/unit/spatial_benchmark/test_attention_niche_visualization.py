@@ -140,6 +140,85 @@ def test_polygon_and_multipolygon_paths_preserve_holes() -> None:
     assert len(visualization._geometry_paths(multipolygon)) == 2
 
 
+def test_polygon_path_preserves_tiny_valid_ring_at_large_coordinate_offset() -> None:
+    # Regression for C01-N1785: the untranslated shoelace sums cancel even
+    # though the serialized sliver has a small, non-zero signed area.
+    tiny_ring = [
+        [9471.014021, -66.964317],
+        [9471.407064, -67.35736000000097],
+        [9471.407064, -67.35736],
+        [9471.014021, -66.964317],
+    ]
+    polygon = {
+        "niche_id": "C01-N1785",
+        "geometry_type": "Polygon",
+        "coordinates": [_closed_box(9400.0, -100.0, 9500.0, 0.0), tiny_ring],
+    }
+
+    path = visualization._geometry_paths(polygon)[0]
+
+    assert np.count_nonzero(path.codes == MatplotlibPath.MOVETO) == 2
+    assert np.count_nonzero(path.codes == MatplotlibPath.CLOSEPOLY) == 2
+    assert visualization._stable_signed_area_twice(np.asarray(tiny_ring[:-1])) != 0.0
+
+
+def test_polygon_path_omits_only_zero_area_interior_ring() -> None:
+    degenerate_hole = [
+        [6675.234657, 11926.101712],
+        [6675.354938, 11926.462555],
+        [6675.354938000002, 11926.462555000006],
+        [6675.234657, 11926.101712],
+    ]
+    polygon = {
+        "niche_id": "C23-N1417",
+        "geometry_type": "Polygon",
+        "coordinates": [
+            _closed_box(6600.0, 11800.0, 6800.0, 12100.0),
+            degenerate_hole,
+        ],
+    }
+
+    path = visualization._geometry_paths(polygon)[0]
+
+    assert np.count_nonzero(path.codes == MatplotlibPath.MOVETO) == 1
+    assert np.count_nonzero(path.codes == MatplotlibPath.CLOSEPOLY) == 1
+    receipt = visualization._omitted_zero_area_interior_ring_receipt(
+        {
+            23: [
+                {
+                    **polygon,
+                    "position": 1416,
+                    "color": "#123456",
+                }
+            ]
+        }
+    )
+    assert receipt["count"] == 1
+    assert receipt["identifiers"] == [
+        "C23|C23-N1417|feature=1416|polygon=0|ring=1"
+    ]
+    assert receipt["signed_area_um2"] == 0.0
+    assert receipt["scientific_geometry_modified"] is False
+
+
+def test_prepare_assignments_keeps_confidence_distinct_from_assignment_agreement(
+) -> None:
+    assignments, _regions, _edges = _synthetic_inputs()
+    canonical_confidence = assignments["assignment_confidence"].copy()
+    assignments["niche_assignment_agreement"] = 0.73
+
+    prepared = visualization._prepare_assignments(assignments)
+    pd.testing.assert_series_equal(
+        prepared["assignment_confidence"],
+        canonical_confidence,
+        check_names=False,
+    )
+
+    without_composite = assignments.drop(columns="assignment_confidence")
+    prepared_without_composite = visualization._prepare_assignments(without_composite)
+    np.testing.assert_allclose(prepared_without_composite["assignment_confidence"], 1.0)
+
+
 def test_combined_figure_locks_panel_order_labels_aspect_and_scale_bars() -> None:
     assignments, regions, _edges = _synthetic_inputs()
     figure = visualization.create_combined_attention_niche_figure(
@@ -148,6 +227,14 @@ def test_combined_figure_locks_panel_order_labels_aspect_and_scale_bars() -> Non
     try:
         assert len(figure.axes) == 6
         assert "4-model ensemble-consensus map" in figure._suptitle.get_text()
+        figure.canvas.draw()
+        renderer = figure.canvas.get_renderer()
+        suptitle_bounds = figure._suptitle.get_window_extent(renderer=renderer)
+        assert all(
+            suptitle_bounds.y0
+            > axis.title.get_window_extent(renderer=renderer).y1
+            for axis in figure.axes[:3]
+        )
         assert any("Gray cell outlines" in text.get_text() for text in figure.texts)
         for axis, core_number in zip(
             figure.axes, visualization.CORE_ORDER, strict=True
@@ -219,6 +306,28 @@ def test_strongest_overlay_edges_obey_both_caps_and_retained_flag() -> None:
         max_edges_total=7,
     )
     pd.testing.assert_frame_equal(selected, repeated)
+
+
+def test_overlay_figure_title_stays_above_top_row_panel_titles() -> None:
+    assignments, regions, edges = _synthetic_inputs()
+    figure = visualization.create_mutual_attention_network_overlay_figure(
+        assignments,
+        regions,
+        edges,
+        max_edges_per_core=2,
+        max_edges_total=7,
+    )
+    try:
+        figure.canvas.draw()
+        renderer = figure.canvas.get_renderer()
+        suptitle_bounds = figure._suptitle.get_window_extent(renderer=renderer)
+        assert all(
+            suptitle_bounds.y0
+            > axis.title.get_window_extent(renderer=renderer).y1
+            for axis in figure.axes[:3]
+        )
+    finally:
+        plt.close(figure)
 
 
 def test_render_all_outputs_atomically_with_qc_receipt(tmp_path: Path) -> None:

@@ -220,7 +220,7 @@ NPZ as restricted provenance. Never put the salt in Git or a report.
 allocated to the process. Its default selection uses `BAGM_GPU_IDS` when set,
 then `CUDA_VISIBLE_DEVICES`, and otherwise discovers the indices reported by
 `nvidia-smi`. Override the selection explicitly with `--gpus` for an individual
-invocation:
+invocation. The current four-GPU host allocation is:
 
 ```bash
 export BAGM_GPU_IDS=0,1,2,3
@@ -230,8 +230,8 @@ PYTHONPATH=src /venv/main/bin/python scripts/sweeps/launch_matrix.py \
   --output-root <output-root>
 ```
 
-Host-level allocation does not rewrite immutable historical campaign
-contracts or receipts that recorded the hardware on which they ran.
+This host-level allocation does not rewrite immutable historical campaign
+contracts or receipts that recorded the eight-GPU machine on which they ran.
 
 ## Disk, retention, and backup
 
@@ -262,7 +262,7 @@ a complete backup. The project performs no remote upload automatically.
 ## Service template
 
 `ops/systemd/bagm-worker.service` is reviewable only. It uses
-`/workspace/Bio-Architectural-Graph-Modeling`, `/venv/main/bin/python`, one GPU
+`/workspace/BAGM`, `/venv/main/bin/python`, one GPU
 worker, clean SIGTERM shutdown, restart delay,
 and logs under `state/logs/`. Do not install, enable, or start it during
 unattended setup. Review paths, environment, GPU allocation, and persistence with the

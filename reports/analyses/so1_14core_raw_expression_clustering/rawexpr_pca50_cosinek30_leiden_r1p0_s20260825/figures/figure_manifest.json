@@ -1,0 +1,131 @@
+{
+  "clustering_manifest_sha256": "74fcebe82d4aafa5db31ae7e65ad03b73aceeff3f77a100509889a805dadc75d",
+  "combined_figure_count": 2,
+  "created_at": "2026-08-26T21:58:16.610085+00:00",
+  "dpi": 300,
+  "files": {
+    "figures/per_core/so1_core_10_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "6ee1f082188d7029136abce1aa1595459fbf6281502423a594b8dbe30e1ae515",
+      "size_bytes": 1416400
+    },
+    "figures/per_core/so1_core_11_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "73645829bb8c9f32a06fe4f677898f71086468a71968f2c703dc60bd1ea5335c",
+      "size_bytes": 1279116
+    },
+    "figures/per_core/so1_core_12_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "7338bf0ee31b6b8e2c36cafb0990e242d81bac6f9fbd85796947405dc893084d",
+      "size_bytes": 885613
+    },
+    "figures/per_core/so1_core_13_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "35fc1208965bb4bd85947db4920809657701c44c153c6b57542eaebbad5bdfcb",
+      "size_bytes": 676360
+    },
+    "figures/per_core/so1_core_14_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "4ab087617961c26904aed59d1bbfef82292b2a459425cd19428da52a26f92f39",
+      "size_bytes": 903843
+    },
+    "figures/per_core/so1_core_1_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "e2135f5f341dcf1ec7b65c9ad50c8a8ea2c9a48253ba1b4c5b9a84b4e2ca425a",
+      "size_bytes": 1018888
+    },
+    "figures/per_core/so1_core_2_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "519251eb39a4fcf78bb83473d059ae6cf5a373ea66a726d03e82af1d442f7941",
+      "size_bytes": 853822
+    },
+    "figures/per_core/so1_core_3_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "9c44bf7714b2c7b541fd32c403cbff70f4bcff33fc73fc72b3929edc588d2db5",
+      "size_bytes": 1030458
+    },
+    "figures/per_core/so1_core_4_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "1ce65ba876c96bbf67a2ef47fb242663ece3702795af16068a2bbfb33b702f3a",
+      "size_bytes": 1437979
+    },
+    "figures/per_core/so1_core_5_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "d0a371e1a25d118cfc9b586ab05cdddeb42237ac249726afc7c97e686d9cb10b",
+      "size_bytes": 1212826
+    },
+    "figures/per_core/so1_core_6_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "04e4a97c40bf28516f821a6830c11de0a7d0b314f26e8f0896d68f6c9306e479",
+      "size_bytes": 1612458
+    },
+    "figures/per_core/so1_core_7_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "83b9e75f294f76a6eee2a518819b30bd14699a4ba4f28017e9e7dee860ed5048",
+      "size_bytes": 1162317
+    },
+    "figures/per_core/so1_core_8_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "4d27749bd814e06354aa395f3965280fe7fc5c4f13b64e559031d9c35152cd8b",
+      "size_bytes": 621255
+    },
+    "figures/per_core/so1_core_9_raw_expression_leiden_resolution_1p0.png": {
+      "sha256": "0062ed8dbffb57ea5cb5afdb0ff4fcf242553b33e3425e15c3e2e112d0e7e29e",
+      "size_bytes": 1405329
+    },
+    "figures/so1_raw_expression_leiden_resolution_1p0_spatial_14cores.pdf": {
+      "sha256": "426dab1428446bd27137ff33765f4bc72f627f1b2bd88ed6efcdb139d3857d91",
+      "size_bytes": 4341440
+    },
+    "figures/so1_raw_expression_leiden_resolution_1p0_spatial_14cores.png": {
+      "sha256": "f52a8558b14684da97f95f1aa8859d8df9ae782f2d9d44eb0cd781d66a7471ea",
+      "size_bytes": 8408595
+    }
+  },
+  "individual_core_figure_count": 14,
+  "leiden_resolution": 1.0,
+  "lines_between_cells": false,
+  "manifest_content_sha256": "d1efdaf0935cd2816c56b4888294b615df078ce4fcb83208be8bb4e28227c314",
+  "marker_borders": false,
+  "one_dot_per_cell": true,
+  "plot_specification": {
+    "coordinate_units": "micrometres",
+    "coordinates_used_for_clustering": false,
+    "core_numbers_identifiable": true,
+    "equal_aspect": true,
+    "grid_shape": [
+      3,
+      5
+    ],
+    "invert_y_axis": true,
+    "legend_panel": [
+      2,
+      4
+    ],
+    "one_shared_joint_cluster_palette": true,
+    "palette": {
+      "S1E0": "#0AF50A",
+      "S1E1": "#F50A0A",
+      "S1E10": "#1AA739",
+      "S1E11": "#1A7868",
+      "S1E12": "#E58739",
+      "S1E13": "#0072B2",
+      "S1E2": "#0A0AF5",
+      "S1E3": "#68680A",
+      "S1E4": "#F539B6",
+      "S1E5": "#0AF5D6",
+      "S1E6": "#F5B6B6",
+      "S1E7": "#F5D60A",
+      "S1E8": "#781A1A",
+      "S1E9": "#581A97"
+    },
+    "panel_order": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "panel_title_template": "SO1 Core {core_number}"
+  },
+  "point_count": 161596,
+  "point_layer_rasterized_in_pdf": true,
+  "schema": "so1_14core_raw_expression_spatial_figure_v1",
+  "status": "complete"
+}

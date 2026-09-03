@@ -1,0 +1,98 @@
+version: 1
+defaults:
+  - model: relative_qkv_gat_256_l4_h8
+  - masking: uniform_per_cell_0_100
+  - dataset: cancer_6core_pooled_fit_v1
+  - features: cosmx_cancer_6core_metadata_relative_geometry
+  - graph: radial_stratified_k200_r500_bidirectional
+  - trainer: pooled_relative_qkv_independent_plateau_min150
+  - evaluation: held_in_cancer_6core_four_seed_fit_diagnostics
+  - launcher: local_single_gpu_3090
+campaign:
+  campaign_id: cmp_20260825_six_core_attention_routing_niches
+  display_name: Six-core model-defined attention-routing niche map
+experiment:
+  variant_label: final_layer_mutual_degree_adjusted_mask10_top8_leiden1_connected
+  estimand: final_layer_reciprocal_degree_adjusted_attention_routing_partition
+  permitted_claim: model_defined_attention_routing_niches_within_fitted_cores
+classification:
+  schema_version: 1
+  lifecycle_stage: posthoc_evaluation
+  study_axis: model_routing_niche_analysis
+  scientific_variant: final_layer_mutual_degree_adjusted_mask10_top8_leiden1_connected
+  retention_class: retain_conclusion_bearing_analysis
+  classification_confidence: high
+  source_batch: completed_relative_qkv_models
+evaluation:
+  protocol: posthoc_attention_routing_niche_v1
+  artifact_contract: analysis_only
+  canonical_prediction_split: analysis
+  primary_metric: analysis/attention_niche_qc_pass_fraction
+  primary_direction: maximize
+  splits: [analysis]
+  metrics:
+    - analysis/attention_niche_qc_pass_fraction
+  uncertainty_unit: model_seed_and_analysis_mask_view
+  generalization_estimate: false
+  validation_or_test_selection: false
+metadata:
+  execution_role: posthoc_readout_no_training
+  upstream_campaign_id: cmp_20260824_cancer_6core_relative_qkv_multiseed
+  discover_completed_catalog_verified_last_checkpoints: true
+  core_aliases: [CAN-01, CAN-09, CAN-13, CAN-15, CAN-21, CAN-23]
+  core_numbers: [1, 9, 13, 15, 21, 23]
+  final_graph_layer: true
+  analysis_mask_seed: 2026082501
+  analysis_mask_views: 10
+  analysis_mask_derivation_fields: [analysis_mask_seed, core_alias, mask_view_index]
+  all_genes_visible_sensitivity: true
+  uniform_routing_threshold: 1.0
+  consensus_mutual_score_threshold: 1.0
+  support_threshold: 0.60
+  primary_top_neighbors: 8
+  top_neighbor_sensitivity: [5, 8, 10]
+  primary_leiden_resolution: 1.0
+  leiden_resolution_sensitivity: [0.5, 1.0, 1.5]
+  leiden_seed: 2026082502
+  color_seed: 2026082503
+  polygon_coordinate_alignment_rule: centroid_tolerance_or_polygon_covers_coordinate
+  polygon_centroid_tolerance_um: 5.0
+  spatial_max_gap_um: 75.0
+  micro_niche_cell_threshold: 20
+  minimum_free_disk_gib: 40.0
+  checkpoint_mutation_allowed: false
+  required_analysis_outputs:
+    - six_core_attention_niche_map.png
+    - six_core_attention_niche_map.pdf
+    - six_core_attention_niche_map.svg
+    - six_core_mutual_attention_network_overlay.png
+    - six_core_mutual_attention_network_overlay.pdf
+    - core_01_attention_niche_map.png
+    - core_09_attention_niche_map.png
+    - core_13_attention_niche_map.png
+    - core_15_attention_niche_map.png
+    - core_21_attention_niche_map.png
+    - core_23_attention_niche_map.png
+    - cell_attention_niche_assignments.parquet
+    - mutual_attention_edges.parquet
+    - directed_attention_edges.parquet
+    - attention_niche_summary.csv
+    - attention_niche_colors.json
+    - attention_niche_regions.geojson
+    - analysis_manifest.yaml
+    - analysis_qc_report.md
+    - README.md
+seed: 0
+fold: 0
+attempt: 1
+launcher:
+  requested_gpu: "0,2,3"
+  requested_gpu_count: 3
+  concurrency: 3
+  recovery:
+    mode: verified_failed_run_render_only_v1
+    source_run_id: r_20260825T081845Z_0da9fbf2_s000_f00_a01_dc19543d
+    source_queue_job_id: q_07ee75463aae7b7f890e
+    source_failed_marker_content_sha256: 403887f52f7b7132409e2efdd2b3c4bef22751fa82f4f9a99c1fccd06254087c
+    expected_renderer_failure_signature: "spatial_benchmark.attention_niche_visualization.AttentionNicheVisualizationError: core region 'C01-N1785' ring 3 has zero signed area."
+    minimum_figure_headroom_gib: 2.0

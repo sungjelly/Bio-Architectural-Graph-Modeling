@@ -1,0 +1,14 @@
+{
+  "cluster_count": 21,
+  "clustering_manifest_sha256": "100e9de370a2330bd0bdd269df09ede679ac2dc7ea297c0f5cb0d850c742e712",
+  "created_at": "2026-09-03T05:40:20.990985+00:00",
+  "edge_pairs_sha256": "ecf6a365a9b1b56db9a99d411000bf3d7a776856c0dea460423771cb765ed61c",
+  "identical_labels": true,
+  "manifest_content_sha256": "d01016b47fc4967d85c279f7cdf4aaa11f461af3059a06218f1bebdcaf3fbfcc",
+  "random_seed": 20260825,
+  "repeated_labels_sha256": "cbe1aef42709ced5aa7881736ecfcef33cbcf8d5b8705ce4b7f424b2bd67f21a",
+  "resolution": 1.0,
+  "schema": "so2_14core_recurrent_hl_leiden_determinism_v1",
+  "status": "complete",
+  "stored_labels_sha256": "cbe1aef42709ced5aa7881736ecfcef33cbcf8d5b8705ce4b7f424b2bd67f21a"
+}

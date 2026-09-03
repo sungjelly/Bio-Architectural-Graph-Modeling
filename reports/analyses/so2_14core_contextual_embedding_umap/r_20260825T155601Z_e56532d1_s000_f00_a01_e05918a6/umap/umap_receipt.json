@@ -1,0 +1,188 @@
+{
+  "created_at": "2026-08-26T14:26:28.844924+00:00",
+  "directed_knn": {
+    "cell_by_cell_matrix_constructed": false,
+    "directed_neighbor_entries": 7381890,
+    "distance_metric": "cosine_via_l2_normalized_inner_product",
+    "ef_construction": 200,
+    "ef_search": 128,
+    "faiss_version": "1.15.0",
+    "hnsw_m": 32,
+    "implementation": "faiss.IndexHNSWFlat",
+    "input_order": "locked_global_core_then_cell_index",
+    "maximum_explicit_pairwise_array_shape": [
+      246063,
+      38
+    ],
+    "n_neighbors": 30,
+    "neighbor_cosine_sha256": "2592187f576e39e76fd188a9210570265c8e6504cc6df1d4afc7142d0b17e64a",
+    "neighbor_storage_shape": [
+      246063,
+      30
+    ],
+    "neighbors_sha256": "ec41635e7fe1068e36e948a223958dfb6c758c03b88321864c5ac46b9b97de4e",
+    "single_threaded_index_and_search": true
+  },
+  "figure": {
+    "borderless_points": true,
+    "cluster_labels_annotated_at_coordinate_median": true,
+    "cluster_palette": {
+      "C0": "#D55E00",
+      "C1": "#0A0AF5",
+      "C10": "#781A29",
+      "C11": "#D697F5",
+      "C12": "#E50AF5",
+      "C13": "#B6C678",
+      "C14": "#F50A49",
+      "C15": "#1A5868",
+      "C16": "#78580A",
+      "C17": "#68B60A",
+      "C18": "#780A68",
+      "C2": "#0AF50A",
+      "C3": "#0AC6F5",
+      "C4": "#F529A7",
+      "C5": "#0A580A",
+      "C6": "#0A3997",
+      "C7": "#E5D60A",
+      "C8": "#F5B6B6",
+      "C9": "#0AF5B6"
+    },
+    "core_palette": {
+      "15": "#1F77B4",
+      "16": "#FF7F0E",
+      "17": "#2CA02C",
+      "18": "#D62728",
+      "19": "#9467BD",
+      "20": "#8C564B",
+      "21": "#E377C2",
+      "22": "#7F7F7F",
+      "23": "#BCBD22",
+      "24": "#17BECF",
+      "25": "#393B79",
+      "26": "#637939",
+      "27": "#8C6D31",
+      "28": "#843C39"
+    },
+    "draw_order": "fixed_seed_random_permutation",
+    "draw_order_seed": 20260825,
+    "left_color": "fixed_joint_contextual_leiden_resolution_1p0",
+    "pdf_raster_dpi": 300,
+    "plot_type": "two_panel_identical_coordinates",
+    "png_dpi": 300,
+    "point_alpha": 0.62,
+    "point_count_per_panel": 246063,
+    "point_size": 0.45,
+    "rasterized_point_layer": true,
+    "right_color": "numeric_tissue_core_confounding_control"
+  },
+  "finalization": {
+    "atomic_bundle_replacement": true,
+    "coordinate_recomputed": false,
+    "figure_rerendered_at_locked_dpi": true,
+    "labels_recomputed": false
+  },
+  "finalized_at": "2026-08-26T14:34:07.457231+00:00",
+  "manifest_content_sha256": "e835dffd097e43421b17b0e606362436723224b2ae4ef3d151b468532fd59089",
+  "outputs": {
+    "coordinates": {
+      "sha256": "4ddcfc88062aaf18c49263425d42b3ce0facad5e6dd531bfeb9d424bccc43b5c",
+      "size_bytes": 3937136
+    },
+    "pdf": {
+      "sha256": "d8689ac4b02f6b8b89550a59e5b11a0771c81c26128f591112ee971f1409971e",
+      "size_bytes": 5018282
+    },
+    "png": {
+      "sha256": "5f46aac455efde7f750ca521fd4e0dad51e07544ec832980106e07d971fd63e5",
+      "size_bytes": 7556239
+    },
+    "table": {
+      "sha256": "247a972536f19ca519171a6879e42bdb1cfa456e003b3c16395debfcfd71acde",
+      "size_bytes": 4999970
+    }
+  },
+  "run_id": "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+  "schema": "so2_14core_contextual_hl_umap_receipt_v1",
+  "source": {
+    "analysis_manifest": {
+      "sha256": "8f771e55272fa0139a1292766a594fda57acf0446a5fc2c94370d10c9b72d086",
+      "size_bytes": 29417
+    },
+    "cluster_table": {
+      "sha256": "89f188d9704944bf2484774a995f43c9146fca8cfccd9879dbbfcd3b78af5d2d",
+      "size_bytes": 3580746
+    },
+    "clustering_manifest": {
+      "sha256": "ea8ffd9b569b61098a7d549c4bdb342d0ccbf0dc589f7f52314821b0f17bf86e",
+      "size_bytes": 9774
+    },
+    "labels": {
+      "sha256": "a450e83ba84a9c5af2fa51eaf9294660595bbc8ecf79cd7b9c8cdec938568d8e",
+      "size_bytes": 1968632
+    },
+    "palette": {
+      "sha256": "84cfade18d2697dcc11a0db52e8bab2b3f8b0f01a460e5fac1eedd2bb4f7048a",
+      "size_bytes": 547
+    },
+    "pca": {
+      "sha256": "41de72118c1d5861e7b915e3b0f505ab97ea432899bdf6a20010bfed956988aa",
+      "size_bytes": 49212728
+    }
+  },
+  "source_knn_hashes": {
+    "neighbor_cosine_sha256": "2592187f576e39e76fd188a9210570265c8e6504cc6df1d4afc7142d0b17e64a",
+    "neighbors_sha256": "ec41635e7fe1068e36e948a223958dfb6c758c03b88321864c5ac46b9b97de4e",
+    "undirected_edges": 5960471,
+    "undirected_edges_sha256": "9959a807bb452bfa26d351929197e35950912d5c1e71b156d8a33e526115f641"
+  },
+  "status": "complete",
+  "umap": {
+    "coordinate_bounds": {
+      "umap_1_max": 12.79546596354745,
+      "umap_1_min": -22.324200729892507,
+      "umap_2_max": 16.80452234200553,
+      "umap_2_min": -12.094532866557943
+    },
+    "coordinate_dtype": "float64",
+    "coordinate_sha256": "6430c609c9265fa5a30e9a29ecd5b986ea1386335fa09a4133579fb9b925ec53",
+    "coordinate_shape": [
+      246063,
+      2
+    ],
+    "dense_cell_by_cell_matrix_constructed": false,
+    "determinism_repeat_coordinate_sha256": "6430c609c9265fa5a30e9a29ecd5b986ea1386335fa09a4133579fb9b925ec53",
+    "determinism_repeat_performed": true,
+    "directed_edge_count": 7381890,
+    "directed_edges_dtype": "int32",
+    "directed_edges_sha256": "8e9799452a845b3f4c2f7148186b3feea0534f091b9bdefd92bb625e480c6a34",
+    "distance_array_shape": [
+      7381890
+    ],
+    "distance_dtype": "float32",
+    "distance_sha256": "f3ed93435f56896fce7479acd1a1e8c31b1364d15bc0e9e64e4efb0b74082c08",
+    "elapsed_seconds_including_repeat": 6358.314093980007,
+    "epochs": 200,
+    "fuzzy_weight_array_shape": [
+      7381890
+    ],
+    "fuzzy_weight_dtype": "float64",
+    "fuzzy_weight_max": 1.0,
+    "fuzzy_weight_min": 0.0,
+    "fuzzy_weights_sha256": "28dcf8542ff160ac4eb13353521df1d309afe53986a8388b59c6383ac8e46f33",
+    "igraph_version": "1.0.0",
+    "implementation": "igraph.Graph.layout_umap",
+    "initialization": "first_two_locked_PCA_scores_centered_and_max_abs_scaled_to_10",
+    "initialization_sha256": "17ff663c24683839bcd5513f5a754190674b928e7fe47c4fd039d63f4f6709f8",
+    "metric": "cosine",
+    "min_dist": 0.3,
+    "n_cells": 246063,
+    "n_neighbors": 30,
+    "positive_fuzzy_undirected_edges_sha256": "9959a807bb452bfa26d351929197e35950912d5c1e71b156d8a33e526115f641",
+    "positive_fuzzy_weight_count": 5960471,
+    "random_seed": 20260825,
+    "representation": "contextual_hL_exact_PCA50_L2_normalized",
+    "rng": "igraph_process_global_random.Random_reset_before_each_layout",
+    "rng_restored_to_igraph_default_after_each_layout": true,
+    "weight_implementation": "igraph.umap_compute_weights"
+  }
+}

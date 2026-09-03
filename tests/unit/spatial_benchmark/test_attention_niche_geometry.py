@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from scipy import sparse
-from shapely.geometry import MultiPolygon, Polygon
+from shapely.geometry import MultiPolygon, Polygon, shape
 
 import spatial_benchmark.attention_niche_geometry as geometry
 from spatial_benchmark.attention_niche_geometry import (
@@ -20,6 +20,7 @@ from spatial_benchmark.attention_niche_geometry import (
     niche_adjacency_from_cells,
     region_adjacency,
     split_preliminary_niches,
+    validate_and_repair_regions_geojson,
     validate_polygon_centroid_alignment,
     validate_undirected_adjacency,
     verify_niche_connectedness,
@@ -323,6 +324,40 @@ def test_dissolve_preserves_holes_and_multipart_geometry_and_geojson_is_stable()
         "coordinate_unit": "um",
         "niche_color": colors["C01-N001"],
     }
+
+
+def test_serialized_region_validation_repairs_polygonal_self_intersection() -> None:
+    source = {
+        "type": "FeatureCollection",
+        "coordinate_unit": "um",
+        "features": [
+            {
+                "type": "Feature",
+                "id": "C01-N001",
+                "properties": {
+                    "core_number": 1,
+                    "final_niche_id": "C01-N001",
+                    "cell_count": 2,
+                    "area_um2": 0.5,
+                    "coordinate_unit": "um",
+                },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [[0.0, 0.0], [1.0, 1.0], [1.0, 0.0], [0.0, 1.0], [0.0, 0.0]]
+                    ],
+                },
+            }
+        ],
+    }
+
+    repaired, audit = validate_and_repair_regions_geojson(source)
+
+    assert audit["invalid_before_repair"] == 1
+    assert audit["invalid_after_repair"] == 0
+    assert audit["feature_count"] == 1
+    assert shape(repaired["features"][0]["geometry"]).is_valid
+    assert repaired["features"][0]["properties"]["area_um2"] == 0.5
 
 
 def test_cell_niche_adjacency_and_colors_are_stable_distinct_and_core_scoped() -> None:

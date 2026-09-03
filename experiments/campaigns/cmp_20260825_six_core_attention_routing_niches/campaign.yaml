@@ -1,8 +1,8 @@
 campaign_schema_version: 1
 campaign_id: cmp_20260825_six_core_attention_routing_niches
 display_name: Six-core model-defined attention-routing niche map
-status: pilot
-outcome: pending
+status: complete
+outcome: negative
 definition: experiments/campaigns/cmp_20260825_six_core_attention_routing_niches/README.md
 analysis_config: experiments/campaigns/cmp_20260825_six_core_attention_routing_niches/analysis_config.yaml
 upstream_campaign_id: cmp_20260824_cancer_6core_relative_qkv_multiseed
@@ -41,3 +41,26 @@ checkpoint_policy:
   modify_or_resume_checkpoints: false
 claim_limit: model_defined_attention_routing_niches_not_biological_or_causal
 automatic_enqueue: false
+completed_scientific_run_id: r_20260825T110043Z_0da9fbf2_s000_f00_a01_5e477ab9
+final_figure_patch_run_id: r_20260825T120155Z_0da9fbf2_s000_f00_a01_a41036ce
+local_artifact_retirement:
+  status: applied_and_verified
+  decision_id: retire_20260825_six_core_attention_niche_runs
+  applied_at: '2026-08-25T14:51:58.114204Z'
+  report: reports/retention/retire_20260825_six_core_attention_niche_runs/README.md
+  deletion_plan_sha256: f152f35df6a8f227d3ba70a03f5b1cf7039091d81196910c4bd4c42ad3c20c0d
+  application_receipt_sha256: 7fa7d496434a88221846658896e7e135093f66dbe6afce26c7e1bcc58ef88ee6
+  original_artifact_rows_tombstoned: 244
+  external_run_receipts_present: 7
+  logical_deleted_bytes: 47115175143
+  measured_recovered_bytes: 47114747904
+  local_bundle_availability: retired_recreate_by_rerun
+  upstream_trained_checkpoints_retained: true
+  retired_run_ids:
+    - r_20260825T051807Z_825125bb_s000_f00_a01_058e2607
+    - r_20260825T053454Z_0da9fbf2_s000_f00_a01_69a07db0
+    - r_20260825T055100Z_0da9fbf2_s000_f00_a01_ead1d2c2
+    - r_20260825T081845Z_0da9fbf2_s000_f00_a01_dc19543d
+    - r_20260825T105008Z_0da9fbf2_s000_f00_a01_21554c05
+    - r_20260825T110043Z_0da9fbf2_s000_f00_a01_5e477ab9
+    - r_20260825T120155Z_0da9fbf2_s000_f00_a01_a41036ce

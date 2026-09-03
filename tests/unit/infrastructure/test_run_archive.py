@@ -9,6 +9,9 @@ import pytest
 from spatial_benchmark.identifiers import create_run_id
 from spatial_benchmark.paths import ProjectPaths
 from spatial_benchmark.run_archive import (
+    ATTENTION_NICHE_VISUALIZATION_PATCH_MODE,
+    ATTENTION_NICHE_VISUALIZATION_PATCH_OUTPUTS,
+    ATTENTION_NICHE_VISUALIZATION_PATCH_SPEC,
     RunArchive,
     RunArchiveError,
     RunImmutableError,
@@ -70,13 +73,42 @@ def _write_success_support(archive: RunArchive) -> None:
     archive.write_text("provenance/command.txt", '{"argv":["test"],"cwd":"/tmp"}\n')
 
 
+def _write_analysis_success_support(
+    archive: RunArchive,
+    *,
+    metric: str = "analysis/attention_niche_qc_pass_fraction",
+) -> None:
+    archive.write_summary(
+        {
+            "status": "success",
+            "primary_metric_name": metric,
+            "primary_metric_value": 1.0,
+        }
+    )
+    archive.append_metric_event({"name": metric, "value": 1.0, "step": 0})
+    archive.write_json("metrics/final.json", {metric: 1.0})
+    archive.write_table("metrics/history", [{"step": 0, metric: 1.0}])
+    archive.prepare_log_files()
+    archive.write_json("provenance/git.json", {"commit": "test", "dirty": False})
+    archive.write_text("provenance/uncommitted_changes.patch", "")
+    archive.write_text("provenance/environment.txt", "python=test\n")
+    archive.write_json("provenance/hardware.json", {"device": "cpu"})
+    archive.write_json("provenance/data_fingerprints.json", {"dataset": "test"})
+    archive.write_json("provenance/split_fingerprint.json", {"split": "test"})
+    archive.write_text("provenance/command.txt", '{"argv":["test"],"cwd":"/tmp"}\n')
+
+
 @pytest.mark.parametrize(
     "protocol",
     (
         "held_in_full_core_fixed_budget",
         "held_in_pooled_10core_fixed_budget",
+        "held_in_pooled_14core_relative_qkv_fixed_continuation_epoch300",
+        "held_in_pooled_14core_geometry_modulated_relative_qkv_seed_plateau",
         "held_in_pooled_14core_recurrent_relative_qkv_seed_plateau",
+        "held_in_pooled_14core_relative_qkv_seed_plateau",
         "held_in_pooled_14core_untied8_relative_qkv_seed_plateau",
+        "held_in_pooled_so1_14core_relative_qkv_plateau_min150",
         "held_in_pooled_6core_relative_qkv_fixed_budget",
     ),
 )
@@ -396,6 +428,111 @@ def test_analysis_only_run_requires_outputs_but_not_checkpoint_or_predictions(
     assert not (final_path / "checkpoints/best.ckpt").exists()
     assert not any((final_path / "predictions").glob("analysis.*"))
     assert verify_run_bundle(final_path)["status"] == "success"
+
+
+def _visualization_patch_archive(
+    tmp_path: Path,
+    *,
+    suffix: str,
+    mode: str,
+) -> RunArchive:
+    archive = RunArchive.create(
+        _run_id(suffix),
+        paths=_paths(tmp_path),
+        manifest={"lifecycle_status_source": "registry_and_completion_marker"},
+        resolved_config={
+            "campaign": {
+                "campaign_id": (
+                    "cmp_20260825_six_core_attention_routing_niches"
+                )
+            },
+            "evaluation": {
+                "protocol": "posthoc_attention_routing_niche_v1",
+                "artifact_contract": "analysis_only",
+                "canonical_prediction_split": "analysis",
+                "primary_metric": (
+                    "analysis/attention_niche_qc_pass_fraction"
+                ),
+            },
+            "metadata": {
+                "required_analysis_outputs": [
+                    "scientific_table_that_must_not_be_copied.parquet"
+                ]
+            },
+            "launcher": {
+                "visualization_patch": {
+                    **ATTENTION_NICHE_VISUALIZATION_PATCH_SPEC,
+                    "mode": mode,
+                },
+            },
+        },
+    )
+    _write_analysis_success_support(archive)
+    return archive
+
+
+def test_visualization_patch_requires_only_fresh_figure_bundle(
+    tmp_path: Path,
+) -> None:
+    archive = _visualization_patch_archive(
+        tmp_path,
+        suffix="figpatch",
+        mode=ATTENTION_NICHE_VISUALIZATION_PATCH_MODE,
+    )
+    for relative in ATTENTION_NICHE_VISUALIZATION_PATCH_OUTPUTS:
+        archive.write_text(relative, "fresh visualization patch output\n")
+
+    archive._validate_success_ready()
+
+
+def test_visualization_patch_mode_drift_and_missing_figure_fail_closed(
+    tmp_path: Path,
+) -> None:
+    drifted = _visualization_patch_archive(
+        tmp_path / "drifted",
+        suffix="figdrift",
+        mode="verified_completed_run_visualization_only_v2",
+    )
+    for relative in ATTENTION_NICHE_VISUALIZATION_PATCH_OUTPUTS:
+        drifted.write_text(relative, "fresh visualization patch output\n")
+    with pytest.raises(RunValidationError, match="Unsupported.*patch mode"):
+        drifted._validate_success_ready()
+
+    missing = _visualization_patch_archive(
+        tmp_path / "missing",
+        suffix="figmiss1",
+        mode=ATTENTION_NICHE_VISUALIZATION_PATCH_MODE,
+    )
+    for relative in ATTENTION_NICHE_VISUALIZATION_PATCH_OUTPUTS[1:]:
+        missing.write_text(relative, "fresh visualization patch output\n")
+    with pytest.raises(RunValidationError, match="missing required output"):
+        missing._validate_success_ready()
+
+
+def test_normal_analysis_only_required_outputs_remain_unchanged(
+    tmp_path: Path,
+) -> None:
+    archive = RunArchive.create(
+        _run_id("normalan"),
+        paths=_paths(tmp_path),
+        manifest={"lifecycle_status_source": "registry_and_completion_marker"},
+        resolved_config={
+            "evaluation": {
+                "protocol": "posthoc_attention_routing_niche_v1",
+                "artifact_contract": "analysis_only",
+                "canonical_prediction_split": "analysis",
+                "primary_metric": (
+                    "analysis/attention_niche_qc_pass_fraction"
+                ),
+            },
+            "metadata": {"required_analysis_outputs": ["ordinary.txt"]},
+        },
+    )
+    _write_analysis_success_support(archive)
+    with pytest.raises(RunValidationError, match="missing required output"):
+        archive._validate_success_ready()
+    archive.write_text("ordinary.txt", "ordinary analysis output\n")
+    archive._validate_success_ready()
 
 
 def test_retention_tombstones_must_match_immutable_bundle_manifest(
