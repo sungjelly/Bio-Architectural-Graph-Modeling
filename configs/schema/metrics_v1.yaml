@@ -390,6 +390,58 @@ task_families:
         direction: maximize
         unit: percent
 
+  masked_expression_negative_binomial:
+    active_in_current_project: true
+    primary_metric: val/unseen_donor/masked_negative_binomial_nll
+    primary_direction: minimize
+    independent_uncertainty_unit: donor_group
+    likelihood_contract:
+      family: negative_binomial_nb2
+      expectation: mu
+      variance: mu_plus_mu_squared_over_theta
+      full_likelihood_constants_included: true
+      aggregation: equal_mask_view_within_core_then_equal_validation_core
+      validation_masks_fixed_across_epochs: true
+      validation_used_for_model_selection: true
+      test_partition_present: false
+    metrics:
+      train/masked_negative_binomial_nll:
+        description: Full-constant NB2 NLL on stochastic masked raw-count training entries.
+        direction: minimize
+        unit: nats_per_masked_count
+      val/unseen_donor/masked_negative_binomial_nll:
+        description: Equal-view, equal-core full-constant NB2 NLL on fixed masks from the held-out validation donor pair.
+        direction: minimize
+        unit: nats_per_masked_count
+      val/unseen_donor/pooled_masked_negative_binomial_nll:
+        description: Entry-pooled full-constant NB2 NLL on the same fixed held-out validation masks.
+        direction: minimize
+        unit: nats_per_masked_count
+      val/unseen_donor/raw_count_mae:
+        direction: minimize
+        unit: raw_counts
+      val/unseen_donor/raw_count_rmse:
+        direction: minimize
+        unit: raw_counts
+      val/unseen_donor/log1p_mae:
+        direction: minimize
+        unit: log1p_raw_counts
+      val/unseen_donor/log1p_rmse:
+        direction: minimize
+        unit: log1p_raw_counts
+      val/unseen_donor/poisson_deviance:
+        direction: minimize
+        unit: deviance_per_masked_count
+      val/unseen_donor/observed_zero_rate:
+        direction: descriptive
+        unit: proportion
+      val/unseen_donor/predicted_zero_probability_mean:
+        direction: descriptive
+        unit: probability
+      val/unseen_donor/zero_brier_score:
+        direction: minimize
+        unit: squared_probability_error
+
   masked_expression_hybrid_count:
     active_in_current_project: true
     primary_metric: fit/whole_node/hybrid_loss

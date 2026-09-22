@@ -1,0 +1,38 @@
+masking:
+  type: uniform_per_cell_integer_count
+  distribution: discrete_uniform_masked_gene_count
+  count_min: 0
+  count_max: 1000
+  count_support_inclusive: true
+  positions_without_replacement: true
+  independent_across_cells: true
+  independent_views_per_core_epoch: 10
+  ratio_stratification_or_bins: false
+  all_graph_cells_masked_by_same_rule: true
+  mask_base_seed: 2026082401
+  model_seed_in_mask_derivation: false
+  mask_seed_derivation_fields:
+    - base_mask_seed
+    - core_alias
+    - global_epoch
+    - mask_view_index
+  validation_masks:
+    fixed_across_epochs: true
+    independent_views_per_core: 10
+    seed_namespace: bagm.so2.nb.fixed_validation_masks.v1
+    seed_derivation_fields:
+      - seed_namespace
+      - core_alias
+      - mask_view_index
+  mask_expression_only: true
+  same_mask_indexes_raw_count_likelihood: true
+  explicit_gene_mask_channel: true
+  metadata_masked: false
+  encoder_reapplies_mask: true
+  zero_mask_step_policy: deterministic_fail_closed_resample_from_prespecified_seed_namespace
+  required_view_provenance:
+    - split_role
+    - view_index
+    - derived_seed
+    - mask_checksum
+    - masked_count_distribution_summary

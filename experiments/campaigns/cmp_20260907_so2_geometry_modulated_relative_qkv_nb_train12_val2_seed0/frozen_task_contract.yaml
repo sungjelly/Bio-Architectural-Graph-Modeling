@@ -1,0 +1,260 @@
+schema_version: 1
+campaign_id: cmp_20260907_so2_geometry_modulated_relative_qkv_nb_train12_val2_seed0
+status: frozen_before_implementation_and_launch
+analysis_design: exploratory_single_seed_donor_grouped_train_validation_only
+outcome_status: pending
+objective: train_and_select_a_four_block_geometry_modulated_relative_qkv_nb2_model_on_so2
+scientific_question: can_a_raw_count_nb2_objective_fit_stably_and_improve_held_out_donor_reconstruction_without_overfitting_the_training_donors
+estimand: unseen_donor_partial_gene_masked_raw_count_reconstruction_under_fixed_validation_masks
+permitted_claim: exploratory_validation_selected_nb_model_performance_only
+generalization_claim_supported: false
+unbiased_test_claim_supported: false
+
+cohort:
+  aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26, SO2-C27, SO2-C28]
+  total_cells: 246063
+  biological_target_count: 1000
+  node_covariate_count: 22
+  donor_group_count: 7
+  donor_group_definition: equality_only_from_protected_source_identifiers
+  donor_identifier_values_persisted_or_reported: false
+
+split:
+  strategy: donor_grouped_train_validation_only
+  training_donor_groups: 6
+  validation_donor_groups: 1
+  test_donor_groups: 0
+  training_aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26]
+  validation_aliases: [SO2-C27, SO2-C28]
+  test_aliases: []
+  training_cells: 208696
+  validation_cells: 37367
+  test_cells: 0
+  selection_namespace: bagm.so2.nb.train_validation.seed0.v1
+  selection_rule: minimum_sha256_of_namespace_plus_sorted_core_pair_aliases
+  selected_validation_pair_digest: 0b8d6d58e4c87953425c4132b0fd8334b368e4d96dc920cdf66a0b6a2360f05d
+  expression_outcomes_used_for_selection: false
+  pathology_labels_used_for_selection: false
+  model_results_used_for_selection: false
+  protected_grouping_source_sha256: 30a1c3de1fee0d0045ac6bbfa849f9bb47de437c1b11428e6e16ac48d06fd5e0
+  no_test_partition_or_artifacts: true
+
+preprocessing:
+  fit_scope: training_aliases_only
+  expression_input:
+    source: raw_nonnegative_integer_biological_probe_counts
+    transform: log1p_then_gene_wise_standardize
+    moment_weighting: equal_core
+    validation_application: frozen_training_statistics
+  node_covariates:
+    transform: recenter_and_rescale_from_training_cores_only
+    moment_weighting: equal_core
+    validation_application: frozen_training_statistics
+    missing_values_present_in_so2_cohort: false
+  raw_count_target:
+    transform: none
+    use: masked_nb_likelihood_only
+    allowed_as_model_input: false
+  hidden_target_library_total_or_offset:
+    computed: false
+    supplied_to_model: false
+  graph_cache:
+    reuse_immutable_core_local_geometry: true
+    duplicate_graph_artifact: false
+
+architecture:
+  model_name: geometry-modulated-relative-qkv-gat-nb2
+  family: geometry_modulated_relative_qkv_graph_transformer
+  hidden_dim: 256
+  graph_layers: 4
+  unique_graph_blocks: 4
+  effective_graph_depth: 4
+  graph_block_weight_tying: none
+  attention_heads: 8
+  attention_head_dim: 32
+  ffn_dim: 1024
+  decoder_dim: 1024
+  expected_trainable_parameter_count: 5135088
+  encoder_and_decoder_parameter_count_before_dispersion: 5134088
+  learned_dispersion_parameter_count: 1000
+  per_block_trainable_parameter_count: 831880
+  initialization: fresh_seed0_from_scratch
+  pretrained_or_prior_so2_checkpoint_allowed: false
+
+attention_score:
+  mechanism: geometry_modulated_cosine_qkv_v1
+  qk_normalization: per_head_l2_fp32
+  modulation_raw: 1_plus_0.5_tanh_geometry_projection
+  modulation_normalization: per_edge_head_dimension_mean_one
+  geometry_bias: tanh_geometry_projection
+  geometry_output_projections_zero_initialized: true
+  values_receive_geometry: false
+  value_content_source: shared_node_content_state_without_direct_relative_geometry
+  shared_node_content_state_initial_components:
+    - masked_train_standardized_log1p_expression
+    - explicit_gene_mask_channel
+    - train_normalized_allowed_morphology_metadata
+  shared_node_content_state_later_blocks: prior_node_content_messages_plus_residual_feed_forward_state
+  qkv_projection_source: common_pre_attention_layer_normalized_shared_node_content_state_h
+  relative_geometry_direct_value_projection: false
+  relative_geometry_value_gating: false
+
+negative_binomial:
+  parameterization: nb2_mean_inverse_dispersion
+  expectation: mu
+  variance: mu_plus_mu_squared_over_theta
+  mean_transform: softplus_decoder_logits_plus_epsilon
+  mean_epsilon: 0.0001
+  inverse_dispersion: one_learned_cell_shared_parameter_per_gene
+  inverse_dispersion_transform: softplus_raw_theta_plus_epsilon
+  inverse_dispersion_initial_value: 1.0
+  likelihood_constants_included: true
+  likelihood_compute_dtype: float32_outside_autocast
+  zeros_and_positive_counts_in_same_likelihood: true
+  zinb_or_hurdle_component: false
+  target_derived_size_factor_or_offset: false
+
+masking:
+  training:
+    mechanism: uniform_per_cell_integer_gene_count_0_through_1000_inclusive
+    stochastic_views_per_core_epoch: 10
+    mask_positions_without_replacement: true
+    base_seed: 2026082401
+    seed_fields: [base_seed, core_alias, global_epoch, mask_view_index]
+  validation:
+    mechanism: same_uniform_per_cell_integer_gene_count_rule_as_training
+    fixed_views_per_core: 10
+    fixed_across_all_epochs: true
+    mask_positions_without_replacement: true
+    base_seed_namespace: bagm.so2.nb.fixed_validation_masks.v1
+  expression_only_masked: true
+  same_boolean_mask_applied_to_raw_count_likelihood: true
+
+training:
+  optimizer: AdamW
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  gradient_clip_norm: 1.0
+  distributed_world_size: 4
+  distributed_backend: nccl
+  gpu_ids: [0, 1, 2, 3]
+  cores_per_optimizer_update: 2
+  training_core_visits_per_global_epoch: 12
+  optimizer_updates_per_global_epoch: 6
+  complete_training_graph_mask_views_per_global_epoch: 120
+  mask_view_weighting: equal_view_within_core_then_equal_core
+  validation_backpropagation: false
+  validation_every_global_epochs: 1
+  scheduler:
+    type: ReduceLROnPlateau
+    monitor: validation_equal_core_masked_nb_nll
+    mode: min
+    factor: 0.5
+    patience_validations: 8
+    threshold_mode: abs
+    threshold: 0.0001
+    minimum_learning_rate: 0.000001
+
+stopping:
+  monitor: validation_equal_core_masked_nb_nll
+  mode: min
+  validation_frequency_global_epochs: 1
+  minimum_global_epochs: 50
+  patience_clock_starts_after_minimum_epoch: true
+  patience_validations: 25
+  absolute_min_delta: 0.0001
+  maximum_global_epochs: 300
+  earliest_possible_early_stop_global_epoch: 75
+  restore_validation_best: true
+  training_loss_used_for_stopping: false
+  nan_or_nonfinite_policy: fail_closed
+
+metrics:
+  primary: validation_equal_core_masked_nb_nll
+  aggregation: mean_view_within_core_then_equal_mean_across_validation_cores
+  every_epoch:
+    - training_equal_core_masked_nb_nll
+    - validation_equal_core_masked_nb_nll
+    - validation_pooled_masked_nb_nll
+    - validation_masked_raw_count_mae
+    - validation_masked_raw_count_rmse
+    - validation_masked_log1p_mae
+    - validation_masked_log1p_rmse
+    - validation_masked_poisson_deviance
+    - validation_observed_zero_rate
+    - validation_predicted_zero_probability_mean
+    - validation_zero_brier_score
+    - inverse_dispersion_min_median_max
+    - learning_rate
+    - gradient_norm_and_cosine_global
+    - gradient_norm_and_cosine_by_each_of_four_blocks
+    - gradient_norm_and_cosine_inverse_dispersion
+    - epoch_duration_throughput_and_peak_vram
+  per_core_training_and_validation_metrics: true
+  full_prediction_matrix_persistence: false
+
+gradient_diagnostics:
+  read_timing: after_amp_unscale_and_finite_check_before_gradient_clipping_or_optimizer_step
+  source: full_fp32_ddp_averaged_trainable_gradient
+  summaries: [global, blocks.0, blocks.1, blocks.2, blocks.3, raw_theta]
+  consecutive_optimizer_step_cosine: true
+  epoch_aggregate_gradient_cosine_to_previous_epoch: true
+  gradient_tensor_persistence_allowed: false
+  per_optimizer_step_file_persistence_allowed: false
+  affects_optimization_or_selection: false
+
+checkpointing:
+  during_training:
+    rolling_recovery_path: checkpoints/latest.ckpt
+    validation_best_path: checkpoints/best.ckpt
+    atomic_replacement: true
+    epoch_archives_allowed: false
+  successful_finalization:
+    retained_path: checkpoints/best.ckpt
+    retained_checkpoint_count: 1
+    delete_rolling_recovery_after_verified_reload: true
+    final_role: validation_best_not_literal_last_epoch
+  checkpoint_payload:
+    - model
+    - optimizer
+    - scheduler
+    - amp_scaler
+    - rng_states
+    - completed_epoch
+    - best_validation_metric_and_epoch
+    - early_stopping_state
+    - preprocessing_and_split_fingerprints
+  gradient_vectors_allowed: false
+
+acceptance:
+  split_is_donor_disjoint_and_has_no_test: true
+  preprocessing_fit_aliases_equal_training_aliases: true
+  fixed_validation_mask_checksums_stable: true
+  raw_target_perturbation_cannot_change_forward_mu: true
+  nb_formula_matches_torch_distribution: true
+  zero_and_max_count_loss_and_gradients_finite: true
+  parameter_count_is_5135088: true
+  four_unique_block_parameter_sets_verified: true
+  neutral_geometry_initialization_verified: true
+  tiny_synthetic_and_real_subset_nb_loss_decrease: true
+  four_rank_one_update_and_validation_preflight_pass: true
+  preflight_peak_vram_gib_all_ranks_max: 22.0
+  minimum_vram_headroom_gib_each_rank: 2.0
+  checkpoint_reload_and_best_selection_verified: true
+  epoch_metric_rows_contiguous: true
+  final_checkpoint_single_loadable_and_verified: true
+
+resources:
+  gpu_count: 4
+  gpu_model: NVIDIA_GeForce_RTX_3090
+  gpu_memory_gib_each: 24
+  minimum_free_disk_gib: 25
+  graph_cache_duplication_allowed: false
+  maximum_active_checkpoint_count: 2
+  successful_final_checkpoint_count: 1
+
+comparison_limits:
+  prior_all_core_huber_run_is_matched_control: false
+  matched_huber_same_split_required_for_nb_accuracy_improvement_claim: true
+  single_validation_donor_reused_for_model_selection: true
+  interpretation: exploratory_model_selection_estimate_not_unbiased_generalization

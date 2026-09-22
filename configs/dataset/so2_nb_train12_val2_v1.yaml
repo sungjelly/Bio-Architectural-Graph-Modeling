@@ -1,0 +1,37 @@
+dataset:
+  dataset_id: cosmx_so2_nb_train12_val2_v1
+  version: so2_nb_train12_val2_v1
+  split_id: so2_donor_grouped_train12_val2_no_test_seed0_v1
+  dataset_fingerprint: 206148ffc8976526118932c7fbed82674f79ff8f2326bbd2a7c54dba8540260c
+  dataset_fingerprint_role: immutable_overlay_manifest_content_sha256
+  overlay_manifest_file_sha256: 3aea6cfbf7191df221cf226316dbbc2aded6edfaeb193498c7a7a740bc73cabe
+  split_fingerprint: d3d5f637433a98bf48db1d079fbecfe249308638462416e6dae57ece5fffc435
+  preprocessing_fingerprint: 2fdebc1be6600c9ea86846c972ee2b6149c2827ade3ff5b0784ceae45001910c
+  prepared_artifact_reference: data/processed/so2_nb_train12_val2_v1
+  preprocessing_version: so2_train12_equal_core_log1p_metadata_nb_raw_targets_v1
+  source_cohort_artifact: data/processed/so2_14core_relative_qkv_v1
+  source_graph_artifact: data/processed/so2_14core_relative_qkv_graphs_v1
+  source_graph_cache_reused_without_copy: true
+  task: masked_expression_negative_binomial
+  input_scale: train_only_equal_core_standardized_log1p_raw_biological_counts
+  target_scale: raw_nonnegative_integer_biological_probe_counts
+  target_distribution: negative_binomial_nb2
+  total_cells: 246063
+  training_cells: 208696
+  validation_cells: 37367
+  test_cells: 0
+  biological_target_count: 1000
+  node_covariate_count: 22
+  training_core_aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26]
+  validation_core_aliases: [SO2-C27, SO2-C28]
+  test_core_aliases: []
+  experimental_unit: donor_group
+  source_slide: SO_2
+  validation_selected_without_expression_pathology_or_model_outcomes: true
+  validation_pair_selection_namespace: bagm.so2.nb.train_validation.seed0.v1
+  validation_pair_selection_digest: 0b8d6d58e4c87953425c4132b0fd8334b368e4d96dc920cdf66a0b6a2360f05d
+  protected_grouping_source_sha256: 30a1c3de1fee0d0045ac6bbfa849f9bb47de437c1b11428e6e16ac48d06fd5e0
+  donor_identifier_values_persisted: false
+  validation_used_for_model_selection: true
+  test_partition_present: false
+  generalization_claim_supported: false

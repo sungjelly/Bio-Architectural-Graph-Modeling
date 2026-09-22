@@ -1,0 +1,62 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260907_so2_geometry_modulated_relative_qkv_nb_train12_val2_seed0
+display_name: SO2 four-block geometry-modulated Relative-QKV NB2 train-12 validate-2 seed-0
+status: completed
+analysis_design: exploratory_single_seed_donor_grouped_train_validation_only
+outcome_status: success
+definition: experiments/campaigns/cmp_20260907_so2_geometry_modulated_relative_qkv_nb_train12_val2_seed0/README.md
+frozen_task_contract: experiments/campaigns/cmp_20260907_so2_geometry_modulated_relative_qkv_nb_train12_val2_seed0/frozen_task_contract.yaml
+frozen_task_contract_sha256: 13ff231bf842ecddfe7bfe000660d108d04b829d9706978972e0cbd06b39d74f
+variant:
+  name: geometry_modulated_relative_qkv_gat_nb2_256_l4_h8_train12_val2_batch2_ddp4
+  model_seed: 0
+  graph_layers: 4
+  unique_graph_blocks: 4
+  expected_trainable_parameter_count: 5135088
+split:
+  training_aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26]
+  validation_aliases: [SO2-C27, SO2-C28]
+  test_aliases: []
+  validation_selected_without_outcomes: true
+production_run_count: 1
+maximum_global_epochs: 300
+early_stopping:
+  monitor: validation_equal_core_masked_nb_nll
+  minimum_global_epochs: 50
+  patience: 25
+  min_delta: 0.0001
+execution:
+  world_size: 4
+  backend: nccl
+  physical_gpu_ids: [0, 1, 2, 3]
+  elastic_max_restarts: 0
+  preflight_receipt: state/preflight/so2_geometry_modulated_nb_train12_val2_ddp4.json
+  preflight_receipt_file_sha256: 799a837ea73360f7cd4544c7b6ca3c6004143ae6d96ae89b6eb1f7afa62f2772
+  preflight_receipt_content_sha256: 24426485170d0efba8a669cf7292818ba6be3440f21bdc2e2b6040195fb6b01c
+  preflight_completed_at: '2026-09-07T14:43:07Z'
+  measured_peak_vram_gib_all_ranks: 16.261130809783936
+  measured_peak_reserved_vram_gib_all_ranks: 19.5078125
+  queue_job_id: q_f98b35c4201404fe3d23
+  run_id: r_20260907T144628Z_489a9b42_s000_f00_a01_188c8511
+  worker_id: so2-geometry-modulated-nb-train12-val2-ddp4
+  production_started_at: '2026-09-07T14:46:28Z'
+  production_finished_at: '2026-09-08T16:32:57Z'
+  automatic_enqueue: false
+checkpointing:
+  during_training: rolling_latest_plus_overwritten_validation_best
+  after_success: one_validation_best_only
+  epoch_archives_allowed: false
+outcome:
+  final_global_epoch: 192
+  best_global_epoch: 167
+  stopped_early: true
+  stop_reason: patience
+  primary_metric: val/unseen_donor/masked_negative_binomial_nll
+  primary_metric_value: 0.34690783321857455
+  checkpoint: checkpoints/best.ckpt
+  checkpoint_sha256: 2b5790213477a1adb47633a5f3a8d56d0b325ab14ebbd9c7b67ba849a2a7cc2e
+  checkpoint_count: 1
+  loss_recorded_every_epoch: true
+  gradient_direction_recorded_every_epoch: true
+  test_artifacts_present: false
+  unbiased_test_estimate: false
