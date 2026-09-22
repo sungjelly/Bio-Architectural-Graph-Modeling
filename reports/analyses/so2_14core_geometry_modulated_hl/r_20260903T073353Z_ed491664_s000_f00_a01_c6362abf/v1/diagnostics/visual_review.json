@@ -1,0 +1,24 @@
+{
+  "all_14_panels_labelled": true,
+  "all_20_legend_entries_present": true,
+  "correct_model_epoch_seed_title": true,
+  "dpi": [
+    299.9994,
+    299.9994
+  ],
+  "equal_aspect_scale_bars_and_coordinate_axes": true,
+  "final_png_must_be_checked_against_review_hash": true,
+  "method": "local_visual_inspection_of_separate_review_render_from_locked_cluster_table",
+  "no_clipping_or_missing_panels": true,
+  "pixel_size": [
+    7285,
+    4510
+  ],
+  "preview_file": {
+    "sha256": "a92ffc8e30203710206ca75abcdebe54b7c52c71f8144d649124634d14598479",
+    "size_bytes": 9878662
+  },
+  "preview_png": "/workspace/BAGM/scratch/active_runs/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/figure_review/so2_14core_geometry_modulated_hl/v1/figures/contextual_leiden_resolution_1p0_spatial_14cores.png",
+  "preview_retention": "Separate scratch review render retained; one PNG in the final published report.",
+  "status": "passed"
+}

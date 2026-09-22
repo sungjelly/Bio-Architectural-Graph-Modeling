@@ -1,0 +1,140 @@
+{
+  "schema": "bagm_external_literature_ledger_v1",
+  "as_of": "2026-09-06",
+  "analysis_type": "exploratory_public_literature_comparison",
+  "owning_campaign": "cmp_20260906_so2_failure_diagnosis",
+  "source_run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+  "scope": "Public methodological sources only; no project data uploaded and no external model inference.",
+  "sources": [
+    {
+      "source_id": "scvi_api",
+      "url": "https://docs.scvi-tools.org/en/stable/api/reference/scvi.model.SCVI.html",
+      "source_type": "official_documentation",
+      "publication_status": "current documentation",
+      "claim_scope": "Default architecture and ZINB likelihood; alternative decoder distributions.",
+      "qualification": "Defaults are configurable; no fixed parameter count or mandatory pretraining corpus.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "dca_paper",
+      "url": "https://www.nature.com/articles/s41467-018-07931-2",
+      "source_type": "primary_paper",
+      "publication_status": "peer reviewed; 2019",
+      "claim_scope": "64-32-64 architecture; raw-count NB/ZINB likelihood; encoder normalization and other supported losses.",
+      "qualification": "Dataset-specific fitting; denoised means do not identify latent biological truth.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "scgpt_inventory",
+      "url": "https://github.com/bowang-lab/scGPT#pretrained-scgpt-model-zoo",
+      "source_type": "author_repository",
+      "publication_status": "current author documentation; paper 2024",
+      "claim_scope": "Whole-human checkpoint trained on 33 million normal human cells.",
+      "qualification": "Other organ-specific and cancer checkpoints have different corpora.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "scgpt_card",
+      "url": "https://virtualcellmodels.cziscience.com/model/scgpt",
+      "source_type": "CZI_distribution_model_card",
+      "publication_status": "model card",
+      "claim_scope": "Reported 53 million parameters; 12 blocks, width 512, eight heads.",
+      "qualification": "CZI-authored card, not an independently counted checkpoint or parameter statement verified in the author paper.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "scgpt_example",
+      "url": "https://github.com/bowang-lab/scGPT/blob/main/examples/finetune_integration.py",
+      "source_type": "author_code",
+      "publication_status": "current author example",
+      "claim_scope": "51-bin targets, 40% masking, masked MSE, Bernoulli and task auxiliaries.",
+      "qualification": "Integration fine-tuning example; do not assign its masking ratio to every pretraining checkpoint.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "scfoundation_manuscript",
+      "url": "https://yiheng-zhu.github.io/Yiheng/papers/5/scFoundation_bioRxiv_2023.pdf",
+      "source_type": "primary_manuscript_mirror",
+      "publication_status": "June 15 2023 preprint",
+      "claim_scope": "Over 50 million cells; 19264 genes; nominal 100 million parameters; asymmetric transformer and read-depth-aware masked MSE.",
+      "qualification": "Methods pp15-16 specify normalized/log-transformed input and target. Full published Methods inaccessible; detailed claims refer to this manuscript.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "scfoundation_publication",
+      "url": "https://www.nature.com/articles/s41592-024-02305-7",
+      "source_type": "primary_paper_metadata",
+      "publication_status": "peer reviewed; June 6 2024",
+      "claim_scope": "Published article identity and nominal model/corpus scale.",
+      "qualification": "Publisher full text inaccessible during this audit; detailed objective verification uses the original manuscript.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "xverse_preprint",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13104837/",
+      "source_type": "primary_preprint",
+      "publication_status": "preprint; April 14 2026; not journal peer reviewed",
+      "claim_scope": "89-million-cell corpus, masking, dual Poisson objective, auxiliary supervision, CosMx whole-gene imputation and PCC.",
+      "qualification": "Matched BAGM evaluation absent. Imputation sample exclusion from pretraining was not established in checked text; this is not an overlap finding.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "xverse_repository",
+      "url": "https://github.com/jichunxie/xVERSE_code",
+      "source_type": "author_repository",
+      "publication_status": "current author documentation",
+      "claim_scope": "384-dimensional biological embedding and tissue-conditioned inference interface.",
+      "qualification": "Total model parameter count was not verified.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "stagate_paper",
+      "url": "https://www.nature.com/articles/s41467-022-29439-6",
+      "source_type": "primary_paper",
+      "publication_status": "peer reviewed; 2022",
+      "claim_scope": "512-30 spatial autoencoder, 3000 HVGs, DLPFC section sizes, domain and denoising evaluation.",
+      "qualification": "Section-specific results; clustering or unmasked reconstruction does not establish masked-entry generalization.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "stagate_code",
+      "url": "https://github.com/QIFEIDKN/STAGATE_pyG/blob/main/STAGATE_pyG/Train_STAGATE.py",
+      "source_type": "author_code",
+      "publication_status": "current author implementation",
+      "claim_scope": "F.mse_loss(data.x, out) implements reconstruction objective.",
+      "qualification": "Input scale depends on preprocessing; paper uses normalized/log-transformed expression.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "bichannel_workshop",
+      "url": "https://openreview.net/references/pdf?id=EPYjWg1hsQ",
+      "source_type": "primary_workshop_paper",
+      "publication_status": "NeurIPS 2022 AI for Science Workshop; preliminary work",
+      "claim_scope": "100149 CosMx cells/960 marker genes; spatial and similarity graphs; masks; log-normalized RMSE/PCC in Table1.",
+      "qualification": "Five repetitions, limited comparators, no matched BAGM task or patient-held-out claim; total parameters not verified.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    },
+    {
+      "source_id": "spaim_paper",
+      "url": "https://www.nature.com/articles/s41467-025-63185-9",
+      "source_type": "primary_paper",
+      "publication_status": "peer reviewed; 2025",
+      "claim_scope": "53 datasets; reference-assisted style-transfer MLP; losses; gene splits; breast PCC; rank-based ACC.",
+      "qualification": "Intervals describe predicted genes, not patients. Whole-gene reference transfer differs from partial-entry reconstruction; parameters not verified.",
+      "accessed_at": "2026-09-06",
+      "verification": "public source inspected with web tools; source text not archived"
+    }
+  ]
+}

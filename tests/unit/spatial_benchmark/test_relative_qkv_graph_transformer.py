@@ -220,6 +220,7 @@ def test_recurrent_forward_and_each_explanation_step_match_four_tied_copies() ->
             return_explanations=True,
             explanation_layer=layer_number,
             return_intermediate_embeddings=True,
+            return_graph_step_embeddings=True,
         )
         reference_output = reference(
             expression,
@@ -230,6 +231,7 @@ def test_recurrent_forward_and_each_explanation_step_match_four_tied_copies() ->
             return_explanations=True,
             explanation_layer=layer_number,
             return_intermediate_embeddings=True,
+            return_graph_step_embeddings=True,
         )
         assert recurrent_output.layer_number == layer_number
         assert torch.equal(recurrent_output.edge_index, reference_output.edge_index)
@@ -255,6 +257,21 @@ def test_recurrent_forward_and_each_explanation_step_match_four_tied_copies() ->
             assert recurrent_tensor is not None
             assert reference_tensor is not None
             torch.testing.assert_close(recurrent_tensor, reference_tensor)
+
+    assert recurrent_output.graph_step_embeddings is not None
+    assert reference_output.graph_step_embeddings is not None
+    assert len(recurrent_output.graph_step_embeddings) == 4
+    assert len(reference_output.graph_step_embeddings) == 4
+    for recurrent_step, reference_step in zip(
+        recurrent_output.graph_step_embeddings,
+        reference_output.graph_step_embeddings,
+        strict=True,
+    ):
+        torch.testing.assert_close(recurrent_step, reference_step)
+    assert torch.equal(
+        recurrent_output.graph_step_embeddings[-1],
+        recurrent_output.final_graph_embedding,
+    )
 
     negative_last = recurrent(
         expression,
@@ -420,6 +437,7 @@ def test_full_and_exact_receiver_chunked_outputs_gradients_and_explanations_matc
         relative_geometry=geometry,
         node_covariates=metadata,
         return_explanations=True,
+        return_graph_step_embeddings=True,
     )
     chunked_output = chunked(
         expression,
@@ -428,6 +446,7 @@ def test_full_and_exact_receiver_chunked_outputs_gradients_and_explanations_matc
         relative_geometry=geometry,
         node_covariates=metadata,
         return_explanations=True,
+        return_graph_step_embeddings=True,
     )
     torch.testing.assert_close(chunked_output.prediction, full_output.prediction)
     torch.testing.assert_close(chunked_output.node_embedding, full_output.node_embedding)
@@ -441,6 +460,16 @@ def test_full_and_exact_receiver_chunked_outputs_gradients_and_explanations_matc
         chunked_output.content_logits + chunked_output.positional_bias,
         chunked_output.combined_logits,
     )
+    assert full_output.graph_step_embeddings is not None
+    assert chunked_output.graph_step_embeddings is not None
+    assert len(full_output.graph_step_embeddings) == full.graph_layers
+    assert len(chunked_output.graph_step_embeddings) == chunked.graph_layers
+    for full_step, chunked_step in zip(
+        full_output.graph_step_embeddings,
+        chunked_output.graph_step_embeddings,
+        strict=True,
+    ):
+        torch.testing.assert_close(chunked_step, full_step)
     assert torch.equal(chunked_output.edge_index, edge_index)
 
     full.zero_grad(set_to_none=True)
@@ -491,6 +520,14 @@ def test_intermediate_embeddings_are_exact_aligned_and_prediction_invariant(
                 node_covariates=metadata,
                 target_nodes=target_nodes,
             )
+            all_nodes = model(
+                expression,
+                mask,
+                edge_index=edge_index,
+                relative_geometry=geometry,
+                node_covariates=metadata,
+                return_graph_step_embeddings=True,
+            )
             extended = model(
                 expression,
                 mask,
@@ -499,6 +536,7 @@ def test_intermediate_embeddings_are_exact_aligned_and_prediction_invariant(
                 node_covariates=metadata,
                 target_nodes=target_nodes,
                 return_intermediate_embeddings=True,
+                return_graph_step_embeddings=True,
             )
             expected_h0 = model.encoder(
                 expression,
@@ -510,14 +548,70 @@ def test_intermediate_embeddings_are_exact_aligned_and_prediction_invariant(
 
     assert standard.node_encoder_embedding is None
     assert standard.final_graph_embedding is None
+    assert standard.graph_step_embeddings is None
     assert extended.node_encoder_embedding is not None
     assert extended.final_graph_embedding is not None
+    assert extended.graph_step_embeddings is not None
+    assert all_nodes.graph_step_embeddings is not None
     assert torch.equal(extended.prediction, standard.prediction)
     assert torch.equal(extended.node_encoder_embedding, expected_h0)
     assert torch.equal(extended.final_graph_embedding, extended.node_embedding)
     assert torch.equal(extended.final_graph_embedding, decoder_inputs[-1])
     assert extended.node_encoder_embedding.shape == (3, model.hidden_dim)
     assert extended.final_graph_embedding.shape == (3, model.hidden_dim)
+    assert len(extended.graph_step_embeddings) == model.graph_layers
+    assert len(all_nodes.graph_step_embeddings) == model.graph_layers
+    for returned_step, full_step in zip(
+        extended.graph_step_embeddings,
+        all_nodes.graph_step_embeddings,
+        strict=True,
+    ):
+        assert returned_step.shape == (expression.shape[0], model.hidden_dim)
+        assert torch.equal(returned_step, full_step)
+    assert torch.equal(
+        extended.graph_step_embeddings[-1], extended.full_node_embedding
+    )
+    assert torch.equal(
+        extended.graph_step_embeddings[-1].index_select(0, target_nodes),
+        extended.final_graph_embedding,
+    )
+
+
+@pytest.mark.parametrize(
+    "model_class",
+    [
+        RelativeGeometryQKVGraphTransformer,
+        ReceiverChunkedRelativeGeometryQKVGraphTransformer,
+    ],
+)
+def test_graph_step_embeddings_remain_full_when_decoder_targets_are_empty(
+    model_class: type[RelativeGeometryQKVGraphTransformer],
+) -> None:
+    expression, mask, metadata, edge_index, geometry = _inputs()
+    model = _model(model_class).eval()
+
+    with torch.inference_mode():
+        output = model(
+            expression,
+            mask,
+            edge_index=edge_index,
+            relative_geometry=geometry,
+            node_covariates=metadata,
+            target_nodes=torch.empty((0,), dtype=torch.long),
+            return_graph_step_embeddings=True,
+        )
+
+    assert output.prediction.shape == (0, expression.shape[1])
+    assert output.node_embedding.shape == (0, model.hidden_dim)
+    assert output.graph_step_embeddings is not None
+    assert len(output.graph_step_embeddings) == model.graph_layers
+    assert all(
+        step.shape == (expression.shape[0], model.hidden_dim)
+        for step in output.graph_step_embeddings
+    )
+    assert torch.equal(
+        output.graph_step_embeddings[-1], output.full_node_embedding
+    )
 
 
 def test_attention_normalizes_per_receiver_and_explanation_filter_stays_aligned() -> None:

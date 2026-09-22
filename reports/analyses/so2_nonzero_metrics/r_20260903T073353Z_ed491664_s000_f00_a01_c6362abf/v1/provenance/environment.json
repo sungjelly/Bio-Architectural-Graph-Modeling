@@ -1,0 +1,16 @@
+{
+  "python": "3.12.13",
+  "platform": "Linux-6.8.0-117-generic-x86_64-with-glibc2.39",
+  "torch": "2.13.0+cu130",
+  "cuda": "13.0",
+  "numpy": "2.5.2",
+  "cwd": "/workspace/BAGM",
+  "gpu_schedule": {
+    "original": "cuda:0",
+    "continued": "cuda:1",
+    "recurrent": "cuda:2",
+    "geometry": "cuda:3"
+  },
+  "cpu_threads_per_worker": 4,
+  "prepared_at": "2026-09-05T06:42:23.880697+00:00"
+}

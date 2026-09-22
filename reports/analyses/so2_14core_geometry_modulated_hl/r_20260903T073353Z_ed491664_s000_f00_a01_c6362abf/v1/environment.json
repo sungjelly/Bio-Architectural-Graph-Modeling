@@ -1,0 +1,46 @@
+{
+  "command": "PYTHONPATH=src /venv/main/bin/python scripts/analysis/create_so2_geometry_hl_map.py",
+  "cuda": "13.0",
+  "cwd": "/workspace/BAGM",
+  "devices": [
+    {
+      "compute_capability": [
+        8,
+        6
+      ],
+      "device": "cuda:0",
+      "name": "NVIDIA GeForce RTX 3090",
+      "total_memory_bytes": 25296044032
+    },
+    {
+      "compute_capability": [
+        8,
+        6
+      ],
+      "device": "cuda:1",
+      "name": "NVIDIA GeForce RTX 3090",
+      "total_memory_bytes": 25296044032
+    },
+    {
+      "compute_capability": [
+        8,
+        6
+      ],
+      "device": "cuda:2",
+      "name": "NVIDIA GeForce RTX 3090",
+      "total_memory_bytes": 25296044032
+    },
+    {
+      "compute_capability": [
+        8,
+        6
+      ],
+      "device": "cuda:3",
+      "name": "NVIDIA GeForce RTX 3090",
+      "total_memory_bytes": 25296044032
+    }
+  ],
+  "platform": "Linux-6.8.0-117-generic-x86_64-with-glibc2.39",
+  "python": "3.12.13",
+  "torch": "2.13.0+cu130"
+}

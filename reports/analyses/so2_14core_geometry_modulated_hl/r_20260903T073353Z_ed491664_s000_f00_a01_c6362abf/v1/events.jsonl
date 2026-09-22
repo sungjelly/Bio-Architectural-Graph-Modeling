@@ -1,0 +1,10 @@
+{"event": "verify_source_inputs", "time": "2026-09-05T05:36:23.261308+00:00"}
+{"event": "failed", "time": "2026-09-05T05:36:24.163092+00:00", "traceback": "Traceback (most recent call last):\n  File \"/workspace/BAGM/scripts/analysis/create_so2_geometry_hl_map.py\", line 281, in main\n    inputs = resolve_inputs(paths, registry)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/BAGM/scripts/analysis/create_so2_geometry_hl_map.py\", line 107, in resolve_inputs\n    verify_run_bundle(bundle)\n  File \"/workspace/BAGM/src/spatial_benchmark/run_archive.py\", line 1581, in verify_run_bundle\n    _validate_success_contract_at(\n  File \"/workspace/BAGM/src/spatial_benchmark/run_archive.py\", line 501, in _validate_success_contract_at\n    prediction_split = _canonical_prediction_split(root)\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspace/BAGM/src/spatial_benchmark/run_archive.py\", line 454, in _canonical_prediction_split\n    raise RunValidationError(\nspatial_benchmark.run_archive.RunValidationError: canonical fit predictions require an explicit held-in full-core or pooled-ten-core evaluation protocol.\n"}
+{"event": "verify_source_inputs", "time": "2026-09-05T05:37:02.530263+00:00"}
+{"cores": [21, 23], "devices": ["cuda:0", "cuda:1"], "event": "pilot_start", "time": "2026-09-05T05:38:16.574521+00:00"}
+{"event": "pilot_passed", "time": "2026-09-05T05:38:49.198206+00:00"}
+{"event": "full_extraction_start", "schedule": {"cuda:0": [15, 18], "cuda:1": [27, 25, 22], "cuda:2": [19, 24, 20], "cuda:3": [16, 26, 28, 17]}, "time": "2026-09-05T05:38:49.213444+00:00"}
+{"cells": 246063, "event": "clustering_start", "time": "2026-09-05T05:39:39.835652+00:00"}
+{"clusters": 20, "event": "leiden_replay_start", "time": "2026-09-05T06:00:43.032388+00:00"}
+{"event": "render_png", "time": "2026-09-05T06:20:15.700891+00:00"}
+{"clusters": 20, "elapsed_seconds": 2601.8788384040818, "event": "complete", "time": "2026-09-05T06:20:24.409103+00:00"}

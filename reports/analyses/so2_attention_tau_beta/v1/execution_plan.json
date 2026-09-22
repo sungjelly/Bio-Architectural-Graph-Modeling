@@ -1,0 +1,43 @@
+{
+  "analysis": "descriptive frozen-checkpoint tau/beta inspection",
+  "gpu_assignments": {
+    "0": [
+      23,
+      20,
+      21
+    ],
+    "1": [
+      15,
+      25,
+      22
+    ],
+    "2": [
+      27,
+      26,
+      28,
+      17
+    ],
+    "3": [
+      19,
+      16,
+      24,
+      18
+    ]
+  },
+  "pilot": {
+    "core": 21,
+    "runtime_seconds": 9.484548807144165,
+    "peak_vram_gib": 0.28474855422973633,
+    "public_forward_max_abs_error": 2.384185791015625e-07
+  },
+  "startup_failure": {
+    "stage": "first pilot before edge-score extraction",
+    "error": "Inference tensors do not track version counter",
+    "resolution": "Use no_grad so the existing graph layout cache can access tensor version counters"
+  },
+  "precision": "FP32; TF32 and AMP disabled",
+  "execution": "Four separate foreground tool sessions, one worker per available GPU",
+  "expected_core_count": 14,
+  "expected_model_seed_count": 1,
+  "expected_mask_realizations_per_core": 1
+}

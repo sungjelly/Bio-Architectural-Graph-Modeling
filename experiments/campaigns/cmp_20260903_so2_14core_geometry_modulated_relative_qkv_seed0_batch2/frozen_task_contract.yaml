@@ -151,3 +151,4 @@ artifacts:
   loss_figure: figures/loss_vs_epoch.png
   gradient_direction_figure: figures/gradient_direction_vs_epoch.png
 automatic_enqueue: false
+

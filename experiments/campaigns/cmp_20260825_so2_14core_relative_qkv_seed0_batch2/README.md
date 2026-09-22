@@ -527,3 +527,13 @@ core-associated islands, and claim limits are documented in
 [`HL_UMAP.md`](HL_UMAP.md). The verified additive report is under
 `reports/analyses/so2_14core_contextual_embedding_umap/` and does not modify
 the completed model run or its source clustering report.
+
+## Completed hidden-layer clustering progression
+
+The locked four-block checkpoint now has matched joint Leiden resolution-1.0
+partitions for the intrinsic encoder state h0, post-block states h1--h3, and
+the existing final hL state. Static spatial PNGs and cell-aligned split/merge
+heatmaps cover all 246,063 cells across cores 15--28. The exploratory task
+contract, results, exact reproduction command, verification evidence, and
+claim limits are documented in
+[`HIDDEN_LAYER_PROGRESSION_CLUSTERING.md`](HIDDEN_LAYER_PROGRESSION_CLUSTERING.md).

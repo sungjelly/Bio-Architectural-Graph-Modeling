@@ -1,0 +1,39 @@
+{
+  "aggregation": "equal_core_mean",
+  "formal_inference": false,
+  "input_root": "/workspace/BAGM/reports/analyses/so2_nonzero_metrics",
+  "models": {
+    "continued": [
+      "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+      300,
+      "completed"
+    ],
+    "geometry": [
+      "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+      200,
+      "completed"
+    ],
+    "original": [
+      "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+      175,
+      "completed"
+    ],
+    "recurrent": [
+      "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      175,
+      "failed_artifact_finalization"
+    ]
+  },
+  "primary_metric": "positive/mse_standardized",
+  "protocol": "so2_nonzero_comparison_v1",
+  "strata": [
+    "all",
+    "zero",
+    "positive",
+    "count_1",
+    "count_2",
+    "count_3",
+    "count_4_7",
+    "count_8_plus"
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "doctor": {
+    "checkpoint_artifacts": 41,
+    "indexed_checkpoints": 40,
+    "issue": "checkpoint_catalog_incomplete",
+    "ok": false,
+    "schema_version": 4,
+    "scope": "Existing repository-wide issue; requested final checkpoint is indexed and verified.",
+    "sqlite_integrity": "ok"
+  },
+  "extraction_control": "Synthetic non-neutral geometry model hL is bit-exact to ordinary final_graph_embedding; zero decoder rows; nonzero mask and enabled gradients rejected.",
+  "focused_tests": {
+    "test_geometry_modulated_relative_qkv_graph_transformer.py": 4,
+    "test_so2_geometry_hl_extraction.py": 3,
+    "test_so2_hl_clustering.py": 6
+  },
+  "initial_attempt": {
+    "failed_before_extraction": true,
+    "reason": "Current checkout archive validator predates geometry-modulated protocol",
+    "resolution": "Recovered original full validator from provenance and verified its Git blob; strict bundle verification passed."
+  },
+  "model_source_recovery": "Original source and tests match provenance/untracked_files.json SHA-256 and size.",
+  "total_passed": 13,
+  "training_base_compatibility": {
+    "assessment": "Current base changes only optional intermediate graph-state collection and documentation; default-forward mathematics unchanged.",
+    "training_blob": "0368704aa2bc1c38160beae6a3cad7acffb877c5"
+  },
+  "warnings": [
+    "Torch jit.script deprecation warning only"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "README.md": "edb17d470451a611d77460aa0cdb09f14dfaef5b2b6ebe3e3f78a9ea8ae4dfcb",
+  "per_epoch_comparison.csv": "4d531b337b88da170303c642018a7d7e922fd18a37f3737f4959dd11599f4088",
+  "per_core_epoch_losses.csv": "5d4a1efcf44e25ad7380761942a48d82a13b591bdbf6c4d6383e662a6c8a290a",
+  "blocks_25_epochs.csv": "d4de8de38bad93828976e0d465072bf8dfb1acf8f063c67f8a190c3310675192",
+  "summary.json": "840d08d07f214b9ef64c6d834c480d09cc9b932aa00bf598d4892a179ef6070c",
+  "epoch_comparison.png": "548f0b43e54c242e0676996940cec245414ce21057515312d4b21c90faa62c2b",
+  "epoch_comparison.pdf": "e44a308173a0dad5773d45c83042c11fa90dbe3da7b0b504a1d7f7ab662b804d",
+  "comparison.md": "02f8f81f9fd13398253e4eb096638b5918da4661ac9b3a72839157685b320535",
+  "verification.json": "44870f1e32dadc4bab173977f81626fa150a80c494699f9dc56ca0b12e8a5f00",
+  "provenance.json": "6dea701d9ab116fbeb32eb86b6c7f2a1363e8f0b6c41cab0d4e2fab664045d24"
+}

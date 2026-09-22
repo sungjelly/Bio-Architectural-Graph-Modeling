@@ -1,0 +1,120 @@
+{
+  "metric": "equal_core_mean_masked_huber",
+  "comparisons": {
+    "original": {
+      "shared_epochs": 200,
+      "geometry_lower_epochs": 71,
+      "geometry_higher_epochs": 129,
+      "ties": 0,
+      "mean_paired_difference": 4.884253761597651e-05,
+      "relative_difference_of_means_percent": 0.020080320409130034
+    },
+    "recurrent": {
+      "shared_epochs": 175,
+      "geometry_lower_epochs": 167,
+      "geometry_higher_epochs": 8,
+      "ties": 0,
+      "mean_paired_difference": -0.0008463164884216984,
+      "relative_difference_of_means_percent": -0.34618531856467283
+    }
+  },
+  "blocks_25_epochs": [
+    {
+      "first_epoch": 1,
+      "last_epoch": 25,
+      "original": 0.25059864783712793,
+      "recurrent": 0.25293068307212413,
+      "geometry": 0.250567877301148,
+      "geometry_vs_original_percent": -0.012278811655819233
+    },
+    {
+      "first_epoch": 26,
+      "last_epoch": 50,
+      "original": 0.24469542680042125,
+      "recurrent": 0.2458066042363643,
+      "geometry": 0.2448127055295876,
+      "geometry_vs_original_percent": 0.04792845158565484
+    },
+    {
+      "first_epoch": 51,
+      "last_epoch": 75,
+      "original": 0.24316748799170765,
+      "recurrent": 0.2438596860638686,
+      "geometry": 0.24316838918839173,
+      "geometry_vs_original_percent": 0.00037060739144223476
+    },
+    {
+      "first_epoch": 76,
+      "last_epoch": 100,
+      "original": 0.24243680156980235,
+      "recurrent": 0.24311572495528627,
+      "geometry": 0.24242442197884828,
+      "geometry_vs_original_percent": -0.005106316728287208
+    },
+    {
+      "first_epoch": 101,
+      "last_epoch": 125,
+      "original": 0.24178994960444314,
+      "recurrent": 0.24226675702844344,
+      "geometry": 0.24188294711709016,
+      "geometry_vs_original_percent": 0.038462108453707344
+    },
+    {
+      "first_epoch": 126,
+      "last_epoch": 150,
+      "original": 0.24138548943826124,
+      "recurrent": 0.24187107961518423,
+      "geometry": 0.24131009617873597,
+      "geometry_vs_original_percent": -0.03123355082391699
+    },
+    {
+      "first_epoch": 151,
+      "last_epoch": 175,
+      "original": 0.24105200730902804,
+      "recurrent": 0.24143388445888245,
+      "geometry": 0.24119376671739978,
+      "geometry_vs_original_percent": 0.05880864048977141
+    },
+    {
+      "first_epoch": 176,
+      "last_epoch": 200,
+      "original": 0.24076097295965465,
+      "recurrent": null,
+      "geometry": 0.24091731980017247,
+      "geometry_vs_original_percent": 0.06493861467491424
+    },
+    {
+      "first_epoch": 201,
+      "last_epoch": 225,
+      "original": 0.24051920795014922,
+      "recurrent": null,
+      "geometry": null,
+      "geometry_vs_original_percent": null
+    },
+    {
+      "first_epoch": 226,
+      "last_epoch": 250,
+      "original": 0.24038122567960193,
+      "recurrent": null,
+      "geometry": null,
+      "geometry_vs_original_percent": null
+    },
+    {
+      "first_epoch": 251,
+      "last_epoch": 275,
+      "original": 0.2401154703583036,
+      "recurrent": null,
+      "geometry": null,
+      "geometry_vs_original_percent": null
+    },
+    {
+      "first_epoch": 276,
+      "last_epoch": 300,
+      "original": 0.23996012738772798,
+      "recurrent": null,
+      "geometry": null,
+      "geometry_vs_original_percent": null
+    }
+  ],
+  "epochs_are_independent_replicates": false
+}

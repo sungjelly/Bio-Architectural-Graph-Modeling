@@ -1,0 +1,19 @@
+{"time": "2026-09-05T06:42:24.815978+00:00", "phase": "prepared", "model": "geometry", "source_run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf", "evaluation_id": "ev_so2_nonzero_v1_r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf"}
+{"time": "2026-09-05T06:43:16.603480+00:00", "phase": "pilot_started", "model": "geometry", "command": ["scripts/analysis/compare_so2_nonzero_accuracy.py", "--model", "geometry", "--phase", "pilot"]}
+{"time": "2026-09-05T06:43:25.073417+00:00", "phase": "core_completed", "model": "geometry", "core": 21, "runtime_seconds": 8.460713412147015, "peak_vram_gib": 0.29350900650024414}
+{"time": "2026-09-05T06:44:36.960167+00:00", "phase": "core_completed", "model": "geometry", "core": 23, "runtime_seconds": 71.52922100899741, "peak_vram_gib": 1.0289692878723145}
+{"time": "2026-09-05T06:44:37.567020+00:00", "phase": "pilot_passed", "model": "geometry", "cores": [21, 23]}
+{"time": "2026-09-05T06:45:35.226426+00:00", "phase": "full_started", "model": "geometry", "command": ["scripts/analysis/compare_so2_nonzero_accuracy.py", "--model", "geometry", "--phase", "full"]}
+{"time": "2026-09-05T06:46:36.891667+00:00", "phase": "core_completed", "model": "geometry", "core": 15, "runtime_seconds": 61.65852173231542, "peak_vram_gib": 0.9082870483398438}
+{"time": "2026-09-05T06:47:03.790873+00:00", "phase": "core_completed", "model": "geometry", "core": 16, "runtime_seconds": 26.20738610299304, "peak_vram_gib": 0.42473697662353516}
+{"time": "2026-09-05T06:47:17.844658+00:00", "phase": "core_completed", "model": "geometry", "core": 17, "runtime_seconds": 13.623332583811134, "peak_vram_gib": 0.3403663635253906}
+{"time": "2026-09-05T06:47:36.055860+00:00", "phase": "core_completed", "model": "geometry", "core": 18, "runtime_seconds": 17.77435352699831, "peak_vram_gib": 0.3720250129699707}
+{"time": "2026-09-05T06:48:04.403331+00:00", "phase": "core_completed", "model": "geometry", "core": 19, "runtime_seconds": 27.88536163792014, "peak_vram_gib": 0.4789848327636719}
+{"time": "2026-09-05T06:48:21.881421+00:00", "phase": "core_completed", "model": "geometry", "core": 20, "runtime_seconds": 16.992584072053432, "peak_vram_gib": 0.37557554244995117}
+{"time": "2026-09-05T06:48:38.736034+00:00", "phase": "core_completed", "model": "geometry", "core": 22, "runtime_seconds": 16.44064130494371, "peak_vram_gib": 0.3720283508300781}
+{"time": "2026-09-05T06:48:59.862414+00:00", "phase": "core_completed", "model": "geometry", "core": 24, "runtime_seconds": 20.71088643744588, "peak_vram_gib": 0.4047884941101074}
+{"time": "2026-09-05T06:49:18.699859+00:00", "phase": "core_completed", "model": "geometry", "core": 25, "runtime_seconds": 18.41982979234308, "peak_vram_gib": 0.39783477783203125}
+{"time": "2026-09-05T06:49:39.836504+00:00", "phase": "core_completed", "model": "geometry", "core": 26, "runtime_seconds": 20.714611971285194, "peak_vram_gib": 0.40344762802124023}
+{"time": "2026-09-05T06:50:11.832352+00:00", "phase": "core_completed", "model": "geometry", "core": 27, "runtime_seconds": 31.574662243016064, "peak_vram_gib": 0.596245288848877}
+{"time": "2026-09-05T06:50:29.733790+00:00", "phase": "core_completed", "model": "geometry", "core": 28, "runtime_seconds": 17.439201444853097, "peak_vram_gib": 0.38904571533203125}
+{"time": "2026-09-05T06:50:30.104006+00:00", "phase": "evaluation_complete", "model_name": "geometry", "source_run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf", "evaluation_id": "ev_so2_nonzero_v1_r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf", "source_status": "completed", "source_epoch": 200, "equal_core_positive_mse_standardized": 8.9151179841775, "cores": 14, "total_cells": 246063, "runtime_seconds": 369.43130727112293, "peak_vram_gib": 1.0289692878723145, "status": "completed"}

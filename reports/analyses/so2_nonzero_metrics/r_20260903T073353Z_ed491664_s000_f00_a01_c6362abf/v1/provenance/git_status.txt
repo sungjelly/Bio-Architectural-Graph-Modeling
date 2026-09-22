@@ -1,0 +1,29 @@
+ M experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/README.md
+ M src/spatial_benchmark/cli.py
+ M src/spatial_benchmark/relative_qkv_graph_transformer.py
+ M tests/unit/spatial_benchmark/test_relative_qkv_graph_transformer.py
+?? experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/HIDDEN_LAYER_PROGRESSION_CLUSTERING.md
+?? experiments/campaigns/cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2/
+?? experiments/campaigns/cmp_20260905_so2_nonzero_accuracy/
+?? reports/analyses/so2_14core_geometry_modulated_hl/
+?? reports/analyses/so2_14core_hidden_layer_progression/
+?? reports/analyses/so2_attention_tau_beta/
+?? reports/analyses/so2_epoch_comparison/
+?? reports/analyses/so2_geometry_modulation/
+?? scripts/analysis/compare_so2_nonzero_accuracy.py
+?? scripts/analysis/create_so2_geometry_hl_map.py
+?? scripts/analysis/report_so2_nonzero_accuracy.py
+?? src/spatial_benchmark/geometry_modulated_relative_qkv_graph_transformer.py
+?? src/spatial_benchmark/so2_geometry_hl_figures.py
+?? src/spatial_benchmark/so2_hidden_layer_progression.py
+?? src/spatial_benchmark/so2_hidden_layer_progression_extraction.py
+?? src/spatial_benchmark/so2_hidden_layer_progression_figures.py
+?? src/spatial_benchmark/so2_nonzero_metrics.py
+?? state/
+?? tests/unit/spatial_benchmark/test_geometry_modulated_relative_qkv_graph_transformer.py
+?? tests/unit/spatial_benchmark/test_so2_geometry_hl_extraction.py
+?? tests/unit/spatial_benchmark/test_so2_geometry_hl_report_resume.py
+?? tests/unit/spatial_benchmark/test_so2_hidden_layer_progression.py
+?? tests/unit/spatial_benchmark/test_so2_hidden_layer_progression_extraction.py
+?? tests/unit/spatial_benchmark/test_so2_hidden_layer_progression_figures.py
+?? tests/unit/spatial_benchmark/test_so2_nonzero_metrics.py

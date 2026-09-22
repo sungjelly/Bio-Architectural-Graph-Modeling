@@ -1,0 +1,19 @@
+{
+  "training_patch": {
+    "sha256": "cddb44580a9187bb074f66e7587cd8af2e9a6845460a7970e17a49467d23ffb9",
+    "size_bytes": 466338
+  },
+  "validator_file": {
+    "sha256": "f1c90ea05c4db4ede866f4e630c26f3f4626917b3fba645563435416c89b88e3",
+    "size_bytes": 62456
+  },
+  "validator_git_blob": "1f127d9080c5cfbb999e3229eeeaa657219c5ae8",
+  "verification": {
+    "file_count": 35,
+    "present_file_count": 35,
+    "run_path": "/workspace/BAGM/artifacts/runs/2026/09/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+    "status": "success",
+    "tombstoned_file_count": 0,
+    "valid": true
+  }
+}

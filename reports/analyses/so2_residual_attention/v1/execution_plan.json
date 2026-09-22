@@ -1,0 +1,71 @@
+{
+  "device": "cpu",
+  "reason": "All four GPUs allocated to existing four-rank SO1 training; preserve allocation.",
+  "cpu_affinity_available": 80,
+  "threads_per_worker": 8,
+  "worker_count": 4,
+  "priority_nice": 10,
+  "assignments": [
+    [
+      23,
+      20
+    ],
+    [
+      15,
+      25,
+      22
+    ],
+    [
+      27,
+      26,
+      28,
+      17
+    ],
+    [
+      19,
+      16,
+      24,
+      18
+    ]
+  ],
+  "pilot_core": 21,
+  "python": "3.12.13",
+  "torch": "2.13.0+cu130",
+  "cuda": "13.0",
+  "cuda_visible": true,
+  "gpu_names": [
+    "NVIDIA GeForce RTX 3090",
+    "NVIDIA GeForce RTX 3090",
+    "NVIDIA GeForce RTX 3090",
+    "NVIDIA GeForce RTX 3090"
+  ],
+  "git_head": "f632468f54b6faba8c75662f3239a62419e1722f",
+  "git_status_before": " M experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/README.md\n M results/CATALOG.md\n M results/catalog.json\n M src/spatial_benchmark/cli.py\n M src/spatial_benchmark/relative_qkv_graph_transformer.py\n M tests/unit/spatial_benchmark/test_relative_qkv_graph_transformer.py\n?? experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/HIDDEN_LAYER_PROGRESSION_CLUSTERING.md\n?? experiments/campaigns/cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2/\n?? experiments/campaigns/cmp_20260905_so2_nonzero_accuracy/\n?? experiments/campaigns/cmp_20260906_so2_failure_diagnosis/\n?? reports/analyses/so2_14core_geometry_modulated_hl/\n?? reports/analyses/so2_14core_hidden_layer_progression/\n?? reports/analyses/so2_attention_tau_beta/\n?? reports/analyses/so2_distance_attention/\n?? reports/analyses/so2_epoch_comparison/\n?? reports/analyses/so2_failure_diagnosis/\n?? reports/analyses/so2_geometry_modulation/\n?? reports/analyses/so2_nonzero_metrics/\n?? reports/analyses/so2_residual_attention/\n?? results/descriptive_analysis/\n?? scripts/analysis/compare_so2_nonzero_accuracy.py\n?? scripts/analysis/create_so2_geometry_hl_map.py\n?? scripts/analysis/diagnose_so2_baselines.py\n?? scripts/analysis/finalize_so2_failure_diagnosis.py\n?? scripts/analysis/report_so2_failure_diagnosis.py\n?? scripts/analysis/report_so2_nonzero_accuracy.py\n?? src/spatial_benchmark/geometry_modulated_relative_qkv_graph_transformer.py\n?? src/spatial_benchmark/so2_diagnostic_baselines.py\n?? src/spatial_benchmark/so2_geometry_hl_figures.py\n?? src/spatial_benchmark/so2_hidden_layer_progression.py\n?? src/spatial_benchmark/so2_hidden_layer_progression_extraction.py\n?? src/spatial_benchmark/so2_hidden_layer_progression_figures.py\n?? src/spatial_benchmark/so2_nonzero_metrics.py\n?? state/\n?? tests/unit/spatial_benchmark/test_geometry_modulated_relative_qkv_graph_transformer.py\n?? tests/unit/spatial_benchmark/test_so2_diagnostic_baselines.py\n?? tests/unit/spatial_benchmark/test_so2_geometry_hl_extraction.py\n?? tests/unit/spatial_benchmark/test_so2_geometry_hl_report_resume.py\n?? tests/unit/spatial_benchmark/test_so2_hidden_layer_progression.py\n?? tests/unit/spatial_benchmark/test_so2_hidden_layer_progression_extraction.py\n?? tests/unit/spatial_benchmark/test_so2_hidden_layer_progression_figures.py\n?? tests/unit/spatial_benchmark/test_so2_nonzero_metrics.py\n",
+  "gpu_inventory": "index, name, memory.total [MiB], memory.used [MiB], utilization.gpu [%]\n0, NVIDIA GeForce RTX 3090, 24576 MiB, 8848 MiB, 0 %\n1, NVIDIA GeForce RTX 3090, 24576 MiB, 8848 MiB, 0 %\n2, NVIDIA GeForce RTX 3090, 24576 MiB, 8558 MiB, 6 %\n3, NVIDIA GeForce RTX 3090, 24576 MiB, 8592 MiB, 0 %\n",
+  "failures": [],
+  "pilot_runtime_seconds": 37.808398962020874,
+  "pilot_public_forward_max_abs_error": 0,
+  "pilot_peak_rss_gib": 1.7358741760253906,
+  "completed_at_utc": "2026-09-06T07:24:12.369434+00:00",
+  "total_cells": 246063,
+  "total_edges": 55980536,
+  "sum_core_elapsed_seconds": 1247.2030436992645,
+  "max_worker_process_rss_gib": 8.342575073242188,
+  "per_core_runtime_seconds": {
+    "15": 214.81506872177124,
+    "16": 70.68056106567383,
+    "17": 48.23873710632324,
+    "18": 43.8817138671875,
+    "19": 111.09088039398193,
+    "20": 62.14344239234924,
+    "21": 37.808398962020874,
+    "22": 48.698092460632324,
+    "23": 226.761821269989,
+    "24": 57.81976532936096,
+    "25": 68.48792552947998,
+    "26": 73.28178715705872,
+    "27": 113.12275409698486,
+    "28": 70.3720953464508
+  },
+  "gpu_inventory_after": "index, name, memory.total [MiB], memory.used [MiB], utilization.gpu [%]\n0, NVIDIA GeForce RTX 3090, 24576 MiB, 8848 MiB, 0 %\n1, NVIDIA GeForce RTX 3090, 24576 MiB, 8848 MiB, 0 %\n2, NVIDIA GeForce RTX 3090, 24576 MiB, 8558 MiB, 0 %\n3, NVIDIA GeForce RTX 3090, 24576 MiB, 8592 MiB, 0 %\n"
+}

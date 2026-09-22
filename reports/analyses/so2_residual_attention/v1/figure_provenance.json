@@ -1,0 +1,21 @@
+{
+  "schema": "so2_residual_attention_figure_provenance_v1",
+  "created_at": "2026-09-06T07:24:03.003098+00:00",
+  "run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+  "checkpoint_sha256": "aba6a1d910e60f6a30bb4b27b15dbd1c30199da41a15460c23d994079b67543b",
+  "render_script_sha256": "7a66b3a7017501b2eef81f414b43c2ef0e2b80f01d24f3c6fd7847cf839952f7",
+  "summary_sha256": "30b4a7af7edea005102d224d0b48a82da274bc6b7d943cf6e9ad8ffbff51fa3c",
+  "per_core_block_csv_sha256": "7e8b6a8f6bbb93ffb14ccb1886419e788d30a51543d5e999ee66bcb1213f5e24",
+  "outputs": {
+    "residual_attention.png": "b0f685a6aa394c05dba596e7e11ca4d9258e4d01108081bf03f7159de808574e",
+    "residual_attention.pdf": "b28edcfa5767a1df1d39292b9ffd3df8d9a59b620a9ab5f0faf169a7db4f1a8c"
+  },
+  "matplotlib_version": "3.11.1",
+  "numpy_version": "2.5.2",
+  "total_cells": 246063,
+  "core_count": 14,
+  "weighting": "equal cell within core, equal core",
+  "rms_aggregation": "Ratio after equal-core aggregation of mean squared vector norms; not a mean of core ratios.",
+  "quantile_panel": "Mean of exact core q10, median, and q90; all individual core intervals and medians also shown. These are not pooled quantiles or confidence intervals.",
+  "centered_vectors": "Subtract each core's mean vector across cells, separately for residual and attention."
+}

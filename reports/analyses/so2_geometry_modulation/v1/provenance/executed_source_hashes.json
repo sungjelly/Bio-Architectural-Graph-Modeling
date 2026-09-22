@@ -1,0 +1,5 @@
+{
+  "reports/analyses/so2_geometry_modulation/v1/analyze.py": "1d1791cfe8e7beef617af46b12fe76a324a1904bea3619c8a4fe1ad1ab540758",
+  "reports/analyses/so2_attention_tau_beta/v1/analyze.py": "58f7c612763410b6c849ee1b2257e5d80cbc221065de13893595f88dfdcc3fa5",
+  "src/spatial_benchmark/geometry_modulated_relative_qkv_graph_transformer.py": "ce50d414890539c6fbb61bd7c6daf212bc42a1551978d2baf84139840a4fbaad"
+}

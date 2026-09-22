@@ -1,0 +1,501 @@
+{
+  "status": "completed",
+  "evaluation_id": "ev_so2_diagnostic_baselines_v1_r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+  "cores": 14,
+  "masked_entries": 122903254,
+  "runtime_seconds": 570.8223641114309,
+  "peak_host_rss_gib": 1.720733642578125,
+  "replay_max_difference": 3.552713678800501e-15,
+  "constant_fit": {
+    "genes": 1000,
+    "below_mean_count": 999,
+    "max_stationarity_error": 9.974993569617093e-14,
+    "mean_huber_z": -0.19487431818449147,
+    "median_huber_z": -0.19717584265770963,
+    "mean_fitted_huber_risk": 0.25382593926293234,
+    "runtime_seconds": 6.365562967024744,
+    "constants_sha256": "b891659220644678fc8d87a628146b7ca62e41e07238b3ff75bad937c736a64c"
+  },
+  "summary": [
+    {
+      "predictor": "gene_mean",
+      "stratum": "all",
+      "cores": 14,
+      "mse_standardized": 0.9997966112941918,
+      "mse_log1p": 0.09263165425059383,
+      "huber_standardized": 0.2709982877811928,
+      "bias_standardized": 0.00016486045591435666,
+      "exact_count_accuracy": 0.8895705718467305
+    },
+    {
+      "predictor": "gene_mean",
+      "stratum": "zero",
+      "cores": 14,
+      "mse_standardized": 0.10229250350146708,
+      "mse_log1p": 0.014671177246242511,
+      "huber_standardized": 0.05111821922119273,
+      "bias_standardized": 0.3076575071707129,
+      "exact_count_accuracy": 0.9907582049206031
+    },
+    {
+      "predictor": "gene_mean",
+      "stratum": "positive",
+      "cores": 14,
+      "mse_standardized": 8.780937627322066,
+      "mse_log1p": 0.7565577176573538,
+      "huber_standardized": 2.1687477135079325,
+      "bias_standardized": -2.651569016168867,
+      "exact_count_accuracy": 0.01971021977468592
+    },
+    {
+      "predictor": "gene_mean",
+      "stratum": "count_1",
+      "cores": 14,
+      "mse_standardized": 4.9416596318027946,
+      "mse_log1p": 0.3349890048493549,
+      "huber_standardized": 1.5953420782130905,
+      "bias_standardized": -2.0728518594935985,
+      "exact_count_accuracy": 0.03179433808430581
+    },
+    {
+      "predictor": "gene_mean",
+      "stratum": "count_2",
+      "cores": 14,
+      "mse_standardized": 12.879002924972442,
+      "mse_log1p": 0.9335809252409977,
+      "huber_standardized": 2.8750961340565304,
+      "bias_standardized": -3.3649082519726066,
+      "exact_count_accuracy": 0.003948253701054537
+    },
+    {
+      "predictor": "gene_mean",
+      "stratum": "count_3",
+      "cores": 14,
+      "mse_standardized": 16.07999217953767,
+      "mse_log1p": 1.406414696872527,
+      "huber_standardized": 3.1326638585561644,
+      "bias_standardized": -3.6187715957238957,
+      "exact_count_accuracy": 0.01254713188627504
+    },
+    {
+      "predictor": "gene_mean",
+      "stratum": "count_4_7",
+      "cores": 14,
+      "mse_standardized": 15.278737114884716,
+      "mse_log1p": 1.9153507352157018,
+      "huber_standardized": 2.810660069330304,
+      "bias_standardized": -3.297821824782627,
+      "exact_count_accuracy": 0.0
+    },
+    {
+      "predictor": "gene_mean",
+      "stratum": "count_8_plus",
+      "cores": 14,
+      "mse_standardized": 11.996460880630623,
+      "mse_log1p": 4.868393032749535,
+      "huber_standardized": 2.3523465861052144,
+      "bias_standardized": -2.8516483069000116,
+      "exact_count_accuracy": 0.0
+    },
+    {
+      "predictor": "zero_count",
+      "stratum": "all",
+      "cores": 14,
+      "mse_standardized": 1.1101211697878144,
+      "mse_log1p": 0.11294434429243341,
+      "huber_standardized": 0.2636367688491125,
+      "bias_standardized": -0.31563299858171767,
+      "exact_count_accuracy": 0.8958994574262912
+    },
+    {
+      "predictor": "zero_count",
+      "stratum": "zero",
+      "cores": 14,
+      "mse_standardized": 7.330664069126169e-17,
+      "mse_log1p": 0.0,
+      "huber_standardized": 3.6653320345630847e-17,
+      "bias_standardized": -3.147237632091274e-10,
+      "exact_count_accuracy": 1.0
+    },
+    {
+      "predictor": "zero_count",
+      "stratum": "positive",
+      "cores": 14,
+      "mse_standardized": 10.7181547365259,
+      "mse_log1p": 1.0738463731522097,
+      "huber_standardized": 2.537304220130576,
+      "bias_standardized": -3.036762684615773,
+      "exact_count_accuracy": 0.0
+    },
+    {
+      "predictor": "zero_count",
+      "stratum": "count_1",
+      "cores": 14,
+      "mse_standardized": 6.362170315781185,
+      "mse_log1p": 0.48045301391820144,
+      "huber_standardized": 1.9288951843598299,
+      "bias_standardized": -2.4279298171241694,
+      "exact_count_accuracy": 0.0
+    },
+    {
+      "predictor": "zero_count",
+      "stratum": "count_2",
+      "cores": 14,
+      "mse_standardized": 15.19006657751815,
+      "mse_log1p": 1.206948960812582,
+      "huber_standardized": 3.2350564330776805,
+      "bias_standardized": -3.735036995843998,
+      "exact_count_accuracy": 0.0
+    },
+    {
+      "predictor": "zero_count",
+      "stratum": "count_3",
+      "cores": 14,
+      "mse_standardized": 18.907414800132766,
+      "mse_log1p": 1.9218120556728058,
+      "huber_standardized": 3.566126318643229,
+      "bias_standardized": -4.066126318643229,
+      "exact_count_accuracy": 0.0
+    },
+    {
+      "predictor": "zero_count",
+      "stratum": "count_4_7",
+      "cores": 14,
+      "mse_standardized": 18.57672493743979,
+      "mse_log1p": 3.0501154233243812,
+      "huber_standardized": 3.388959524984801,
+      "bias_standardized": -3.8889595249848012,
+      "exact_count_accuracy": 0.0
+    },
+    {
+      "predictor": "zero_count",
+      "stratum": "count_8_plus",
+      "cores": 14,
+      "mse_standardized": 16.165617856516782,
+      "mse_log1p": 8.138259801409573,
+      "huber_standardized": 3.111094320503492,
+      "bias_standardized": -3.611094320503492,
+      "exact_count_accuracy": 0.0
+    },
+    {
+      "predictor": "huber_constant",
+      "stratum": "all",
+      "cores": 14,
+      "mse_standardized": 1.0380812099235943,
+      "mse_log1p": 0.09612960798969514,
+      "huber_standardized": 0.25372452768883785,
+      "bias_standardized": -0.1947112257046568,
+      "exact_count_accuracy": 0.890622488692188
+    },
+    {
+      "predictor": "huber_constant",
+      "stratum": "zero",
+      "cores": 14,
+      "mse_standardized": 0.019512986147696244,
+      "mse_log1p": 0.005514471726123555,
+      "huber_standardized": 0.009728508742705078,
+      "bias_standardized": 0.11281081982159051,
+      "exact_count_accuracy": 0.9921981671397846
+    },
+    {
+      "predictor": "huber_constant",
+      "stratum": "positive",
+      "cores": 14,
+      "mse_standardized": 9.863362330230842,
+      "mse_log1p": 0.868106884119401,
+      "huber_standardized": 2.358908214099916,
+      "bias_standardized": -2.846622882681042,
+      "exact_count_accuracy": 0.017347397135635288
+    },
+    {
+      "predictor": "huber_constant",
+      "stratum": "count_1",
+      "cores": 14,
+      "mse_standardized": 5.798901243813098,
+      "mse_log1p": 0.4052528018072929,
+      "huber_standardized": 1.7861904213366822,
+      "bias_standardized": -2.270692194568325,
+      "exact_count_accuracy": 0.027511714744669517
+    },
+    {
+      "predictor": "huber_constant",
+      "stratum": "count_2",
+      "cores": 14,
+      "mse_standardized": 14.250099939073795,
+      "mse_log1p": 1.0566882481094624,
+      "huber_standardized": 3.0697841304914535,
+      "bias_standardized": -3.5621170347939746,
+      "exact_count_accuracy": 0.003948253701054537
+    },
+    {
+      "predictor": "huber_constant",
+      "stratum": "count_3",
+      "cores": 14,
+      "mse_standardized": 17.559640135272435,
+      "mse_log1p": 1.5803086608429513,
+      "huber_standardized": 3.3222471353066996,
+      "bias_standardized": -3.8107618749713352,
+      "exact_count_accuracy": 0.01254713188627504
+    },
+    {
+      "predictor": "huber_constant",
+      "stratum": "count_4_7",
+      "cores": 14,
+      "mse_standardized": 16.585261814434464,
+      "mse_log1p": 2.159171768311021,
+      "huber_standardized": 2.981477983346422,
+      "bias_standardized": -3.4701057869410428,
+      "exact_count_accuracy": 0.0
+    },
+    {
+      "predictor": "huber_constant",
+      "stratum": "count_8_plus",
+      "cores": 14,
+      "mse_standardized": 12.967366788475951,
+      "mse_log1p": 5.4388443987886435,
+      "huber_standardized": 2.4970910133432476,
+      "bias_standardized": -2.996647969706263,
+      "exact_count_accuracy": 0.0
+    },
+    {
+      "predictor": "local_log_mean",
+      "stratum": "all",
+      "cores": 14,
+      "mse_standardized": 1.0855648797069952,
+      "mse_log1p": 0.0914252143659506,
+      "huber_standardized": 0.3153780711382153,
+      "bias_standardized": -0.0033377789542614624,
+      "exact_count_accuracy": 0.879762190996714
+    },
+    {
+      "predictor": "local_log_mean",
+      "stratum": "zero",
+      "cores": 14,
+      "mse_standardized": 0.2378363505331414,
+      "mse_log1p": 0.02351902506272348,
+      "huber_standardized": 0.11137539320660803,
+      "bias_standardized": 0.2916388725290164,
+      "exact_count_accuracy": 0.9764835042116992
+    },
+    {
+      "predictor": "local_log_mean",
+      "stratum": "positive",
+      "cores": 14,
+      "mse_standardized": 8.531140629468476,
+      "mse_log1p": 0.6869853916654528,
+      "huber_standardized": 2.100610711250228,
+      "bias_standardized": -2.5573212022330565,
+      "exact_count_accuracy": 0.04296160506053006
+    },
+    {
+      "predictor": "local_log_mean",
+      "stratum": "count_1",
+      "cores": 14,
+      "mse_standardized": 4.971444460477505,
+      "mse_log1p": 0.34815096367753273,
+      "huber_standardized": 1.5772419212223117,
+      "bias_standardized": -2.02871776838433,
+      "exact_count_accuracy": 0.06526355311071964
+    },
+    {
+      "predictor": "local_log_mean",
+      "stratum": "count_2",
+      "cores": 14,
+      "mse_standardized": 12.762797978965633,
+      "mse_log1p": 0.9321327480902806,
+      "huber_standardized": 2.8305275025741774,
+      "bias_standardized": -3.30470625680724,
+      "exact_count_accuracy": 0.014460548846895927
+    },
+    {
+      "predictor": "local_log_mean",
+      "stratum": "count_3",
+      "cores": 14,
+      "mse_standardized": 15.45372191178291,
+      "mse_log1p": 1.3375338361979578,
+      "huber_standardized": 3.0021187055232366,
+      "bias_standardized": -3.4567327127799947,
+      "exact_count_accuracy": 0.017997258733862372
+    },
+    {
+      "predictor": "local_log_mean",
+      "stratum": "count_4_7",
+      "cores": 14,
+      "mse_standardized": 13.54613326914249,
+      "mse_log1p": 1.5854198648140296,
+      "huber_standardized": 2.499436600584897,
+      "bias_standardized": -2.926712037922439,
+      "exact_count_accuracy": 0.018994994822222392
+    },
+    {
+      "predictor": "local_log_mean",
+      "stratum": "count_8_plus",
+      "cores": 14,
+      "mse_standardized": 7.273299311209611,
+      "mse_log1p": 2.2311004406017525,
+      "huber_standardized": 1.4616854834879884,
+      "bias_standardized": -1.8751717376223864,
+      "exact_count_accuracy": 0.010567098025277213
+    },
+    {
+      "predictor": "local_count_mean",
+      "stratum": "all",
+      "cores": 14,
+      "mse_standardized": 1.2425838203837134,
+      "mse_log1p": 0.10533740640439697,
+      "huber_standardized": 0.39043600288516334,
+      "bias_standardized": 0.1312171356178006,
+      "exact_count_accuracy": 0.8384055943077787
+    },
+    {
+      "predictor": "local_count_mean",
+      "stratum": "zero",
+      "cores": 14,
+      "mse_standardized": 0.4886082009071659,
+      "mse_log1p": 0.04707199953203484,
+      "huber_standardized": 0.21215524540129296,
+      "bias_standardized": 0.42042659932236254,
+      "exact_count_accuracy": 0.9249942032771673
+    },
+    {
+      "predictor": "local_count_mean",
+      "stratum": "positive",
+      "cores": 14,
+      "mse_standardized": 7.898871660175472,
+      "mse_log1p": 0.6193993900757356,
+      "huber_standardized": 1.960281538275299,
+      "bias_standardized": -2.3743644650061424,
+      "exact_count_accuracy": 0.08565887373117555
+    },
+    {
+      "predictor": "local_count_mean",
+      "stratum": "count_1",
+      "cores": 14,
+      "mse_standardized": 4.575312780346397,
+      "mse_log1p": 0.3240354983896553,
+      "huber_standardized": 1.4594530149239984,
+      "bias_standardized": -1.8644216645610343,
+      "exact_count_accuracy": 0.13331389207076974
+    },
+    {
+      "predictor": "local_count_mean",
+      "stratum": "count_2",
+      "cores": 14,
+      "mse_standardized": 11.94981046155806,
+      "mse_log1p": 0.8622995637715503,
+      "huber_standardized": 2.6829355497894385,
+      "bias_standardized": -3.1313383675136612,
+      "exact_count_accuracy": 0.02441671143719035
+    },
+    {
+      "predictor": "local_count_mean",
+      "stratum": "count_3",
+      "cores": 14,
+      "mse_standardized": 14.3989726664898,
+      "mse_log1p": 1.2171968815399967,
+      "huber_standardized": 2.826104573659176,
+      "bias_standardized": -3.2353829184819713,
+      "exact_count_accuracy": 0.029813660223318376
+    },
+    {
+      "predictor": "local_count_mean",
+      "stratum": "count_4_7",
+      "cores": 14,
+      "mse_standardized": 12.312531422549824,
+      "mse_log1p": 1.359110280737109,
+      "huber_standardized": 2.278226403767271,
+      "bias_standardized": -2.62867835666704,
+      "exact_count_accuracy": 0.03408692027048908
+    },
+    {
+      "predictor": "local_count_mean",
+      "stratum": "count_8_plus",
+      "cores": 14,
+      "mse_standardized": 5.677382959642513,
+      "mse_log1p": 1.4575082195828226,
+      "huber_standardized": 1.1180867151644303,
+      "bias_standardized": -1.4163887501074963,
+      "exact_count_accuracy": 0.019375904229639754
+    },
+    {
+      "predictor": "full_graph_log_mean",
+      "stratum": "all",
+      "cores": 14,
+      "mse_standardized": 0.9827505247617828,
+      "mse_log1p": 0.08529912489719504,
+      "huber_standardized": 0.27051553126033256,
+      "bias_standardized": 0.00027757529570847963,
+      "exact_count_accuracy": 0.8892900972737957
+    },
+    {
+      "predictor": "full_graph_log_mean",
+      "stratum": "zero",
+      "cores": 14,
+      "mse_standardized": 0.11732085493438914,
+      "mse_log1p": 0.015133604134311241,
+      "huber_standardized": 0.058129758852262736,
+      "bias_standardized": 0.30079387780369327,
+      "exact_count_accuracy": 0.9888791072261279
+    },
+    {
+      "predictor": "full_graph_log_mean",
+      "stratum": "positive",
+      "cores": 14,
+      "mse_standardized": 8.589392370074684,
+      "mse_log1p": 0.7009908739674252,
+      "huber_standardized": 2.128475746882724,
+      "bias_standardized": -2.6023056078986064,
+      "exact_count_accuracy": 0.028080518071099594
+    },
+    {
+      "predictor": "full_graph_log_mean",
+      "stratum": "count_1",
+      "cores": 14,
+      "mse_standardized": 4.909572167544397,
+      "mse_log1p": 0.3375274032778078,
+      "huber_standardized": 1.5850811271814378,
+      "bias_standardized": -2.0541311709028833,
+      "exact_count_accuracy": 0.0422465830331774
+    },
+    {
+      "predictor": "full_graph_log_mean",
+      "stratum": "count_2",
+      "cores": 14,
+      "mse_standardized": 12.761715734884499,
+      "mse_log1p": 0.926165692159475,
+      "huber_standardized": 2.8496811036168075,
+      "bias_standardized": -3.3337376117435933,
+      "exact_count_accuracy": 0.010955262237580546
+    },
+    {
+      "predictor": "full_graph_log_mean",
+      "stratum": "count_3",
+      "cores": 14,
+      "mse_standardized": 15.707613885781859,
+      "mse_log1p": 1.355256147890119,
+      "huber_standardized": 3.0596963092747833,
+      "bias_standardized": -3.5335011956154365,
+      "exact_count_accuracy": 0.012691012681276747
+    },
+    {
+      "predictor": "full_graph_log_mean",
+      "stratum": "count_4_7",
+      "cores": 14,
+      "mse_standardized": 14.351763405510141,
+      "mse_log1p": 1.697448113945301,
+      "huber_standardized": 2.6382693077142325,
+      "bias_standardized": -3.1030892697652903,
+      "exact_count_accuracy": 0.008594472137334046
+    },
+    {
+      "predictor": "full_graph_log_mean",
+      "stratum": "count_8_plus",
+      "cores": 14,
+      "mse_standardized": 9.245009901091171,
+      "mse_log1p": 3.106644723422105,
+      "huber_standardized": 1.8272733020941445,
+      "bias_standardized": -2.3032247041159777,
+      "exact_count_accuracy": 0.0039001693341188873
+    }
+  ]
+}

@@ -1,7 +1,71 @@
 {
-  "catalog_content_sha256": "15bb00cd3f7c00cc13a28add6cb897fab5e6c4997254f7d4fa9cfb71692cde15",
-  "result_count": 0,
-  "results": [],
+  "catalog_content_sha256": "31252cedd68ff4955b09020ebce20d29a67e4a621f50eda5360ebe619cb29d74",
+  "result_count": 2,
+  "results": [
+    {
+      "campaign_ids": [
+        "cmp_20260905_so2_nonzero_accuracy",
+        "cmp_20260825_so2_14core_relative_qkv_seed0_batch2",
+        "cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2",
+        "cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2"
+      ],
+      "directory": "descriptive_analysis/relative_qkv/res_so2_nonzero_reconstruction_comparison",
+      "evidence_status": {
+        "external_support": "not_tested",
+        "faithfulness": "not_tested",
+        "null_calibration": "not_tested",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "mixed",
+        "stability": "not_tested"
+      },
+      "experiment_type": "descriptive_analysis",
+      "lifecycle_stage": "exploratory_screen",
+      "manifest_sha256": "fc75c2ef8ac5341ee676b0a4d75189266c1ac1ebd5d7159e14e5eaf51b483715",
+      "method_family": "relative_qkv",
+      "outcome": "negative",
+      "result_id": "res_so2_nonzero_reconstruction_comparison",
+      "run_ids": [
+        "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+        "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+        "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+        "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf"
+      ],
+      "status": "verified",
+      "study_axis": "nonzero_reconstruction",
+      "title": "SO2 nonzero reconstruction: geometry does not improve the frozen endpoint comparison"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20260906_so2_failure_diagnosis"
+      ],
+      "directory": "descriptive_analysis/relative_qkv/res_so2_reconstruction_failure_diagnosis",
+      "evidence_status": {
+        "external_support": "not_tested",
+        "faithfulness": "not_tested",
+        "null_calibration": "not_tested",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "mixed",
+        "stability": "not_tested"
+      },
+      "experiment_type": "descriptive_analysis",
+      "lifecycle_stage": "exploratory_screen",
+      "manifest_sha256": "52c11899e310b9604b92430822e55d18fc232b25c397c10d49d29b3fe5c59fe2",
+      "method_family": "relative_qkv",
+      "outcome": "inconclusive",
+      "result_id": "res_so2_reconstruction_failure_diagnosis",
+      "run_ids": [
+        "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+        "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+        "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+        "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf"
+      ],
+      "status": "verified",
+      "study_axis": "loss_and_spatial_baselines",
+      "title": "SO2 objective mismatch and matched spatial baselines; neural failure cause remains unresolved"
+    }
+  ],
   "schema_name": "bagm_result_catalog",
   "schema_version": 1
 }

@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "checked_at": "2026-09-06T05:22:54.094663+00:00",
+  "image_sha256": "db2045d7c0fe34a11ca2633a53a672dc04f2ff4dc7a46d9e566700a66ca4049b",
+  "checks": [
+    "Rendered PNG visually inspected: four panels and all ten predictor labels are readable; no clipped titles or labels.",
+    "Dots represent 14 fitted cores and diamonds the equal-core mean; red highlights geometry consistently.",
+    "Figure code and source metric data unchanged across subsequent text-only report refinements.",
+    "PDF and PNG share the same Matplotlib figure."
+  ]
+}

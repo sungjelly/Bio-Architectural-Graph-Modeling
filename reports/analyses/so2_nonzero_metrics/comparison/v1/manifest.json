@@ -1,0 +1,67 @@
+{
+  "created_at": "2026-09-05T06:51:56.077745+00:00",
+  "files": {
+    "accuracy_comparison.pdf": {
+      "sha256": "8eb7c4928605969c46f1edd5d2cea82dc7e19993e46cfab773931d118004b880",
+      "size_bytes": 41037
+    },
+    "accuracy_comparison.png": {
+      "sha256": "98b3c5d9a1cd2d332649db1a3fb472e54fd13748f15ad7abd6b5b369e4d0f8f7",
+      "size_bytes": 380095
+    },
+    "config.resolved.json": {
+      "sha256": "20fbae38b4ced136f46ba34754c533a71c30cb3aef250197b6e2f50a03b169f0",
+      "size_bytes": 862
+    },
+    "countbins.csv": {
+      "sha256": "f69fe66a5fc69e4c1f34e201042c5d394515bf41ceedc9b226ab6f2e6497b21a",
+      "size_bytes": 133857
+    },
+    "modelsummary.csv": {
+      "sha256": "3dae9cc6016a7937abb64d2cbb30a3293883f2039d80d91044a8c7ba89bdd984",
+      "size_bytes": 14313
+    },
+    "paired_core_deltas.csv": {
+      "sha256": "1dfbc42a3cc24ac509f2d9a46e162dc644455899947d1b9ceb9da02961b9ad6d",
+      "size_bytes": 140556
+    },
+    "percore.csv": {
+      "sha256": "cffed39ed5741c6af81c2264921959b8a51a5eb42a5a346bef939c5406168a50",
+      "size_bytes": 119291
+    },
+    "report.md": {
+      "sha256": "98afa254c27bd8eaac5ff41aafe01b5d33ca77f1f664390264bce92c22ba0972",
+      "size_bytes": 6145
+    },
+    "report_source.py": {
+      "sha256": "76d1332e0c27971c9c3e271f57731a6c12edbb666d5cd7e0a55830bd157ccb62",
+      "size_bytes": 34107
+    },
+    "source_references.json": {
+      "sha256": "95f4a29a5b98ba7ec3c819ee84e927e2c1c8ebfcaaf5e4701151c9fcec3771f6",
+      "size_bytes": 83631
+    },
+    "summary.json": {
+      "sha256": "39fde9efb7b4a664f5bb35b68af028450e95f5f0632bccd82d6679406cb72011",
+      "size_bytes": 214030
+    },
+    "verification.json": {
+      "sha256": "c6cd8e2006d8a11e0887f909ffe8d472d978a846e564c4d3b39d02922e39e593",
+      "size_bytes": 437
+    }
+  },
+  "schema": "so2_nonzero_comparison_manifest_v1",
+  "source_evaluation_ids": [
+    "ev_so2_nonzero_v1_r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+    "ev_so2_nonzero_v1_r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+    "ev_so2_nonzero_v1_r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+    "ev_so2_nonzero_v1_r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf"
+  ],
+  "source_run_ids": [
+    "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+    "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+    "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+    "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf"
+  ],
+  "status": "complete"
+}

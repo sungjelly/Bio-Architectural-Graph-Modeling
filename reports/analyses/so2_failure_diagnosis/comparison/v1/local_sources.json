@@ -1,0 +1,59 @@
+{
+  "report_manifests": {
+    "analyses/so2_failure_diagnosis/baselines/v1/manifest.json": "25db4b207c1553c2b4b2a7127e487754737b5a824430ba36e6451f2435d667f8",
+    "analyses/so2_nonzero_metrics/r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6/v1/manifest.json": "063c1bb952583afcf45538116249b8cda0e9c7b043b1155b96d09d2d334aa371",
+    "analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/manifest.json": "86e5b1bf3be8a368b42e64a64e4078c6fb2c1a01f9e3f1b153b85c597d6b5549",
+    "analyses/so2_nonzero_metrics/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/v1/manifest.json": "0c16b79bec26d1e71f19cabfa0850b19670f0782e65431a271911cf70e0292c2",
+    "analyses/so2_nonzero_metrics/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/manifest.json": "63d1a7788352d20c615a8a4d691bfd20796c71b735da78f45dbc9fab8ce45759"
+  },
+  "diagnostic_sources": [
+    {
+      "root": "report",
+      "path": "analyses/so2_attention_tau_beta/v1/README.md",
+      "sha256": "609b9ef5e4933c3ed94762d974a7de2aeaf376c80b3dc236aa135a5436ee5ca4"
+    },
+    {
+      "root": "report",
+      "path": "analyses/so2_attention_tau_beta/v1/per_head.csv",
+      "sha256": "9ad9df13bae295a8936951256bdd0f53ef30e9748711324400ea6b75cc4ba9d2"
+    },
+    {
+      "root": "report",
+      "path": "analyses/so2_geometry_modulation/v1/README.md",
+      "sha256": "8e0e4234d9f53e2f5f0f874bf50d0ed2228dc972a5fd846f13866e4bfc8d822d"
+    },
+    {
+      "root": "report",
+      "path": "analyses/so2_geometry_modulation/v1/summary.json",
+      "sha256": "870429ec67d1603c97d9e8d402ab82889a94aa7fba5452e69ce4c7ba7cf9e167"
+    },
+    {
+      "root": "report",
+      "path": "analyses/so2_epoch_comparison/v1/comparison.md",
+      "sha256": "02f8f81f9fd13398253e4eb096638b5918da4661ac9b3a72839157685b320535"
+    },
+    {
+      "root": "report",
+      "path": "analyses/so2_epoch_comparison/v1/per_epoch_comparison.csv",
+      "sha256": "4d531b337b88da170303c642018a7d7e922fd18a37f3737f4959dd11599f4088"
+    },
+    {
+      "root": "artifact",
+      "path": "runs/2026/09/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/results/gradient_direction_metrics.csv",
+      "sha256": "1d33b6072bb55d1e87ea122d963c69b3159590dbe1bcb0e51088647491fe32ca"
+    },
+    {
+      "root": "artifact",
+      "path": "runs/2026/08/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/results/gradient_direction_metrics.csv",
+      "sha256": "af802e087357f963ffd4832856703fb62beea46b236a5c15d82c08429323d6bd"
+    }
+  ],
+  "campaign": "cmp_20260906_so2_failure_diagnosis",
+  "source_run_ids": [
+    "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+    "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+    "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+    "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf"
+  ],
+  "created_at": "2026-09-06T05:22:01.554398+00:00"
+}
