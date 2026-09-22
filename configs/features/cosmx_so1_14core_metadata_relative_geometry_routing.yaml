@@ -1,0 +1,52 @@
+features:
+  use_edge_features: false
+  fit_scope: all_fourteen_cores_transductive_equal_core_expression
+  node_expression:
+    biological_targets: 1000
+    transformed_with: shared_equal_core_standardized_log1p_raw_counts
+    masked_values_removed_inside_encoder: true
+    explicit_mask_channel: true
+  node_metadata:
+    transformed_with: pooled_median_imputation_log1p_missing_indicators_standardization
+    always_visible: true
+    fields:
+      - Area
+      - Area.um2
+      - AspectRatio
+      - Width
+      - Height
+      - Mean.PanCK
+      - Max.PanCK
+      - Mean.G
+      - Max.G
+      - Mean.Membrane
+      - Max.Membrane
+      - Mean.CD45
+      - Max.CD45
+      - Mean.DAPI
+      - Max.DAPI
+      - SplitRatioToLocal
+      - NucArea
+      - NucAspectRatio
+      - Circularity
+      - Eccentricity
+      - Perimeter
+      - Solidity
+  relative_positional_encoding:
+    role: attention_logit_modulation_and_bias_only
+    dimension: 70
+    radial_rbf_count: 64
+    distance_range_um: [0.0, 500.0]
+    smooth_cutoff: true
+    local_orientation_tensor: coordinate_only_axial_traceless_2d
+    cache_policy: one_shared_read_only_memory_map_per_core
+    cache_reproducible_from_minimal_geometry: true
+    cache_copied_into_run_bundle: false
+  prohibited_node_inputs:
+    - absolute_or_local_coordinates
+    - core_alias_or_number
+    - slide_or_fov_identity
+    - cell_or_patient_identifiers
+    - vendor_cell_type_cluster_neighborhood_niche
+    - expression_derived_library_size_or_qc_totals
+    - target_derived_annotations

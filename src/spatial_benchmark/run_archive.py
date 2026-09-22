@@ -450,6 +450,7 @@ def _canonical_prediction_split(root: Path) -> str:
             "held_in_pooled_14core_relative_qkv_seed_plateau",
             "held_in_pooled_14core_untied8_relative_qkv_seed_plateau",
             "held_in_pooled_so1_14core_relative_qkv_plateau_min150",
+            "held_in_pooled_so1_14core_geometry_modulated_relative_qkv_plateau_min150",
             "held_in_pooled_6core_relative_qkv_fixed_budget",
             "held_in_pooled_6core_relative_qkv_joint_plateau",
             "held_in_pooled_6core_relative_qkv_seed_plateau",

@@ -539,6 +539,92 @@ def test_so1_strict_plateau_protocol_uses_tracked_four_rank_runner(
     ]
 
 
+def test_so1_geometry_modulated_protocol_uses_same_tracked_four_rank_runner(
+    tmp_path: Path,
+) -> None:
+    command = command_for_config(
+        {
+            "evaluation": {
+                "protocol": (
+                    "held_in_pooled_so1_14core_geometry_modulated_relative_"
+                    "qkv_plateau_min150"
+                ),
+            },
+            "model": {"name": "geometry-modulated-relative-qkv-gat"},
+            "campaign": {
+                "campaign_id": (
+                    "cmp_20260905_so1_14core_geometry_modulated_relative_"
+                    "qkv_seed0_batch2_plateau_min150"
+                )
+            },
+            "launcher": {
+                "requested_gpu": "0,1,2,3",
+                "process_count": 4,
+                "elastic_max_restarts": 0,
+            },
+        },
+        paths=_paths(tmp_path),
+    )
+    assert command == [
+        sys.executable,
+        "-m",
+        "torch.distributed.run",
+        "--standalone",
+        "--nnodes=1",
+        "--nproc-per-node=4",
+        "--max-restarts=0",
+        str(tmp_path / "scripts/train/run_so1_14core_relative_qkv.py"),
+        "--config",
+        "{run_scratch}/config.resolved.yaml",
+        "--run-scratch",
+        "{run_scratch}",
+    ]
+
+
+def test_so1_geometry_modulated_protocol_rejects_routing_drift(
+    tmp_path: Path,
+) -> None:
+    base = {
+        "evaluation": {
+            "protocol": (
+                "held_in_pooled_so1_14core_geometry_modulated_relative_qkv_"
+                "plateau_min150"
+            ),
+        },
+        "model": {"name": "geometry-modulated-relative-qkv-gat"},
+        "campaign": {
+            "campaign_id": (
+                "cmp_20260905_so1_14core_geometry_modulated_relative_qkv_"
+                "seed0_batch2_plateau_min150"
+            )
+        },
+        "launcher": {
+            "requested_gpu": "0,1,2,3",
+            "process_count": 4,
+            "elastic_max_restarts": 0,
+        },
+    }
+    invalid_variants = (
+        {**base, "model": {"name": "relative-qkv-gat"}},
+        {
+            **base,
+            "campaign": {
+                "campaign_id": (
+                    "cmp_20260826_so1_14core_relative_qkv_seed0_"
+                    "batch2_plateau_min150"
+                )
+            },
+        },
+        {
+            **base,
+            "launcher": {**base["launcher"], "elastic_max_restarts": 1},
+        },
+    )
+    for invalid in invalid_variants:
+        with pytest.raises(ConfigurationError, match="SO1 14-core.*four-rank"):
+            command_for_config(invalid, paths=_paths(tmp_path))
+
+
 def test_so2_four_rank_protocol_rejects_elastic_restart_or_gpu_drift(
     tmp_path: Path,
 ) -> None:

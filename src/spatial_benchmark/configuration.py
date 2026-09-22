@@ -800,6 +800,7 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
         "held_in_pooled_14core_recurrent_relative_qkv_seed_plateau",
         "held_in_pooled_14core_untied8_relative_qkv_seed_plateau",
         "held_in_pooled_so1_14core_relative_qkv_plateau_min150",
+        "held_in_pooled_so1_14core_geometry_modulated_relative_qkv_plateau_min150",
         "held_in_pooled_6core_relative_qkv_fixed_budget",
         "held_in_pooled_6core_relative_qkv_joint_plateau",
         "held_in_pooled_6core_relative_qkv_seed_plateau",
@@ -957,6 +958,7 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                     "held_in_pooled_14core_recurrent_relative_qkv_seed_plateau",
                     "held_in_pooled_14core_untied8_relative_qkv_seed_plateau",
                     "held_in_pooled_so1_14core_relative_qkv_plateau_min150",
+                    "held_in_pooled_so1_14core_geometry_modulated_relative_qkv_plateau_min150",
                 }
                 else (
                     "periodic_and_last"
@@ -1227,10 +1229,10 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                         f"plateau requires the frozen literal {section} "
                         "mapping; its canonical SHA-256 drifted."
                     )
-        if (
-            protocol
-            == "held_in_pooled_14core_geometry_modulated_relative_qkv_seed_plateau"
-        ):
+        if protocol in {
+            "held_in_pooled_14core_geometry_modulated_relative_qkv_seed_plateau",
+            "held_in_pooled_so1_14core_geometry_modulated_relative_qkv_plateau_min150",
+        }:
             locked_architecture = {
                 "name": "geometry-modulated-relative-qkv-gat",
                 "family": "geometry_modulated_relative_qkv_graph_transformer",
@@ -1302,24 +1304,34 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                     "The geometry-modulated four-block protocol prohibits "
                     "recurrent_unroll_steps."
                 )
+            is_so1_geometry = protocol == (
+                "held_in_pooled_so1_14core_geometry_modulated_relative_qkv_"
+                "plateau_min150"
+            )
+            expected_campaign_id = (
+                "cmp_20260905_so1_14core_geometry_modulated_relative_qkv_"
+                "seed0_batch2_plateau_min150"
+                if is_so1_geometry
+                else (
+                    "cmp_20260903_so2_14core_geometry_modulated_relative_qkv_"
+                    "seed0_batch2"
+                )
+            )
             campaign_mapping = _mapping(config, "campaign")
-            if campaign_mapping.get("campaign_id") != (
-                "cmp_20260903_so2_14core_geometry_modulated_relative_qkv_"
-                "seed0_batch2"
-            ):
+            if campaign_mapping.get("campaign_id") != expected_campaign_id:
                 raise ConfigurationError(
-                    "The geometry-modulated SO2 protocol requires its "
-                    "registered cmp_20260903 campaign."
+                    "The geometry-modulated 14-core protocol requires its "
+                    "registered campaign."
                 )
             if config.get("seed") != 0 or evaluation.get(
                 "active_model_seeds"
             ) != [0]:
                 raise ConfigurationError(
-                    "The geometry-modulated SO2 exploratory protocol is "
+                    "The geometry-modulated 14-core exploratory protocol is "
                     "locked to model seed 0."
                 )
 
-            locked_section_hashes = {
+            so2_locked_section_hashes = {
                 "model": (
                     "f7efd848610b2e500c218fa18618385c4799cdeb8a7c3f70f4d4d1a63fbd2609"
                 ),
@@ -1354,12 +1366,51 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                     "2e4cbaae6110b5e17c7c060d8491c7380a2bdfa2cfc985030719e5932b1e88cb"
                 ),
             }
+            so1_locked_section_hashes = {
+                "model": (
+                    "f7efd848610b2e500c218fa18618385c4799cdeb8a7c3f70f4d4d1a63fbd2609"
+                ),
+                "dataset": (
+                    "857a168e00fe5d840406e68a18ff371c3230b19c90a05cb74b6fab4ecbc24307"
+                ),
+                "features": (
+                    "3fc95a458dce1e6fe1254241a36a0e53869d615122503106ae5b4ecbd3d22f50"
+                ),
+                "graph": (
+                    "c9dc31acee7ed2860da818a5f5ab188d2b8bd9755f22ad0076b3685f1618a11a"
+                ),
+                "masking": (
+                    "07f55d3adaf92d0db845b87d30cdb322289ccc8d33bec071fab55b7b705d0dc2"
+                ),
+                "trainer": (
+                    "8c29a36d15416b16494da3580ef670a84ce64f45e716ba6cef587489d245ab03"
+                ),
+                "evaluation": (
+                    "50fc836335738973ccaa2348a143fb1e27337a8ff73fb10cc5e5c95ebf1a1b1f"
+                ),
+                "launcher": (
+                    "5d6e260aebc190373a7b050299e686e1634be912c5babe4d2d7ea0f59a5d9f32"
+                ),
+                "metadata": (
+                    "9778ca8b9ac6c52c92d1dbbc95674fd30530d8cbddb10a3e18d2f00207a767d6"
+                ),
+                "classification": (
+                    "0de8e08055425731a365a54fea8d1870142f73f7e705118a57dd152b3a3765eb"
+                ),
+                "experiment": (
+                    "c105da0f147676297823df7765d2ee9d603ffe8091cff22725b68272a7e9cdc1"
+                ),
+            }
+            locked_section_hashes = (
+                so1_locked_section_hashes
+                if is_so1_geometry
+                else so2_locked_section_hashes
+            )
             for section, expected_hash in locked_section_hashes.items():
                 section_mapping = _mapping(config, section)
                 if canonical_sha256(section_mapping) != expected_hash:
                     raise ConfigurationError(
-                        "held_in_pooled_14core_geometry_modulated_relative_"
-                        f"qkv_seed_plateau requires the frozen literal {section} "
+                        f"{protocol} requires the frozen literal {section} "
                         "mapping; its canonical SHA-256 drifted."
                     )
         if (
@@ -1602,7 +1653,14 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                     "The recurrent SO2 14-core protocol requires exactly "
                     "246,063 fit cells."
                 )
-        if protocol == "held_in_pooled_so1_14core_relative_qkv_plateau_min150":
+        if protocol in {
+            "held_in_pooled_so1_14core_relative_qkv_plateau_min150",
+            "held_in_pooled_so1_14core_geometry_modulated_relative_qkv_plateau_min150",
+        }:
+            is_so1_geometry = protocol == (
+                "held_in_pooled_so1_14core_geometry_modulated_relative_qkv_"
+                "plateau_min150"
+            )
             expected_aliases = [f"SO1-C{core:02d}" for core in range(1, 15)]
             locked_values = {
                 "batch_size": 2,
@@ -1658,18 +1716,28 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                 "elastic_max_restarts": 0,
                 "hardware_preflight_receipt": (
                     "state/preflight/"
-                    "so1_14core_relative_qkv_ddp4_plateau_min150.json"
+                    + (
+                        "so1_14core_geometry_modulated_relative_qkv_"
+                        "ddp4_plateau_min150.json"
+                        if is_so1_geometry
+                        else "so1_14core_relative_qkv_ddp4_plateau_min150.json"
+                    )
                 ),
             }
             for field, expected in locked_launcher.items():
                 if launcher.get(field) != expected:
                     raise ConfigurationError(
-                        "held_in_pooled_so1_14core_relative_qkv_plateau_min150 "
+                        f"{protocol} "
                         f"requires launcher.{field}={expected!r}."
                     )
-            if model_name != "relative-qkv-gat":
+            expected_model_name = (
+                "geometry-modulated-relative-qkv-gat"
+                if is_so1_geometry
+                else "relative-qkv-gat"
+            )
+            if model_name != expected_model_name:
                 raise ConfigurationError(
-                    "The SO1 14-core protocol requires model.name=relative-qkv-gat."
+                    "The SO1 14-core protocol requires its registered model name."
                 )
             if config.get("seed") != 0 or evaluation.get("active_model_seeds") != [0]:
                 raise ConfigurationError(

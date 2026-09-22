@@ -1,0 +1,226 @@
+schema_version: 1
+campaign_id: cmp_20260905_so1_14core_geometry_modulated_relative_qkv_seed0_batch2_plateau_min150
+status: frozen_before_production_integration
+analysis_design: exploratory_single_seed_cross_slide_architecture_replication
+outcome_status: pending
+objective: compare_the_completed_so2_geometry_modulated_architecture_against_the_completed_so1_four_block_relative_qkv_reference_under_the_literal_so1_protocol
+scientific_question: does_the_geometry_modulated_cosine_qkv_score_lower_held_in_so1_masked_expression_loss_without_optimization_failure
+primary_hypothesis: final_fixed_mask_fit_huber_is_lower_than_the_completed_so1_relative_qkv_reference
+credible_alternative: no_improvement_or_worse_fit_because_so2_architecture_behavior_does_not_replicate_in_so1
+estimand: held_in_all_cells_so1_14core_transductive_partial_gene_masked_expression_reconstruction
+permitted_claim: exploratory_seed0_fitted_cohort_attention_score_architecture_comparison_only
+generalization_claim_supported: false
+validation_or_test_partition_present: false
+cohort:
+  slide: SO_1
+  core_aliases: [SO1-C01, SO1-C02, SO1-C03, SO1-C04, SO1-C05, SO1-C06, SO1-C07, SO1-C08, SO1-C09, SO1-C10, SO1-C11, SO1-C12, SO1-C13, SO1-C14]
+  cells_by_alias:
+    SO1-C01: 8924
+    SO1-C02: 7450
+    SO1-C03: 12190
+    SO1-C04: 14657
+    SO1-C05: 11399
+    SO1-C06: 18212
+    SO1-C07: 10722
+    SO1-C08: 4972
+    SO1-C09: 17223
+    SO1-C10: 14756
+    SO1-C11: 18145
+    SO1-C12: 7816
+    SO1-C13: 5345
+    SO1-C14: 9785
+  total_fit_cells: 161596
+  routed_fov_count: 205
+  unmapped_fov_excluded: 0
+  unmapped_cells_excluded: 0
+  biological_target_count: 1000
+  node_covariate_count: 22
+  tissue_context: mixed_or_unresolved_core_routing_cohort
+  single_diagnosis_or_tissue_status_asserted: false
+immutable_preparation:
+  dataset_content_sha256: e006316e0f04afa645191544bcac8aa64f58c423e755f2f8d79bfd9db68a233d
+  split_sha256: a0d2c008ff02471010585a023724f75d6f029d1a81f39f1f2dbba1531091b9a4
+  cohort_manifest_file_sha256: 15f9da492959c35d89020b3956047ec163a5f3537eaaefd5b8a011cb9279b440
+  graph_content_sha256: 5262453fc631c15a66f00f960de2a766a6142a4f1f7644b8b77a8784ec43d3b4
+  graph_manifest_file_sha256: 754e98fa1b2d8b488892c4effbf095cf26da6d99c927ee45e9ee01c2d64b978f
+  completed_cohort_manifest_sha256: e078588668d9b2285db27da6cda8b7f1d144aa055065c3022e43048fd1951596
+architecture_source:
+  campaign_id: cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2
+  successful_run_id: r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf
+  final_global_epoch: 200
+  parameter_count: 5134088
+  observed_peak_vram_gib: 15.821674346923828
+  resolved_model_mapping_sha256: f7efd848610b2e500c218fa18618385c4799cdeb8a7c3f70f4d4d1a63fbd2609
+  final_checkpoint_sha256: aba6a1d910e60f6a30bb4b27b15dbd1c30199da41a15460c23d994079b67543b
+  reuse_scope: exact_architecture_and_implementation_only
+  checkpoint_or_optimizer_state_reused: false
+reference_control:
+  campaign_id: cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150
+  run_id: r_20260826T204925Z_06d12943_s000_f00_a01_94691119
+  model_name: relative-qkv-gat
+  graph_layers: 4
+  trainable_parameter_count: 5003016
+  final_global_epoch: 650
+  final_fixed_mask_fit_huber: 0.23698082992008754
+  final_equal_core_training_masked_huber: 0.2375482833811215
+architecture:
+  model_name: geometry-modulated-relative-qkv-gat
+  family: geometry_modulated_relative_qkv_graph_transformer
+  hidden_dim: 256
+  graph_layers: 4
+  unique_graph_blocks: 4
+  effective_graph_depth: 4
+  graph_block_weight_tying: none
+  attention_heads: 8
+  attention_head_dim: 32
+  ffn_dim: 1024
+  decoder_dim: 1024
+  expected_trainable_parameter_count: 5134088
+  per_block_trainable_parameter_count: 831880
+attention_score:
+  mechanism: geometry_modulated_cosine_qkv_v1
+  qk_normalization: per_head_l2_fp32
+  qk_normalization_epsilon: 0.000001
+  modulation_raw: 1_plus_0.5_tanh_geometry_projection
+  modulation_raw_range: [0.5, 1.5]
+  modulation_normalization: per_edge_head_dimension_mean_one
+  geometry_bias: tanh_geometry_projection
+  geometry_bias_range: [-1.0, 1.0]
+  geometry_output_projection_biases: false
+  geometry_output_projections_zero_initialized: true
+  logit_scale_parameterization: bounded_sigmoid
+  logit_scale_range: [0.1, 20.0]
+  logit_scale_initial: 1.8856180831641267
+  values_receive_geometry: false
+  value_content_source: expression_derived_node_embedding_only
+comparison_scope:
+  changed_from_so1_reference:
+    - l2_normalized_queries_and_keys
+    - bounded_learned_per_head_logit_scale
+    - geometry_conditioned_dimensionwise_qk_modulation
+    - bounded_geometry_only_bias
+    - trainable_parameter_count
+  unchanged_from_so1_reference:
+    - dataset
+    - graph
+    - masking
+    - optimizer_and_strict_stopping_protocol
+    - evaluation_estimand_and_fixed_mask_bundle
+    - four_unique_graph_blocks
+    - expression_only_values
+  execution_only_changes:
+    receiver_chunk_size: [512, 128]
+    max_edges_per_chunk: [200000, 50000]
+    interpretation: memory_safety_only_exact_receiver_softmax_preserved
+  interpretation: whole_attention_score_mechanism_comparison_not_an_isolated_modulation_ablation
+matched_configs:
+  dataset: configs/dataset/so1_14core_pooled_fit_v1.yaml
+  graph: configs/graph/so1_radial_stratified_k200_r500_bidirectional.yaml
+  masking: configs/masking/uniform_per_cell_0_100.yaml
+  trainer: configs/trainer/pooled_relative_qkv_so1_14core_batch2_plateau_min150.yaml
+  evaluation_semantics_source: configs/evaluation/held_in_so1_14core_fit_diagnostics_plateau_min150.yaml
+  model_seed: 0
+  initialization: fresh_from_scratch
+  pretrained_or_cross_campaign_resume_allowed: false
+training:
+  optimizer: AdamW
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  gradient_clip_norm: 1.0
+  huber_delta: 1.0
+  scheduler: none
+  distributed_world_size: 4
+  distributed_backend: nccl
+  gpu_ids: [0, 1, 2, 3]
+  core_visits_per_global_epoch: 14
+  optimizer_updates_per_global_epoch: 7
+  complete_graph_mask_views_per_global_epoch: 140
+stopping:
+  source: literal_cmp_20260826_so1_strict_plateau_policy
+  minimum_global_epochs: 150
+  first_audit_global_epoch: 150
+  audit_interval_global_epochs: 25
+  window_global_epochs: 50
+  absolute_relative_half_window_change_max: 0.0005
+  normalized_absolute_slope_per_epoch_max: 0.000025
+  consecutive_passing_audits_required: 2
+  earliest_possible_stop_global_epoch: 175
+  continuation_block_global_epochs: 25
+  fixed_epoch_budget: false
+  maximum_scientific_epoch_cap: null
+gradient_diagnostics:
+  schemas_use_legacy_so2_prefix_with_slide_agnostic_row_semantics: true
+  global_schema: so2_full_gradient_direction_metrics_v1
+  block_schema: so2_block_gradient_direction_metrics_v1
+  read_timing: after_amp_unscale_and_finite_check_before_gradient_clipping_or_optimizer_step
+  source: full_fp32_ddp_averaged_trainable_gradient
+  global_output_path: results/gradient_direction_metrics.csv
+  block_output_path: results/gradient_direction_by_block.csv
+  block_names: [blocks.0, blocks.1, blocks.2, blocks.3]
+  rows_per_completed_epoch_global: 1
+  rows_per_completed_epoch_block: 4
+  gradient_tensor_persistence_allowed: false
+  per_optimizer_step_file_persistence_allowed: false
+  gradient_vector_checkpoint_payload_allowed: false
+  affects_optimization_or_stopping: false
+checkpointing:
+  epoch_loss_recording: every_completed_epoch_fsynced
+  in_training_path: checkpoints/latest.ckpt
+  in_training_checkpoint_count: 1
+  replacement: atomic_every_completed_epoch
+  epoch_archive_allowed: false
+  best_checkpoint_selection_allowed: false
+  successful_final_path: checkpoints/last.ckpt
+  successful_final_checkpoint_count: 1
+preflight:
+  schema: so1_14core_geometry_modulated_relative_qkv_ddp4_preflight_v1
+  output: state/preflight/so1_14core_geometry_modulated_relative_qkv_ddp4_plateau_min150.json
+  selected_core_aliases: [SO1-C06, SO1-C11]
+  expected_parameter_count: 5134088
+  expected_block_count: 4
+  peak_vram_gib_all_ranks_max: 22.0
+  minimum_vram_headroom_gib_each_rank: 2.0
+acceptance:
+  composed_config_and_frozen_hashes_match: true
+  focused_model_tests_pass: true
+  four_unique_block_parameter_sets_verified: true
+  parameter_count_is_5134088: true
+  all_four_blocks_receive_finite_gradient: true
+  zero_initialization_g_one_beta_zero_verified: true
+  four_rank_one_update_preflight_pass: true
+  checkpoint_reload_verified: true
+  epoch_and_gradient_scalar_rows_contiguous: true
+  final_checkpoint_single_loadable_and_verified: true
+  scientific_outcome_rule: lower_final_fixed_mask_fit_huber_than_0_23698082992008754_supports_the_exploratory_hypothesis_otherwise_negative
+resources:
+  gpu_count: 4
+  gpu_model: NVIDIA_GeForce_RTX_3090
+  gpu_memory_gib_each: 24
+  minimum_free_disk_gib: 25
+artifacts:
+  experiment_config: configs/experiment/so1_14core_geometry_modulated_relative_qkv_seed0_batch2_plateau_min150.yaml
+  preflight_receipt: state/preflight/so1_14core_geometry_modulated_relative_qkv_ddp4_plateau_min150.json
+  epoch_metrics: results/epoch_metrics.csv
+  global_gradient_metrics: results/gradient_direction_metrics.csv
+  block_gradient_metrics: results/gradient_direction_by_block.csv
+  rolling_checkpoint: checkpoints/latest.ckpt
+  final_checkpoint: checkpoints/last.ckpt
+  loss_figure: figures/loss_vs_epoch.png
+  gradient_direction_figure: figures/gradient_direction_vs_epoch.png
+resolved_config_locks:
+  canonicalization: sorted_keys_compact_json_sha256
+  complete_resolved_config_sha256: 2c5c561b988b2eb49d01229e0174f5806f74eea0853b85d581f19a78176bcece
+  sections:
+    model: f7efd848610b2e500c218fa18618385c4799cdeb8a7c3f70f4d4d1a63fbd2609
+    dataset: 857a168e00fe5d840406e68a18ff371c3230b19c90a05cb74b6fab4ecbc24307
+    features: 3fc95a458dce1e6fe1254241a36a0e53869d615122503106ae5b4ecbd3d22f50
+    graph: c9dc31acee7ed2860da818a5f5ab188d2b8bd9755f22ad0076b3685f1618a11a
+    masking: 07f55d3adaf92d0db845b87d30cdb322289ccc8d33bec071fab55b7b705d0dc2
+    trainer: 8c29a36d15416b16494da3580ef670a84ce64f45e716ba6cef587489d245ab03
+    evaluation: 50fc836335738973ccaa2348a143fb1e27337a8ff73fb10cc5e5c95ebf1a1b1f
+    launcher: 5d6e260aebc190373a7b050299e686e1634be912c5babe4d2d7ea0f59a5d9f32
+    metadata: 9778ca8b9ac6c52c92d1dbbc95674fd30530d8cbddb10a3e18d2f00207a767d6
+    classification: 0de8e08055425731a365a54fea8d1870142f73f7e705118a57dd152b3a3765eb
+    experiment: c105da0f147676297823df7765d2ee9d603ffe8091cff22725b68272a7e9cdc1
+    campaign: 0c45ffba8386ceb46954167e15631fd80150806c289363f745be8eead0f6f1bc
+automatic_enqueue: false

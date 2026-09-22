@@ -1,0 +1,113 @@
+version: 1
+defaults:
+  - model: geometry_modulated_relative_qkv_gat_256_l4_h8
+  - masking: uniform_per_cell_0_100
+  - dataset: so1_14core_pooled_fit_v1
+  - features: cosmx_so1_14core_metadata_relative_geometry_routing
+  - graph: so1_radial_stratified_k200_r500_bidirectional
+  - trainer: pooled_relative_qkv_so1_14core_batch2_plateau_min150
+  - evaluation: held_in_so1_14core_geometry_modulated_relative_qkv_fit_diagnostics_plateau_min150
+  - launcher: so1_14core_geometry_modulated_relative_qkv_plateau_min150_ddp4
+campaign:
+  campaign_id: cmp_20260905_so1_14core_geometry_modulated_relative_qkv_seed0_batch2_plateau_min150
+  display_name: SO1 cores 1-14 four-block geometry-modulated Relative-QKV seed-0 strict-plateau fit
+experiment:
+  variant_label: geometry_modulated_relative_qkv_gat_256_l4_h8_k200_r500_batch2_ddp4_strict_plateau_min150
+  estimand: held_in_all_cells_so1_14core_transductive_masked_reconstruction
+  permitted_claim: exploratory_fitted_cohort_attention_score_comparison_and_cross_slide_architecture_replication_only
+metadata:
+  analysis_design: exploratory_single_seed_cross_slide_architecture_replication
+  completed_so2_architecture_reference:
+    campaign_id: cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2
+    run_id: r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf
+    status: success
+    final_global_epoch: 200
+    trainable_parameter_count: 5134088
+    resolved_model_mapping_sha256: f7efd848610b2e500c218fa18618385c4799cdeb8a7c3f70f4d4d1a63fbd2609
+    checkpoint_sha256: aba6a1d910e60f6a30bb4b27b15dbd1c30199da41a15460c23d994079b67543b
+    reuse_scope: exact_architecture_and_implementation_only
+    checkpoint_or_optimizer_state_reused: false
+  initialization: fresh_from_scratch_seed0
+  cross_campaign_resume_allowed: false
+  preflight_acceptance:
+    peak_vram_gib_all_ranks_max: 22.0
+    minimum_vram_headroom_gib_each_rank: 2.0
+    gpu_memory_gib_each_rank: 24.0
+  gradient_diagnostics:
+    enabled: true
+    output_path: results/gradient_direction_metrics.csv
+    schema: so2_full_gradient_direction_metrics_v1
+    global_epoch_indexing: one_based
+    computation_rank: 0
+    vector_dtype: float32
+    gradient_scope: full_ddp_averaged_all_trainable_parameters
+    read_timing: after_amp_unscale_and_finite_check_before_gradient_clipping_or_optimizer_step
+    parameter_order: trainable_parameter_registration_order
+    missing_gradient_slices: zero_filled
+    persistence: global_epoch_scalars_only
+    ordered_columns:
+      - schema
+      - run_id
+      - model_seed
+      - global_epoch
+      - trainable_parameter_count
+      - optimizer_updates_observed
+      - gradient_norm_mean_before_clip
+      - gradient_norm_min_before_clip
+      - gradient_norm_max_before_clip
+      - consecutive_optimizer_step_cosine_mean
+      - consecutive_optimizer_step_cosine_median
+      - consecutive_optimizer_step_cosine_min
+      - consecutive_optimizer_step_cosine_max
+      - consecutive_optimizer_step_cosine_valid_pairs
+      - epoch_aggregate_gradient_cosine_to_previous_epoch
+      - resume_boundary_unavailable
+    consecutive_optimizer_step_cosine: true
+    epoch_aggregate_gradient_cosine_to_previous_epoch: true
+    zero_norm_cosines: invalid_and_omitted
+    resume_boundary_policy: boundary_pair_and_prior_epoch_aggregate_unavailable
+    persist_gradient_tensors: false
+    persist_per_optimizer_step_files: false
+    persist_gradient_vectors_in_checkpoints: false
+    affects_optimization_or_plateau_stopping: false
+    layerwise:
+      enabled: true
+      scope: graph_blocks_only
+      block_names: [blocks.0, blocks.1, blocks.2, blocks.3]
+      output_path: results/gradient_direction_by_block.csv
+      schema: so2_block_gradient_direction_metrics_v1
+      row_granularity: one_row_per_block_per_completed_global_epoch
+      rows_per_completed_global_epoch: 4
+      ordered_columns:
+        - schema
+        - run_id
+        - model_seed
+        - global_epoch
+        - block_index
+        - block_name
+        - trainable_parameter_count
+        - optimizer_updates_observed
+        - gradient_norm_mean_before_clip
+        - gradient_norm_min_before_clip
+        - gradient_norm_max_before_clip
+        - consecutive_optimizer_step_cosine_mean
+        - consecutive_optimizer_step_cosine_median
+        - consecutive_optimizer_step_cosine_min
+        - consecutive_optimizer_step_cosine_max
+        - consecutive_optimizer_step_cosine_valid_pairs
+        - epoch_aggregate_gradient_cosine_to_previous_epoch
+        - resume_boundary_unavailable
+      persist_gradient_tensors: false
+      persist_per_optimizer_step_files: false
+      persist_gradient_vectors_in_checkpoints: false
+      affects_optimization_or_plateau_stopping: false
+classification:
+  schema_version: 1
+  lifecycle_stage: exploratory_screen
+  study_axis: so1_14core_geometry_modulated_relative_qkv_attention_routing
+  scientific_variant: geometry_modulated_relative_qkv_gat_256_l4_h8_k200_r500_batch2_ddp4_strict_plateau_min150
+  retention_class: retain_exploratory_architecture_comparison
+  classification_confidence: high
+seed: 0
+fold: 0
+attempt: 1

@@ -109,10 +109,13 @@ def test_writes_four_block_heatmap_with_matching_shape_and_extent(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     from matplotlib.axes import Axes
+    from matplotlib.figure import Figure
 
     _write_scalar_records(tmp_path, block_count=4)
     observed: dict[str, Any] = {}
     original_imshow = Axes.imshow
+    original_set = Axes.set
+    original_suptitle = Figure.suptitle
 
     def _capture_imshow(
         axis: Axes,
@@ -124,13 +127,37 @@ def test_writes_four_block_heatmap_with_matching_shape_and_extent(
         observed["extent"] = kwargs.get("extent")
         return original_imshow(axis, values, *args, **kwargs)
 
+    def _capture_set(axis: Axes, **kwargs: Any) -> Any:
+        if "title" in kwargs:
+            observed["loss_title"] = kwargs["title"]
+        return original_set(axis, **kwargs)
+
+    def _capture_suptitle(
+        figure: Figure,
+        title: str,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Any:
+        observed["gradient_title"] = title
+        return original_suptitle(figure, title, *args, **kwargs)
+
     monkeypatch.setattr(Axes, "imshow", _capture_imshow)
-    result = write_so2_training_plots(tmp_path, expected_blocks=4)
+    monkeypatch.setattr(Axes, "set", _capture_set)
+    monkeypatch.setattr(Figure, "suptitle", _capture_suptitle)
+    result = write_so2_training_plots(
+        tmp_path,
+        expected_blocks=4,
+        cohort_label="SO1 14-core",
+    )
 
     _assert_png_outputs(tmp_path, result)
     assert observed == {
         "shape": (4, 6),
         "extent": (0.5, 6.5, -0.5, 3.5),
+        "loss_title": "SO1 14-core training loss",
+        "gradient_title": (
+            "SO1 14-core gradient magnitude and direction diagnostics"
+        ),
     }
 
 
@@ -180,4 +207,16 @@ def test_expected_blocks_must_be_a_positive_integer(
         write_so2_training_plots(  # type: ignore[arg-type]
             tmp_path,
             expected_blocks=expected_blocks,
+        )
+
+
+@pytest.mark.parametrize("cohort_label", ["", "   ", None, 1])
+def test_cohort_label_must_be_a_non_empty_string(
+    tmp_path: Path,
+    cohort_label: object,
+) -> None:
+    with pytest.raises(SO2TrainingPlotError, match="cohort_label"):
+        write_so2_training_plots(  # type: ignore[arg-type]
+            tmp_path,
+            cohort_label=cohort_label,
         )

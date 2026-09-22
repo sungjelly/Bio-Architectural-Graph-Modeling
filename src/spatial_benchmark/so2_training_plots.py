@@ -94,6 +94,7 @@ def write_so2_training_plots(
     run_root: str | Path,
     *,
     expected_blocks: int = 8,
+    cohort_label: str = "SO2 14-core",
 ) -> dict[str, str]:
     """Create loss and gradient-direction figures from finalized scalar CSVs.
 
@@ -109,6 +110,9 @@ def write_so2_training_plots(
         or expected_blocks <= 0
     ):
         raise SO2TrainingPlotError("expected_blocks must be a positive integer.")
+    if not isinstance(cohort_label, str) or not cohort_label.strip():
+        raise SO2TrainingPlotError("cohort_label must be a non-empty string.")
+    label = cohort_label.strip()
 
     root = Path(run_root).resolve(strict=True)
     epoch_path = root / "results" / "epoch_metrics.csv"
@@ -151,7 +155,7 @@ def write_so2_training_plots(
     loss_axis.set(
         xlabel="Completed global epoch",
         ylabel="Equal-core masked Huber loss",
-        title="SO2 14-core training loss",
+        title=f"{label} training loss",
     )
     loss_axis.grid(alpha=0.2)
     if losses.size >= 5:
@@ -296,7 +300,7 @@ def write_so2_training_plots(
         pad=0.02,
     )
     gradient_figure.suptitle(
-        "SO2 14-core gradient magnitude and direction diagnostics"
+        f"{label} gradient magnitude and direction diagnostics"
     )
     gradient_figure.tight_layout()
     gradient_output = root / GRADIENT_FIGURE_RELATIVE_PATH

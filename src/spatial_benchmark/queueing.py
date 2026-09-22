@@ -534,21 +534,42 @@ def command_for_config(
             "--run-scratch",
             "{run_scratch}",
         ]
-    if protocol == "held_in_pooled_so1_14core_relative_qkv_plateau_min150":
+    if protocol in {
+        "held_in_pooled_so1_14core_relative_qkv_plateau_min150",
+        "held_in_pooled_so1_14core_geometry_modulated_relative_qkv_plateau_min150",
+    }:
         model = _section(configuration, "model")
         campaign = _section(configuration, "campaign")
         launcher = _section(configuration, "launcher")
+        geometry_modulated = protocol == (
+            "held_in_pooled_so1_14core_geometry_modulated_relative_qkv_"
+            "plateau_min150"
+        )
+        expected_model = (
+            "geometry-modulated-relative-qkv-gat"
+            if geometry_modulated
+            else "relative-qkv-gat"
+        )
+        expected_campaign = (
+            "cmp_20260905_so1_14core_geometry_modulated_relative_qkv_"
+            "seed0_batch2_plateau_min150"
+            if geometry_modulated
+            else (
+                "cmp_20260826_so1_14core_relative_qkv_seed0_"
+                "batch2_plateau_min150"
+            )
+        )
         if (
-            str(model.get("name", "")).strip().lower() != "relative-qkv-gat"
-            or campaign.get("campaign_id")
-            != "cmp_20260826_so1_14core_relative_qkv_seed0_batch2_plateau_min150"
+            str(model.get("name", "")).strip().lower() != expected_model
+            or campaign.get("campaign_id") != expected_campaign
             or launcher.get("requested_gpu") != "0,1,2,3"
             or launcher.get("process_count") != 4
             or launcher.get("elastic_max_restarts") != 0
         ):
             raise ConfigurationError(
                 "The SO1 14-core protocol requires its registered four-rank "
-                "Relative-QKV campaign with GPUs 0,1,2,3 and no elastic restarts."
+                "Relative-QKV campaign with GPUs 0,1,2,3 and no elastic "
+                "restarts."
             )
         script = (
             selected_paths.project_root

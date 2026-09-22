@@ -109,6 +109,7 @@ def _write_analysis_success_support(
         "held_in_pooled_14core_relative_qkv_seed_plateau",
         "held_in_pooled_14core_untied8_relative_qkv_seed_plateau",
         "held_in_pooled_so1_14core_relative_qkv_plateau_min150",
+        "held_in_pooled_so1_14core_geometry_modulated_relative_qkv_plateau_min150",
         "held_in_pooled_6core_relative_qkv_fixed_budget",
     ),
 )

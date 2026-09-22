@@ -1,0 +1,90 @@
+campaign_schema_version: 1
+campaign_id: cmp_20260905_so1_14core_geometry_modulated_relative_qkv_seed0_batch2_plateau_min150
+display_name: SO1 cores 1-14 four-block geometry-modulated Relative-QKV seed-0 strict-plateau fit
+status: completed
+analysis_design: exploratory_single_seed_cross_slide_architecture_replication
+outcome_status: success
+definition: experiments/campaigns/cmp_20260905_so1_14core_geometry_modulated_relative_qkv_seed0_batch2_plateau_min150/README.md
+frozen_task_contract: experiments/campaigns/cmp_20260905_so1_14core_geometry_modulated_relative_qkv_seed0_batch2_plateau_min150/frozen_task_contract.yaml
+frozen_task_contract_sha256: e9e24ad010ff436d78b729ebf173eefb13cd15c3fe73bf60996e48a2d8f2a5ae
+cohort:
+  source_slide: SO_1
+  aliases: [SO1-C01, SO1-C02, SO1-C03, SO1-C04, SO1-C05, SO1-C06, SO1-C07, SO1-C08, SO1-C09, SO1-C10, SO1-C11, SO1-C12, SO1-C13, SO1-C14]
+  independent_core_count: 14
+  total_fit_cells: 161596
+  routed_fov_count: 205
+  fit_scope: all_cells_so1_cores_1_through_14_transductive
+  validation_or_test_partition_present: false
+  tissue_context: mixed_or_unresolved_core_routing_cohort_no_single_tissue_status_asserted
+immutable_preparation:
+  status: verified_materialized_and_hash_bound
+  cohort_manifest_content_sha256: e006316e0f04afa645191544bcac8aa64f58c423e755f2f8d79bfd9db68a233d
+  cohort_manifest_file_sha256: 15f9da492959c35d89020b3956047ec163a5f3537eaaefd5b8a011cb9279b440
+  graph_manifest_file_sha256: 754e98fa1b2d8b488892c4effbf095cf26da6d99c927ee45e9ee01c2d64b978f
+  graph_manifest_content_sha256: 5262453fc631c15a66f00f960de2a766a6142a4f1f7644b8b77a8784ec43d3b4
+  completed_cohort_manifest_sha256: e078588668d9b2285db27da6cda8b7f1d144aa055065c3022e43048fd1951596
+  registration_or_enqueue_allowed_after_production_integration: true
+  production_start_requires_passing_preflight: true
+variant:
+  name: geometry_modulated_relative_qkv_gat_256_l4_h8_radial_stratified_k200_r500_batch2_ddp4_strict_plateau_min150
+  model_seed: 0
+  initialization: fresh_from_scratch
+  graph_layers: 4
+  unique_graph_blocks: 4
+  effective_graph_depth: 4
+  graph_block_weight_tying: none
+  expected_trainable_parameter_count: 5134088
+architecture_source:
+  completed_so2_run_id: r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf
+  reuse_scope: exact_architecture_and_implementation_only
+  checkpoint_or_optimizer_state_reused: false
+reference_control:
+  completed_so1_run_id: r_20260826T204925Z_06d12943_s000_f00_a01_94691119
+  final_global_epoch: 650
+  final_fixed_mask_fit_huber: 0.23698082992008754
+production_run_count: 1
+production_minimum_global_epochs: 150
+production_optimizer_updates_per_global_epoch: 7
+production_masks_per_cell_per_epoch: 10
+production_stopping_policy:
+  metric: equal_core_mean_training_masked_huber
+  first_audit_global_epoch: 150
+  audit_interval_global_epochs: 25
+  window_global_epochs: 50
+  absolute_relative_half_window_change_max: 0.0005
+  normalized_absolute_slope_per_epoch_max: 0.000025
+  consecutive_passing_audits_required: 2
+  continuation_block_global_epochs: 25
+  maximum_scientific_epoch_cap: null
+  validation_or_test_metric: false
+execution:
+  world_size: 4
+  backend: nccl
+  physical_gpu_ids: [0, 1, 2, 3]
+  elastic_max_restarts: 0
+  preflight_schema: so1_14core_geometry_modulated_relative_qkv_ddp4_preflight_v1
+  preflight_receipt: state/preflight/so1_14core_geometry_modulated_relative_qkv_ddp4_plateau_min150.json
+  preflight_receipt_file_sha256: 8a70faf5e8b250abc3132d3fdb8113348c53afa71855b4957617656c08051d74
+  epoch_metrics_csv: results/epoch_metrics.csv
+  global_gradient_metrics_csv: results/gradient_direction_metrics.csv
+  block_gradient_metrics_csv: results/gradient_direction_by_block.csv
+  enqueue_max_attempts: 1
+  queue_job_id: q_e147843ae8220e698a2a
+  run_id: r_20260905T065805Z_b13f5b24_s000_f00_a01_b1658a6c
+  worker_id: so1-relative-qkv-plateau-min150-ddp4
+  production_started_at: '2026-09-05T06:58:05Z'
+  production_finished_at: '2026-09-07T03:20:05Z'
+  measured_peak_vram_gib_all_ranks: 6.7561540603637695
+checkpointing:
+  during_training: one_atomic_rolling_latest_only
+  after_success: one_last_only
+  epoch_archives_allowed: false
+outcome:
+  final_global_epoch: 475
+  plateau_confirmed: true
+  primary_metric: fit/uniform_per_cell/masked_huber
+  primary_metric_value: 0.23747088760137558
+  checkpoint: checkpoints/last.ckpt
+  checkpoint_sha256: ba5999ab030a3a512447f1b5135d5413ac7f19490d501edf0d318a6857c2f93b
+  generalization_estimate: false
+automatic_enqueue: false

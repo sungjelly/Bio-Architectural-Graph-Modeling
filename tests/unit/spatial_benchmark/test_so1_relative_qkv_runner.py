@@ -7,6 +7,7 @@ from pathlib import Path
 import sys
 
 import pytest
+import torch
 
 from spatial_benchmark.configuration import compose_config
 from spatial_benchmark.paths import ProjectPaths
@@ -17,6 +18,11 @@ PROJECT_ROOT = Path(__file__).resolve().parents[3]
 EXPERIMENT_CONFIG = (
     PROJECT_ROOT
     / "configs/experiment/so1_14core_relative_qkv_seed0_batch2_plateau_min150.yaml"
+)
+GEOMETRY_EXPERIMENT_CONFIG = (
+    PROJECT_ROOT
+    / "configs/experiment/"
+    "so1_14core_geometry_modulated_relative_qkv_seed0_batch2_plateau_min150.yaml"
 )
 _SPEC = importlib.util.spec_from_file_location(
     "run_so1_14core_relative_qkv",
@@ -30,6 +36,13 @@ _SPEC.loader.exec_module(_RUNNER)
 
 def _resolved_config() -> dict[str, object]:
     return compose_config(EXPERIMENT_CONFIG, config_root=PROJECT_ROOT / "configs")
+
+
+def _geometry_config() -> dict[str, object]:
+    return compose_config(
+        GEOMETRY_EXPERIMENT_CONFIG,
+        config_root=PROJECT_ROOT / "configs",
+    )
 
 
 def test_locked_fresh_runner_contract_and_parser() -> None:
@@ -69,6 +82,54 @@ def test_training_config_keeps_four_rank_batch2_and_ten_views() -> None:
     assert training.distributed_rank == 3
     assert training.device == "cuda:3"
     assert training.stage_complete_core_graph_on_device is True
+
+
+def test_geometry_protocol_constructs_exact_untied_four_block_model() -> None:
+    config = _geometry_config()
+
+    _RUNNER._validate_contract(config)
+    assert _RUNNER._is_geometry_modulated(config)
+    assert _RUNNER._block_gradient_count(config) == 4
+    model = _RUNNER._model_from_config(
+        config,
+        num_genes=1000,
+        node_covariate_dim=22,
+    )
+
+    assert type(model).__name__ == (
+        "ReceiverChunkedGeometryModulatedRelativeQKVGraphTransformer"
+    )
+    assert sum(parameter.numel() for parameter in model.parameters()) == 5_134_088
+    assert _RUNNER._geometry_modulated4_block_topology(model) == {
+        "verified": True,
+        "graph_block_count": 4,
+        "unique_graph_block_objects": 4,
+        "unique_graph_block_parameter_sets": 4,
+        "state_dict_block_indices": [0, 1, 2, 3],
+        "graph_block_weight_tying": "none",
+    }
+
+
+def test_geometry_checkpoint_rejects_cross_campaign_resume(tmp_path: Path) -> None:
+    checkpoint = tmp_path / "last.ckpt"
+    torch.save(
+        {
+            "checkpoint_schema": _RUNNER.CHECKPOINT_SCHEMA,
+            "campaign_id": _RUNNER.CAMPAIGN_ID,
+            "model_seed": 0,
+        },
+        checkpoint,
+    )
+
+    with pytest.raises(
+        _RUNNER.SO114CoreRunnerError,
+        match="resume.campaign_id",
+    ):
+        _RUNNER._load_resume_checkpoint(
+            checkpoint,
+            config=_geometry_config(),
+            model_construction={},
+        )
 
 
 @pytest.mark.parametrize(
@@ -220,6 +281,148 @@ def test_hardware_preflight_receipt_is_checksum_and_manifest_bound(
 
     (graph_dir / "manifest.json").write_text("changed\n", encoding="utf-8")
     with pytest.raises(_RUNNER.SO114CoreRunnerError, match="manifest has changed"):
+        _RUNNER._validate_hardware_preflight(
+            config,
+            paths=paths,
+            cohort_dir=cohort_dir,
+            graph_dir=graph_dir,
+        )
+
+
+def test_geometry_preflight_is_distinct_and_requires_all_numerical_gates(
+    tmp_path: Path,
+) -> None:
+    paths = ProjectPaths.from_environment(
+        {
+            "BAGM_ROOT": str(tmp_path),
+            "BAGM_DATA_ROOT": str(tmp_path / "data"),
+            "BAGM_STATE_ROOT": str(tmp_path / "state"),
+        }
+    )
+    cohort_dir = paths.data_root / "cohort"
+    graph_dir = paths.data_root / "graphs"
+    cohort_dir.mkdir(parents=True)
+    graph_dir.mkdir(parents=True)
+    (cohort_dir / "manifest.json").write_text("cohort\n", encoding="utf-8")
+    (graph_dir / "manifest.json").write_text("graph\n", encoding="utf-8")
+    config = _geometry_config()
+    gradient_summary = {
+        "schema": _RUNNER.GRADIENT_DIRECTION_METRICS_SCHEMA,
+        "global_epoch": 1,
+        "trainable_parameter_count": 5_134_088,
+        "optimizer_updates_observed": 1,
+        "gradient_norm_mean_before_clip": 0.5,
+        "consecutive_optimizer_step_cosine_valid_pairs": 0,
+        "epoch_aggregate_gradient_cosine_to_previous_epoch": None,
+        "resume_boundary_unavailable": False,
+    }
+    content = {
+        "schema": _RUNNER.GEOMETRY_MODULATED_PREFLIGHT_SCHEMA,
+        "status": "passed",
+        "all_required_gates_passed": True,
+        "completed_experiment": False,
+        "campaign_id": _RUNNER.GEOMETRY_MODULATED_CAMPAIGN_ID,
+        "distributed_world_size": 4,
+        "distributed_backend": "nccl",
+        "visible_devices": "0,1,2,3",
+        "elastic_max_restarts": 0,
+        "optimizer_updates": 1,
+        "complete_graph_mask_views": 20,
+        "checkpoint_reload_verified": True,
+        "finite_loss_and_gradients": True,
+        "prior_relative_qkv_equivalence_verified": True,
+        "parameter_count": 5_134_088,
+        "gradient_direction_observer_verified": True,
+        "all_unique_graph_blocks_receive_gradients": True,
+        "block_gradient_direction_observer_verified": True,
+        "peak_vram_gib_all_ranks_max": 22.0,
+        "minimum_vram_headroom_gib_each_rank": 2.0,
+        "vram_acceptance_passed": True,
+        "geometry_modulated_numerical_gates": {
+            "passed": True,
+            "full_chunk_exactness": {"passed": True},
+            "amp_fp32_equivalence": {"passed": True},
+            "learned_geometry_heads": {"passed": True},
+        },
+        "cohort_manifest_sha256": _RUNNER.sha256_file(
+            cohort_dir / "manifest.json"
+        ),
+        "graph_manifest_sha256": _RUNNER.sha256_file(
+            graph_dir / "manifest.json"
+        ),
+        "resolved_config_sha256": _RUNNER._canonical_sha256(
+            _RUNNER._preflight_bound_config(config)
+        ),
+        "model": {
+            "class": (
+                "ReceiverChunkedGeometryModulatedRelativeQKVGraphTransformer"
+            ),
+            "num_genes": 1000,
+            "node_covariate_dim": 22,
+            **config["model"],  # type: ignore[dict-item]
+        },
+        "gradient_direction_preflight_summary": gradient_summary,
+        "gradient_norm_before_clip": 0.5,
+        "geometry_modulated_graph_block_topology": {
+            "verified": True,
+            "graph_block_count": 4,
+            "unique_graph_block_objects": 4,
+            "unique_graph_block_parameter_sets": 4,
+            "state_dict_block_indices": [0, 1, 2, 3],
+            "graph_block_weight_tying": "none",
+        },
+        "graph_block_gradient_diagnostics": [
+            {
+                "block_index": index,
+                "block_name": f"blocks.{index}",
+                "trainable_parameter_count": 831_880,
+                "parameters_missing_gradient": 0,
+                "gradient_norm_before_clip": 0.1 + index,
+            }
+            for index in range(4)
+        ],
+        "block_gradient_direction_preflight_summary": [
+            {
+                "schema": _RUNNER.BLOCK_GRADIENT_DIRECTION_METRICS_SCHEMA,
+                "global_epoch": 1,
+                "block_index": index,
+                "block_name": f"blocks.{index}",
+                "trainable_parameter_count": 831_880,
+                "optimizer_updates_observed": 1,
+                "gradient_norm_mean_before_clip": 0.1 + index,
+                "consecutive_optimizer_step_cosine_valid_pairs": 0,
+                "epoch_aggregate_gradient_cosine_to_previous_epoch": None,
+                "resume_boundary_unavailable": False,
+            }
+            for index in range(4)
+        ],
+        "peak_vram_gib_all_ranks": 21.5,
+        "measured_vram_headroom_gib_each_rank": 2.5,
+    }
+    receipt = dict(content)
+    receipt["receipt_content_sha256"] = _RUNNER._canonical_sha256(content)
+    receipt_path = (
+        paths.state_root
+        / "preflight/"
+        "so1_14core_geometry_modulated_relative_qkv_ddp4_plateau_min150.json"
+    )
+    receipt_path.parent.mkdir(parents=True)
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+
+    assert _RUNNER._validate_hardware_preflight(
+        config,
+        paths=paths,
+        cohort_dir=cohort_dir,
+        graph_dir=graph_dir,
+    )["campaign_id"] == _RUNNER.GEOMETRY_MODULATED_CAMPAIGN_ID
+
+    content["geometry_modulated_numerical_gates"][  # type: ignore[index]
+        "learned_geometry_heads"
+    ]["passed"] = False
+    receipt = dict(content)
+    receipt["receipt_content_sha256"] = _RUNNER._canonical_sha256(content)
+    receipt_path.write_text(json.dumps(receipt), encoding="utf-8")
+    with pytest.raises(_RUNNER.SO114CoreRunnerError, match="learned_geometry_heads"):
         _RUNNER._validate_hardware_preflight(
             config,
             paths=paths,
