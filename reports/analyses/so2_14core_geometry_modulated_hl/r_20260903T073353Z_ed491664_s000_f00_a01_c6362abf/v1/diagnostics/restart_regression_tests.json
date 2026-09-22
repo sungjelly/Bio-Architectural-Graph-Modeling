@@ -1,0 +1,8 @@
+{
+  "changed_source": "Fails before writes, preserving original staged provenance bytes and timestamps.",
+  "completed_staging": "Real checksummed synthetic PNG/embedding report publishes byte-for-byte without source reload or extraction.",
+  "executed_source_policy": "Exact source used for this production map is retained under source/; current entrypoint additionally hardens restart handling.",
+  "passed": 2,
+  "scope": "post-launch future-recovery hardening; no change to executed extraction or clustering mathematics",
+  "test_file": "tests/unit/spatial_benchmark/test_so2_geometry_hl_report_resume.py"
+}

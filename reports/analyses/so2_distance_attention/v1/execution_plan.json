@@ -1,0 +1,35 @@
+{
+  "device": "cpu",
+  "reason": "All four GPUs allocated to existing four-rank SO1 training; leave allocation untouched.",
+  "cpu_affinity_available": 80,
+  "threads_per_worker": 8,
+  "worker_count": 4,
+  "priority_nice": 10,
+  "assignments": [
+    [
+      23,
+      20
+    ],
+    [
+      15,
+      25,
+      22
+    ],
+    [
+      27,
+      26,
+      28,
+      17
+    ],
+    [
+      19,
+      16,
+      24,
+      18
+    ]
+  ],
+  "pilot_core": 21,
+  "pilot_runtime_seconds": 50.02181434631348,
+  "pilot_public_forward_max_abs_error": 0.0,
+  "failures": []
+}

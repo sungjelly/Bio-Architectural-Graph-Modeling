@@ -1,0 +1,368 @@
+diff --git a/experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/README.md b/experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/README.md
+index 14b7848..5f12717 100644
+--- a/experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/README.md
++++ b/experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/README.md
+@@ -519,3 +519,13 @@ core-associated islands, and claim limits are documented in
+ [`HL_UMAP.md`](HL_UMAP.md). The verified additive report is under
+ `reports/analyses/so2_14core_contextual_embedding_umap/` and does not modify
+ the completed model run or its source clustering report.
++
++## Completed hidden-layer clustering progression
++
++The locked four-block checkpoint now has matched joint Leiden resolution-1.0
++partitions for the intrinsic encoder state h0, post-block states h1--h3, and
++the existing final hL state. Static spatial PNGs and cell-aligned split/merge
++heatmaps cover all 246,063 cells across cores 15--28. The exploratory task
++contract, results, exact reproduction command, verification evidence, and
++claim limits are documented in
++[`HIDDEN_LAYER_PROGRESSION_CLUSTERING.md`](HIDDEN_LAYER_PROGRESSION_CLUSTERING.md).
+diff --git a/src/spatial_benchmark/cli.py b/src/spatial_benchmark/cli.py
+index 47a38aa..459eba4 100644
+--- a/src/spatial_benchmark/cli.py
++++ b/src/spatial_benchmark/cli.py
+@@ -280,6 +280,32 @@ def build_parser() -> argparse.ArgumentParser:
+     so2_hl_analysis.add_argument("--dpi", type=int, default=300)
+     so2_hl_analysis.add_argument("--output-dir", type=Path)
+ 
++    so2_hidden_progression = subparsers.add_parser(
++        "analyze-so2-hidden-layer-progression",
++        help=(
++            "Extract h0 and post-block h1-h3 from the completed four-block "
++            "SO2 model, run matched joint Leiden clustering, and render "
++            "static progression PNGs."
++        ),
++    )
++    so2_hidden_progression.add_argument("--run-id")
++    so2_hidden_progression.add_argument("--checkpoint", type=Path)
++    so2_hidden_progression.add_argument("--n-neighbors", type=int, default=30)
++    so2_hidden_progression.add_argument(
++        "--leiden-resolution", type=float, default=1.0
++    )
++    so2_hidden_progression.add_argument(
++        "--pca-components", type=int, default=50
++    )
++    so2_hidden_progression.add_argument(
++        "--random-seed", type=int, default=20260825
++    )
++    so2_hidden_progression.add_argument("--device", default="cpu")
++    so2_hidden_progression.add_argument("--cpu-threads", type=int, default=40)
++    so2_hidden_progression.add_argument("--cluster-workers", type=int, default=4)
++    so2_hidden_progression.add_argument("--dpi", type=int, default=300)
++    so2_hidden_progression.add_argument("--output-dir", type=Path)
++
+     so2_recurrent_hl_analysis = subparsers.add_parser(
+         "analyze-so2-recurrent-hl-clusters",
+         help=(
+@@ -917,6 +943,26 @@ def _dispatch(
+             dpi=arguments.dpi,
+             output_dir=arguments.output_dir,
+         )
++    if command == "analyze-so2-hidden-layer-progression":
++        from spatial_benchmark.so2_hidden_layer_progression import (
++            run_so2_hidden_layer_progression,
++        )
++
++        return run_so2_hidden_layer_progression(
++            registry=registry,
++            paths=paths,
++            run_id=arguments.run_id,
++            checkpoint=arguments.checkpoint,
++            n_neighbors=arguments.n_neighbors,
++            leiden_resolution=arguments.leiden_resolution,
++            pca_components=arguments.pca_components,
++            random_seed=arguments.random_seed,
++            device=arguments.device,
++            cpu_threads=arguments.cpu_threads,
++            cluster_workers=arguments.cluster_workers,
++            dpi=arguments.dpi,
++            output_dir=arguments.output_dir,
++        )
+     if command == "analyze-so2-recurrent-hl-clusters":
+         from spatial_benchmark.so2_recurrent_hl_clustering import (
+             run_so2_recurrent_hl_clustering,
+diff --git a/src/spatial_benchmark/relative_qkv_graph_transformer.py b/src/spatial_benchmark/relative_qkv_graph_transformer.py
+index 5b1fe82..6843c3b 100644
+--- a/src/spatial_benchmark/relative_qkv_graph_transformer.py
++++ b/src/spatial_benchmark/relative_qkv_graph_transformer.py
+@@ -333,7 +333,13 @@ class RelativeGeometryQKVDiagnostics:
+ 
+ @dataclass
+ class RelativeGeometryQKVModelOutput(ModelOutput):
+-    """Standard model output plus optional relative-QKV diagnostics."""
++    """Standard output plus optional relative-QKV states and diagnostics.
++
++    ``graph_step_embeddings[k - 1]`` is the full-node state after graph
++    execution step ``k``, irrespective of ``target_nodes``.  Its final entry
++    is therefore ``hL`` for both independently parameterized layers and
++    recurrently reused graph blocks.
++    """
+ 
+     content_logits: Optional[Tensor] = None
+     positional_bias: Optional[Tensor] = None
+@@ -346,6 +352,7 @@ class RelativeGeometryQKVModelOutput(ModelOutput):
+     diagnostics: Optional[RelativeGeometryQKVDiagnostics] = None
+     node_encoder_embedding: Optional[Tensor] = None
+     final_graph_embedding: Optional[Tensor] = None
++    graph_step_embeddings: Optional[tuple[Tensor, ...]] = None
+ 
+ 
+ def _resolve_explanation_layer(
+@@ -549,6 +556,7 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
+         selected_embedding: Tensor,
+         full_embedding: Tensor,
+         node_encoder_embedding: Optional[Tensor],
++        graph_step_embeddings: Optional[tuple[Tensor, ...]],
+         edge_index: Optional[Tensor],
+         attention: Optional[Tensor],
+         content_logits: Optional[Tensor],
+@@ -589,6 +597,7 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
+                 if node_encoder_embedding is not None
+                 else None
+             ),
++            graph_step_embeddings=graph_step_embeddings,
+             attention_weights=attention,
+             edge_index=edge_index,
+             content_logits=content_logits,
+@@ -616,6 +625,7 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
+         explanation_layer: int = -1,
+         return_diagnostics: Optional[bool] = None,
+         return_intermediate_embeddings: bool = False,
++        return_graph_step_embeddings: bool = False,
+     ) -> RelativeGeometryQKVModelOutput:
+         if return_diagnostics is not None:
+             if return_explanations and not return_diagnostics:
+@@ -651,6 +661,9 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
+             if return_intermediate_embeddings
+             else None
+         )
++        graph_step_embeddings: Optional[list[Tensor]] = (
++            [] if return_graph_step_embeddings else None
++        )
+         receiver_mask = self._explanation_receiver_mask(
+             attention_receivers,
+             return_explanations=return_explanations,
+@@ -682,6 +695,8 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
+                 receiver,
+                 prepared_geometry,
+             )
++            if graph_step_embeddings is not None:
++                graph_step_embeddings.append(node_embedding)
+             if return_explanations and layer_number == selected_layer:
+                 assert receiver_mask is not None
+                 selected_edges = receiver_mask.index_select(0, receiver)
+@@ -698,6 +713,11 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
+             selected_embedding=selected_embedding,
+             full_embedding=node_embedding,
+             node_encoder_embedding=node_encoder_embedding,
++            graph_step_embeddings=(
++                tuple(graph_step_embeddings)
++                if graph_step_embeddings is not None
++                else None
++            ),
+             edge_index=diagnostic_edges,
+             attention=final_attention,
+             content_logits=final_content,
+@@ -1055,6 +1075,7 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
+         explanation_layer: int = -1,
+         return_diagnostics: Optional[bool] = None,
+         return_intermediate_embeddings: bool = False,
++        return_graph_step_embeddings: bool = False,
+     ) -> RelativeGeometryQKVModelOutput:
+         if return_diagnostics is not None:
+             if return_explanations and not return_diagnostics:
+@@ -1095,6 +1116,9 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
+             if return_intermediate_embeddings
+             else None
+         )
++        graph_step_embeddings: Optional[list[Tensor]] = (
++            [] if return_graph_step_embeddings else None
++        )
+         layout = self._receiver_layout(prepared_edges, num_nodes=num_nodes)
+         receiver_mask = self._explanation_receiver_mask(
+             attention_receivers,
+@@ -1129,6 +1153,8 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
+                 layout,
+                 diagnostic_mask,
+             )
++            if graph_step_embeddings is not None:
++                graph_step_embeddings.append(node_embedding)
+             if diagnostic_mask is not None:
+                 edge_ids = layer_ids
+                 final_attention = attention
+@@ -1147,6 +1173,11 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
+             selected_embedding=selected_embedding,
+             full_embedding=node_embedding,
+             node_encoder_embedding=node_encoder_embedding,
++            graph_step_embeddings=(
++                tuple(graph_step_embeddings)
++                if graph_step_embeddings is not None
++                else None
++            ),
+             edge_index=diagnostic_edges,
+             attention=final_attention,
+             content_logits=final_content,
+diff --git a/tests/unit/spatial_benchmark/test_relative_qkv_graph_transformer.py b/tests/unit/spatial_benchmark/test_relative_qkv_graph_transformer.py
+index ebf35d0..38c02a5 100644
+--- a/tests/unit/spatial_benchmark/test_relative_qkv_graph_transformer.py
++++ b/tests/unit/spatial_benchmark/test_relative_qkv_graph_transformer.py
+@@ -184,6 +184,7 @@ def test_recurrent_forward_matches_four_tied_block_copies() -> None:
+             relative_geometry=geometry,
+             node_covariates=metadata,
+             return_intermediate_embeddings=True,
++            return_graph_step_embeddings=True,
+         )
+         expected = reference(
+             expression,
+@@ -192,11 +193,25 @@ def test_recurrent_forward_matches_four_tied_block_copies() -> None:
+             relative_geometry=geometry,
+             node_covariates=metadata,
+             return_intermediate_embeddings=True,
++            return_graph_step_embeddings=True,
+         )
+     torch.testing.assert_close(observed.prediction, expected.prediction)
+     torch.testing.assert_close(
+         observed.final_graph_embedding, expected.final_graph_embedding
+     )
++    assert observed.graph_step_embeddings is not None
++    assert expected.graph_step_embeddings is not None
++    assert len(observed.graph_step_embeddings) == 4
++    assert len(expected.graph_step_embeddings) == 4
++    for observed_step, expected_step in zip(
++        observed.graph_step_embeddings,
++        expected.graph_step_embeddings,
++        strict=True,
++    ):
++        torch.testing.assert_close(observed_step, expected_step)
++    assert torch.equal(
++        observed.graph_step_embeddings[-1], observed.final_graph_embedding
++    )
+ 
+ 
+ @pytest.mark.parametrize(
+@@ -231,6 +246,7 @@ def test_full_and_exact_receiver_chunked_outputs_gradients_and_explanations_matc
+         relative_geometry=geometry,
+         node_covariates=metadata,
+         return_explanations=True,
++        return_graph_step_embeddings=True,
+     )
+     chunked_output = chunked(
+         expression,
+@@ -239,6 +255,7 @@ def test_full_and_exact_receiver_chunked_outputs_gradients_and_explanations_matc
+         relative_geometry=geometry,
+         node_covariates=metadata,
+         return_explanations=True,
++        return_graph_step_embeddings=True,
+     )
+     torch.testing.assert_close(chunked_output.prediction, full_output.prediction)
+     torch.testing.assert_close(chunked_output.node_embedding, full_output.node_embedding)
+@@ -252,6 +269,16 @@ def test_full_and_exact_receiver_chunked_outputs_gradients_and_explanations_matc
+         chunked_output.content_logits + chunked_output.positional_bias,
+         chunked_output.combined_logits,
+     )
++    assert full_output.graph_step_embeddings is not None
++    assert chunked_output.graph_step_embeddings is not None
++    assert len(full_output.graph_step_embeddings) == full.graph_layers
++    assert len(chunked_output.graph_step_embeddings) == chunked.graph_layers
++    for full_step, chunked_step in zip(
++        full_output.graph_step_embeddings,
++        chunked_output.graph_step_embeddings,
++        strict=True,
++    ):
++        torch.testing.assert_close(chunked_step, full_step)
+     assert torch.equal(chunked_output.edge_index, edge_index)
+ 
+     full.zero_grad(set_to_none=True)
+@@ -302,6 +329,14 @@ def test_intermediate_embeddings_are_exact_aligned_and_prediction_invariant(
+                 node_covariates=metadata,
+                 target_nodes=target_nodes,
+             )
++            all_nodes = model(
++                expression,
++                mask,
++                edge_index=edge_index,
++                relative_geometry=geometry,
++                node_covariates=metadata,
++                return_graph_step_embeddings=True,
++            )
+             extended = model(
+                 expression,
+                 mask,
+@@ -310,6 +345,7 @@ def test_intermediate_embeddings_are_exact_aligned_and_prediction_invariant(
+                 node_covariates=metadata,
+                 target_nodes=target_nodes,
+                 return_intermediate_embeddings=True,
++                return_graph_step_embeddings=True,
+             )
+             expected_h0 = model.encoder(
+                 expression,
+@@ -321,14 +357,70 @@ def test_intermediate_embeddings_are_exact_aligned_and_prediction_invariant(
+ 
+     assert standard.node_encoder_embedding is None
+     assert standard.final_graph_embedding is None
++    assert standard.graph_step_embeddings is None
+     assert extended.node_encoder_embedding is not None
+     assert extended.final_graph_embedding is not None
++    assert extended.graph_step_embeddings is not None
++    assert all_nodes.graph_step_embeddings is not None
+     assert torch.equal(extended.prediction, standard.prediction)
+     assert torch.equal(extended.node_encoder_embedding, expected_h0)
+     assert torch.equal(extended.final_graph_embedding, extended.node_embedding)
+     assert torch.equal(extended.final_graph_embedding, decoder_inputs[-1])
+     assert extended.node_encoder_embedding.shape == (3, model.hidden_dim)
+     assert extended.final_graph_embedding.shape == (3, model.hidden_dim)
++    assert len(extended.graph_step_embeddings) == model.graph_layers
++    assert len(all_nodes.graph_step_embeddings) == model.graph_layers
++    for returned_step, full_step in zip(
++        extended.graph_step_embeddings,
++        all_nodes.graph_step_embeddings,
++        strict=True,
++    ):
++        assert returned_step.shape == (expression.shape[0], model.hidden_dim)
++        assert torch.equal(returned_step, full_step)
++    assert torch.equal(
++        extended.graph_step_embeddings[-1], extended.full_node_embedding
++    )
++    assert torch.equal(
++        extended.graph_step_embeddings[-1].index_select(0, target_nodes),
++        extended.final_graph_embedding,
++    )
++
++
++@pytest.mark.parametrize(
++    "model_class",
++    [
++        RelativeGeometryQKVGraphTransformer,
++        ReceiverChunkedRelativeGeometryQKVGraphTransformer,
++    ],
++)
++def test_graph_step_embeddings_remain_full_when_decoder_targets_are_empty(
++    model_class: type[RelativeGeometryQKVGraphTransformer],
++) -> None:
++    expression, mask, metadata, edge_index, geometry = _inputs()
++    model = _model(model_class).eval()
++
++    with torch.inference_mode():
++        output = model(
++            expression,
++            mask,
++            edge_index=edge_index,
++            relative_geometry=geometry,
++            node_covariates=metadata,
++            target_nodes=torch.empty((0,), dtype=torch.long),
++            return_graph_step_embeddings=True,
++        )
++
++    assert output.prediction.shape == (0, expression.shape[1])
++    assert output.node_embedding.shape == (0, model.hidden_dim)
++    assert output.graph_step_embeddings is not None
++    assert len(output.graph_step_embeddings) == model.graph_layers
++    assert all(
++        step.shape == (expression.shape[0], model.hidden_dim)
++        for step in output.graph_step_embeddings
++    )
++    assert torch.equal(
++        output.graph_step_embeddings[-1], output.full_node_embedding
++    )
+ 
+ 
+ def test_attention_normalizes_per_receiver_and_explanation_filter_stays_aligned() -> None:

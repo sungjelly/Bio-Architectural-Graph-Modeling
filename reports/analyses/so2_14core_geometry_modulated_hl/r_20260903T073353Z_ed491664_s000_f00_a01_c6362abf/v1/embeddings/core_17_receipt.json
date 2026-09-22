@@ -1,0 +1,61 @@
+{
+  "alias": "SO2-C17",
+  "cell_count": 9041,
+  "checkpoint_sha256": "aba6a1d910e60f6a30bb4b27b15dbd1c30199da41a15460c23d994079b67543b",
+  "core_number": 17,
+  "created_at": "2026-09-05T05:39:26.282170+00:00",
+  "embedding_file": "embeddings/core_17_hL.npz",
+  "file": {
+    "sha256": "fc82f2452cd2570e1d7d6c2dfbc29df9b1d28b18d076e70f4b21a579e4280e4d",
+    "size_bytes": 8683673
+  },
+  "hL_array_sha256": "5825baaaad1793309a8db6a1160697616b0cc82754db0ac9c2f825d78037d56c",
+  "hL_shape": [
+    9041,
+    256
+  ],
+  "inference": {
+    "cells_per_second": 4587.07647732713,
+    "complete_core": true,
+    "device": "cuda:3",
+    "dtype": "float32",
+    "elapsed_seconds": 1.9709721528925002,
+    "gene_mask_nonzero_count": 0,
+    "geometry_device": "cpu",
+    "graph_device": "cpu",
+    "host_peak_rss_bytes": 4144574464,
+    "model_eval": true,
+    "peak_allocated_bytes": 335668736,
+    "peak_reserved_bytes": 656408576,
+    "tf32": false,
+    "torch_inference_mode": true
+  },
+  "manifest_content_sha256": "c55ee4b7a8e1b714cac73cabedecb2b5afd6440334ea02bb0a2cb5b99d1c2038",
+  "repeat": null,
+  "run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+  "schema": "so2_geometry_hl_core_v1",
+  "source_core": {
+    "alias": "SO2-C17",
+    "cell_count": 9041,
+    "core_number": 17,
+    "directed_edges": 2070630,
+    "graph_file_checksums": {
+      "edge_index.npy": "73efbf5ed58c2938e7e6194cbfa1795b5f1e01aae778c1b85fd574fb561becd7",
+      "orientation.npz": "c5fce3bdc0d903f372b0f7ba16705ddaa7be176a6d259a187b5f8491dacd0370",
+      "relative_geometry.npy": "4ca4a1c7ce053538d804014e394a34e4b0142ac82bbbe49c7a6723b911cca8d4"
+    },
+    "graph_logical_sha256": "801814a4295c8ffb98e553f44359b52f962b531a2efcde4e2db252023ed62e82",
+    "graph_record_sha256": "981625170127990d0a02f4a3be44e615c9786bb02ba74ce246a35ae7d06697a8",
+    "prepared_component_checksums": {
+      "coordinates_um": "c47060ec85668da535f8782c498504c5da9113a46ed09a62336731fd73680783",
+      "expression_counts": "f25fee169c7ce7bbde5775372e61e30153c2d11c548381bdd0d624af7e83fc8a",
+      "node_covariates": "80c4e98c5c9b066171f8f0c76a3269eccbdecfdee16ff1c71c1f34260bd66333",
+      "target_expression": "c6f6c74c4ecedf22ac87ce69d1a3396543a9da47f47b54dc78278523e9573e92"
+    },
+    "prepared_core_artifact_sha256": "a5e3ecca416d33e40026581912a7bd08df3337d01ec442e425061eaf904b4698",
+    "receiver_major_canonical_order": true
+  },
+  "source_expression_sha256": "050fde3093497d9d0ebfcfacddb36eb318dbd265e341220eb253bc9416e6be25",
+  "source_metadata_sha256": "c17e9cd70dc4a043aa2d0bccf2023dc95f70a00f1bd330d1a3bb784c71ef68a9",
+  "status": "complete"
+}

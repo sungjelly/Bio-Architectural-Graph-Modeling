@@ -1,0 +1,30 @@
+{
+  "all_cell_indices_exact": true,
+  "all_coordinates_exact_to_prepared_source": true,
+  "all_finite": true,
+  "all_receipt_and_file_hashes_valid": true,
+  "biological_or_patient_generalization_claim": false,
+  "devices": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "dtype": "float32",
+  "embedding_dimension": 256,
+  "inference_seconds_per_core_range": [
+    1.85,
+    9.71
+  ],
+  "max_allocated_gib": 0.706,
+  "max_host_rss_gib": 8.434,
+  "max_reserved_gib": 0.789,
+  "pilot_max_absolute_difference": 0.0,
+  "pilot_repeat_exact": true,
+  "scope": "read_only_independent_check_of_all_14_embedding_shards_against_prepared_coordinates",
+  "shards": 14,
+  "status": "passed",
+  "summed_inference_seconds_excluding_loading_and_parallel_overlap": 66.45,
+  "total_cells": 246063,
+  "zero_mask_eval_inference_verified": true
+}

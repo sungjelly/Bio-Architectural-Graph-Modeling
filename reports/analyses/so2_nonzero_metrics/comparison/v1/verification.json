@@ -1,0 +1,12 @@
+{
+  "core_receipt_count": 56,
+  "equal_core_mse_decomposition_verified": true,
+  "fixed_masks_and_observed_count_supports_match": true,
+  "formal_inference_performed": false,
+  "per_core_sums_means_detection_and_decomposition_recomputed": true,
+  "row_level_predictions_exported": false,
+  "shared_baselines_equal_across_models": true,
+  "source_evaluation_count": 4,
+  "source_manifest_inventory_verified": true,
+  "status": "passed"
+}

@@ -1,0 +1,49 @@
+{
+  "schema": "so2_attention_source_semantics_audit_v1",
+  "created_at": "2026-09-05T05:53:05.984637+00:00",
+  "run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+  "training_commit": "4b03200af9168c535bde5c291cf5a00af054def7",
+  "training_patch_sha256": "cddb44580a9187bb074f66e7587cd8af2e9a6845460a7970e17a49467d23ffb9",
+  "training_untracked_manifest_sha256": "34858b7d19c571a6c442fcdca5e79c78f4448ead39dc15890f5b7926226230a8",
+  "base_model": {
+    "source": "src/spatial_benchmark/relative_qkv_graph_transformer.py",
+    "reconstructed_training_file": "provenance/training_relative_qkv_graph_transformer.py",
+    "training_git_blob": "0368704aa2bc1c38160beae6a3cad7acffb877c5",
+    "training_sha256": "4504f3ffa25edc0f99acf17cb002cb4dacff03c9fdf952d0c3901c4fc219b4ec",
+    "current_git_blob": "6843c3be9bbbd0f553ce0f961c495bc589e9d794",
+    "current_sha256": "b6f54251da687704b9e2779ec0868142b52f516ae647dda53e97baf1c00ee511",
+    "unchanged_methods_ast_verified": [
+      "_incoming_softmax",
+      "ReceiverChunkedRelativeGeometryQKVGraphTransformer._receiver_layout",
+      "ReceiverChunkedRelativeGeometryQKVGraphTransformer._receiver_ranges",
+      "ReceiverChunkedRelativeGeometryQKVGraphTransformer._chunked_layer",
+      "ReceiverChunkedRelativeGeometryQKVGraphTransformer._graph_execution_blocks",
+      "RelativeGeometryQKVGraphTransformerBlock.project_nodes",
+      "RelativeGeometryQKVGraphTransformerBlock.finish_partition"
+    ],
+    "differences": "Optional graph_step_embeddings output field, default-false collection flag and list append/tuple packaging in forward; docstrings. No changes to attention, receiver partitioning or tensor arithmetic."
+  },
+  "encoder_and_decoder": {
+    "source": "src/spatial_benchmark/models.py",
+    "byte_identical_to_training": true,
+    "git_blob": "0f8eb15f4586e065e49b98c035385a1583524dda",
+    "sha256": "60f70bf9e91e7ba72289e539cfa607ae05901e5785f361de77b77c916869f969",
+    "covers": [
+      "NodeEncoder",
+      "_BaseMaskedExpressionModel._encode_and_targets",
+      "ExpressionDecoder"
+    ]
+  },
+  "geometry_attention": {
+    "source": "src/spatial_benchmark/geometry_modulated_relative_qkv_graph_transformer.py",
+    "matches_training_untracked_source_sha256": true,
+    "sha256": "ce50d414890539c6fbb61bd7c6daf212bc42a1551978d2baf84139840a4fbaad",
+    "covers": [
+      "GeometryModulatedRelativeQKVGraphTransformerBlock.project_nodes",
+      "GeometryModulatedRelativeQKVGraphTransformerBlock.score_edges",
+      "GeometryModulatedRelativeQKVGraphTransformerBlock.finish_partition",
+      "_GeometryModulatedAttentionMixin._attention_partition"
+    ]
+  },
+  "conclusion": "The analysis streaming path has the same forward semantics as the checkpoint training source. The current public forward retains the training semantics with return_graph_step_embeddings=False, the default used by the pilot. This source audit does not assert cross-hardware bitwise equivalence."
+}

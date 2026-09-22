@@ -1,0 +1,12 @@
+{
+  "geometry": {
+    "epochs": 200,
+    "max_preclip_norm": 0.10447125136852264,
+    "mean_last25_epoch_gradient_cosine": -0.7435040259361267
+  },
+  "recurrent": {
+    "epochs": 175,
+    "max_preclip_norm": 0.2653012275695801,
+    "mean_last25_epoch_gradient_cosine": -0.6067628115415573
+  }
+}

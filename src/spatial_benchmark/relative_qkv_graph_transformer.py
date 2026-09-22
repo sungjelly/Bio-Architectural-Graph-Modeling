@@ -333,7 +333,13 @@ class RelativeGeometryQKVDiagnostics:
 
 @dataclass
 class RelativeGeometryQKVModelOutput(ModelOutput):
-    """Standard model output plus optional relative-QKV diagnostics."""
+    """Standard output plus optional relative-QKV states and diagnostics.
+
+    ``graph_step_embeddings[k - 1]`` is the full-node state after graph
+    execution step ``k``, irrespective of ``target_nodes``.  Its final entry
+    is therefore ``hL`` for both independently parameterized layers and
+    recurrently reused graph blocks.
+    """
 
     content_logits: Optional[Tensor] = None
     positional_bias: Optional[Tensor] = None
@@ -346,6 +352,7 @@ class RelativeGeometryQKVModelOutput(ModelOutput):
     diagnostics: Optional[RelativeGeometryQKVDiagnostics] = None
     node_encoder_embedding: Optional[Tensor] = None
     final_graph_embedding: Optional[Tensor] = None
+    graph_step_embeddings: Optional[tuple[Tensor, ...]] = None
 
 
 def _resolve_explanation_layer(
@@ -549,6 +556,7 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
         selected_embedding: Tensor,
         full_embedding: Tensor,
         node_encoder_embedding: Optional[Tensor],
+        graph_step_embeddings: Optional[tuple[Tensor, ...]],
         edge_index: Optional[Tensor],
         attention: Optional[Tensor],
         content_logits: Optional[Tensor],
@@ -589,6 +597,7 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
                 if node_encoder_embedding is not None
                 else None
             ),
+            graph_step_embeddings=graph_step_embeddings,
             attention_weights=attention,
             edge_index=edge_index,
             content_logits=content_logits,
@@ -616,6 +625,7 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
         explanation_layer: int = -1,
         return_diagnostics: Optional[bool] = None,
         return_intermediate_embeddings: bool = False,
+        return_graph_step_embeddings: bool = False,
     ) -> RelativeGeometryQKVModelOutput:
         if return_diagnostics is not None:
             if return_explanations and not return_diagnostics:
@@ -651,6 +661,9 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
             if return_intermediate_embeddings
             else None
         )
+        graph_step_embeddings: Optional[list[Tensor]] = (
+            [] if return_graph_step_embeddings else None
+        )
         receiver_mask = self._explanation_receiver_mask(
             attention_receivers,
             return_explanations=return_explanations,
@@ -682,6 +695,8 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
                 receiver,
                 prepared_geometry,
             )
+            if graph_step_embeddings is not None:
+                graph_step_embeddings.append(node_embedding)
             if return_explanations and layer_number == selected_layer:
                 assert receiver_mask is not None
                 selected_edges = receiver_mask.index_select(0, receiver)
@@ -698,6 +713,11 @@ class RelativeGeometryQKVGraphTransformer(_BaseMaskedExpressionModel):
             selected_embedding=selected_embedding,
             full_embedding=node_embedding,
             node_encoder_embedding=node_encoder_embedding,
+            graph_step_embeddings=(
+                tuple(graph_step_embeddings)
+                if graph_step_embeddings is not None
+                else None
+            ),
             edge_index=diagnostic_edges,
             attention=final_attention,
             content_logits=final_content,
@@ -1055,6 +1075,7 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
         explanation_layer: int = -1,
         return_diagnostics: Optional[bool] = None,
         return_intermediate_embeddings: bool = False,
+        return_graph_step_embeddings: bool = False,
     ) -> RelativeGeometryQKVModelOutput:
         if return_diagnostics is not None:
             if return_explanations and not return_diagnostics:
@@ -1095,6 +1116,9 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
             if return_intermediate_embeddings
             else None
         )
+        graph_step_embeddings: Optional[list[Tensor]] = (
+            [] if return_graph_step_embeddings else None
+        )
         layout = self._receiver_layout(prepared_edges, num_nodes=num_nodes)
         receiver_mask = self._explanation_receiver_mask(
             attention_receivers,
@@ -1129,6 +1153,8 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
                 layout,
                 diagnostic_mask,
             )
+            if graph_step_embeddings is not None:
+                graph_step_embeddings.append(node_embedding)
             if diagnostic_mask is not None:
                 edge_ids = layer_ids
                 final_attention = attention
@@ -1147,6 +1173,11 @@ class ReceiverChunkedRelativeGeometryQKVGraphTransformer(
             selected_embedding=selected_embedding,
             full_embedding=node_embedding,
             node_encoder_embedding=node_encoder_embedding,
+            graph_step_embeddings=(
+                tuple(graph_step_embeddings)
+                if graph_step_embeddings is not None
+                else None
+            ),
             edge_index=diagnostic_edges,
             attention=final_attention,
             content_logits=final_content,

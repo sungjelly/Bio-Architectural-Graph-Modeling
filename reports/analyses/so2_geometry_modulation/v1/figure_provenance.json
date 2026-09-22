@@ -1,0 +1,16 @@
+{
+  "schema": "so2_geometry_modulation_figure_provenance_v1",
+  "created_at": "2026-09-05T06:06:43.735119+00:00",
+  "render_script_sha256": "8980647a18da949da7b36c3aea243a6105480a2454834023cf2f1167f9c8f76b",
+  "summary_sha256": "870429ec67d1603c97d9e8d402ab82889a94aa7fba5452e69ce4c7ba7cf9e167",
+  "distributions_sha256": "27328eb996921361249fca75ed6ac3ff26e43fc7bf4552a542ea328e64bb7f14",
+  "png_sha256": "7b601fcfdd2280da1c93788a30c99ae59248513f6558a0c7fd0ba6963987d372",
+  "pdf_sha256": "08498280f5326117c829bfdb9f50df16759a0e38656591af55530ee792b8fafa",
+  "matplotlib_version": "3.11.1",
+  "numpy_version": "2.5.2",
+  "full_moment_directed_edges": 55980536,
+  "core_count": 14,
+  "distribution_sampling": "Deterministic 4096-edge sample per core; equal-core probabilities; all dimensions per head.",
+  "heatmap_weighting": "Equal core and dimension; RMS after averaging squared values.",
+  "first_two_heatmaps_share_rms_color_scale": true
+}

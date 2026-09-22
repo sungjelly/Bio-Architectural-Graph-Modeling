@@ -280,6 +280,32 @@ def build_parser() -> argparse.ArgumentParser:
     so2_hl_analysis.add_argument("--dpi", type=int, default=300)
     so2_hl_analysis.add_argument("--output-dir", type=Path)
 
+    so2_hidden_progression = subparsers.add_parser(
+        "analyze-so2-hidden-layer-progression",
+        help=(
+            "Extract h0 and post-block h1-h3 from the completed four-block "
+            "SO2 model, run matched joint Leiden clustering, and render "
+            "static progression PNGs."
+        ),
+    )
+    so2_hidden_progression.add_argument("--run-id")
+    so2_hidden_progression.add_argument("--checkpoint", type=Path)
+    so2_hidden_progression.add_argument("--n-neighbors", type=int, default=30)
+    so2_hidden_progression.add_argument(
+        "--leiden-resolution", type=float, default=1.0
+    )
+    so2_hidden_progression.add_argument(
+        "--pca-components", type=int, default=50
+    )
+    so2_hidden_progression.add_argument(
+        "--random-seed", type=int, default=20260825
+    )
+    so2_hidden_progression.add_argument("--device", default="cpu")
+    so2_hidden_progression.add_argument("--cpu-threads", type=int, default=40)
+    so2_hidden_progression.add_argument("--cluster-workers", type=int, default=4)
+    so2_hidden_progression.add_argument("--dpi", type=int, default=300)
+    so2_hidden_progression.add_argument("--output-dir", type=Path)
+
     so2_recurrent_hl_analysis = subparsers.add_parser(
         "analyze-so2-recurrent-hl-clusters",
         help=(
@@ -914,6 +940,26 @@ def _dispatch(
             random_seed=arguments.random_seed,
             device=arguments.device,
             cpu_threads=arguments.cpu_threads,
+            dpi=arguments.dpi,
+            output_dir=arguments.output_dir,
+        )
+    if command == "analyze-so2-hidden-layer-progression":
+        from spatial_benchmark.so2_hidden_layer_progression import (
+            run_so2_hidden_layer_progression,
+        )
+
+        return run_so2_hidden_layer_progression(
+            registry=registry,
+            paths=paths,
+            run_id=arguments.run_id,
+            checkpoint=arguments.checkpoint,
+            n_neighbors=arguments.n_neighbors,
+            leiden_resolution=arguments.leiden_resolution,
+            pca_components=arguments.pca_components,
+            random_seed=arguments.random_seed,
+            device=arguments.device,
+            cpu_threads=arguments.cpu_threads,
+            cluster_workers=arguments.cluster_workers,
             dpi=arguments.dpi,
             output_dir=arguments.output_dir,
         )

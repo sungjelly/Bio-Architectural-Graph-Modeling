@@ -1,0 +1,19 @@
+{"time": "2026-09-05T06:42:18.654728+00:00", "phase": "prepared", "model": "continued", "source_run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2", "evaluation_id": "ev_so2_nonzero_v1_r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2"}
+{"time": "2026-09-05T06:43:17.277107+00:00", "phase": "pilot_started", "model": "continued", "command": ["scripts/analysis/compare_so2_nonzero_accuracy.py", "--model", "continued", "--phase", "pilot"]}
+{"time": "2026-09-05T06:43:25.191082+00:00", "phase": "core_completed", "model": "continued", "core": 21, "runtime_seconds": 7.906381688080728, "peak_vram_gib": 0.6471695899963379}
+{"time": "2026-09-05T06:44:30.317603+00:00", "phase": "core_completed", "model": "continued", "core": 23, "runtime_seconds": 64.78168412297964, "peak_vram_gib": 1.1051983833312988}
+{"time": "2026-09-05T06:44:30.975326+00:00", "phase": "pilot_passed", "model": "continued", "cores": [21, 23]}
+{"time": "2026-09-05T06:45:36.236202+00:00", "phase": "full_started", "model": "continued", "command": ["scripts/analysis/compare_so2_nonzero_accuracy.py", "--model", "continued", "--phase", "full"]}
+{"time": "2026-09-05T06:46:30.175079+00:00", "phase": "core_completed", "model": "continued", "core": 15, "runtime_seconds": 53.93114470271394, "peak_vram_gib": 1.0083441734313965}
+{"time": "2026-09-05T06:46:53.240970+00:00", "phase": "core_completed", "model": "continued", "core": 16, "runtime_seconds": 22.511481628287584, "peak_vram_gib": 0.7562422752380371}
+{"time": "2026-09-05T06:47:06.490679+00:00", "phase": "core_completed", "model": "continued", "core": 17, "runtime_seconds": 12.849794572219253, "peak_vram_gib": 0.6759171485900879}
+{"time": "2026-09-05T06:47:23.083728+00:00", "phase": "core_completed", "model": "continued", "core": 18, "runtime_seconds": 16.235875998158008, "peak_vram_gib": 0.7073659896850586}
+{"time": "2026-09-05T06:47:49.808056+00:00", "phase": "core_completed", "model": "continued", "core": 19, "runtime_seconds": 26.340524896979332, "peak_vram_gib": 0.7992405891418457}
+{"time": "2026-09-05T06:48:08.629422+00:00", "phase": "core_completed", "model": "continued", "core": 20, "runtime_seconds": 18.450439549982548, "peak_vram_gib": 0.7072005271911621}
+{"time": "2026-09-05T06:48:25.797712+00:00", "phase": "core_completed", "model": "continued", "core": 22, "runtime_seconds": 16.75357094593346, "peak_vram_gib": 0.7020225524902344}
+{"time": "2026-09-05T06:48:46.146140+00:00", "phase": "core_completed", "model": "continued", "core": 24, "runtime_seconds": 20.011355849914253, "peak_vram_gib": 0.7430143356323242}
+{"time": "2026-09-05T06:49:04.348895+00:00", "phase": "core_completed", "model": "continued", "core": 25, "runtime_seconds": 17.78468346176669, "peak_vram_gib": 0.7444229125976562}
+{"time": "2026-09-05T06:49:24.304365+00:00", "phase": "core_completed", "model": "continued", "core": 26, "runtime_seconds": 19.615651804953814, "peak_vram_gib": 0.7276663780212402}
+{"time": "2026-09-05T06:49:56.944776+00:00", "phase": "core_completed", "model": "continued", "core": 27, "runtime_seconds": 32.30740265408531, "peak_vram_gib": 0.8640146255493164}
+{"time": "2026-09-05T06:50:14.014706+00:00", "phase": "core_completed", "model": "continued", "core": 28, "runtime_seconds": 16.68245315318927, "peak_vram_gib": 0.7222371101379395}
+{"time": "2026-09-05T06:50:14.346369+00:00", "phase": "evaluation_complete", "model_name": "continued", "source_run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2", "evaluation_id": "ev_so2_nonzero_v1_r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2", "source_status": "completed", "source_epoch": 300, "equal_core_positive_mse_standardized": 8.850479303188235, "cores": 14, "total_cells": 246063, "runtime_seconds": 346.1624450292438, "peak_vram_gib": 1.1051983833312988, "status": "completed"}

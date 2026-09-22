@@ -1,0 +1,23 @@
+{
+  "schema": "so2_distance_attention_figure_provenance_v1",
+  "created_at": "2026-09-06T06:57:47.270817+00:00",
+  "run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+  "checkpoint_sha256": "aba6a1d910e60f6a30bb4b27b15dbd1c30199da41a15460c23d994079b67543b",
+  "render_script_sha256": "b841f643a26a6a5e929ec43d6f15b5539f115ece18cfbb73e385773f0389168b",
+  "summary_sha256": "727c8c3d48bb41688d5897f84243790b43d4a2ae594e03db5f6d6c9a1180045f",
+  "curves_sha256": "0abff96726cf4591fde0469ee3281044e7b9730aba98fa8a4dc8f83234e9ad23",
+  "outputs": {
+    "distance_attention.png": "97494c83436de5c49cd8fa0819dfd69ffacef67f2f4cb254a6161f743bd17630",
+    "distance_attention.pdf": "703a19408522767128f628290a4d310be14656fc80916ca0e1ae5424611e3b30",
+    "score_components.png": "b366871c56263fe73b04193c5ee2c9d569193f4eeb450226148c7ba96bbe80a7",
+    "score_components.pdf": "0f0a85d81844c0e7e050305711867392dbd77fcc719c7bb5f23a00b43dcaf9cf"
+  },
+  "matplotlib_version": "3.11.1",
+  "numpy_version": "2.5.2",
+  "primary_fit_range": "10_450_um",
+  "total_edges": 55980536,
+  "curve_weighting": "equal edge within each core/bin, equal core",
+  "regression_weighting": "equal edge within receiver, equal receiver within core, equal core",
+  "across_core_range": "Range of per-core, head-averaged curves in each bin; not a confidence interval.",
+  "error_heatmap": "Fixed inverse-square centered-score MSE divided by flat centered-score MSE; greater than one favors flat over fixed inverse square."
+}

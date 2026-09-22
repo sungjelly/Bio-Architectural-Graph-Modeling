@@ -1,0 +1,111 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so2_reconstruction_failure_diagnosis
+title: SO2 objective mismatch and matched spatial baselines; neural failure cause remains unresolved
+status: verified
+outcome: inconclusive
+experiment_type: descriptive_analysis
+method_family: relative_qkv
+lifecycle_stage: exploratory_screen
+study_axis: loss_and_spatial_baselines
+campaign_ids:
+- cmp_20260906_so2_failure_diagnosis
+method:
+  name: Fixed-mask four-endpoint reconstruction comparison with six constant/spatial references and primary-source
+    literature audit
+  model_family: Relative-QKV original, continued, recurrent and geometry; Huber-optimal constants and observed-only
+    spatial means
+  graph_context: Original full graph (~227.5 incoming neighbors/cell globally within 500 micrometers) and fixed
+    local k16 within 75 micrometers; no self edges
+  masking_or_perturbation: Exact original per-core uniform 0-through-1000 gene-mask seeds/checksums; no neural parameter
+    intervention
+  evaluation_design: Exploratory transductive all-fit evaluation of 246063 cells, 1000 genes and 14 cores; one trained
+    seed; equal-core metrics; no independent patient split
+  implementation_version: so2_diagnostic_baselines_v1 and so2_failure_diagnosis_synthesis_v1; executed-source snapshots
+    and independent audit retained
+conclusion:
+  question: Do loss preference or simple spatial averaging explain the limited reconstruction gains of the current
+    SO2 models?
+  estimand: Common fixed-mask all-entry Huber/MSE and observed-positive standardized/log1p MSE; mathematical fitted
+    constant-risk minimizers
+  observed_result: 999/1000 per-gene Huber constants are below the fitted log mean; mean standardized shift -0.194874.
+    Geometry all-entry Huber 0.239952905 versus Huber constant 0.253724528. Geometry positive standardized MSE 8.915117984;
+    local log mean 8.531140629, local count mean 7.898871660, original-full-graph log mean 8.589392370. Full matched
+    tables expose all-entry and zero/positive tradeoffs. Published methods differ in data scale, objective and task,
+    and supply no directly comparable SOTA threshold.
+  strongest_alternative_explanation: Observed-positive errors condition on the realized outcome; conservative conditional
+    predictions can be calibrated. Missing information, spatial mixing, decoder capacity and optimization remain
+    competing explanations. Constants are all-fit target-derived references, and endpoints have different training
+    durations.
+  controls:
+  - Exact same masks, source counts and gene transform as the four verified endpoint evaluations.
+  - All-zero, gene-mean and convex Huber-optimal constants with root and risk verification.
+  - Observed-only local log/count means and original full-graph log mean; include observed zeros and prohibit hidden-target
+    fallback leakage.
+  - 29 focused metric/helper tests; representative pilots; all 14 cores; independent provenance, metric, source
+    and registry audit.
+  remaining_uncertainty: No retrained cell-only control, isolated neural loss/head/graph ablation, data-size learning
+    curve, mask-stratified neural evaluation, calibrated count likelihood, graph-use null, independent patient test
+    or repeated trained seeds. Huber constant shrinkage does not prove the neural cause. Recurrent source finalization/catalog
+    defect remains unchanged; predictions were independently verified. Literature sources include preliminary workshop
+    and preprint results with distinct tasks.
+  maximum_defensible_claim: The objective demonstrably favors lower constants than MSE, and matched spatial baselines
+    reveal metric-dependent performance. Current evidence cannot identify one neural failure cause, establish graph-specific
+    predictive gain, or support a biological/causal claim.
+evidence:
+  predictive_gain:
+    status: mixed
+    summary: Common-mask tables show modest endpoint gains and metric-specific tradeoffs against fixed constants/spatial
+      means; no isolated neural graph gain.
+  stability:
+    status: not_tested
+    summary: One trained seed and one fixed mask/core; descriptive paired cores are not seed or patient replication.
+  faithfulness:
+    status: not_tested
+    summary: Numerical and leakage checks verify computation; no learned-attribution faithfulness experiment.
+  null_calibration:
+    status: not_tested
+    summary: Simple predictors are baselines, not mechanism-breaking spatial nulls.
+  patient_replication:
+    status: not_tested
+    summary: No patient-held-out evaluation; 14 cores are not asserted independent patients.
+  external_support:
+    status: not_tested
+    summary: Methodological literature comparison supplies no independent biological validation of BAGM.
+  perturbation_support:
+    status: not_tested
+    summary: No controlled biological perturbation or causal inference.
+provenance:
+  created_at_utc: '2026-09-06T05:26:34.940944Z'
+  updated_at_utc: '2026-09-06T05:26:34.940944Z'
+  git_commit: f632468f54b6faba8c75662f3239a62419e1722f
+  run_ids:
+  - r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6
+  - r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2
+  - r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf
+  - r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf
+  expected_seeds:
+  - 0
+  included_seeds:
+  - 0
+  expected_folds: []
+  included_folds: []
+  failed_or_excluded_runs:
+  - run_id: r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf
+    reason: Included verified recurrent endpoint despite original artifact-finalization failure and pre-existing
+      missing checkpoint-catalog entry; source status remains failed.
+  - run_id: r_20260826T032515Z_52d16093_s000_f00_a01_149a165b
+    reason: Excluded failed duplicate continuation; not an independent model lineage or seed.
+  sources:
+  - kind: report
+    root: report
+    path: analyses/so2_failure_diagnosis/baselines/v1/manifest.json
+    sha256: 25db4b207c1553c2b4b2a7127e487754737b5a824430ba36e6451f2435d667f8
+    verification_status: verified
+  - kind: report
+    root: report
+    path: analyses/so2_failure_diagnosis/comparison/v1/manifest.json
+    sha256: 85b38059649513c8b9c0af56b253e362cc86b68fe021bdb0475f04cc64c10e02
+    verification_status: verified
+files: []

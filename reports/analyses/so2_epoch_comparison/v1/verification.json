@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "epoch_counts": {
+    "original": 175,
+    "continuation": 300,
+    "recurrent": 175,
+    "geometry": 200
+  },
+  "original_inherited_prefix_identical": true,
+  "mask_identity": {
+    "original": {
+      "paired_core_records": 2450,
+      "identical_mask_checksums": 24500
+    },
+    "recurrent": {
+      "paired_core_records": 2450,
+      "identical_mask_checksums": 24500
+    },
+    "geometry": {
+      "paired_core_records": 2800,
+      "identical_mask_checksums": 28000
+    }
+  },
+  "wide_rows": 300,
+  "per_core_rows": 9450,
+  "equal_core_means_verified": true,
+  "endpoint_missingness_verified": true
+}

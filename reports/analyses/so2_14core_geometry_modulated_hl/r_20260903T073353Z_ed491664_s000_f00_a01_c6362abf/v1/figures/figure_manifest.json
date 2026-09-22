@@ -1,0 +1,76 @@
+{
+  "clustering_manifest_sha256": "b273bd5bd7fe6f3dfad989271b665d80441be2478a6a902c0372cc5ceaf54c5b",
+  "created_at": "2026-09-05T06:20:24.367148+00:00",
+  "dpi": 300,
+  "files": {
+    "figures/contextual_leiden_resolution_1p0_spatial_14cores.png": {
+      "sha256": "a92ffc8e30203710206ca75abcdebe54b7c52c71f8144d649124634d14598479",
+      "size_bytes": 9878662
+    }
+  },
+  "interactive_map_created": false,
+  "leiden_resolution": 1.0,
+  "manifest_content_sha256": "f006016e5410ba5a3ebfe874f105ab10de1795f83053a2a187a81712028ef3fd",
+  "marker_borders": false,
+  "model_epoch": 200,
+  "model_seed": 0,
+  "one_dot_per_cell": true,
+  "pdf_created": false,
+  "plot_specification": {
+    "coordinate_units": "micrometres",
+    "equal_aspect": true,
+    "grid_shape": [
+      3,
+      5
+    ],
+    "invert_y_axis": true,
+    "legend_panel": [
+      2,
+      4
+    ],
+    "one_shared_joint_cluster_palette": true,
+    "palette": {
+      "C0": "#D55E00",
+      "C1": "#0A0AF5",
+      "C10": "#781A29",
+      "C11": "#D697F5",
+      "C12": "#E50AF5",
+      "C13": "#B6C678",
+      "C14": "#F50A49",
+      "C15": "#1A5868",
+      "C16": "#78580A",
+      "C17": "#68B60A",
+      "C18": "#780A68",
+      "C19": "#8758F5",
+      "C2": "#0AF50A",
+      "C3": "#0AC6F5",
+      "C4": "#F529A7",
+      "C5": "#0A580A",
+      "C6": "#0A3997",
+      "C7": "#E5D60A",
+      "C8": "#F5B6B6",
+      "C9": "#0AF5B6"
+    },
+    "panel_order": [
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28
+    ]
+  },
+  "png_only": true,
+  "point_count": 246063,
+  "run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+  "schema": "so2_geometry_modulated_hl_spatial_png_v1",
+  "status": "complete"
+}

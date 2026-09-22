@@ -1,0 +1,28 @@
+{
+  "classification": {
+    "lifecycle_stage": "exploratory_screen",
+    "scientific_variant": "unmasked_hl_pca50_cosine30_leiden1",
+    "seed": 20260825,
+    "study_axis": "hL_visualization",
+    "version": 1
+  },
+  "cpu_threads_per_worker": 4,
+  "devices": [
+    "cuda:0",
+    "cuda:1",
+    "cuda:2",
+    "cuda:3"
+  ],
+  "dpi": 300,
+  "dtype": "float32",
+  "epoch": 200,
+  "evaluation_id": "ev_so2_geometry_modulated_hl_ed491664_v1",
+  "gene_mask": "all_zero_fully_observed",
+  "leiden_resolution": 1.0,
+  "model_seed": 0,
+  "n_neighbors": 30,
+  "pca_components": 50,
+  "run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+  "schema": "so2_geometry_hl_report_v1",
+  "seed": 20260825
+}

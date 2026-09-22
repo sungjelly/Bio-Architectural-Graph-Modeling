@@ -1,0 +1,8 @@
+{
+  "reports/analyses/so2_attention_tau_beta/v1/analyze.py": "f121af5a526df8d33bc8de56d4feae6530f8713b8a6a5646db1ddc368b853b27",
+  "src/spatial_benchmark/geometry_modulated_relative_qkv_graph_transformer.py": "ce50d414890539c6fbb61bd7c6daf212bc42a1551978d2baf84139840a4fbaad",
+  "src/spatial_benchmark/relative_qkv_graph_transformer.py": "b6f54251da687704b9e2779ec0868142b52f516ae647dda53e97baf1c00ee511",
+  "src/spatial_benchmark/models.py": "60f70bf9e91e7ba72289e539cfa607ae05901e5785f361de77b77c916869f969",
+  "src/spatial_benchmark/relative_qkv_post_training.py": "273fc377e28844a7408f2bf257a1d0d8a7bdfb8f27f4e13b06807e47662147ca",
+  "src/spatial_benchmark/so2_recurrent_hl_clustering.py": "d847a163580e4accafe8c47c468781cd19d916ba7362e54349c479dd924ae1a4"
+}

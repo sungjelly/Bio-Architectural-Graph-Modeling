@@ -1,0 +1,135 @@
+{
+  "schema": "so2_epoch_comparison_v1",
+  "created_at": "2026-09-05T06:19:47.887194+00:00",
+  "analysis_design": "exploratory_existing_training_log_comparison",
+  "command": [
+    "reports/analyses/so2_epoch_comparison/v1/compare.py"
+  ],
+  "working_directory": "/workspace/BAGM",
+  "git_commit": "f632468f54b6faba8c75662f3239a62419e1722f",
+  "git_status_at_generation": " M experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/README.md\n M src/spatial_benchmark/cli.py\n M src/spatial_benchmark/relative_qkv_graph_transformer.py\n M tests/unit/spatial_benchmark/test_relative_qkv_graph_transformer.py\n?? experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/HIDDEN_LAYER_PROGRESSION_CLUSTERING.md\n?? experiments/campaigns/cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2/\n?? reports/analyses/so2_14core_hidden_layer_progression/\n?? reports/analyses/so2_attention_tau_beta/\n?? reports/analyses/so2_epoch_comparison/\n?? reports/analyses/so2_geometry_modulation/\n?? scripts/analysis/create_so2_geometry_hl_map.py\n?? src/spatial_benchmark/geometry_modulated_relative_qkv_graph_transformer.py\n?? src/spatial_benchmark/so2_geometry_hl_figures.py\n?? src/spatial_benchmark/so2_hidden_layer_progression.py\n?? src/spatial_benchmark/so2_hidden_layer_progression_extraction.py\n?? src/spatial_benchmark/so2_hidden_layer_progression_figures.py\n?? state/\n?? tests/unit/spatial_benchmark/test_geometry_modulated_relative_qkv_graph_transformer.py\n?? tests/unit/spatial_benchmark/test_so2_geometry_hl_extraction.py\n?? tests/unit/spatial_benchmark/test_so2_geometry_hl_report_resume.py\n?? tests/unit/spatial_benchmark/test_so2_hidden_layer_progression.py\n?? tests/unit/spatial_benchmark/test_so2_hidden_layer_progression_extraction.py\n?? tests/unit/spatial_benchmark/test_so2_hidden_layer_progression_figures.py\n",
+  "python": "3.12.13",
+  "pandas": "3.0.5",
+  "numpy": "2.5.2",
+  "matplotlib": "3.11.1",
+  "analysis_script_sha256": "82862d46a143f42dd09dc6d89afaa169c4b3687527f4bdd213c033969f2b40cf",
+  "sources": [
+    {
+      "run_id": "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+      "relative_path": "results/epoch_metrics.csv",
+      "sha256": "970bb65bf2bef092838844109c04437d35c89cc2a85424baf5e8acc1bf747e46"
+    },
+    {
+      "run_id": "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+      "relative_path": "metrics/core_steps.parquet",
+      "sha256": "35d74e5bacc2a923587328810df42cd4d33fd52fd914e3bc18f62572f138ba49"
+    },
+    {
+      "run_id": "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+      "relative_path": "config.resolved.yaml",
+      "sha256": "47bdadef687a84d0a9212bb1325d2ed2ac49bea2e596a08e171858a4125db3bb"
+    },
+    {
+      "run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+      "relative_path": "results/epoch_metrics.csv",
+      "sha256": "61e7e289935634ccc8405698e605bc1ffb402a7b0addb757d3fddf33ec38240a"
+    },
+    {
+      "run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+      "relative_path": "metrics/core_steps.parquet",
+      "sha256": "87c3ce8c85039bf912417ab4c484ffdee00bf1e6e40171592b8b15a984f160e7"
+    },
+    {
+      "run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+      "relative_path": "config.resolved.yaml",
+      "sha256": "6558ec8e135570cf5f38a105c97c7abdc858f9feafc3d7e7626e69ddc4ef98d1"
+    },
+    {
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "relative_path": "results/epoch_metrics.csv",
+      "sha256": "9194cd6908ecb2f7354f067da7f15dbb8583622f527a984a99417323c86e2f55"
+    },
+    {
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "relative_path": "metrics/core_steps.parquet",
+      "sha256": "f47281834c2f97f85b0f21e8e4a95d6ef731a84d7b70a9782635304410509cd4"
+    },
+    {
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "relative_path": "config.resolved.yaml",
+      "sha256": "c64908ff1945225ed8ae8b5fa57613da11b7f0e4955c3255ecf295fc051018f8"
+    },
+    {
+      "run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+      "relative_path": "results/epoch_metrics.csv",
+      "sha256": "cd12c40947fae2ebd13cb1acbf75b35764826d12c922a880cfcb68143691ec01"
+    },
+    {
+      "run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+      "relative_path": "metrics/core_steps.parquet",
+      "sha256": "6fa646b8740092810d9682ae7408c4f1b6f47a3507d99a30148b83cac49ee54c"
+    },
+    {
+      "run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+      "relative_path": "config.resolved.yaml",
+      "sha256": "303cd4e9e571200a1befab229461861dc1d2d451002a20f255aefeba8901c434"
+    }
+  ],
+  "run_inventory": [
+    {
+      "name": "original",
+      "run_id": "r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6",
+      "campaign_id": "cmp_20260825_so2_14core_relative_qkv_seed0_batch2",
+      "status": "completed",
+      "seed": 0,
+      "start_time": "2026-08-25T15:56:01.289074Z",
+      "end_time": "2026-08-26T01:49:20.187616Z",
+      "included": true
+    },
+    {
+      "name": "continuation",
+      "run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+      "campaign_id": "cmp_20260825_so2_14core_relative_qkv_seed0_batch2",
+      "status": "completed",
+      "seed": 0,
+      "start_time": "2026-08-26T12:22:52.576587Z",
+      "end_time": "2026-08-26T19:47:14.374690Z",
+      "included": true
+    },
+    {
+      "name": "recurrent",
+      "run_id": "r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf",
+      "campaign_id": "cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2",
+      "status": "failed",
+      "seed": 0,
+      "start_time": "2026-08-31T10:02:21.597617Z",
+      "end_time": "2026-08-31T19:38:19.281924Z",
+      "included": true
+    },
+    {
+      "name": "geometry",
+      "run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+      "campaign_id": "cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2",
+      "status": "completed",
+      "seed": 0,
+      "start_time": "2026-09-03T07:33:53.393814Z",
+      "end_time": "2026-09-04T14:27:41.249348Z",
+      "included": true
+    },
+    {
+      "name": "failed_duplicate",
+      "run_id": "r_20260826T032515Z_52d16093_s000_f00_a01_149a165b",
+      "campaign_id": "cmp_20260825_so2_14core_relative_qkv_seed0_batch2",
+      "status": "failed",
+      "seed": 0,
+      "start_time": "2026-08-26T03:25:15.428278Z",
+      "end_time": "2026-08-26T10:50:03.074611Z",
+      "included": false
+    }
+  ],
+  "model_seeds": [
+    0
+  ],
+  "held_out_folds": [],
+  "new_training_or_evaluation_runs": false
+}

@@ -1,0 +1,13 @@
+{
+  "model_name": "geometry",
+  "source_run_id": "r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+  "evaluation_id": "ev_so2_nonzero_v1_r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf",
+  "source_status": "completed",
+  "source_epoch": 200,
+  "equal_core_positive_mse_standardized": 8.9151179841775,
+  "cores": 14,
+  "total_cells": 246063,
+  "runtime_seconds": 369.43130727112293,
+  "peak_vram_gib": 1.0289692878723145,
+  "status": "completed"
+}

@@ -1,0 +1,104 @@
+{
+  "aggregate": {
+    "gene_mean": {
+      "all_huber": 0.2709982877811928,
+      "all_mse_z": 0.9997966112941918,
+      "positive_mse_z": 8.780937627322066,
+      "positive_mse_log1p": 0.7565577176573538,
+      "zero_mse_z": 0.10229250350146708,
+      "positive_recall": 0.0744310811100447,
+      "zero_specificity": 0.9907582049206031
+    },
+    "zero_count": {
+      "all_huber": 0.2636367688491125,
+      "all_mse_z": 1.1101211697878144,
+      "positive_mse_z": 10.7181547365259,
+      "positive_mse_log1p": 1.0738463731522097,
+      "zero_mse_z": 7.330664069126169e-17,
+      "positive_recall": 0.0,
+      "zero_specificity": 1.0
+    },
+    "huber_constant": {
+      "all_huber": 0.25372452768883785,
+      "all_mse_z": 1.0380812099235943,
+      "positive_mse_z": 9.863362330230842,
+      "positive_mse_log1p": 0.868106884119401,
+      "zero_mse_z": 0.019512986147696244,
+      "positive_recall": 0.06758099006698508,
+      "zero_specificity": 0.9921981671397846
+    },
+    "local_log_mean": {
+      "all_huber": 0.3153780711382153,
+      "all_mse_z": 1.0855648797069952,
+      "positive_mse_z": 8.531140629468476,
+      "positive_mse_log1p": 0.6869853916654528,
+      "zero_mse_z": 0.2378363505331414,
+      "positive_recall": 0.13759483943055684,
+      "zero_specificity": 0.9764835042116992
+    },
+    "local_count_mean": {
+      "all_huber": 0.39043600288516334,
+      "all_mse_z": 1.2425838203837134,
+      "positive_mse_z": 7.898871660175472,
+      "positive_mse_log1p": 0.6193993900757356,
+      "zero_mse_z": 0.4886082009071659,
+      "positive_recall": 0.22380624047851067,
+      "zero_specificity": 0.9249942032771673
+    },
+    "full_graph_log_mean": {
+      "all_huber": 0.27051553126033256,
+      "all_mse_z": 0.9827505247617828,
+      "positive_mse_z": 8.589392370074684,
+      "positive_mse_log1p": 0.7009908739674252,
+      "zero_mse_z": 0.11732085493438914,
+      "positive_recall": 0.10652567841442333,
+      "zero_specificity": 0.9888791072261279
+    },
+    "original": {
+      "all_huber": 0.2403524688727558,
+      "all_mse_z": 0.9486699293407937,
+      "positive_mse_z": 8.862752956422865,
+      "positive_mse_log1p": 0.6882362942971089,
+      "zero_mse_z": 0.04292011402732369,
+      "positive_recall": 0.13146638788676238,
+      "zero_specificity": 0.9921798459519835
+    },
+    "continued": {
+      "all_huber": 0.23946193085363257,
+      "all_mse_z": 0.9474188978189474,
+      "positive_mse_z": 8.850479303188235,
+      "positive_mse_log1p": 0.6812472309034064,
+      "zero_mse_z": 0.04227785474744683,
+      "positive_recall": 0.13501141575208356,
+      "zero_specificity": 0.9921119130607359
+    },
+    "recurrent": {
+      "all_huber": 0.24035052556004405,
+      "all_mse_z": 0.9558288382447081,
+      "positive_mse_z": 8.969275332139064,
+      "positive_mse_log1p": 0.6969820608610277,
+      "zero_mse_z": 0.03715480378978767,
+      "positive_recall": 0.12847509323317308,
+      "zero_specificity": 0.9924049243394223
+    },
+    "geometry": {
+      "all_huber": 0.2399529051035767,
+      "all_mse_z": 0.9516229977755154,
+      "positive_mse_z": 8.9151179841775,
+      "positive_mse_log1p": 0.690519183628742,
+      "zero_mse_z": 0.03896400150586134,
+      "positive_recall": 0.1308770020839042,
+      "zero_specificity": 0.9923145000783625
+    }
+  },
+  "geometry_all_entry_bias_z": -0.1714906809110915,
+  "entry_weighted_mask_fraction_equal_core": 0.6666552942501193,
+  "entries_from_cells_masking_ge900_equal_core": 0.19140695373702074,
+  "source_report_manifests": {
+    "analyses/so2_failure_diagnosis/baselines/v1/manifest.json": "25db4b207c1553c2b4b2a7127e487754737b5a824430ba36e6451f2435d667f8",
+    "analyses/so2_nonzero_metrics/r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6/v1/manifest.json": "063c1bb952583afcf45538116249b8cda0e9c7b043b1155b96d09d2d334aa371",
+    "analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/manifest.json": "86e5b1bf3be8a368b42e64a64e4078c6fb2c1a01f9e3f1b153b85c597d6b5549",
+    "analyses/so2_nonzero_metrics/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/v1/manifest.json": "0c16b79bec26d1e71f19cabfa0850b19670f0782e65431a271911cf70e0292c2",
+    "analyses/so2_nonzero_metrics/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/manifest.json": "63d1a7788352d20c615a8a4d691bfd20796c71b735da78f45dbc9fab8ce45759"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "all_eight_output_checksums_verified": true,
+  "cluster_count": 20,
+  "cluster_size_range": [
+    1114,
+    19503
+  ],
+  "complete_palette_coverage": true,
+  "core_dominated_gt_90pct": [
+    "C0",
+    "C5",
+    "C9",
+    "C10",
+    "C16",
+    "C17",
+    "C18"
+  ],
+  "cores": 14,
+  "extraction_and_manifest_hashes_verified": true,
+  "no_patient_identifiers_or_clinical_vendor_fields": true,
+  "pca_finite_unit_norm": true,
+  "pca_shape": [
+    246063,
+    50
+  ],
+  "recomputed_summary_and_composition_match": true,
+  "status": "passed",
+  "total_cells": 246063,
+  "undirected_edges": 5936370,
+  "unique_cell_order_labels_and_coordinates_match": true
+}

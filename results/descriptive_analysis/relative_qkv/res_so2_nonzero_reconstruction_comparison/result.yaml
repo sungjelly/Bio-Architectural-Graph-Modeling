@@ -1,0 +1,166 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so2_nonzero_reconstruction_comparison
+title: 'SO2 nonzero reconstruction: geometry does not improve the frozen endpoint comparison'
+status: verified
+outcome: negative
+experiment_type: descriptive_analysis
+method_family: relative_qkv
+lifecycle_stage: exploratory_screen
+study_axis: nonzero_reconstruction
+campaign_ids:
+- cmp_20260905_so2_nonzero_accuracy
+- cmp_20260825_so2_14core_relative_qkv_seed0_batch2
+- cmp_20260831_so2_14core_recurrent_relative_qkv_seed0_batch2
+- cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2
+method:
+  name: Four frozen SO2 Relative-QKV endpoints evaluated on observed-count strata of identical fixed masks
+  model_family: Four-block Relative-QKV original e175 and continued e300; shared-block recurrent e175;
+    geometry-modulated cosine Relative-QKV e200
+  graph_context: Fourteen unchanged disconnected full-core SO2 graphs, nominal radial-stratified k200
+    within 500 micrometres, bidirectional union, no self or cross-core edges; exact receiver-wise attention
+  masking_or_perturbation: One original fixed uniform-per-cell 0-through-1000 gene mask per core, identical
+    checksums across all endpoints; positive means observed raw count greater than zero; count strata
+    1, 2, 3, 4-7 and 8+
+  evaluation_design: Exploratory transductive partial-gene reconstruction on all 246063 fitted cells and
+    1000 biological probes; equal-core means over 14 cores; seed 0 only; no held-out fold or checkpoint
+    selection; original and continuation share one training lineage
+  implementation_version: so2_nonzero_fixed_masks_v1 and so2_nonzero_comparison_v1; immutable executed-source
+    snapshots, source precision, environment and checkpoint hashes in the referenced evaluation manifests
+conclusion:
+  question: Does the latest geometry-modulated endpoint improve reconstruction of masked observed nonzero
+    expression relative to the prior SO2 endpoints?
+  estimand: Equal-core positive-only mean squared error on shared gene-standardized log1p expression among
+    original fixed masked entries of fitted cells; inverse-standardized log1p errors and fixed rounded-count
+    diagnostics are separate secondary estimands.
+  observed_result: Positive standardized MSE is 8.862752956 for original e175, 8.850479303 for continued
+    e300, 8.969275332 for recurrent e175 and 8.915117984 for geometry e200. Geometry is 0.591% worse than
+    original (13/14 cores) and 0.730% worse than continued (14/14 cores), so the proposed geometry nonzero
+    advantage is not supported at these endpoints. Geometry has lower zero-entry standardized MSE (0.038964002)
+    than original (0.042920114) or continued (0.042277855). The all-fit gene-mean reference has lower
+    positive standardized MSE (8.780937627) than all four models, but higher positive unstandardized log1p
+    MSE (0.756557718) than each model (range 0.681247231-0.696982061), and lower positive exact-count
+    accuracy and detection recall. Continued e300 has positive exact-count accuracy 3.754% and recall
+    13.501%; geometry has 3.607% and 13.088%. Zeros constitute 89.590% of masked entries on an equal-core
+    basis, so overall count accuracy is dominated by zeros.
+  strongest_alternative_explanation: Different training durations and jointly changed attention-score
+    components confound architectural attribution. Gene standardization changes error weighting by inverse
+    gene variance, and prediction shrinkage trades lower zero-entry error against underprediction of observed
+    positives. Same-cell expression and morphology may explain reconstruction without useful spatial information.
+  controls:
+  - All-zero raw-count predictor on the identical masks and observed-count strata.
+  - Shared equal-core per-gene mean log1p predictor (standardized zero), explicitly target-derived from
+    all fitted cells.
+  - Original e175, continued e300 and recurrent e175 frozen endpoints; all original all-entry diagnostics
+    replayed at source precision within maximum absolute error 2e-6.
+  - Identical source masks, counts, graph files and normalization checksums; independent reconstruction
+    of support partitions, detection rates and zero/positive squared-error decomposition.
+  remaining_uncertainty: Only model seed 0 and one mask per core are evaluated; no patient-held-out replication,
+    formal interval or significance claim. Original and continued are one lineage, with unequal endpoint
+    training exposure across models. Recurrent source finalization failed although its saved endpoint
+    was strictly loaded and its evaluation completed. Gene-mean references use hidden target entries during
+    all-fit preprocessing; observed counts are measurements, and zero can mean nondetection. No isolated
+    modulation ablation, spatial null, segmentation robustness or attribution-faithfulness assessment
+    was performed. The recurrent checkpoint also lacks a schema-v3 checkpoint-catalog entry (the pre-existing
+    doctor gap is artifact 562, registered 2026-08-31), despite independent checkpoint checksum, strict
+    model-state and original-metric replay verification. This evaluation does not repair or upgrade that
+    source catalog/lifecycle status.
+  maximum_defensible_claim: 'A verified exploratory descriptive comparison of four fitted-cohort frozen
+    endpoints: the geometry endpoint has no positive-MSE advantage over original or continued endpoints,
+    while error-scale and zero/nonzero tradeoffs remain visible. This does not establish model-family
+    superiority, graph-specific gain, patient generalization, a biological mechanism or causality.'
+evidence:
+  predictive_gain:
+    status: mixed
+    summary: Negative for the proposed geometry nonzero-MSE advantage versus original and continued; geometry
+      reduces zero-entry error. All models beat the zero-count reference on positive error but lose to
+      the target-derived gene mean on standardized positive MSE, while beating that mean on positive unstandardized
+      log1p MSE, exact-count accuracy and detection. No graph-specific gain is inferred.
+  stability:
+    status: not_tested
+    summary: Single trained seed and one fixed mask per core; paired fitted-core differences are descriptive
+      heterogeneity, not seed/mask/graph stability.
+  faithfulness:
+    status: not_tested
+    summary: Checkpoint and metric replay verify numerical fidelity; no explanation-faithfulness or source-feature
+      perturbation test was performed.
+  null_calibration:
+    status: not_tested
+    summary: Zero-count and gene-mean predictors are descriptive baselines, not mechanism-breaking spatial
+      nulls.
+  patient_replication:
+    status: not_tested
+    summary: All 14 cores and all cells were used for fitting; no independent patient-held-out replication
+      or population interval is available.
+  external_support:
+    status: not_tested
+    summary: No independent cohort, orthogonal molecular measurement or external biological validation
+      was evaluated.
+  perturbation_support:
+    status: not_tested
+    summary: No controlled biological perturbation was performed; causal interpretation is unsupported.
+provenance:
+  created_at_utc: '2026-09-05T06:53:45.827601Z'
+  updated_at_utc: '2026-09-05T06:54:55.784493Z'
+  git_commit: f632468f54b6faba8c75662f3239a62419e1722f
+  run_ids:
+  - r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6
+  - r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2
+  - r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf
+  - r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf
+  expected_seeds:
+  - 0
+  included_seeds:
+  - 0
+  expected_folds: []
+  included_folds: []
+  failed_or_excluded_runs:
+  - run_id: r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf
+    reason: Included frozen epoch-175 checkpoint and completed verified post-hoc evaluation; source training
+      ended but original artifact finalization failed. Source status remains failed. Its checkpoint is
+      registered as artifact 562 but lacks a checkpoint-catalog entry; independent checksum/state/replay
+      verification passed. No source status or checkpoint catalog was changed.
+  - run_id: r_20260826T032515Z_52d16093_s000_f00_a01_149a165b
+    reason: Excluded failed duplicate continuation; not an additional model seed or independent trajectory.
+  sources:
+  - kind: evaluation
+    root: report
+    path: analyses/so2_nonzero_metrics/r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6/v1/manifest.json
+    run_id: r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6
+    sha256: 063c1bb952583afcf45538116249b8cda0e9c7b043b1155b96d09d2d334aa371
+    verification_status: verified
+    description: Completed fixed-mask nonzero evaluation; source checkpoint lifecycle remains separately
+      recorded.
+  - kind: evaluation
+    root: report
+    path: analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/manifest.json
+    run_id: r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2
+    sha256: 86e5b1bf3be8a368b42e64a64e4078c6fb2c1a01f9e3f1b153b85c597d6b5549
+    verification_status: verified
+    description: Completed fixed-mask nonzero evaluation; source checkpoint lifecycle remains separately
+      recorded.
+  - kind: evaluation
+    root: report
+    path: analyses/so2_nonzero_metrics/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/v1/manifest.json
+    run_id: r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf
+    sha256: 0c16b79bec26d1e71f19cabfa0850b19670f0782e65431a271911cf70e0292c2
+    verification_status: verified
+    description: Completed fixed-mask nonzero evaluation; source checkpoint lifecycle remains separately
+      recorded.
+  - kind: evaluation
+    root: report
+    path: analyses/so2_nonzero_metrics/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/manifest.json
+    run_id: r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf
+    sha256: 63d1a7788352d20c615a8a4d691bfd20796c71b735da78f45dbc9fab8ce45759
+    verification_status: verified
+    description: Completed fixed-mask nonzero evaluation; source checkpoint lifecycle remains separately
+      recorded.
+  - kind: report
+    root: report
+    path: analyses/so2_nonzero_metrics/comparison/v1/manifest.json
+    sha256: 83b2db16d1a0354d9337c74733e7d263115b1bbfa23fe214964bb3e016f0f5ae
+    verification_status: verified
+    description: Verified four-endpoint comparison of all 56 core receipts, shared baselines, error scales,
+      count accuracy and detection.
+files: []
