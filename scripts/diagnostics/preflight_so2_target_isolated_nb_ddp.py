@@ -2664,6 +2664,21 @@ def _remove_stale_receipt(output: Path) -> None:
         os.close(descriptor)
 
 
+def _wrap_target_model_ddp(model: nn.Module) -> DistributedDataParallel:
+    """Wrap the target model without migrating its CPU graph arguments."""
+
+    return DistributedDataParallel(
+        model,
+        # Inputs are already placed explicitly.  Leaving device_ids unset is
+        # essential here: DDP otherwise migrates every Tensor kwarg, including
+        # the receiver-major edge and geometry tensors that the model streams
+        # from CPU in bounded chunks.
+        device_ids=None,
+        broadcast_buffers=False,
+        find_unused_parameters=False,
+    )
+
+
 def run_preflight(args: argparse.Namespace) -> Mapping[str, Any]:
     """Execute all four-rank gates and atomically publish a passed receipt."""
 
@@ -2730,13 +2745,7 @@ def run_preflight(args: argparse.Namespace) -> Mapping[str, Any]:
 
     model = _build_model(config, bundle).to(device)
     topology = _model_topology_receipt(model)
-    ddp_model = DistributedDataParallel(
-        model,
-        device_ids=[local_rank],
-        output_device=local_rank,
-        broadcast_buffers=False,
-        find_unused_parameters=False,
-    )
+    ddp_model = _wrap_target_model_ddp(model)
     optimizer = torch.optim.AdamW(
         model.parameters(),
         lr=float(trainer["learning_rate"]),

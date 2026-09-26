@@ -208,6 +208,53 @@ def test_runner_and_preflight_share_the_exact_launch_contract() -> None:
     assert runner.MINIMUM_FREE_DISK_GIB == preflight.MINIMUM_FREE_DISK_GIB
 
 
+def test_runner_ddp_does_not_migrate_cpu_graph_arguments(monkeypatch) -> None:
+    captured: dict[str, object] = {}
+
+    class RecordingDDP(torch.nn.Module):
+        def __init__(self, module: torch.nn.Module, **kwargs: object) -> None:
+            super().__init__()
+            self.module = module
+            captured.update(kwargs)
+
+        def forward(self, *args: object, **kwargs: object) -> object:
+            return self.module(*args, **kwargs)
+
+    monkeypatch.setattr(runner, "DistributedDataParallel", RecordingDDP)
+    config = {
+        "trainer": {
+            "learning_rate": 1e-4,
+            "weight_decay": 1e-5,
+            "scheduler_factor": 0.5,
+            "scheduler_patience": 8,
+            "scheduler_threshold": 1e-4,
+            "scheduler_threshold_mode": "abs",
+            "scheduler_min_learning_rate": 1e-6,
+            "amp": False,
+        }
+    }
+
+    distributed, _, _, _ = runner._initialize_training(
+        torch.nn.Linear(2, 1), config, torch.device("cpu")
+    )
+
+    assert isinstance(distributed, RecordingDDP)
+    assert captured["device_ids"] is None
+    assert "output_device" not in captured
+    assert captured["broadcast_buffers"] is False
+    assert captured["find_unused_parameters"] is False
+
+    captured.clear()
+    monkeypatch.setattr(preflight, "DistributedDataParallel", RecordingDDP)
+    wrapped = preflight._wrap_target_model_ddp(torch.nn.Linear(2, 1))
+
+    assert isinstance(wrapped, RecordingDDP)
+    assert captured["device_ids"] is None
+    assert "output_device" not in captured
+    assert captured["broadcast_buffers"] is False
+    assert captured["find_unused_parameters"] is False
+
+
 def test_preflight_fp32_nb2_gate_uses_scale_aware_tolerance() -> None:
     receipt = preflight._full_constant_fp32_nb2_receipt()
 

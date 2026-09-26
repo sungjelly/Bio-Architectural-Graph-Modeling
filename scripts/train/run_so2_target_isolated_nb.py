@@ -1776,6 +1776,20 @@ def _load_resume(
     return control, selection, dict(receipts)
 
 
+def _wrap_target_model_ddp(model: nn.Module) -> DistributedDataParallel:
+    """Wrap the target model without migrating its CPU graph arguments."""
+
+    return DistributedDataParallel(
+        model,
+        # All GPU inputs are staged explicitly by the runner.  Leaving
+        # device_ids unset prevents DDP from also migrating the intentionally
+        # CPU-resident edge and relative-geometry tensors passed to forward.
+        device_ids=None,
+        broadcast_buffers=False,
+        find_unused_parameters=False,
+    )
+
+
 def _initialize_training(
     model: nn.Module,
     config: Mapping[str, Any],
@@ -1783,13 +1797,7 @@ def _initialize_training(
 ) -> tuple[DistributedDataParallel, torch.optim.Optimizer, Any, Any]:
     trainer = _section(config, "trainer")
     model.to(device)
-    training_model = DistributedDataParallel(
-        model,
-        device_ids=[device.index],
-        output_device=device.index,
-        broadcast_buffers=False,
-        find_unused_parameters=False,
-    )
+    training_model = _wrap_target_model_ddp(model)
     optimizer = torch.optim.AdamW(
         training_model.parameters(),
         lr=float(trainer["learning_rate"]),
