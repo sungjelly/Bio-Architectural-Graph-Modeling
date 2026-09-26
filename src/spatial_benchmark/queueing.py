@@ -500,6 +500,48 @@ def command_for_config(
         ]
     if (
         protocol
+        == "donor_grouped_so2_target_isolated_nb_once_per_cell_earlystop_v1"
+    ):
+        model = _section(configuration, "model")
+        campaign = _section(configuration, "campaign")
+        launcher = _section(configuration, "launcher")
+        if (
+            str(model.get("name", "")).strip().lower()
+            != "target-isolated-geometry-modulated-relative-qkv-gat-nb2"
+            or campaign.get("campaign_id")
+            != (
+                "cmp_20260926_so2_target_isolated_geometry_modulated_nb_"
+                "once_per_cell_seed0"
+            )
+            or launcher.get("requested_gpu") != "0,1,2,3"
+            or launcher.get("process_count") != 4
+            or launcher.get("elastic_max_restarts") != 0
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 NB protocol requires its registered "
+                "four-rank once-per-cell campaign on GPUs 0,1,2,3 with no "
+                "elastic restarts."
+            )
+        script = (
+            selected_paths.project_root
+            / "scripts/train/run_so2_target_isolated_nb.py"
+        )
+        return [
+            sys.executable,
+            "-m",
+            "torch.distributed.run",
+            "--standalone",
+            "--nnodes=1",
+            "--nproc-per-node=4",
+            "--max-restarts=0",
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
+    if (
+        protocol
         == "held_in_pooled_14core_geometry_modulated_relative_qkv_seed_plateau"
     ):
         model = _section(configuration, "model")

@@ -16,6 +16,7 @@ from spatial_benchmark.negative_binomial import (
     masked_log1p_rmse,
     masked_negative_binomial_metrics,
     masked_negative_binomial_nll,
+    masked_negative_binomial_nll_sum,
     masked_observed_zero_rate,
     masked_poisson_deviance,
     masked_predicted_zero_probability_mean,
@@ -92,6 +93,7 @@ def test_output_is_positive_mu_and_cell_shared_unit_initialized_theta() -> None:
         relative_geometry=geometry,
         node_covariates=covariates,
         return_explanations=True,
+        return_graph_step_embeddings=True,
     )
 
     assert isinstance(output, NegativeBinomialModelOutput)
@@ -109,6 +111,11 @@ def test_output_is_positive_mu_and_cell_shared_unit_initialized_theta() -> None:
     assert output.content_logits is not None
     assert output.positional_bias is not None
     assert output.combined_logits is not None
+    assert output.graph_step_embeddings is not None
+    assert len(output.graph_step_embeddings) == 4
+    assert torch.equal(
+        output.graph_step_embeddings[-1], output.full_node_embedding
+    )
 
 
 def test_raw_target_is_not_a_forward_input_and_hidden_values_cannot_change_mu() -> None:
@@ -221,6 +228,12 @@ def test_nb2_formula_matches_torch_distribution_with_full_constants() -> None:
     torch.testing.assert_close(
         masked_negative_binomial_nll(mu, theta, raw_target, mask),
         expected.masked_select(mask).mean(),
+        rtol=2e-6,
+        atol=2e-5,
+    )
+    torch.testing.assert_close(
+        masked_negative_binomial_nll_sum(mu, theta, raw_target, mask),
+        expected.masked_select(mask).sum(),
         rtol=2e-6,
         atol=2e-5,
     )

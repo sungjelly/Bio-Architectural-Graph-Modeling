@@ -82,6 +82,7 @@ SUPPORTED_MODEL_NAMES = frozenset(
         "g3",
         "geometry-modulated-relative-qkv-gat",
         "geometry-modulated-relative-qkv-gat-nb2",
+        "target-isolated-geometry-modulated-relative-qkv-gat-nb2",
         "hybrid-count-gat",
         "hybrid-count-matched-self",
         "mean-adjacency-sage",
@@ -104,6 +105,7 @@ PRIMARY_METRIC_DIRECTIONS = {
     "fit/whole_node/masked_huber": "minimize",
     "fit/whole_node/masked_token_accuracy_percent": "maximize",
     "val/unseen_donor/masked_negative_binomial_nll": "minimize",
+    "val/target_only_masked_negative_binomial_nll": "minimize",
     "val/masked_huber": "minimize",
     "val/auroc": "maximize",
     "val/auprc": "maximize",
@@ -549,6 +551,17 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             "geometry_modulated_relative_qkv_graph_transformer."
         )
     if (
+        model_name
+        == "target-isolated-geometry-modulated-relative-qkv-gat-nb2"
+        and family.strip()
+        != "target_isolated_geometry_modulated_relative_qkv_graph_transformer"
+    ):
+        raise ConfigurationError(
+            "target-isolated-geometry-modulated-relative-qkv-gat-nb2 requires "
+            "model.family=target_isolated_geometry_modulated_relative_qkv_"
+            "graph_transformer."
+        )
+    if (
         model_name == "recurrent-relative-qkv-gat"
         and family.strip()
         != "recurrent_relative_geometry_qkv_graph_transformer"
@@ -640,7 +653,10 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
     masking = _mapping(config, "masking")
     _required(masking, "type", "masking")
     masking_type = str(masking.get("type", "")).strip().lower()
-    if masking_type == "uniform_per_cell_integer_count":
+    if masking_type in {
+        "uniform_per_cell_integer_count",
+        "target_only_uniform_per_cell_integer_count",
+    }:
         minimum = _positive_integer(
             _required(masking, "count_min", "masking"),
             "masking.count_min",
@@ -650,10 +666,15 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             _required(masking, "count_max", "masking"),
             "masking.count_max",
         )
-        if minimum != 0 or maximum != 1000:
+        expected_minimum = (
+            1
+            if masking_type == "target_only_uniform_per_cell_integer_count"
+            else 0
+        )
+        if minimum != expected_minimum or maximum != 1000:
             raise ConfigurationError(
-                "uniform_per_cell_integer_count requires inclusive support "
-                "from 0 through 1000."
+                f"{masking_type} requires inclusive support from "
+                f"{expected_minimum} through 1000."
             )
         if masking.get("positions_without_replacement") is not True:
             raise ConfigurationError(
@@ -663,7 +684,22 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             raise ConfigurationError(
                 "uniform per-cell mask derivation must exclude model seed."
             )
-        if model_name in {
+        if model_name == "target-isolated-geometry-modulated-relative-qkv-gat-nb2":
+            if masking.get("independent_views_per_core_epoch") != 1:
+                raise ConfigurationError(
+                    "target-isolated masking requires exactly one mask "
+                    "realization per target-cell epoch visit."
+                )
+            if masking.get("target_cell_only") is not True:
+                raise ConfigurationError(
+                    "target-isolated masking must be confined to target cells."
+                )
+            if masking.get("neighbor_cells_artificially_masked") is not False:
+                raise ConfigurationError(
+                    "target-isolated masking requires fully observed neighbor "
+                    "expression."
+                )
+        elif model_name in {
             "geometry-modulated-relative-qkv-gat",
             "geometry-modulated-relative-qkv-gat-nb2",
             "relative-qkv-gat",
@@ -731,6 +767,7 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
     if model_name in {
         "geometry-modulated-relative-qkv-gat",
         "geometry-modulated-relative-qkv-gat-nb2",
+        "target-isolated-geometry-modulated-relative-qkv-gat-nb2",
         "relative-qkv-gat",
         "recurrent-relative-qkv-gat",
     }:
@@ -748,6 +785,7 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             if model_name in {
                 "geometry-modulated-relative-qkv-gat",
                 "geometry-modulated-relative-qkv-gat-nb2",
+                "target-isolated-geometry-modulated-relative-qkv-gat-nb2",
             }
             else "attention_logit_bias_only"
         )
@@ -1133,6 +1171,217 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             if launcher.get(field) != expected:
                 raise ConfigurationError(
                     "The donor-grouped SO2 NB protocol requires "
+                    f"launcher.{field}={expected!r}."
+                )
+    elif (
+        protocol
+        == "donor_grouped_so2_target_isolated_nb_once_per_cell_earlystop_v1"
+    ):
+        expected_train_aliases = [f"SO2-C{core}" for core in range(15, 27)]
+        expected_validation_aliases = ["SO2-C27", "SO2-C28"]
+        campaign_mapping = _mapping(config, "campaign")
+        if campaign_mapping.get("campaign_id") != (
+            "cmp_20260926_so2_target_isolated_geometry_modulated_nb_"
+            "once_per_cell_seed0"
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 NB protocol requires its registered "
+                "campaign."
+            )
+        if (
+            model_name
+            != "target-isolated-geometry-modulated-relative-qkv-gat-nb2"
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 NB protocol requires its registered "
+                "target-isolated geometry-modulated NB2 model."
+            )
+        locked_model = {
+            "graph_layers": 4,
+            "unique_graph_blocks": 4,
+            "effective_graph_depth": 4,
+            "graph_block_weight_tying": "none",
+            "attention_heads": 8,
+            "attention_head_dim": 32,
+            "relative_geometry_dim": 70,
+            "routing_architecture": "two_stream_target_isolated_v1",
+            "target_query_state_evolves_across_blocks": True,
+            "neighbor_key_value_state_evolves_across_blocks": False,
+            "incoming_nonself_edges_only": True,
+            "target_self_context_edge": False,
+            "target_hidden_value_return_path": (
+                "prohibited_by_static_context_and_nonself_routing"
+            ),
+            "attention_score_mechanism": "geometry_modulated_cosine_qkv_v1",
+            "relative_geometry_value_injection": False,
+            "output_distribution": "negative_binomial_nb2",
+            "output_mean_activation": "softplus",
+            "output_mean_epsilon": 0.0001,
+            "inverse_dispersion": "learned_per_gene_shared_across_cells",
+            "inverse_dispersion_activation": "softplus",
+            "inverse_dispersion_epsilon": 0.0001,
+            "inverse_dispersion_initial_value": 1.0,
+            "expected_trainable_parameter_count": 5135088,
+        }
+        for field, expected in locked_model.items():
+            if model.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 NB protocol requires "
+                    f"model.{field}={expected!r}."
+                )
+        if config.get("seed") != 0 or evaluation.get("active_model_seeds") != [0]:
+            raise ConfigurationError(
+                "The target-isolated SO2 NB exploratory protocol is locked "
+                "to fresh model seed 0."
+            )
+        if (
+            canonical_prediction_split != "validation"
+            or list(evaluation.get("splits", [])) != ["validation"]
+            or primary != "val/target_only_masked_negative_binomial_nll"
+            or evaluation.get("primary_aggregation")
+            != "sum_masked_entry_nll_divided_by_total_masked_entries"
+            or evaluation.get("test_split_present") is not False
+            or evaluation.get("unbiased_test_estimate") is not False
+            or evaluation.get("generalization_estimate") is not False
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 NB protocol requires pooled fixed-mask "
+                "validation selection and no test/generalization estimate."
+            )
+        if (
+            dataset.get("training_core_aliases") != expected_train_aliases
+            or dataset.get("validation_core_aliases")
+            != expected_validation_aliases
+            or dataset.get("test_core_aliases") != []
+            or dataset.get("training_cells") != 208696
+            or dataset.get("validation_cells") != 37367
+            or dataset.get("test_cells") != 0
+            or dataset.get("biological_target_count") != 1000
+            or dataset.get("validation_used_for_model_selection") is not True
+            or dataset.get("test_partition_present") is not False
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 NB dataset must be the frozen "
+                "12-core training / 2-core validation / no-test split."
+            )
+        validation_masks = masking.get("validation_masks")
+        locked_masking = {
+            "type": "target_only_uniform_per_cell_integer_count",
+            "count_min": 1,
+            "count_max": 1000,
+            "independent_views_per_core_epoch": 1,
+            "training_mask_realizations_per_target_per_global_epoch": 1,
+            "target_visit_count_per_global_epoch": 1,
+            "target_cell_only": True,
+            "neighbor_cells_artificially_masked": False,
+            "only_target_query_rows_masked": True,
+            "neighbor_context_rows_fully_observed": True,
+            "mask_base_seed": 2026092601,
+            "model_seed_in_mask_derivation": False,
+        }
+        if any(masking.get(field) != expected for field, expected in locked_masking.items()):
+            raise ConfigurationError(
+                "The target-isolated SO2 NB masking contract drifted."
+            )
+        if not isinstance(validation_masks, Mapping) or {
+            "fixed_across_epochs": validation_masks.get("fixed_across_epochs"),
+            "mask_realizations_per_target": validation_masks.get(
+                "mask_realizations_per_target"
+            ),
+            "seed_namespace": validation_masks.get("seed_namespace"),
+            "legacy_ten_view_overlay_masks_consumed": validation_masks.get(
+                "legacy_ten_view_overlay_masks_consumed"
+            ),
+        } != {
+            "fixed_across_epochs": True,
+            "mask_realizations_per_target": 1,
+            "seed_namespace": (
+                "bagm.so2.target_isolated_nb.fixed_validation_masks.v1"
+            ),
+            "legacy_ten_view_overlay_masks_consumed": False,
+        }:
+            raise ConfigurationError(
+                "The target-isolated SO2 NB protocol requires one fixed mask "
+                "for every validation target."
+            )
+        locked_trainer = {
+            "batch_size": 2,
+            "training_cells_per_global_epoch": 208696,
+            "validation_cells_per_validation": 37367,
+            "training_core_visits_per_global_epoch": 12,
+            "validation_core_visits_per_global_epoch": 2,
+            "cores_per_optimizer_update": 2,
+            "optimizer_updates_per_global_epoch": 6,
+            "target_shards_per_core": 4,
+            "target_visit_count_per_global_epoch": 1,
+            "mask_realizations_per_target_visit": 1,
+            "objective": (
+                "pooled_masked_entry_full_constant_negative_binomial_nb2_nll"
+            ),
+            "aggregation_weight": "masked_entries",
+            "equal_core_or_equal_target_reweighting": False,
+            "likelihood_compute_dtype": "float32",
+            "likelihood_outside_autocast": True,
+            "max_epochs": 300,
+            "minimum_global_epochs": 50,
+            "optimizer_updates_per_global_epoch": 6,
+            "scheduler": "reduce_lr_on_plateau",
+            "scheduler_monitor": "val/target_only_masked_negative_binomial_nll",
+            "scheduler_factor": 0.5,
+            "scheduler_patience": 8,
+            "scheduler_threshold_mode": "abs",
+            "scheduler_threshold": 0.0001,
+            "scheduler_min_learning_rate": 0.000001,
+            "early_stopping": True,
+            "early_stopping_monitor": (
+                "val/target_only_masked_negative_binomial_nll"
+            ),
+            "early_stopping_patience": 25,
+            "early_stopping_min_delta": 0.0001,
+            "validation_every": 1,
+            "restore_best": True,
+            "primary_checkpoint_role": "best",
+            "checkpoint_policy": (
+                "atomic_latest_and_best_then_final_best_only"
+            ),
+            "epoch_checkpoint_archives": False,
+            "delete_latest_after_verified_best_reload": True,
+            "distributed": True,
+            "distributed_backend": "nccl",
+            "distributed_world_size": 4,
+            "rank_zero_only_artifact_writes": True,
+            "cores_staged_sequentially_per_optimizer_update": True,
+            "ddp_sync_policy": (
+                "first_core_backward_under_no_sync_second_core_backward_synced"
+            ),
+            "stage_complete_core_graph_on_device": False,
+            "staged_relative_geometry_dtype": "float32",
+            "nonfinite_policy": "fail_closed",
+        }
+        for field, expected in locked_trainer.items():
+            if trainer.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 NB protocol requires "
+                    f"trainer.{field}={expected!r}."
+                )
+        launcher = _mapping(config, "launcher")
+        locked_launcher = {
+            "requested_gpu": "0,1,2,3",
+            "requested_gpu_count": 4,
+            "require_exact_visible_devices": "0,1,2,3",
+            "distributed": True,
+            "distributed_backend": "nccl",
+            "process_count": 4,
+            "elastic_max_restarts": 0,
+            "hardware_preflight_receipt": (
+                "state/preflight/"
+                "so2_target_isolated_nb_once_per_cell_ddp4.json"
+            ),
+        }
+        for field, expected in locked_launcher.items():
+            if launcher.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 NB protocol requires "
                     f"launcher.{field}={expected!r}."
                 )
     elif protocol in held_in_fit_protocols:
@@ -2212,7 +2461,11 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
         )
     if (
         dataset.get("task") == "masked_expression_negative_binomial"
-        and masking_type != "uniform_per_cell_integer_count"
+        and masking_type
+        not in {
+            "uniform_per_cell_integer_count",
+            "target_only_uniform_per_cell_integer_count",
+        }
     ):
         raise ConfigurationError(
             "Negative-binomial masked expression requires the registered "

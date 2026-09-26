@@ -563,11 +563,30 @@ class CheckpointReceipt:
 
 
 class AtomicBestLatestCheckpointStore:
-    """Retain at most one recovery and one validation-best checkpoint."""
+    """Retain at most one recovery and one validation-best checkpoint.
 
-    def __init__(self, run_root: str | Path, *, rank: int = 0) -> None:
+    ``checkpoint_schema`` and ``protocol`` default to the original SO2 NB2
+    campaign values so existing callers and serialized checkpoints retain
+    their exact contract.  New NB2 campaigns may supply their own identifiers
+    while reusing the same bounded, atomic checkpoint lifecycle.
+    """
+
+    def __init__(
+        self,
+        run_root: str | Path,
+        *,
+        rank: int = 0,
+        checkpoint_schema: str = CHECKPOINT_SCHEMA,
+        protocol: str = PROTOCOL,
+    ) -> None:
         if int(rank) != 0:
             raise SO2NBTrainingError("Only rank zero may write checkpoints.")
+        self.checkpoint_schema = str(checkpoint_schema).strip()
+        self.protocol = str(protocol).strip()
+        if not self.checkpoint_schema or not self.protocol:
+            raise SO2NBTrainingError(
+                "Checkpoint schema and protocol identifiers must be non-empty."
+            )
         self.directory = Path(run_root) / "checkpoints"
         self.directory.mkdir(parents=True, exist_ok=True)
         self.latest_path = self.directory / "latest.ckpt"
@@ -583,11 +602,10 @@ class AtomicBestLatestCheckpointStore:
                 + ", ".join(unexpected)
             )
 
-    @staticmethod
-    def _validate_payload(payload: Mapping[str, Any], *, role: str) -> int:
-        if payload.get("checkpoint_schema") != CHECKPOINT_SCHEMA:
+    def _validate_payload(self, payload: Mapping[str, Any], *, role: str) -> int:
+        if payload.get("checkpoint_schema") != self.checkpoint_schema:
             raise SO2NBTrainingError("Checkpoint schema mismatch.")
-        if payload.get("protocol") != PROTOCOL:
+        if payload.get("protocol") != self.protocol:
             raise SO2NBTrainingError("Checkpoint protocol mismatch.")
         if payload.get("checkpoint_role") != role:
             raise SO2NBTrainingError("Checkpoint role mismatch.")
@@ -618,7 +636,7 @@ class AtomicBestLatestCheckpointStore:
                 raise SO2NBTrainingError(
                     "Latest checkpoint lacks its transactionally embedded best state."
                 )
-            AtomicBestLatestCheckpointStore._validate_payload(embedded, role="best")
+            self._validate_payload(embedded, role="best")
             if not _is_sha256(payload.get("best_checkpoint_sha256")):
                 raise SO2NBTrainingError("Latest checkpoint's best checksum is invalid.")
             if not _is_sha256(payload.get("embedded_best_checkpoint_tree_sha256")):

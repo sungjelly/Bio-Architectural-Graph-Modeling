@@ -170,6 +170,32 @@ def _best_payload(epoch: int, value: float, tensor_value: float) -> dict[str, ob
     }
 
 
+def test_checkpoint_store_supports_campaign_scoped_schema_and_protocol(
+    tmp_path: Path,
+) -> None:
+    schema = "target_isolated_so2_nb_checkpoint_v1"
+    protocol = "target_isolated_so2_nb_protocol_v1"
+    payload = _best_payload(1, 3.0, 2.0)
+    payload["checkpoint_schema"] = schema
+    payload["protocol"] = protocol
+    store = AtomicBestLatestCheckpointStore(
+        tmp_path,
+        checkpoint_schema=schema,
+        protocol=protocol,
+    )
+
+    receipt = store.save_best(payload)
+
+    assert receipt.completed_epoch == 1
+    assert store.load("best")["protocol"] == protocol
+    with pytest.raises(SO2NBTrainingError, match="protocol mismatch"):
+        AtomicBestLatestCheckpointStore(
+            tmp_path,
+            checkpoint_schema=schema,
+            protocol="different",
+        ).load("best")
+
+
 def test_latest_is_commit_point_and_recovers_best_after_two_file_crash(
     tmp_path: Path,
 ) -> None:

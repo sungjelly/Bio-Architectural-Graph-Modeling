@@ -190,6 +190,7 @@ class _NegativeBinomialOutputMixin:
         selected_embedding: Tensor,
         full_embedding: Tensor,
         node_encoder_embedding: Optional[Tensor],
+        graph_step_embeddings: Optional[tuple[Tensor, ...]],
         edge_index: Optional[Tensor],
         attention: Optional[Tensor],
         content_logits: Optional[Tensor],
@@ -210,6 +211,7 @@ class _NegativeBinomialOutputMixin:
             selected_embedding=selected_embedding,
             full_embedding=full_embedding,
             node_encoder_embedding=node_encoder_embedding,
+            graph_step_embeddings=graph_step_embeddings,
             edge_index=edge_index,
             attention=attention,
             content_logits=content_logits,
@@ -509,6 +511,33 @@ def masked_negative_binomial_nll(
     return loss
 
 
+def masked_negative_binomial_nll_sum(
+    mu: Tensor,
+    theta: Tensor,
+    raw_target: Tensor,
+    mask: Tensor,
+) -> Tensor:
+    """Return summed full-constant FP32 NB2 NLL over masked entries.
+
+    This additive form is the authoritative numerator for distributed and
+    epoch-level pooled objectives.  Callers must divide its globally reduced
+    value by the corresponding globally reduced masked-entry count.
+    """
+
+    selected_mu, selected_theta, selected_target = _masked_nb2_inputs(
+        mu,
+        theta,
+        raw_target,
+        mask,
+    )
+    with _fp32_autocast_disabled(mu):
+        values = _nb2_nll_values(selected_mu, selected_theta, selected_target)
+        loss_sum = values.sum(dtype=torch.float32)
+    if loss_sum.dtype != torch.float32 or not bool(torch.isfinite(loss_sum)):
+        raise FloatingPointError("summed masked NB2 NLL is non-finite")
+    return loss_sum
+
+
 def negative_binomial_zero_probability(mu: Tensor, theta: Tensor) -> Tensor:
     """Return ``P(Y=0)`` under the NB2 mean/inverse-dispersion convention."""
 
@@ -712,6 +741,7 @@ __all__ = [
     "masked_log1p_rmse",
     "masked_negative_binomial_metrics",
     "masked_negative_binomial_nll",
+    "masked_negative_binomial_nll_sum",
     "masked_observed_zero_rate",
     "masked_poisson_deviance",
     "masked_predicted_zero_probability_mean",

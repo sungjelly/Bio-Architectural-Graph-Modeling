@@ -1,0 +1,286 @@
+task_contract_version: 1
+campaign_id: cmp_20260926_so2_target_isolated_geometry_modulated_nb_once_per_cell_seed0
+display_name: SO2 target-isolated geometry-modulated NB2 once-per-cell seed-0
+frozen_on_utc: '2026-09-26'
+status: design_locked_implementation_and_preflight_pending
+source_experiment_config: configs/experiment/so2_target_isolated_geometry_modulated_nb_once_per_cell_seed0.yaml
+
+scientific_question: >-
+  Does target-isolated two-stream geometry-modulated attention learn useful
+  masked raw-count predictions when every cell is targeted exactly once per
+  epoch and every neighbor context row remains fully observed?
+
+data:
+  source_slide: SO_2
+  reused_dataset_config: configs/dataset/so2_nb_train12_val2_v1.yaml
+  reuse_scope:
+    - donor_grouped_split
+    - train_only_equal_core_preprocessing_statistics
+    - raw_nonnegative_integer_count_targets
+    - immutable_cohort_and_graph_references
+  legacy_validation_mask_receipts_consumed: false
+  reused_graph_config: configs/graph/so2_radial_stratified_k200_r500_bidirectional.yaml
+  training_core_aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26]
+  validation_core_aliases: [SO2-C27, SO2-C28]
+  test_core_aliases: []
+  training_cells: 208696
+  validation_cells: 37367
+  test_cells: 0
+  biological_target_count: 1000
+  node_covariate_count: 22
+  experimental_unit: donor_group
+  training_donor_groups: 6
+  validation_donor_groups: 1
+  validation_used_for_model_selection: true
+  test_partition_present: false
+
+model:
+  config: configs/model/target_isolated_geometry_modulated_relative_qkv_gat_nb2_256_l4_h8.yaml
+  name: target-isolated-geometry-modulated-relative-qkv-gat-nb2
+  seed: 0
+  hidden_dim: 256
+  graph_layers: 4
+  unique_graph_blocks: 4
+  graph_block_weight_tying: none
+  attention_heads: 8
+  attention_head_dim: 32
+  ffn_dim: 1024
+  decoder_dim: 1024
+  geometry_hidden_dim: 128
+  relative_geometry_dim: 70
+  trainable_parameter_count: 5135088
+  output_distribution: negative_binomial_nb2
+  output_mean: softplus_plus_0.0001
+  inverse_dispersion: learned_per_gene_shared_across_cells
+  inverse_dispersion_initial_value: 1.0
+
+two_stream_routing:
+  schema: target_isolated_two_stream_routing_v1
+  shared_node_encoder_parameters: true
+  target_query_stream:
+    input_expression: target_row_with_selected_genes_masked
+    mask_channel: explicit
+    metadata: allowed_morphology_visible
+    state: evolves_through_four_independent_blocks
+    projection_role: query_and_target_residual_ffn
+  neighbor_key_value_stream:
+    input_expression: fully_observed_train_standardized_log1p_expression
+    mask_channel: all_false
+    metadata: allowed_morphology_visible
+    state: static_cell_autonomous_encoder_output_across_all_blocks
+    projection_role: per_block_keys_and_values
+  permitted_edges: incoming_neighbor_source_to_target_receiver
+  self_edges: prohibited
+  target_state_as_key_or_value: prohibited
+  target_to_context_messages: prohibited
+  context_to_context_messages: prohibited
+  context_state_updates: prohibited
+  geometry_role: dimensionwise_qk_modulation_and_scalar_bias_only
+  geometry_in_values: prohibited
+  leakage_argument:
+    - masked target values are removed before the shared encoder
+    - raw count targets are absent from the model forward signature
+    - the receiver is excluded from its own fully observed context
+    - target state is never a source key or value
+    - static context cannot receive a target message
+    - therefore no target-hidden-value return path exists at any depth
+
+masking:
+  config: configs/masking/target_cell_uniform_1_1000_once_per_epoch_fixed_validation_nb.yaml
+  training_target_visits_per_cell_per_global_epoch: 1
+  training_mask_realizations_per_target_visit: 1
+  masked_gene_count_distribution: discrete_uniform_1_through_1000_inclusive
+  positions: sampled_without_replacement
+  empty_target_masks: prohibited
+  full_target_masks: allowed
+  only_target_query_rows_masked: true
+  neighbor_context_rows_fully_observed: true
+  training_seed_namespace: bagm.so2.target_isolated_nb.training_masks.v1
+  training_seed_fields: [namespace, base_seed, core_alias, global_epoch, target_row_index]
+  validation:
+    target_visits_per_cell: 1
+    mask_realizations_per_target: 1
+    fixed_across_epochs: true
+    seed_namespace: bagm.so2.target_isolated_nb.fixed_validation_masks.v1
+    seed_fields: [namespace, core_alias, target_row_index]
+  model_seed_affects_masks: false
+
+optimization:
+  config: configs/trainer/so2_target_isolated_geometry_modulated_nb_train12_val2_earlystop.yaml
+  optimizer: adamw
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  gradient_clip_norm: 1.0
+  precision: mixed
+  likelihood_compute_dtype: float32_outside_autocast
+  cores_per_optimizer_update: 2
+  optimizer_updates_per_global_epoch: 6
+  global_epoch_definition: every_one_of_208696_training_cells_targeted_exactly_once
+  distributed_world_size: 4
+  graph_tensor_placement: cpu_receiver_major_edge_index_and_float32_relative_geometry
+  target_shards_per_core: 4
+  core_execution_within_update: sequential_first_core_no_sync_second_core_synced
+  rank_assignment:
+    rank_0: disjoint_contiguous_target_shard_0_of_each_core
+    rank_1: disjoint_contiguous_target_shard_1_of_each_core
+    rank_2: disjoint_contiguous_target_shard_2_of_each_core
+    rank_3: disjoint_contiguous_target_shard_3_of_each_core
+  loss:
+    name: full_constant_negative_binomial_nb2_nll
+    support: masked_entries_of_target_rows_only
+    numerator: sum_nll_over_all_rank_shards_and_both_cores_in_update
+    denominator: total_masked_entries_in_two_core_update
+    aggregation: exact_masked_entry_weighted
+    equal_target_weighting: false
+    equal_core_weighting: false
+    ddp_rule: world_size_times_local_two_core_sum_divided_by_all_reduced_two_core_global_entry_count_before_ddp_gradient_mean
+
+scheduling_and_stopping:
+  maximum_global_epochs: 300
+  minimum_global_epochs: 50
+  validation_every_global_epochs: 1
+  scheduler:
+    name: reduce_lr_on_plateau
+    monitor: val/target_only_masked_negative_binomial_nll
+    mode: min
+    factor: 0.5
+    patience: 8
+    threshold_mode: abs
+    threshold: 0.0001
+    minimum_learning_rate: 0.000001
+  early_stopping:
+    enabled: true
+    monitor: val/target_only_masked_negative_binomial_nll
+    mode: min
+    best_tracking_starts_epoch: 1
+    patience_clock_starts_after_epoch: 50
+    patience: 25
+    minimum_delta: 0.0001
+  restore_best: true
+
+evaluation:
+  config: configs/evaluation/so2_target_isolated_nb_train12_val2_fixed_masks_earlystop.yaml
+  canonical_split: validation
+  primary_metric: val/target_only_masked_negative_binomial_nll
+  primary_direction: minimize
+  primary_aggregation: total_validation_nll_sum_divided_by_total_validation_masked_entries
+  fixed_mask_realizations_per_validation_target: 1
+  validation_target_visits: exactly_once
+  validation_role: scheduler_early_stopping_and_checkpoint_selection
+  test_split_present: false
+  unbiased_test_estimate: false
+  generalization_claim_supported: false
+
+checkpointing:
+  during_training: atomic_latest_plus_validation_best
+  checkpoint_every_global_epochs: 1
+  epoch_archives: false
+  finalization:
+    - reload_validation_best
+    - reproduce_fixed_mask_primary_metric
+    - verify_checkpoint_checksum
+    - delete_latest
+    - retain_best_only
+
+observability:
+  record_every_global_epoch:
+    - pooled_training_masked_nb_nll
+    - pooled_validation_masked_nb_nll
+    - validation_raw_count_metrics
+    - learning_rate
+    - inverse_dispersion_min_median_max
+    - target_visit_coverage_receipts
+    - mask_receipts_and_masked_entry_counts
+    - epoch_duration_and_target_throughput
+    - peak_vram_gib_all_ranks
+  gradient_direction:
+    timing: after_amp_unscale_and_finite_check_before_clipping_and_step
+    consecutive_optimizer_step_cosine: true
+    epoch_aggregate_cosine_to_previous_epoch: true
+    scopes:
+      - full_model
+      - graph_block_0
+      - graph_block_1
+      - graph_block_2
+      - graph_block_3
+      - raw_inverse_dispersion
+    persist_vectors: false
+
+hypotheses:
+  primary_optimization: >-
+    The best fixed-mask pooled validation NB NLL improves by more than 0.0001
+    relative to epoch 1 while losses and gradients remain finite.
+  mechanism: >-
+    Fully observed static neighbor context can aid masked target reconstruction
+    without a path by which the target's hidden expression returns to itself.
+  alternatives:
+    - no_material_validation_improvement
+    - static_context_degrades_optimization_relative_to_evolving_context
+    - negative_binomial_nb2_is_misspecified_for_these_counts
+    - uniform_1_through_1000_masking_is_too_difficult
+    - neighbor_context_adds_no_useful_information
+  claim_limit: >-
+    This single validation-selected run cannot establish causal mechanism or
+    superiority over a run with different masking semantics. A matched
+    comparator under this exact mask and target protocol is required.
+
+preflight_gates:
+  - resolved_configuration_and_frozen_contract_hashes_match
+  - parameter_count_is_exactly_5135088
+  - four_graph_blocks_are_independently_parameterized
+  - target_and_context_stream_encoder_parameters_are_shared_as_declared
+  - every_training_target_is_visited_exactly_once_in_a_synthetic_epoch
+  - every_target_mask_count_is_between_1_and_1000_inclusive
+  - all_neighbor_context_gene_masks_are_false
+  - routing_contains_only_incoming_nonself_neighbor_to_target_edges
+  - masked_target_value_perturbation_cannot_change_model_output
+  - raw_likelihood_target_is_not_a_model_forward_input
+  - target_state_cannot_enter_or_update_the_context_stream
+  - four_rank_weighted_gradient_matches_single_process_pooled_reference_with_unequal_mask_counts
+  - fixed_validation_masks_regenerate_with_identical_checksums
+  - fixed_validation_pooled_metric_replays_exactly
+  - fp32_nb2_likelihood_is_finite_and_includes_full_constants
+  - amp_and_fp32_outputs_and_loss_agree_within_declared_tolerance
+  - every_graph_block_and_raw_theta_have_finite_nonzero_preclip_gradients
+  - bounded_synthetic_and_real_subset_nb2_loss_decrease
+  - atomic_latest_and_best_checkpoint_round_trip_succeeds
+  - peak_vram_is_at_most_22_gib_on_every_rank
+  - vram_headroom_is_at_least_2_gib_on_every_rank
+  - free_disk_is_at_least_20_gib
+
+implementation_acceptance:
+  required: all_preflight_gates_pass
+  launch_blockers:
+    - missing_or_duplicate_target_visit
+    - empty_target_mask
+    - masked_neighbor_context_entry
+    - self_edge_or_target_as_context_source
+    - target_hidden_value_return_path
+    - non_masked_entry_weighted_loss_or_metric
+    - fixed_validation_mask_drift
+    - nonfinite_loss_gradient_or_parameter
+    - ddp_reference_mismatch
+    - checkpoint_reload_or_metric_replay_failure
+    - insufficient_vram_or_disk_headroom
+
+falsification:
+  implementation: any_launch_blocker_is_observed
+  primary_optimization_hypothesis: >-
+    The best fixed-mask pooled validation NB NLL fails to improve on epoch 1
+    by more than 0.0001, or the run terminates with a numerical failure.
+
+launcher:
+  config: configs/launcher/so2_target_isolated_geometry_modulated_nb_train12_val2_ddp4.yaml
+  gpus: [0, 1, 2, 3]
+  process_count: 4
+  backend: nccl
+  elastic_restarts: 0
+  minimum_free_disk_gib: 20
+
+retention:
+  raw_gradient_vectors: prohibited
+  per_epoch_checkpoint_archives: prohibited
+  full_prediction_matrices: prohibited
+  final_checkpoint_count: 1
+  final_checkpoint_role: validation_best
+  test_artifacts: prohibited

@@ -1,0 +1,80 @@
+features:
+  use_edge_features: false
+  fit_scope: twelve_training_cores_only
+  two_stream_inputs:
+    shared_encoder_parameters: true
+    target_query_stream:
+      expression_source: train_standardized_log1p_raw_counts
+      target_mask_applied_before_encoder: true
+      explicit_mask_channel: true
+      metadata_visible: true
+      evolves_across_graph_blocks: true
+    neighbor_key_value_stream:
+      expression_source: train_standardized_log1p_raw_counts
+      expression_fully_observed: true
+      explicit_mask_channel_all_false: true
+      metadata_visible: true
+      cell_autonomous_encoder_only: true
+      evolves_across_graph_blocks: false
+      receiver_cell_excluded_as_its_own_neighbor: true
+  node_expression:
+    biological_targets: 1000
+    source: raw_nonnegative_integer_counts
+    transformed_with: train_only_equal_core_standardized_log1p_raw_counts
+    validation_uses_frozen_training_statistics: true
+    masked_values_removed_inside_target_encoder: true
+    explicit_mask_channel: true
+  node_metadata:
+    transformed_with: train_only_equal_core_recentered_and_rescaled_allowed_metadata
+    validation_uses_frozen_training_statistics: true
+    always_visible: true
+    fields:
+      - Area
+      - Area.um2
+      - AspectRatio
+      - Width
+      - Height
+      - Mean.PanCK
+      - Max.PanCK
+      - Mean.G
+      - Max.G
+      - Mean.Membrane
+      - Max.Membrane
+      - Mean.CD45
+      - Max.CD45
+      - Mean.DAPI
+      - Max.DAPI
+      - SplitRatioToLocal
+      - NucArea
+      - NucAspectRatio
+      - Circularity
+      - Eccentricity
+      - Perimeter
+      - Solidity
+  relative_positional_encoding:
+    role: attention_logit_modulation_and_bias_only
+    dimension: 70
+    radial_rbf_count: 64
+    distance_range_um: [0.0, 500.0]
+    smooth_cutoff: true
+    local_orientation_tensor: coordinate_only_axial_traceless_2d
+    cache_policy: one_shared_read_only_memory_map_per_core
+    cache_reproducible_from_minimal_geometry: true
+    cache_copied_into_run_bundle: false
+  routing_constraints:
+    permitted_edges: fully_observed_neighbor_source_to_masked_target_receiver
+    self_edges: false
+    target_state_as_key_or_value: false
+    target_state_as_neighbor_context: false
+    context_state_message_updates: false
+    target_hidden_value_return_path: false
+  prohibited_node_inputs:
+    - raw_count_targets
+    - target_derived_library_size_or_offset
+    - absolute_or_local_coordinates
+    - core_alias_or_number
+    - slide_or_fov_identity
+    - cell_or_patient_identifiers
+    - vendor_cell_type_cluster_neighborhood_niche
+    - expression_derived_library_size_or_qc_totals
+    - target_derived_annotations
