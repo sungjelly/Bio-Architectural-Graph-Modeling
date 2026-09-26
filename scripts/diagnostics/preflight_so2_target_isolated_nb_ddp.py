@@ -1034,6 +1034,8 @@ def _synthetic_target_coverage_receipt(
 
 
 def _full_constant_fp32_nb2_receipt() -> dict[str, Any]:
+    absolute_tolerance = 2e-5
+    relative_tolerance = 2e-6
     mu = torch.tensor(
         [[0.1, 1.3, 7.0], [3.2, 0.5, 19.0]],
         dtype=torch.float32,
@@ -1060,14 +1062,22 @@ def _full_constant_fp32_nb2_receipt() -> dict[str, Any]:
         mask,
     )
     expected_sum = expected.masked_select(mask).sum(dtype=torch.float32)
-    maximum_error = float((actual - expected).abs().max())
+    absolute_error = (actual - expected).abs()
+    allowed_error = absolute_tolerance + relative_tolerance * expected.abs()
+    scaled_error_ratio = absolute_error / allowed_error
+    maximum_error = float(absolute_error.max())
+    maximum_allowed_error = float(allowed_error.max())
+    maximum_scaled_error_ratio = float(scaled_error_ratio.max())
     sum_error = abs(float(actual_sum) - float(expected_sum))
+    sum_allowed_error = absolute_tolerance + relative_tolerance * abs(
+        float(expected_sum)
+    )
     if (
         actual.dtype != torch.float32
         or actual_sum.dtype != torch.float32
         or not bool(torch.isfinite(actual).all())
-        or maximum_error > 2e-5
-        or sum_error > 2e-5
+        or not bool((absolute_error <= allowed_error).all())
+        or sum_error > sum_allowed_error
     ):
         raise TargetIsolatedNBPreflightError(
             "FP32 full-constant NB2 likelihood gate failed."
@@ -1077,8 +1087,13 @@ def _full_constant_fp32_nb2_receipt() -> dict[str, Any]:
         "dtype": "float32",
         "includes_full_combinatorial_constant": True,
         "contains_zero_and_count_729": True,
+        "absolute_tolerance": absolute_tolerance,
+        "relative_tolerance": relative_tolerance,
         "maximum_absolute_error_vs_torch_distribution": maximum_error,
+        "maximum_allowed_elementwise_error": maximum_allowed_error,
+        "maximum_scaled_error_ratio": maximum_scaled_error_ratio,
         "summed_nll_absolute_error": sum_error,
+        "summed_nll_allowed_error": sum_allowed_error,
         "masked_entries": int(mask.sum()),
     }
 

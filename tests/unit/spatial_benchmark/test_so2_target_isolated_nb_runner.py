@@ -206,3 +206,19 @@ def test_runner_and_preflight_share_the_exact_launch_contract() -> None:
         == preflight.CODE_RELATIVE_PATHS
     )
     assert runner.MINIMUM_FREE_DISK_GIB == preflight.MINIMUM_FREE_DISK_GIB
+
+
+def test_preflight_fp32_nb2_gate_uses_scale_aware_tolerance() -> None:
+    receipt = preflight._full_constant_fp32_nb2_receipt()
+
+    assert receipt["passed"] is True
+    assert receipt["dtype"] == "float32"
+    assert receipt["includes_full_combinatorial_constant"] is True
+    assert receipt["contains_zero_and_count_729"] is True
+    assert receipt["absolute_tolerance"] == 2e-5
+    assert receipt["relative_tolerance"] == 2e-6
+    assert receipt["maximum_scaled_error_ratio"] <= 1.0
+    assert (
+        receipt["summed_nll_absolute_error"]
+        <= receipt["summed_nll_allowed_error"]
+    )
