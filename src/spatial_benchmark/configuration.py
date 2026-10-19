@@ -83,6 +83,8 @@ SUPPORTED_MODEL_NAMES = frozenset(
         "geometry-modulated-relative-qkv-gat",
         "geometry-modulated-relative-qkv-gat-nb2",
         "target-isolated-geometry-modulated-relative-qkv-gat-nb2",
+        "target-isolated-geometry-modulated-relative-qkv-gat-hurdle-nb2",
+        "target-isolated-geometry-modulated-relative-qkv-gat-binary-expression-bce",
         "hybrid-count-gat",
         "hybrid-count-matched-self",
         "mean-adjacency-sage",
@@ -106,6 +108,8 @@ PRIMARY_METRIC_DIRECTIONS = {
     "fit/whole_node/masked_token_accuracy_percent": "maximize",
     "val/unseen_donor/masked_negative_binomial_nll": "minimize",
     "val/target_only_masked_negative_binomial_nll": "minimize",
+    "val/target_only_masked_hurdle_negative_binomial_nll": "minimize",
+    "val/target_only_masked_binary_cross_entropy": "minimize",
     "val/masked_huber": "minimize",
     "val/auroc": "maximize",
     "val/auprc": "maximize",
@@ -424,6 +428,24 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
     batch size; an explicit primary metric; seed, fold, and campaign.
     """
 
+    from .so2_hurdle_runtime_trial import is_runtime_trial, validate_configuration
+
+    if is_runtime_trial(config):
+        try:
+            validate_configuration(config)
+        except ValueError as error:
+            raise ConfigurationError(str(error)) from error
+        return
+
+    from .so2_binary_target_minibatch import is_target_minibatch, validate_configuration as validate_minibatch
+
+    if is_target_minibatch(config):
+        try:
+            validate_minibatch(config)
+        except ValueError as error:
+            raise ConfigurationError(str(error)) from error
+        return
+
     unknown = sorted(set(config) - ALLOWED_ROOT_FIELDS)
     if unknown:
         raise ConfigurationError("Unknown root fields: " + ", ".join(unknown))
@@ -562,6 +584,31 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             "graph_transformer."
         )
     if (
+        model_name
+        == "target-isolated-geometry-modulated-relative-qkv-gat-hurdle-nb2"
+        and family.strip()
+        != "target_isolated_geometry_modulated_relative_qkv_hurdle_graph_transformer"
+    ):
+        raise ConfigurationError(
+            "target-isolated-geometry-modulated-relative-qkv-gat-hurdle-nb2 "
+            "requires model.family=target_isolated_geometry_modulated_relative_"
+            "qkv_hurdle_graph_transformer."
+        )
+    if (
+        model_name
+        == "target-isolated-geometry-modulated-relative-qkv-gat-binary-expression-bce"
+        and family.strip()
+        != (
+            "target_isolated_geometry_modulated_relative_qkv_binary_expression_"
+            "graph_transformer"
+        )
+    ):
+        raise ConfigurationError(
+            "target-isolated-geometry-modulated-relative-qkv-gat-binary-"
+            "expression-bce requires model.family=target_isolated_geometry_"
+            "modulated_relative_qkv_binary_expression_graph_transformer."
+        )
+    if (
         model_name == "recurrent-relative-qkv-gat"
         and family.strip()
         != "recurrent_relative_geometry_qkv_graph_transformer"
@@ -684,7 +731,11 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             raise ConfigurationError(
                 "uniform per-cell mask derivation must exclude model seed."
             )
-        if model_name == "target-isolated-geometry-modulated-relative-qkv-gat-nb2":
+        if model_name in {
+            "target-isolated-geometry-modulated-relative-qkv-gat-nb2",
+            "target-isolated-geometry-modulated-relative-qkv-gat-hurdle-nb2",
+            "target-isolated-geometry-modulated-relative-qkv-gat-binary-expression-bce",
+        }:
             if masking.get("independent_views_per_core_epoch") != 1:
                 raise ConfigurationError(
                     "target-isolated masking requires exactly one mask "
@@ -768,6 +819,8 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
         "geometry-modulated-relative-qkv-gat",
         "geometry-modulated-relative-qkv-gat-nb2",
         "target-isolated-geometry-modulated-relative-qkv-gat-nb2",
+        "target-isolated-geometry-modulated-relative-qkv-gat-hurdle-nb2",
+        "target-isolated-geometry-modulated-relative-qkv-gat-binary-expression-bce",
         "relative-qkv-gat",
         "recurrent-relative-qkv-gat",
     }:
@@ -786,6 +839,8 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                 "geometry-modulated-relative-qkv-gat",
                 "geometry-modulated-relative-qkv-gat-nb2",
                 "target-isolated-geometry-modulated-relative-qkv-gat-nb2",
+                "target-isolated-geometry-modulated-relative-qkv-gat-hurdle-nb2",
+                "target-isolated-geometry-modulated-relative-qkv-gat-binary-expression-bce",
             }
             else "attention_logit_bias_only"
         )
@@ -1383,6 +1438,704 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
                 raise ConfigurationError(
                     "The target-isolated SO2 NB protocol requires "
                     f"launcher.{field}={expected!r}."
+                )
+    elif (
+        protocol
+        == "donor_grouped_so2_target_isolated_hurdle_nb_once_per_cell_earlystop_v1"
+    ):
+        expected_train_aliases = [f"SO2-C{core}" for core in range(15, 27)]
+        expected_validation_aliases = ["SO2-C27", "SO2-C28"]
+        campaign_mapping = _mapping(config, "campaign")
+        if campaign_mapping.get("campaign_id") != (
+            "cmp_20260928_so2_target_isolated_geometry_modulated_hurdle_nb_"
+            "once_per_cell_seed0"
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 hurdle-NB protocol requires its "
+                "registered campaign."
+            )
+        if (
+            model_name
+            != "target-isolated-geometry-modulated-relative-qkv-gat-hurdle-nb2"
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 hurdle-NB protocol requires its "
+                "registered target-isolated hurdle-NB2 model."
+            )
+        locked_model = {
+            "family": (
+                "target_isolated_geometry_modulated_relative_qkv_hurdle_"
+                "graph_transformer"
+            ),
+            "graph_layers": 4,
+            "unique_graph_blocks": 4,
+            "effective_graph_depth": 4,
+            "graph_block_weight_tying": "none",
+            "attention_heads": 8,
+            "attention_head_dim": 32,
+            "ffn_dim": 1024,
+            "decoder_dim": 1024,
+            "relative_geometry_dim": 70,
+            "routing_architecture": "two_stream_target_isolated_v1",
+            "target_query_state_evolves_across_blocks": True,
+            "neighbor_key_value_state_evolves_across_blocks": False,
+            "incoming_nonself_edges_only": True,
+            "target_self_context_edge": False,
+            "target_hidden_value_return_path": (
+                "prohibited_by_static_context_and_nonself_routing"
+            ),
+            "attention_score_mechanism": "geometry_modulated_cosine_qkv_v1",
+            "relative_geometry_value_injection": False,
+            "output_distribution": (
+                "bernoulli_hurdle_zero_truncated_negative_binomial_nb2"
+            ),
+            "decoder_trunk": "shared_count_and_detection",
+            "decoder_trunk_dim": 1024,
+            "count_mean_projection_output_dim": 1000,
+            "detection_logit_projection_output_dim": 1000,
+            "output_mean_activation": "softplus",
+            "output_mean_epsilon": 0.0001,
+            "inverse_dispersion": "learned_per_gene_shared_across_cells",
+            "inverse_dispersion_activation": "softplus",
+            "inverse_dispersion_epsilon": 0.0001,
+            "inverse_dispersion_initial_value": 1.0,
+            "detection_probability_activation": "sigmoid",
+            "detection_probability_epsilon": 0.0001,
+            "detection_projection_weight_initialization": "zeros",
+            "detection_projection_bias_initialization": (
+                "logit_jeffreys_smoothed_training_nonzero_prevalence"
+            ),
+            "detection_prevalence_smoothing": "jeffreys_beta_half_half",
+            "detection_prevalence_denominator": "training_cells_plus_one",
+            "detection_initialization_fit_scope": "twelve_training_cores_only",
+            "expected_trainable_parameter_count": 6160088,
+        }
+        for field, expected in locked_model.items():
+            if model.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 hurdle-NB protocol requires "
+                    f"model.{field}={expected!r}."
+                )
+        if config.get("seed") != 0 or evaluation.get("active_model_seeds") != [0]:
+            raise ConfigurationError(
+                "The target-isolated SO2 hurdle-NB exploratory protocol is "
+                "locked to fresh model seed 0."
+            )
+        if (
+            canonical_prediction_split != "validation"
+            or list(evaluation.get("splits", [])) != ["validation"]
+            or primary
+            != "val/target_only_masked_hurdle_negative_binomial_nll"
+            or evaluation.get("primary_aggregation")
+            != "sum_masked_entry_joint_nll_divided_by_total_masked_entries"
+            or evaluation.get("test_split_present") is not False
+            or evaluation.get("unbiased_test_estimate") is not False
+            or evaluation.get("generalization_estimate") is not False
+            or evaluation.get("fixed_mask_realizations_per_validation_target") != 1
+            or evaluation.get("validation_target_visits") != "exactly_once"
+            or evaluation.get("paired_comparator_fixed_validation_masks_reused_exactly")
+            is not True
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 hurdle-NB protocol requires pooled "
+                "paired fixed-mask validation selection and no test or "
+                "generalization estimate."
+            )
+        locked_dataset = {
+            "dataset_id": "cosmx_so2_nb_train12_val2_v1",
+            "version": "so2_nb_train12_val2_v1",
+            "split_id": "so2_donor_grouped_train12_val2_no_test_seed0_v1",
+            "dataset_fingerprint": (
+                "206148ffc8976526118932c7fbed82674f79ff8f2326bbd2a7c54dba8540260c"
+            ),
+            "split_fingerprint": (
+                "d3d5f637433a98bf48db1d079fbecfe249308638462416e6dae57ece5fffc435"
+            ),
+            "preprocessing_fingerprint": (
+                "2fdebc1be6600c9ea86846c972ee2b6149c2827ade3ff5b0784ceae45001910c"
+            ),
+            "prepared_artifact_reference": "data/processed/so2_nb_train12_val2_v1",
+            "prepared_artifact_observation_model_agnostic": True,
+            "target_distribution": (
+                "bernoulli_hurdle_zero_truncated_negative_binomial_nb2"
+            ),
+            "training_core_aliases": expected_train_aliases,
+            "validation_core_aliases": expected_validation_aliases,
+            "test_core_aliases": [],
+            "training_cells": 208696,
+            "validation_cells": 37367,
+            "test_cells": 0,
+            "biological_target_count": 1000,
+            "validation_used_for_model_selection": True,
+            "test_partition_present": False,
+            "paired_comparator_split_and_preprocessing_reused_exactly": True,
+        }
+        for field, expected in locked_dataset.items():
+            if dataset.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 hurdle-NB dataset contract "
+                    f"requires dataset.{field}={expected!r}."
+                )
+        validation_masks = masking.get("validation_masks")
+        locked_masking = {
+            "type": "target_only_uniform_per_cell_integer_count",
+            "count_min": 1,
+            "count_max": 1000,
+            "positions_without_replacement": True,
+            "independent_views_per_core_epoch": 1,
+            "training_mask_realizations_per_target_per_global_epoch": 1,
+            "target_visit_count_per_global_epoch": 1,
+            "target_cell_only": True,
+            "neighbor_cells_artificially_masked": False,
+            "only_target_query_rows_masked": True,
+            "neighbor_context_rows_fully_observed": True,
+            "mask_base_seed": 2026092601,
+            "model_seed_in_mask_derivation": False,
+            "training_mask_seed_namespace": (
+                "bagm.so2.target_isolated_nb.training_masks.v1"
+            ),
+            "paired_comparator_mask_seed_reuse": (
+                "exact_namespace_base_seed_and_derivation_fields"
+            ),
+            "paired_comparator_masks_match_for_equal_core_epoch_and_target_index": True,
+        }
+        if any(
+            masking.get(field) != expected
+            for field, expected in locked_masking.items()
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 hurdle-NB paired masking contract drifted."
+            )
+        if not isinstance(validation_masks, Mapping) or {
+            "fixed_across_epochs": validation_masks.get("fixed_across_epochs"),
+            "mask_realizations_per_target": validation_masks.get(
+                "mask_realizations_per_target"
+            ),
+            "seed_namespace": validation_masks.get("seed_namespace"),
+            "legacy_ten_view_overlay_masks_consumed": validation_masks.get(
+                "legacy_ten_view_overlay_masks_consumed"
+            ),
+        } != {
+            "fixed_across_epochs": True,
+            "mask_realizations_per_target": 1,
+            "seed_namespace": "bagm.so2.target_isolated_nb.fixed_validation_masks.v1",
+            "legacy_ten_view_overlay_masks_consumed": False,
+        }:
+            raise ConfigurationError(
+                "The target-isolated SO2 hurdle-NB protocol requires exact "
+                "paired fixed validation masks."
+            )
+        locked_trainer = {
+            "batch_size": 2,
+            "training_cells_per_global_epoch": 208696,
+            "validation_cells_per_validation": 37367,
+            "training_core_visits_per_global_epoch": 12,
+            "validation_core_visits_per_global_epoch": 2,
+            "cores_per_optimizer_update": 2,
+            "optimizer_updates_per_global_epoch": 6,
+            "target_shards_per_core": 4,
+            "target_visit_count_per_global_epoch": 1,
+            "mask_realizations_per_target_visit": 1,
+            "objective": (
+                "pooled_masked_entry_full_constant_bernoulli_hurdle_zero_"
+                "truncated_negative_binomial_nb2_nll"
+            ),
+            "objective_numerator": (
+                "sum_detection_nll_all_masked_plus_zero_truncated_nb2_nll_"
+                "positive_masked"
+            ),
+            "objective_denominator": (
+                "globally_reduced_masked_target_entry_count_per_update"
+            ),
+            "local_ddp_loss_scale": (
+                "world_size_times_local_joint_nll_sum_divided_by_global_"
+                "masked_entry_count"
+            ),
+            "aggregation_weight": "masked_entries",
+            "equal_core_or_equal_target_reweighting": False,
+            "likelihood_compute_dtype": "float32",
+            "likelihood_outside_autocast": True,
+            "max_epochs": 300,
+            "minimum_global_epochs": 50,
+            "scheduler": "reduce_lr_on_plateau",
+            "scheduler_monitor": (
+                "val/target_only_masked_hurdle_negative_binomial_nll"
+            ),
+            "scheduler_factor": 0.5,
+            "scheduler_patience": 8,
+            "scheduler_threshold_mode": "abs",
+            "scheduler_threshold": 0.0001,
+            "scheduler_min_learning_rate": 0.000001,
+            "early_stopping": True,
+            "early_stopping_monitor": (
+                "val/target_only_masked_hurdle_negative_binomial_nll"
+            ),
+            "early_stopping_patience": 25,
+            "early_stopping_min_delta": 0.0001,
+            "validation_every": 1,
+            "restore_best": True,
+            "primary_checkpoint_role": "best",
+            "checkpoint_policy": "atomic_latest_and_best_then_final_best_only",
+            "checkpoint_selection": "strict_lowest_validation_primary_metric",
+            "checkpoint_selection_separate_from_min_delta_patience_control": True,
+            "epoch_checkpoint_archives": False,
+            "delete_latest_after_verified_best_reload": True,
+            "core_order_seed": 2026092602,
+            "target_shard_seed": 2026092603,
+            "paired_comparator_core_order_and_shard_seeds_reused_exactly": True,
+            "distributed": True,
+            "distributed_backend": "nccl",
+            "distributed_world_size": 4,
+            "rank_zero_only_artifact_writes": True,
+            "cores_staged_sequentially_per_optimizer_update": True,
+            "ddp_sync_policy": (
+                "first_core_backward_under_no_sync_second_core_backward_synced"
+            ),
+            "stage_complete_core_graph_on_device": False,
+            "staged_relative_geometry_dtype": "float32",
+            "record_global_gradient_cosine_every_global_epoch": True,
+            "record_block_gradient_cosine_every_global_epoch": True,
+            "record_inverse_dispersion_gradient_cosine_every_global_epoch": True,
+            "persist_gradient_vectors": False,
+            "nonfinite_policy": "fail_closed",
+        }
+        for field, expected in locked_trainer.items():
+            if trainer.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 hurdle-NB protocol requires "
+                    f"trainer.{field}={expected!r}."
+                )
+        locked_graph = {
+            "kind": "radial_stratified_knn",
+            "neighbor_k": 200,
+            "radius_um": 500.0,
+            "symmetry": "union",
+            "canonical_order": "receiver_then_source",
+            "self_loops": False,
+            "cross_core_edges": False,
+        }
+        for field, expected in locked_graph.items():
+            if graph.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 hurdle-NB protocol requires "
+                    f"graph.{field}={expected!r}."
+                )
+        metadata = _mapping(config, "metadata")
+        locked_metadata = {
+            "frozen_task_contract_sha256": (
+                "d92263ec6045a4294cb85afe18af008b187860af8b2563831cfb159864e6bd02"
+            ),
+            "paired_comparator_campaign_id": (
+                "cmp_20260926_so2_target_isolated_geometry_modulated_nb_"
+                "once_per_cell_seed0"
+            ),
+            "paired_comparator_run_id": (
+                "r_20260926T104132Z_47d710fa_s000_f00_a01_b967dc7c"
+            ),
+            "comparator_checkpoint_initialization": False,
+            "exact_one_mask_target_isolated_comparator_masks_reused": True,
+            "no_test_split_or_artifacts": True,
+        }
+        for field, expected in locked_metadata.items():
+            if metadata.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 hurdle-NB paired-comparison "
+                    f"metadata requires metadata.{field}={expected!r}."
+                )
+        launcher = _mapping(config, "launcher")
+        locked_launcher = {
+            "requested_gpu": "0,1,2,3",
+            "requested_gpu_count": 4,
+            "require_exact_visible_devices": "0,1,2,3",
+            "distributed": True,
+            "distributed_backend": "nccl",
+            "process_count": 4,
+            "elastic_max_restarts": 0,
+            "hardware_preflight_receipt": (
+                "state/preflight/"
+                "so2_target_isolated_hurdle_nb_once_per_cell_ddp4.json"
+            ),
+        }
+        for field, expected in locked_launcher.items():
+            if launcher.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 hurdle-NB protocol requires "
+                    f"launcher.{field}={expected!r}."
+                )
+    elif (
+        protocol
+        == (
+            "donor_grouped_so2_target_isolated_binary_expression_bce_"
+            "once_per_cell_earlystop_v1"
+        )
+    ):
+        expected_train_aliases = [f"SO2-C{core}" for core in range(15, 27)]
+        expected_validation_aliases = ["SO2-C27", "SO2-C28"]
+        campaign_mapping = _mapping(config, "campaign")
+        if campaign_mapping.get("campaign_id") != (
+            "cmp_20260930_so2_target_isolated_geometry_modulated_binary_"
+            "expression_bce_once_per_cell_seed0"
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 binary-expression BCE protocol "
+                "requires its registered campaign."
+            )
+        if model_name != (
+            "target-isolated-geometry-modulated-relative-qkv-gat-binary-"
+            "expression-bce"
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 binary-expression BCE protocol "
+                "requires its registered binary-expression model."
+            )
+        locked_model = {
+            "family": (
+                "target_isolated_geometry_modulated_relative_qkv_binary_"
+                "expression_graph_transformer"
+            ),
+            "graph_layers": 4,
+            "unique_graph_blocks": 4,
+            "effective_graph_depth": 4,
+            "graph_block_weight_tying": "none",
+            "attention_heads": 8,
+            "attention_head_dim": 32,
+            "ffn_dim": 1024,
+            "decoder_dim": 1024,
+            "relative_geometry_dim": 70,
+            "routing_architecture": "two_stream_target_isolated_v1",
+            "target_query_state_evolves_across_blocks": True,
+            "neighbor_key_value_state_evolves_across_blocks": False,
+            "incoming_nonself_edges_only": True,
+            "target_self_context_edge": False,
+            "target_hidden_value_return_path": (
+                "prohibited_by_static_context_and_nonself_routing"
+            ),
+            "attention_score_mechanism": "geometry_modulated_cosine_qkv_v1",
+            "relative_geometry_value_injection": False,
+            "output_distribution": "bernoulli_binary_expression",
+            "decoder_trunk": "binary_expression_only",
+            "decoder_trunk_dim": 1024,
+            "detection_logit_projection_output_dim": 1000,
+            "detection_probability_activation": "sigmoid",
+            "detection_projection_weight_initialization": "zeros",
+            "detection_projection_bias_initialization": (
+                "logit_jeffreys_smoothed_training_nonzero_prevalence"
+            ),
+            "detection_prevalence_smoothing": "jeffreys_beta_half_half",
+            "detection_prevalence_denominator": "training_cells_plus_one",
+            "detection_initialization_fit_scope": "twelve_training_cores_only",
+            "expected_trainable_parameter_count": 5134088,
+        }
+        for field, expected in locked_model.items():
+            if model.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 binary-expression BCE protocol "
+                    f"requires model.{field}={expected!r}."
+                )
+        forbidden_model_fields = {
+            "count_mean_projection_output_dim",
+            "output_mean_activation",
+            "output_mean_epsilon",
+            "inverse_dispersion",
+            "inverse_dispersion_activation",
+            "inverse_dispersion_epsilon",
+            "inverse_dispersion_initial_value",
+        }
+        present_forbidden = sorted(forbidden_model_fields.intersection(model))
+        if present_forbidden:
+            raise ConfigurationError(
+                "The target-isolated SO2 binary-expression BCE model prohibits "
+                "count and inverse-dispersion fields: "
+                + ", ".join(present_forbidden)
+                + "."
+            )
+        if config.get("seed") != 0 or evaluation.get("active_model_seeds") != [0]:
+            raise ConfigurationError(
+                "The target-isolated SO2 binary-expression BCE exploratory "
+                "protocol is locked to fresh model seed 0."
+            )
+        locked_evaluation = {
+            "task_family": "target_isolated_masked_binary_expression_classification",
+            "primary_aggregation": (
+                "sum_masked_entry_binary_cross_entropy_divided_by_total_"
+                "masked_entries"
+            ),
+            "test_split_present": False,
+            "fixed_mask_realizations_per_validation_target": 1,
+            "validation_target_visits": "exactly_once",
+            "paired_comparator_fixed_validation_masks_reused_exactly": True,
+            "class_weighting": "none_natural_observed_frequency",
+            "decision_threshold": 0.5,
+            "decision_threshold_selected_without_validation_tuning": True,
+            "probability_histogram_bins": 4096,
+            "probability_histogram_range": [0.0, 1.0],
+            "auroc_auprc_computation": (
+                "deterministic_streaming_probability_histogram"
+            ),
+            "unbiased_test_estimate": False,
+            "generalization_estimate": False,
+            "save_full_prediction_matrices": False,
+            "save_curve_numeric_data": True,
+        }
+        if (
+            canonical_prediction_split != "validation"
+            or list(evaluation.get("splits", [])) != ["validation"]
+            or primary != "val/target_only_masked_binary_cross_entropy"
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 binary-expression BCE protocol "
+                "requires pooled fixed-mask validation selection and no test "
+                "split."
+            )
+        for field, expected in locked_evaluation.items():
+            if evaluation.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 binary-expression BCE evaluation "
+                    f"requires evaluation.{field}={expected!r}."
+                )
+        required_metrics = {
+            "train/pooled_masked_binary_cross_entropy",
+            "val/target_only_masked_binary_cross_entropy",
+            "val/unseen_donor/detection_brier_score",
+            "val/unseen_donor/detection_expected_calibration_error_histogram_4096",
+            "val/unseen_donor/detection_auroc_histogram_4096",
+            "val/unseen_donor/detection_auprc_histogram_4096",
+            "val/unseen_donor/detection_accuracy",
+            "val/unseen_donor/detection_balanced_accuracy",
+            "val/unseen_donor/detection_precision",
+            "val/unseen_donor/detection_recall",
+            "val/unseen_donor/detection_f1",
+            "val/unseen_donor/detection_matthews_correlation_coefficient",
+        }
+        if not required_metrics.issubset(set(evaluation.get("metrics", []))):
+            raise ConfigurationError(
+                "The target-isolated SO2 binary-expression BCE evaluation "
+                "requires BCE, calibration, and histogram AUROC/AUPRC metrics."
+            )
+        locked_dataset = {
+            "dataset_id": "cosmx_so2_nb_train12_val2_v1",
+            "version": "so2_nb_train12_val2_v1",
+            "split_id": "so2_donor_grouped_train12_val2_no_test_seed0_v1",
+            "dataset_fingerprint": (
+                "206148ffc8976526118932c7fbed82674f79ff8f2326bbd2a7c54dba8540260c"
+            ),
+            "split_fingerprint": (
+                "d3d5f637433a98bf48db1d079fbecfe249308638462416e6dae57ece5fffc435"
+            ),
+            "preprocessing_fingerprint": (
+                "2fdebc1be6600c9ea86846c972ee2b6149c2827ade3ff5b0784ceae45001910c"
+            ),
+            "prepared_artifact_reference": "data/processed/so2_nb_train12_val2_v1",
+            "prepared_artifact_observation_model_agnostic": True,
+            "task": "target_isolated_masked_binary_expression_classification",
+            "target_scale": "binary_indicator_raw_count_greater_than_zero",
+            "target_distribution": "bernoulli_binary_expression",
+            "binary_target_derivation": (
+                "raw_nonnegative_integer_biological_probe_count_greater_than_zero"
+            ),
+            "training_core_aliases": expected_train_aliases,
+            "validation_core_aliases": expected_validation_aliases,
+            "test_core_aliases": [],
+            "training_cells": 208696,
+            "validation_cells": 37367,
+            "test_cells": 0,
+            "biological_target_count": 1000,
+            "validation_used_for_model_selection": True,
+            "test_partition_present": False,
+            "paired_comparator_split_and_preprocessing_reused_exactly": True,
+        }
+        for field, expected in locked_dataset.items():
+            if dataset.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 binary-expression BCE dataset "
+                    f"requires dataset.{field}={expected!r}."
+                )
+        validation_masks = masking.get("validation_masks")
+        locked_masking = {
+            "type": "target_only_uniform_per_cell_integer_count",
+            "count_min": 1,
+            "count_max": 1000,
+            "positions_without_replacement": True,
+            "independent_views_per_core_epoch": 1,
+            "training_mask_realizations_per_target_per_global_epoch": 1,
+            "target_visit_count_per_global_epoch": 1,
+            "target_cell_only": True,
+            "neighbor_cells_artificially_masked": False,
+            "only_target_query_rows_masked": True,
+            "neighbor_context_rows_fully_observed": True,
+            "mask_base_seed": 2026092601,
+            "model_seed_in_mask_derivation": False,
+            "training_mask_seed_namespace": (
+                "bagm.so2.target_isolated_nb.training_masks.v1"
+            ),
+            "paired_comparator_mask_seed_reuse": (
+                "exact_namespace_base_seed_and_derivation_fields"
+            ),
+            "paired_comparator_masks_match_for_equal_core_epoch_and_target_index": True,
+            "same_mask_indexes_binary_expression_objective": True,
+        }
+        if any(
+            masking.get(field) != expected
+            for field, expected in locked_masking.items()
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 binary-expression BCE paired masking "
+                "contract drifted."
+            )
+        if not isinstance(validation_masks, Mapping) or {
+            "fixed_across_epochs": validation_masks.get("fixed_across_epochs"),
+            "mask_realizations_per_target": validation_masks.get(
+                "mask_realizations_per_target"
+            ),
+            "seed_namespace": validation_masks.get("seed_namespace"),
+            "legacy_ten_view_overlay_masks_consumed": validation_masks.get(
+                "legacy_ten_view_overlay_masks_consumed"
+            ),
+        } != {
+            "fixed_across_epochs": True,
+            "mask_realizations_per_target": 1,
+            "seed_namespace": "bagm.so2.target_isolated_nb.fixed_validation_masks.v1",
+            "legacy_ten_view_overlay_masks_consumed": False,
+        }:
+            raise ConfigurationError(
+                "The target-isolated SO2 binary-expression BCE protocol "
+                "requires exact paired fixed validation masks."
+            )
+        locked_trainer = {
+            "batch_size": 2,
+            "training_cells_per_global_epoch": 208696,
+            "validation_cells_per_validation": 37367,
+            "training_core_visits_per_global_epoch": 12,
+            "validation_core_visits_per_global_epoch": 2,
+            "cores_per_optimizer_update": 2,
+            "optimizer_updates_per_global_epoch": 6,
+            "target_shards_per_core": 4,
+            "target_visit_count_per_global_epoch": 1,
+            "mask_realizations_per_target_visit": 1,
+            "objective": "pooled_unweighted_masked_binary_cross_entropy_with_logits",
+            "objective_numerator": (
+                "sum_binary_cross_entropy_with_logits_over_all_masked_target_entries"
+            ),
+            "objective_denominator": (
+                "globally_reduced_masked_target_entry_count_per_update"
+            ),
+            "local_ddp_loss_scale": (
+                "world_size_times_local_bce_sum_divided_by_global_masked_entry_count"
+            ),
+            "aggregation_weight": "masked_entries",
+            "class_reweighting": "none_natural_observed_frequency",
+            "positive_class_weight": "none",
+            "focal_weighting": False,
+            "equal_core_or_equal_target_reweighting": False,
+            "likelihood_compute_dtype": "float32",
+            "likelihood_outside_autocast": True,
+            "max_epochs": 300,
+            "minimum_global_epochs": 50,
+            "scheduler": "reduce_lr_on_plateau",
+            "scheduler_monitor": "val/target_only_masked_binary_cross_entropy",
+            "scheduler_factor": 0.5,
+            "scheduler_patience": 8,
+            "scheduler_threshold_mode": "abs",
+            "scheduler_threshold": 0.0001,
+            "scheduler_min_learning_rate": 0.000001,
+            "early_stopping": True,
+            "early_stopping_monitor": "val/target_only_masked_binary_cross_entropy",
+            "early_stopping_patience": 25,
+            "early_stopping_min_delta": 0.0001,
+            "validation_every": 1,
+            "restore_best": True,
+            "primary_checkpoint_role": "best",
+            "checkpoint_policy": "atomic_latest_and_best_then_final_best_only",
+            "checkpoint_selection": "strict_lowest_validation_primary_metric",
+            "checkpoint_selection_separate_from_min_delta_patience_control": True,
+            "epoch_checkpoint_archives": False,
+            "delete_latest_after_verified_best_reload": True,
+            "core_order_seed": 2026092602,
+            "target_shard_seed": 2026092603,
+            "paired_comparator_core_order_and_shard_seeds_reused_exactly": True,
+            "distributed": True,
+            "distributed_backend": "nccl",
+            "distributed_world_size": 4,
+            "rank_zero_only_artifact_writes": True,
+            "cores_staged_sequentially_per_optimizer_update": True,
+            "ddp_sync_policy": (
+                "first_core_backward_under_no_sync_second_core_backward_synced"
+            ),
+            "stage_complete_core_graph_on_device": False,
+            "staged_relative_geometry_dtype": "float32",
+            "record_global_gradient_cosine_every_global_epoch": True,
+            "record_block_gradient_cosine_every_global_epoch": True,
+            "record_detection_head_gradient_cosine_every_global_epoch": True,
+            "persist_gradient_vectors": False,
+            "nonfinite_policy": "fail_closed",
+        }
+        for field, expected in locked_trainer.items():
+            if trainer.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 binary-expression BCE protocol "
+                    f"requires trainer.{field}={expected!r}."
+                )
+        if "record_inverse_dispersion_gradient_cosine_every_global_epoch" in trainer:
+            raise ConfigurationError(
+                "The target-isolated SO2 binary-expression BCE trainer "
+                "prohibits inverse-dispersion gradient telemetry."
+            )
+        locked_graph = {
+            "kind": "radial_stratified_knn",
+            "neighbor_k": 200,
+            "radius_um": 500.0,
+            "symmetry": "union",
+            "canonical_order": "receiver_then_source",
+            "self_loops": False,
+            "cross_core_edges": False,
+        }
+        for field, expected in locked_graph.items():
+            if graph.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 binary-expression BCE protocol "
+                    f"requires graph.{field}={expected!r}."
+                )
+        metadata = _mapping(config, "metadata")
+        locked_metadata = {
+            "frozen_task_contract_sha256": (
+                "4d1e030bb597c4a7dce64da8adf3c57743bf8b4a0cbd1e646d2986cca114335a"
+            ),
+            "paired_comparator_campaign_id": (
+                "cmp_20260928_so2_target_isolated_geometry_modulated_hurdle_"
+                "nb_once_per_cell_seed0"
+            ),
+            "paired_comparator_run_id": (
+                "r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097"
+            ),
+            "comparator_checkpoint_initialization": False,
+            "exact_one_mask_target_isolated_comparator_masks_reused": True,
+            "no_test_split_or_artifacts": True,
+        }
+        for field, expected in locked_metadata.items():
+            if metadata.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 binary-expression BCE paired "
+                    f"comparison requires metadata.{field}={expected!r}."
+                )
+        launcher = _mapping(config, "launcher")
+        locked_launcher = {
+            "requested_gpu": "0,1,2,3",
+            "requested_gpu_count": 4,
+            "require_exact_visible_devices": "0,1,2,3",
+            "distributed": True,
+            "distributed_backend": "nccl",
+            "process_count": 4,
+            "elastic_max_restarts": 0,
+            "hardware_preflight_receipt": (
+                "state/preflight/so2_target_isolated_binary_expression_bce_"
+                "once_per_cell_ddp4.json"
+            ),
+        }
+        for field, expected in locked_launcher.items():
+            if launcher.get(field) != expected:
+                raise ConfigurationError(
+                    "The target-isolated SO2 binary-expression BCE protocol "
+                    f"requires launcher.{field}={expected!r}."
                 )
     elif protocol in held_in_fit_protocols:
         if canonical_prediction_split != "fit":

@@ -1,0 +1,63 @@
+version: 1
+defaults:
+  - model: target_isolated_geometry_modulated_relative_qkv_gat_binary_expression_bce_256_l4_h8
+  - masking: target_cell_uniform_1_1000_once_per_epoch_fixed_validation_binary_expression
+  - dataset: so2_binary_expression_train12_val2_v1
+  - features: cosmx_so2_target_isolated_binary_expression_train12_val2_metadata_relative_geometry_routing
+  - graph: so2_radial_stratified_k200_r500_bidirectional
+  - trainer: so2_target_isolated_geometry_modulated_binary_expression_bce_train12_val2_earlystop
+  - evaluation: so2_target_isolated_binary_expression_bce_train12_val2_fixed_masks_earlystop
+  - launcher: so2_target_isolated_geometry_modulated_binary_expression_bce_train12_val2_ddp4
+campaign:
+  campaign_id: cmp_20260930_so2_target_isolated_geometry_modulated_binary_expression_bce_once_per_cell_seed0
+  display_name: SO2 target-isolated geometry-modulated binary-expression BCE once-per-cell seed-0
+experiment:
+  variant_label: target_isolated_geometry_modulated_relative_qkv_gat_binary_expression_bce_l4_h8_train12_val2_ddp4
+  estimand: validation_selected_target_isolated_masked_binary_expression_probability
+  permitted_claim: exploratory_paired_validation_selected_binary_expression_classification_performance_only
+metadata:
+  analysis_design: exploratory_single_seed_paired_binary_expression_donor_grouped_train_validation_only
+  frozen_task_contract_sha256: 4d1e030bb597c4a7dce64da8adf3c57743bf8b4a0cbd1e646d2986cca114335a
+  paired_comparator_campaign_id: cmp_20260928_so2_target_isolated_geometry_modulated_hurdle_nb_once_per_cell_seed0
+  paired_comparator_run_id: r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097
+  paired_comparison_reuse_scope:
+    - split_assignment
+    - train_only_preprocessing_statistics
+    - graph_and_two_stream_routing
+    - model_seed
+    - mask_namespaces_base_seed_and_derivation
+    - core_order_and_target_shard_seeds
+    - optimizer_scheduler_and_stopping_controls
+  comparator_checkpoint_initialization: false
+  legacy_ten_view_validation_masks_reused: false
+  exact_one_mask_target_isolated_comparator_masks_reused: true
+  no_test_split_or_artifacts: true
+  preflight_acceptance:
+    peak_vram_gib_all_ranks_max: 22.0
+    minimum_vram_headroom_gib_each_rank: 2.0
+    minimum_free_disk_gib: 20.0
+  gradient_diagnostics:
+    enabled: true
+    output_path: results/gradient_direction_metrics.csv
+    block_output_path: results/gradient_direction_by_block.csv
+    detection_head_output_path: results/gradient_direction_detection_head.csv
+    global_epoch_indexing: one_based
+    computation_rank: 0
+    vector_dtype: float32
+    read_timing: after_amp_unscale_and_finite_check_before_gradient_clipping_or_optimizer_step
+    consecutive_optimizer_step_cosine: true
+    epoch_aggregate_gradient_cosine_to_previous_epoch: true
+    persist_gradient_tensors: false
+    persist_per_optimizer_step_files: false
+    persist_gradient_vectors_in_checkpoints: false
+    affects_optimization_or_stopping: false
+classification:
+  schema_version: 1
+  lifecycle_stage: exploratory_screen
+  study_axis: so2_donor_grouped_target_isolated_geometry_modulated_binary_expression_bce
+  scientific_variant: target_isolated_geometry_modulated_relative_qkv_gat_binary_expression_bce_l4_h8_train12_val2
+  retention_class: retain_exploratory_validation_selected_binary_expression_model
+  classification_confidence: high
+seed: 0
+fold: 0
+attempt: 1

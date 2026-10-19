@@ -494,6 +494,204 @@ task_families:
         direction: minimize
         unit: squared_probability_error
 
+  target_isolated_masked_expression_hurdle_negative_binomial:
+    active_in_current_project: true
+    primary_metric: val/target_only_masked_hurdle_negative_binomial_nll
+    primary_direction: minimize
+    independent_uncertainty_unit: donor_group
+    likelihood_contract:
+      family: bernoulli_hurdle_zero_truncated_negative_binomial_nb2
+      zero_probability: one_minus_sigmoid_nonzero_logit
+      positive_probability: sigmoid_nonzero_logit_times_nb2_probability_divided_by_one_minus_nb2_zero_probability
+      detection_support: every_masked_entry
+      positive_count_support: positive_masked_entries_only
+      full_likelihood_constants_included: true
+      zero_truncation_normalizer_included: true
+      optimization_aggregation: total_joint_nll_divided_by_total_masked_entries
+      positive_stratum_reweighting: false
+      training_target_visits_per_cell_per_epoch: 1
+      validation_target_visits_per_cell: 1
+      validation_masks_fixed_across_epochs: true
+      paired_ordinary_nb_masks_reused_exactly: true
+      only_designated_target_expression_masked: true
+      neighbor_expression_artificially_masked: false
+      validation_used_for_model_selection: true
+      test_partition_present: false
+    metrics:
+      train/pooled_masked_hurdle_negative_binomial_nll:
+        description: Entry-pooled joint Bernoulli-hurdle plus zero-truncated full-constant NB2 NLL over one stochastic target-only mask per training cell.
+        direction: minimize
+        unit: nats_per_masked_count
+      val/target_only_masked_hurdle_negative_binomial_nll:
+        description: Entry-pooled joint Bernoulli-hurdle plus zero-truncated full-constant NB2 NLL over one fixed paired target-only mask per validation cell.
+        direction: minimize
+        unit: nats_per_masked_count
+      val/unseen_donor/detection_bce:
+        description: Detection BCE sum divided by all fixed masked validation entries.
+        direction: minimize
+        unit: nats_per_masked_count
+      val/unseen_donor/positive_zero_truncated_negative_binomial_nll:
+        description: Zero-truncated full-constant NB2 NLL sum divided by positive fixed masked validation entries only.
+        direction: minimize
+        unit: nats_per_positive_masked_count
+      val/unseen_donor/raw_count_mae:
+        direction: minimize
+        unit: raw_counts
+      val/unseen_donor/raw_count_rmse:
+        direction: minimize
+        unit: raw_counts
+      val/unseen_donor/log1p_mae:
+        direction: minimize
+        unit: log1p_raw_counts
+      val/unseen_donor/log1p_rmse:
+        direction: minimize
+        unit: log1p_raw_counts
+      val/unseen_donor/poisson_deviance:
+        direction: minimize
+        unit: deviance_per_masked_count
+      val/unseen_donor/positive_raw_count_mae:
+        description: MAE of the hurdle conditional-positive mean over positive masked entries only.
+        direction: minimize
+        unit: raw_counts_per_positive_masked_count
+      val/unseen_donor/positive_raw_count_rmse:
+        description: RMSE of the hurdle conditional-positive mean over positive masked entries only.
+        direction: minimize
+        unit: raw_counts_per_positive_masked_count
+      val/unseen_donor/positive_log1p_mae:
+        description: Log1p MAE of the hurdle conditional-positive mean over positive masked entries only.
+        direction: minimize
+        unit: log1p_raw_counts_per_positive_masked_count
+      val/unseen_donor/positive_log1p_rmse:
+        description: Log1p RMSE of the hurdle conditional-positive mean over positive masked entries only.
+        direction: minimize
+        unit: log1p_raw_counts_per_positive_masked_count
+      val/unseen_donor/observed_positive_rate:
+        direction: descriptive
+        unit: proportion
+      val/unseen_donor/predicted_positive_probability_mean:
+        direction: descriptive
+        unit: probability
+      val/unseen_donor/detection_brier_score:
+        direction: minimize
+        unit: squared_probability_error
+      val/unseen_donor/detection_threshold:
+        description: Fixed nonzero-probability threshold used for confusion diagnostics; not tuned on validation.
+        direction: descriptive
+        unit: probability
+      val/unseen_donor/detection_true_positive:
+        direction: descriptive
+        unit: masked_entries
+      val/unseen_donor/detection_true_negative:
+        direction: descriptive
+        unit: masked_entries
+      val/unseen_donor/detection_false_positive:
+        direction: descriptive
+        unit: masked_entries
+      val/unseen_donor/detection_false_negative:
+        direction: descriptive
+        unit: masked_entries
+      val/unseen_donor/detection_recall:
+        direction: maximize
+        unit: proportion
+      val/unseen_donor/detection_specificity:
+        direction: maximize
+        unit: proportion
+      val/unseen_donor/detection_precision:
+        direction: maximize
+        unit: proportion
+      val/unseen_donor/detection_f1:
+        direction: maximize
+        unit: proportion
+
+  target_isolated_masked_binary_expression_classification:
+    active_in_current_project: true
+    primary_metric: val/target_only_masked_binary_cross_entropy
+    primary_direction: minimize
+    independent_uncertainty_unit: donor_group
+    likelihood_contract:
+      family: bernoulli_binary_expression
+      target: indicator_of_raw_count_greater_than_zero
+      support: every_masked_target_entry
+      optimization_aggregation: total_binary_cross_entropy_divided_by_total_masked_entries
+      class_reweighting: none_natural_observed_frequency
+      positive_class_weight: none
+      focal_weighting: false
+      training_target_visits_per_cell_per_epoch: 1
+      validation_target_visits_per_cell: 1
+      validation_masks_fixed_across_epochs: true
+      paired_hurdle_masks_reused_exactly: true
+      only_designated_target_expression_masked: true
+      neighbor_expression_artificially_masked: false
+      validation_used_for_model_selection: true
+      test_partition_present: false
+    metrics:
+      train/pooled_masked_binary_cross_entropy:
+        description: Entry-pooled unweighted BCE over one stochastic target-only mask per training cell.
+        direction: minimize
+        unit: nats_per_masked_entry
+      val/target_only_masked_binary_cross_entropy:
+        description: Entry-pooled unweighted BCE over one fixed paired target-only mask per validation cell.
+        direction: minimize
+        unit: nats_per_masked_entry
+      val/unseen_donor/observed_positive_rate:
+        direction: descriptive
+        unit: proportion
+      val/unseen_donor/predicted_positive_probability_mean:
+        direction: descriptive
+        unit: probability
+      val/unseen_donor/detection_brier_score:
+        direction: minimize
+        unit: squared_probability_error
+      val/unseen_donor/detection_expected_calibration_error_histogram_4096:
+        description: Deterministic 4096-bin probability-histogram approximation to expected calibration error.
+        direction: minimize
+        unit: probability
+      val/unseen_donor/detection_auroc_histogram_4096:
+        description: Deterministic 4096-bin probability-histogram approximation to masked-entry AUROC.
+        direction: maximize
+        unit: area_under_curve
+      val/unseen_donor/detection_auprc_histogram_4096:
+        description: Deterministic 4096-bin probability-histogram approximation to masked-entry average precision.
+        direction: maximize
+        unit: area_under_curve
+      val/unseen_donor/detection_threshold:
+        description: Fixed probability threshold of 0.5; never tuned on validation.
+        direction: descriptive
+        unit: probability
+      val/unseen_donor/detection_true_positive:
+        direction: descriptive
+        unit: masked_entries
+      val/unseen_donor/detection_true_negative:
+        direction: descriptive
+        unit: masked_entries
+      val/unseen_donor/detection_false_positive:
+        direction: descriptive
+        unit: masked_entries
+      val/unseen_donor/detection_false_negative:
+        direction: descriptive
+        unit: masked_entries
+      val/unseen_donor/detection_accuracy:
+        direction: maximize
+        unit: proportion
+      val/unseen_donor/detection_balanced_accuracy:
+        direction: maximize
+        unit: proportion
+      val/unseen_donor/detection_recall:
+        direction: maximize
+        unit: proportion
+      val/unseen_donor/detection_specificity:
+        direction: maximize
+        unit: proportion
+      val/unseen_donor/detection_precision:
+        direction: maximize
+        unit: proportion
+      val/unseen_donor/detection_f1:
+        direction: maximize
+        unit: proportion
+      val/unseen_donor/detection_matthews_correlation_coefficient:
+        direction: maximize
+        unit: correlation
+
   masked_expression_hybrid_count:
     active_in_current_project: true
     primary_metric: fit/whole_node/hybrid_loss

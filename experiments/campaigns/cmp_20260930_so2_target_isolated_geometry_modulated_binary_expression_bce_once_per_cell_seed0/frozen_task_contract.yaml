@@ -1,0 +1,339 @@
+task_contract_version: 1
+campaign_id: cmp_20260930_so2_target_isolated_geometry_modulated_binary_expression_bce_once_per_cell_seed0
+display_name: SO2 target-isolated geometry-modulated binary-expression BCE once-per-cell seed-0
+frozen_on_utc: '2026-09-30'
+status: design_locked_implementation_and_preflight_pending
+source_experiment_config: configs/experiment/so2_target_isolated_geometry_modulated_binary_expression_bce_once_per_cell_seed0.yaml
+
+scientific_question: >-
+  How accurately and probabilistically well can the matched target-isolated
+  geometry-modulated graph model predict whether each masked transcript is
+  expressed when it is trained only on binary expression occurrence and not
+  on positive count magnitude?
+
+paired_comparison:
+  campaign_id: cmp_20260928_so2_target_isolated_geometry_modulated_hurdle_nb_once_per_cell_seed0
+  completed_run_id: r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097
+  comparator_observation_model: bernoulli_hurdle_zero_truncated_negative_binomial_nb2
+  comparator_detection_metric: val/unseen_donor/detection_bce
+  matched_exactly:
+    - donor_grouped_split
+    - train_only_preprocessing_statistics
+    - graph_artifacts_and_two_stream_routing
+    - graph_encoder_topology
+    - model_seed
+    - training_mask_namespace_base_seed_and_derivation
+    - fixed_validation_mask_namespace_and_derivation
+    - core_order_seed
+    - target_shard_seed
+    - optimizer_scheduler_and_stopping_controls
+  intentionally_changed:
+    - decoder_has_only_one_binary_expression_projection
+    - count_mean_projection_is_removed
+    - inverse_dispersion_parameters_are_removed
+    - loss_is_unweighted_binary_cross_entropy_only
+    - primary_selection_metric_is_binary_cross_entropy
+  comparator_checkpoint_used_for_initialization: false
+
+data:
+  source_slide: SO_2
+  config: configs/dataset/so2_binary_expression_train12_val2_v1.yaml
+  reused_prepared_artifact: data/processed/so2_nb_train12_val2_v1
+  reused_graph_config: configs/graph/so2_radial_stratified_k200_r500_bidirectional.yaml
+  dataset_fingerprint: 206148ffc8976526118932c7fbed82674f79ff8f2326bbd2a7c54dba8540260c
+  split_fingerprint: d3d5f637433a98bf48db1d079fbecfe249308638462416e6dae57ece5fffc435
+  preprocessing_fingerprint: 2fdebc1be6600c9ea86846c972ee2b6149c2827ade3ff5b0784ceae45001910c
+  overlay_manifest_file_sha256: 3aea6cfbf7191df221cf226316dbbc2aded6edfaeb193498c7a7a740bc73cabe
+  training_core_aliases: [SO2-C15, SO2-C16, SO2-C17, SO2-C18, SO2-C19, SO2-C20, SO2-C21, SO2-C22, SO2-C23, SO2-C24, SO2-C25, SO2-C26]
+  validation_core_aliases: [SO2-C27, SO2-C28]
+  test_core_aliases: []
+  training_cells: 208696
+  validation_cells: 37367
+  test_cells: 0
+  biological_target_count: 1000
+  node_covariate_count: 22
+  experimental_unit: donor_group
+  training_donor_groups: 6
+  validation_donor_groups: 1
+  input_scale: train_only_equal_core_standardized_log1p_raw_counts
+  binary_target: indicator_of_raw_count_greater_than_zero
+  validation_used_for_model_selection: true
+  test_partition_present: false
+
+model:
+  config: configs/model/target_isolated_geometry_modulated_relative_qkv_gat_binary_expression_bce_256_l4_h8.yaml
+  name: target-isolated-geometry-modulated-relative-qkv-gat-binary-expression-bce
+  family: target_isolated_geometry_modulated_relative_qkv_binary_expression_graph_transformer
+  seed: 0
+  hidden_dim: 256
+  graph_layers: 4
+  unique_graph_blocks: 4
+  graph_block_weight_tying: none
+  attention_heads: 8
+  attention_head_dim: 32
+  ffn_dim: 1024
+  decoder_trunk_dim: 1024
+  decoder_final_projection_genes: 1000
+  geometry_hidden_dim: 128
+  relative_geometry_dim: 70
+  trainable_parameter_count: 5134088
+  output_distribution: bernoulli_binary_expression
+  detection_probability: sigmoid_of_nonzero_logit
+  detection_weight_initialization: zeros
+  detection_bias_initialization: logit_of_jeffreys_smoothed_training_nonzero_prevalence
+  detection_prevalence_formula: (training_positive_count_per_gene + 0.5) / (208696 + 1)
+  initialization_fit_scope: twelve_training_cores_only
+  count_mean_projection_present: false
+  inverse_dispersion_parameters_present: false
+  initialization_gradient_consequence: >-
+    Because the detection projection weights are exactly zero, the first
+    optimizer update has zero decoder-trunk and graph-encoder gradients by
+    construction while the detection projection itself learns. Nonzero
+    trunk and graph gradients are required from subsequent updates.
+
+two_stream_routing:
+  schema: target_isolated_two_stream_routing_v1
+  shared_node_encoder_parameters: true
+  target_query_stream:
+    input_expression: target_row_with_selected_genes_zeroed_before_forward
+    mask_channel: explicit
+    metadata: allowed_morphology_visible
+    state: evolves_through_four_independent_blocks
+  neighbor_key_value_stream:
+    input_expression: fully_observed_train_standardized_log1p_expression
+    mask_channel: all_false
+    metadata: allowed_morphology_visible
+    state: static_cell_autonomous_encoder_output_across_all_blocks
+  permitted_edges: incoming_neighbor_source_to_target_receiver
+  self_edges: prohibited
+  target_state_as_key_or_value: prohibited
+  context_state_updates: prohibited
+  geometry_role: dimensionwise_qk_modulation_and_scalar_bias_only
+  geometry_in_values: prohibited
+  binary_target_in_model_forward: prohibited
+  leakage_argument:
+    - masked target values are zeroed before forward and removed again by the encoder
+    - binary labels are constructed only for the loss and metrics
+    - the receiver is excluded from its fully observed context
+    - target state is never a source key or value
+    - static context cannot receive a target message
+    - therefore no target-hidden-value return path exists at any depth
+
+masking:
+  config: configs/masking/target_cell_uniform_1_1000_once_per_epoch_fixed_validation_binary_expression.yaml
+  paired_comparator_seed_reuse_is_intentional: true
+  training_target_visits_per_cell_per_global_epoch: 1
+  training_mask_realizations_per_target_visit: 1
+  masked_gene_count_distribution: discrete_uniform_1_through_1000_inclusive
+  positions: sampled_without_replacement
+  empty_target_masks: prohibited
+  full_target_masks: allowed
+  only_target_query_rows_masked: true
+  neighbor_context_rows_fully_observed: true
+  mask_base_seed: 2026092601
+  training_seed_namespace: bagm.so2.target_isolated_nb.training_masks.v1
+  training_seed_fields: [namespace, base_seed, core_alias, global_epoch, target_row_index]
+  validation:
+    target_visits_per_cell: 1
+    mask_realizations_per_target: 1
+    fixed_across_epochs: true
+    seed_namespace: bagm.so2.target_isolated_nb.fixed_validation_masks.v1
+    seed_fields: [namespace, core_alias, target_row_index]
+  model_seed_affects_masks: false
+
+objective:
+  family: bernoulli_binary_expression
+  target: indicator_of_raw_count_greater_than_zero
+  support: every_masked_target_cell_gene_entry
+  loss: binary_cross_entropy_with_logits
+  numerator: sum_unweighted_binary_cross_entropy_over_all_masked_entries
+  denominator: total_masked_entries
+  class_reweighting: none
+  positive_class_weight: none
+  focal_weighting: false
+  equal_target_or_equal_core_reweighting: false
+  compute_dtype: float32_outside_autocast
+
+optimization:
+  config: configs/trainer/so2_target_isolated_geometry_modulated_binary_expression_bce_train12_val2_earlystop.yaml
+  optimizer: adamw
+  learning_rate: 0.0001
+  weight_decay: 0.00001
+  gradient_clip_norm: 1.0
+  precision: mixed_model_with_fp32_binary_cross_entropy
+  cores_per_optimizer_update: 2
+  optimizer_updates_per_global_epoch: 6
+  global_epoch_definition: every_one_of_208696_training_cells_targeted_exactly_once
+  core_order_seed: 2026092602
+  target_shard_seed: 2026092603
+  distributed_world_size: 4
+  target_shards_per_core: 4
+  core_execution_within_update: sequential_first_core_no_sync_second_core_synced
+  ddp_rule: world_size_times_local_two_core_bce_sum_divided_by_all_reduced_two_core_global_masked_entry_count_before_ddp_gradient_mean
+
+scheduling_and_stopping:
+  maximum_global_epochs: 300
+  minimum_global_epochs: 50
+  validation_every_global_epochs: 1
+  scheduler:
+    name: reduce_lr_on_plateau
+    monitor: val/target_only_masked_binary_cross_entropy
+    mode: min
+    factor: 0.5
+    patience: 8
+    threshold_mode: abs
+    threshold: 0.0001
+    minimum_learning_rate: 0.000001
+  exact_checkpoint_selection:
+    monitor: val/target_only_masked_binary_cross_entropy
+    rule: strict_lower_value
+    starts_epoch: 1
+  early_stopping_control:
+    monitor: val/target_only_masked_binary_cross_entropy
+    mode: min
+    patience_clock_starts_after_epoch: 50
+    patience: 25
+    minimum_delta: 0.0001
+  exact_selection_state_separate_from_patience_control_state: true
+  restore_best: true
+
+evaluation:
+  config: configs/evaluation/so2_target_isolated_binary_expression_bce_train12_val2_fixed_masks_earlystop.yaml
+  protocol: donor_grouped_so2_target_isolated_binary_expression_bce_once_per_cell_earlystop_v1
+  canonical_split: validation
+  primary_metric: val/target_only_masked_binary_cross_entropy
+  primary_direction: minimize
+  primary_aggregation: total_validation_bce_sum_divided_by_total_validation_masked_entries
+  fixed_mask_realizations_per_validation_target: 1
+  validation_target_visits: exactly_once
+  fixed_decision_threshold: 0.5
+  threshold_tuned_on_validation: false
+  probability_histogram_bins: 4096
+  histogram_range: [0.0, 1.0]
+  histogram_metrics:
+    - detection_auroc_histogram_4096
+    - detection_auprc_histogram_4096
+    - detection_expected_calibration_error_histogram_4096
+  direct_metrics:
+    - brier_score
+    - accuracy
+    - balanced_accuracy
+    - precision
+    - recall
+    - specificity
+    - f1
+    - matthews_correlation_coefficient
+  validation_role: scheduler_early_stopping_and_checkpoint_selection
+  test_split_present: false
+  unbiased_test_estimate: false
+  generalization_claim_supported: false
+
+checkpointing:
+  schema: so2_target_isolated_binary_expression_bce_once_per_cell_checkpoint_v1
+  during_training: atomic_latest_plus_exact_validation_best
+  checkpoint_every_global_epochs: 1
+  epoch_archives: false
+  resume: reconcile_latest_and_best_transaction_then_truncate_metrics_to_latest_epoch
+  finalization:
+    - reload_exact_validation_best_on_all_ranks
+    - reproduce_fixed_mask_primary_and_classification_metrics
+    - verify_checkpoint_checksum
+    - write_and_verify_final_archive
+    - delete_latest
+    - retain_best_only
+
+observability:
+  record_every_global_epoch:
+    - pooled_training_binary_cross_entropy
+    - pooled_validation_binary_cross_entropy
+    - masked_positive_and_negative_entry_counts
+    - observed_and_predicted_positive_rates
+    - detection_brier_score
+    - histogram_auroc_auprc_and_expected_calibration_error
+    - fixed_0.5_threshold_confusion_counts_accuracy_balanced_accuracy_precision_recall_specificity_f1_and_mcc
+    - target_visit_coverage_and_mask_receipts
+    - learning_rate_duration_throughput_and_peak_vram
+  gradient_direction:
+    timing: after_amp_unscale_and_finite_check_before_clipping_and_step
+    consecutive_optimizer_step_cosine: true
+    epoch_aggregate_cosine_to_previous_epoch: true
+    scopes:
+      - full_model
+      - graph_block_0
+      - graph_block_1
+      - graph_block_2
+      - graph_block_3
+      - detection_head
+    first_update_zero_upstream_gradient_expected: true
+    subsequent_update_nonzero_graph_gradient_required: true
+    persist_vectors: false
+
+hypotheses:
+  primary_optimization: >-
+    The best fixed-mask pooled validation BCE improves by more than 0.0001
+    relative to epoch 1 while loss and required post-first-update gradients
+    remain finite.
+  binary_specialization: >-
+    Removing count-magnitude supervision improves one or more prespecified
+    occurrence metrics, especially AUPRC, recall, or F1, under identical masks.
+  alternatives:
+    - natural_frequency_bce_prefers_the_majority_zero_class
+    - count_supervision_in_the_hurdle_model_regularizes_occurrence_prediction
+    - fixed_threshold_0.5_is_not_operationally_optimal
+    - neighbor_context_adds_no_useful_information
+  claim_limit: >-
+    This single validation-selected seed supports only a matched exploratory
+    comparison. It is not an unbiased test, replication, generalization,
+    mechanism, or causal result.
+
+preflight:
+  script: scripts/diagnostics/preflight_so2_target_isolated_binary_expression_bce_ddp.py
+  receipt: state/preflight/so2_target_isolated_binary_expression_bce_once_per_cell_ddp4.json
+  receipt_schema: so2_target_isolated_binary_expression_bce_once_per_cell_ddp4_preflight_v1
+  required_gates:
+    - resolved_configuration_contract_and_code_hashes_match
+    - parameter_count_is_exactly_5134088
+    - four_graph_blocks_are_independently_parameterized
+    - decoder_has_exactly_one_1000_gene_detection_projection
+    - no_count_head_or_inverse_dispersion_parameter_exists
+    - detection_weights_are_zero_and_bias_matches_train_only_jeffreys_prevalence
+    - validation_counts_cannot_affect_detection_initialization
+    - first_update_upstream_gradient_is_zero_by_construction
+    - subsequent_update_graph_and_decoder_trunk_gradients_are_finite_and_nonzero
+    - binary_cross_entropy_matches_independent_float64_oracle
+    - amp_and_fp32_outputs_and_loss_agree_within_declared_tolerance
+    - every_training_target_is_visited_exactly_once_in_a_synthetic_epoch
+    - every_target_mask_count_is_between_1_and_1000_inclusive
+    - comparator_training_and_validation_masks_replay_exactly
+    - all_neighbor_context_gene_masks_are_false
+    - routing_contains_only_incoming_nonself_neighbor_to_target_edges
+    - masked_target_value_perturbation_cannot_change_model_output
+    - binary_target_is_not_a_model_forward_input
+    - target_state_cannot_enter_or_update_the_context_stream
+    - four_rank_bce_gradient_matches_single_process_reference_with_unequal_class_counts
+    - fixed_validation_metrics_and_histograms_replay_exactly
+    - atomic_latest_and_best_checkpoint_round_trip_succeeds
+    - ddp_parameters_are_synchronized
+    - peak_vram_is_at_most_22_gib_on_every_rank
+    - vram_headroom_is_at_least_2_gib_on_every_rank
+    - free_disk_is_at_least_20_gib
+    - no_test_split_or_artifacts_exist
+
+launcher:
+  config: configs/launcher/so2_target_isolated_geometry_modulated_binary_expression_bce_train12_val2_ddp4.yaml
+  runner: scripts/train/run_so2_target_isolated_binary_expression_bce.py
+  gpus: [0, 1, 2, 3]
+  process_count: 4
+  backend: nccl
+  elastic_restarts: 0
+  minimum_free_disk_gib: 20
+
+retention:
+  raw_gradient_vectors: prohibited
+  per_epoch_checkpoint_archives: prohibited
+  full_prediction_matrices: prohibited
+  histogram_curve_numeric_data: one_compact_final_4096_bin_artifact_retained
+  per_entry_predictions: prohibited
+  final_checkpoint_count: 1
+  final_checkpoint_role: exact_validation_best
+  test_artifacts: prohibited

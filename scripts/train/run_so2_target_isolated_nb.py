@@ -203,6 +203,15 @@ VALIDATION_MASK_NAMESPACE = (
 )
 TRAINING_MASK_NAMESPACE = "bagm.so2.target_isolated_nb.training_masks.v1"
 PRIMARY_METRIC = "val/target_only_masked_negative_binomial_nll"
+TRAIN_PRIMARY_METRIC = "train/pooled_masked_negative_binomial_nll"
+PROVENANCE_RELATIVE_PATH = "provenance/so2_target_isolated_nb_training.json"
+OBJECTIVE_AGGREGATION = "exact_global_masked_entry_weighted"
+TRACKED_HEAD_GRADIENT_RELATIVE_PATH = (
+    "results/gradient_direction_dispersion.csv"
+)
+PREFLIGHT_TRACKED_HEAD_COUNT_FIELD = "raw_theta_parameter_count"
+PREFLIGHT_TRACKED_HEAD_PARAMETER_COUNT = 1000
+ADDITIONAL_REQUIRED_FINAL_OUTPUTS: tuple[str, ...] = ()
 
 PREFLIGHT_REQUIRED_GATES = frozenset(
     {
@@ -816,7 +825,7 @@ def _load_preflight_receipt(
         "graph_block_count",
         "unique_graph_block_count",
         "per_block_parameter_count",
-        "raw_theta_parameter_count",
+        PREFLIGHT_TRACKED_HEAD_COUNT_FIELD,
         "state_dict_key_sha256",
         "target_input_is_separate",
         "static_clean_source_bank",
@@ -828,7 +837,7 @@ def _load_preflight_receipt(
         "parameter_count": EXPECTED_PARAMETER_COUNT,
         "graph_block_count": 4,
         "unique_graph_block_count": 4,
-        "raw_theta_parameter_count": 1000,
+        PREFLIGHT_TRACKED_HEAD_COUNT_FIELD: PREFLIGHT_TRACKED_HEAD_PARAMETER_COUNT,
         "target_input_is_separate": True,
         "static_clean_source_bank": True,
     }.items():
@@ -1832,7 +1841,7 @@ def _reconcile_metric_events(path: Path, *, checkpoint_epoch: int) -> None:
     epoch = int(checkpoint_epoch)
     retained = [row for row in rows if int(row.get("step", -1)) <= epoch]
     expected_names = {
-        "train/pooled_masked_negative_binomial_nll",
+        TRAIN_PRIMARY_METRIC,
         PRIMARY_METRIC,
     }
     for step in range(1, epoch + 1):
@@ -1885,7 +1894,8 @@ def _remove_partial_finalization_outputs(scratch: Path) -> None:
         scratch / "metrics/final.json",
         scratch / "diagnostics/final_checkpoint_reload_verification.json",
         scratch / "diagnostics/hardware_preflight.json",
-        scratch / "provenance/so2_target_isolated_nb_training.json",
+        scratch / PROVENANCE_RELATIVE_PATH,
+        *(scratch / relative for relative in ADDITIONAL_REQUIRED_FINAL_OUTPUTS),
     ]
     for stem in (scratch / "metrics/history", scratch / "predictions/validation"):
         candidates.extend(
@@ -1903,6 +1913,7 @@ def _make_epoch_row(
     train_nll: float,
     train_masked_entries: int,
     train_target_cells: int,
+    training: Mapping[str, Mapping[str, float | int]],
     validation: ValidationResult,
     theta: tuple[float, float, float],
     learning_rate: float,
@@ -1916,6 +1927,7 @@ def _make_epoch_row(
     block_gradients: Sequence[Mapping[str, Any]],
     theta_gradient: Mapping[str, Any],
 ) -> Mapping[str, Any]:
+    del training
     return {
         "schema": EPOCH_METRICS_SCHEMA,
         "global_epoch": completed_epoch,
@@ -2126,13 +2138,14 @@ def _validate_final_outputs(
         "results/per_core_epoch_metrics.csv",
         "results/gradient_direction_metrics.csv",
         "results/gradient_direction_by_block.csv",
-        "results/gradient_direction_dispersion.csv",
+        TRACKED_HEAD_GRADIENT_RELATIVE_PATH,
         "metrics/events.jsonl",
         "metrics/final.json",
         "diagnostics/final_checkpoint_reload_verification.json",
         "diagnostics/hardware_preflight.json",
-        "provenance/so2_target_isolated_nb_training.json",
+        PROVENANCE_RELATIVE_PATH,
         "summary.json",
+        *ADDITIONAL_REQUIRED_FINAL_OUTPUTS,
     )
     for relative in required:
         path = scratch / relative
@@ -2266,7 +2279,7 @@ def _validate_final_outputs(
             4,
         ),
         (
-            "results/gradient_direction_dispersion.csv",
+            TRACKED_HEAD_GRADIENT_RELATIVE_PATH,
             GRADIENT_DIRECTION_METRICS_COLUMNS,
             1,
         ),
@@ -2322,7 +2335,7 @@ def _validate_final_outputs(
         reload_receipt.get("checkpoint_sha256"), best_sha, field="reload.best_sha"
     )
     provenance = _load_json_mapping(
-        scratch / "provenance/so2_target_isolated_nb_training.json",
+        scratch / PROVENANCE_RELATIVE_PATH,
         description="target-isolated training provenance",
     )
     for field, expected in {
@@ -2359,6 +2372,98 @@ def _validate_final_outputs(
 def _remaining_training_epochs(state: EarlyStoppingState) -> range:
     start = int(state.completed_epoch)
     return range(start, start if state.should_stop else MAXIMUM_EPOCHS)
+
+
+def _final_metrics(validation: ValidationResult) -> Mapping[str, float | int]:
+    """Build the public metric payload for the frozen NB2 protocol.
+
+    Kept as a narrow hook so closely matched observation models can reuse the
+    target-isolated execution and checkpoint transaction without mislabelling
+    their likelihood-specific metrics.
+    """
+
+    return {
+        PRIMARY_METRIC: validation.pooled_negative_binomial_nll,
+        "val/unseen_donor/raw_count_mae": validation.raw_count_mae,
+        "val/unseen_donor/raw_count_rmse": validation.raw_count_rmse,
+        "val/unseen_donor/log1p_mae": validation.log1p_mae,
+        "val/unseen_donor/log1p_rmse": validation.log1p_rmse,
+        "val/unseen_donor/poisson_deviance": validation.poisson_deviance,
+        "val/unseen_donor/observed_zero_rate": validation.observed_zero_rate,
+        "val/unseen_donor/predicted_zero_probability_mean": (
+            validation.predicted_zero_probability_mean
+        ),
+        "val/unseen_donor/zero_brier_score": validation.zero_brier_score,
+        "val/masked_entries": validation.masked_entries,
+        "val/target_cells": validation.target_cells,
+    }
+
+
+def _additional_provenance(
+    validation: ValidationResult,
+) -> Mapping[str, Any]:
+    """Return likelihood-specific provenance additions for compatible runners."""
+
+    del validation
+    return {}
+
+
+def _write_additional_final_artifacts(
+    archive: RunArchive,
+    validation: ValidationResult,
+) -> None:
+    """Likelihood-specific compact final artifacts; default NB2 needs none."""
+
+    del archive, validation
+
+
+def _make_tracked_head_view(model: nn.Module) -> nn.Module:
+    """Return the likelihood-specific parameter group used for head gradients."""
+
+    raw_theta = getattr(model, "raw_theta", None)
+    if not isinstance(raw_theta, nn.Parameter):
+        raise SO2NBTrainingError("NB2 model does not expose trainable raw_theta.")
+    return _RawThetaParameterView(raw_theta)
+
+
+def _train_epoch(
+    *, model: nn.Module, training_model: DistributedDataParallel,
+    optimizer: torch.optim.Optimizer, scaler: Any, bundle: SO2NBDataBundle,
+    global_epoch: int, rank: int, device: torch.device,
+    trainer: Mapping[str, Any], control_group: Any,
+    global_tracker: Any, block_tracker: Any, theta_tracker: Any,
+    theta_view: nn.Module,
+) -> tuple[Sequence[str], Mapping[str, Any], Sequence[Mapping[str, Any]]]:
+    """Default frozen paired-core epoch; separate protocols may replace this hook.
+
+    Checkpoint, validation and metric transactions stay in ``run_distributed``.
+    The default ordering and numerical update helper are unchanged.
+    """
+    ordered = cohort_relative_qkv_core_order(
+        global_epoch + 1, aliases=TRAINING_ALIASES, core_order_seed=CORE_ORDER_SEED,
+    )
+    if len(ordered) != 12 or set(ordered) != set(TRAINING_ALIASES):
+        raise SO2NBTrainingError("Core order is not one complete permutation.")
+    pairs = tuple((ordered[index], ordered[index + 1]) for index in range(0, len(ordered), 2))
+    if len(pairs) != OPTIMIZER_UPDATES_PER_EPOCH:
+        raise SO2NBTrainingError("Each epoch must contain six paired updates.")
+    local_training: dict[str, Any] = {}
+    coverage_receipts: list[Mapping[str, Any]] = []
+    for update_index, pair in enumerate(pairs):
+        local, coverage, _ = _paired_update(
+            model=model, training_model=training_model, optimizer=optimizer,
+            scaler=scaler, pair=pair, update_index=update_index,
+            global_epoch=global_epoch, rank=rank, device=device,
+            batches=bundle.batches_by_alias, trainer=trainer,
+            control_group=control_group, global_tracker=global_tracker,
+            block_tracker=block_tracker, theta_tracker=theta_tracker,
+            theta_view=theta_view,
+        )
+        if set(local_training).intersection(local):
+            raise SO2NBTrainingError("A training core was visited twice in one epoch.")
+        local_training.update(local)
+        coverage_receipts.extend(coverage)
+    return ordered, local_training, coverage_receipts
 
 
 def run_distributed(
@@ -2454,7 +2559,7 @@ def run_distributed(
             )
             theta_writer = DurableScalarCSV(
                 scratch,
-                "results/gradient_direction_dispersion.csv",
+                TRACKED_HEAD_GRADIENT_RELATIVE_PATH,
                 GRADIENT_DIRECTION_METRICS_COLUMNS,
                 rows_per_epoch=1,
             )
@@ -2605,50 +2710,18 @@ def run_distributed(
         expected_optimizer_updates_per_epoch=OPTIMIZER_UPDATES_PER_EPOCH,
         resume_boundary_unavailable=resumed,
     )
-    theta_view = _RawThetaParameterView(model.raw_theta)
+    theta_view = _make_tracked_head_view(model)
 
     for global_epoch in _remaining_training_epochs(patience_control_state):
         epoch_started = time.monotonic()
         torch.cuda.reset_peak_memory_stats(device)
-        ordered = cohort_relative_qkv_core_order(
-            global_epoch + 1,
-            aliases=TRAINING_ALIASES,
-            core_order_seed=CORE_ORDER_SEED,
+        ordered, local_training, coverage_receipts = _train_epoch(
+            model=model, training_model=training_model, optimizer=optimizer,
+            scaler=scaler, bundle=bundle, global_epoch=global_epoch,
+            rank=rank, device=device, trainer=trainer, control_group=control_group,
+            global_tracker=global_tracker, block_tracker=block_tracker,
+            theta_tracker=theta_tracker, theta_view=theta_view,
         )
-        if len(ordered) != 12 or set(ordered) != set(TRAINING_ALIASES):
-            raise SO2NBTrainingError("Core order is not one complete permutation.")
-        pairs = tuple(
-            (ordered[index], ordered[index + 1])
-            for index in range(0, len(ordered), 2)
-        )
-        if len(pairs) != OPTIMIZER_UPDATES_PER_EPOCH:
-            raise SO2NBTrainingError("Each epoch must contain six paired updates.")
-
-        local_training: dict[str, tuple[float, int, int]] = {}
-        coverage_receipts: list[Mapping[str, Any]] = []
-        for update_index, pair in enumerate(pairs):
-            local, coverage, _ = _paired_update(
-                model=model,
-                training_model=training_model,
-                optimizer=optimizer,
-                scaler=scaler,
-                pair=pair,
-                update_index=update_index,
-                global_epoch=global_epoch,
-                rank=rank,
-                device=device,
-                batches=bundle.batches_by_alias,
-                trainer=trainer,
-                control_group=control_group,
-                global_tracker=global_tracker,
-                block_tracker=block_tracker,
-                theta_tracker=theta_tracker,
-                theta_view=theta_view,
-            )
-            if set(local_training).intersection(local):
-                raise SO2NBTrainingError("A training core was visited twice in one epoch.")
-            local_training.update(local)
-            coverage_receipts.extend(coverage)
 
         train_nll, train_entries, train_targets, train_per_core = (
             _aggregate_training_epoch(local_training, device=device)
@@ -2780,6 +2853,7 @@ def run_distributed(
                         train_nll=train_nll,
                         train_masked_entries=train_entries,
                         train_target_cells=train_targets,
+                        training=train_per_core,
                         validation=validation,
                         theta=theta_values,
                         learning_rate=learning_rate,
@@ -2816,7 +2890,7 @@ def run_distributed(
             )
             archive.append_metric_event(
                 {
-                    "name": "train/pooled_masked_negative_binomial_nll",
+                    "name": TRAIN_PRIMARY_METRIC,
                     "value": train_nll,
                     "step": completed_epoch,
                 }
@@ -2969,21 +3043,8 @@ def run_distributed(
         validation=replay,
     )
     archive.write_predictions("validation", prediction_rows, fallback="jsonl")
-    final_metrics = {
-        PRIMARY_METRIC: replay.pooled_negative_binomial_nll,
-        "val/unseen_donor/raw_count_mae": replay.raw_count_mae,
-        "val/unseen_donor/raw_count_rmse": replay.raw_count_rmse,
-        "val/unseen_donor/log1p_mae": replay.log1p_mae,
-        "val/unseen_donor/log1p_rmse": replay.log1p_rmse,
-        "val/unseen_donor/poisson_deviance": replay.poisson_deviance,
-        "val/unseen_donor/observed_zero_rate": replay.observed_zero_rate,
-        "val/unseen_donor/predicted_zero_probability_mean": (
-            replay.predicted_zero_probability_mean
-        ),
-        "val/unseen_donor/zero_brier_score": replay.zero_brier_score,
-        "val/masked_entries": replay.masked_entries,
-        "val/target_cells": replay.target_cells,
-    }
+    _write_additional_final_artifacts(archive, replay)
+    final_metrics = dict(_final_metrics(replay))
     archive.write_json("metrics/final.json", final_metrics)
     archive.write_json(
         "diagnostics/final_checkpoint_reload_verification.json",
@@ -3020,15 +3081,14 @@ def run_distributed(
         "checkpoint_layout": "final_best_only_after_verification",
         "target_partitioning": "four_contiguous_rank_shards_per_core",
         "paired_update_sync": "first_core_no_sync_second_core_synced",
-        "objective_aggregation": "exact_global_masked_entry_weighted",
+        "objective_aggregation": OBJECTIVE_AGGREGATION,
         "gradient_vectors_persisted": False,
         "full_prediction_matrices_persisted": False,
         "validation_prediction_summary_rows": len(prediction_rows),
         "test_artifacts_present": False,
     }
-    archive.write_json(
-        "provenance/so2_target_isolated_nb_training.json", provenance
-    )
+    provenance.update(_additional_provenance(replay))
+    archive.write_json(PROVENANCE_RELATIVE_PATH, provenance)
     summary = {
         "run_id": run_id,
         "status": "success",

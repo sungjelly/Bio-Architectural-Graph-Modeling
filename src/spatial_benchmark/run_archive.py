@@ -422,6 +422,14 @@ def _canonical_prediction_split(root: Path) -> str:
     ).strip().lower()
     artifact_contract = str(evaluation.get("artifact_contract", "predictive"))
     protocol = str(evaluation.get("protocol", "")).strip().lower()
+    if artifact_contract == "runtime_diagnostic":
+        from .so2_hurdle_runtime_trial import validate_configuration
+
+        try:
+            validate_configuration(config)
+        except ValueError as error:
+            raise RunValidationError(str(error)) from error
+        return "runtime_diagnostic"
     if artifact_contract == "analysis_only":
         if (
             protocol != "posthoc_attention_routing_niche_v1"
@@ -506,7 +514,8 @@ def _validate_success_contract_at(
         )
     prediction_split = _canonical_prediction_split(root)
     analysis_only = prediction_split == "analysis"
-    if not analysis_only:
+    runtime_diagnostic = prediction_split == "runtime_diagnostic"
+    if not (analysis_only or runtime_diagnostic):
         checkpoint = _canonical_checkpoint_path(root)
         if not checkpoint.is_file():
             checkpoint_relative = checkpoint.relative_to(root).as_posix()
@@ -528,7 +537,7 @@ def _validate_success_contract_at(
         raise RunValidationError(
             "Successful run is missing non-empty metrics/history in a supported format."
         )
-    if not analysis_only:
+    if not (analysis_only or runtime_diagnostic):
         prediction_paths = [
             root / f"predictions/{prediction_split}{suffix}"
             for suffix in (".parquet", ".jsonl", ".csv")
@@ -564,6 +573,13 @@ def _validate_success_contract_at(
         else:
             resolved_config = value
     assert resolved_config is not None
+    if runtime_diagnostic:
+        from .so2_hurdle_runtime_trial import validate_outputs
+
+        try:
+            validate_outputs(root, run_id, resolved_config)
+        except (ValueError, OSError, KeyError, TypeError) as error:
+            raise RunValidationError(str(error)) from error
     if analysis_only:
         evaluation = resolved_config.get("evaluation", {})
         metadata = resolved_config.get("metadata", {})
@@ -693,7 +709,7 @@ def _validate_success_contract_at(
             "summary primary_metric_name does not match the resolved "
             "evaluation.primary_metric."
         )
-    if prediction_split in {"fit", "analysis"} and configured_primary is not None:
+    if prediction_split in {"fit", "analysis", "runtime_diagnostic"} and configured_primary is not None:
         if declared_primary != configured_primary:
             raise RunValidationError(
                 "Summary must declare the configured primary metric."

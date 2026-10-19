@@ -214,7 +214,7 @@ def _analysis_only_artifact_contract(configuration: Mapping[str, Any]) -> bool:
     evaluation = configuration.get("evaluation", {})
     return bool(
         isinstance(evaluation, Mapping)
-        and evaluation.get("artifact_contract") == "analysis_only"
+        and evaluation.get("artifact_contract") in {"analysis_only", "runtime_diagnostic"}
     )
 
 
@@ -287,6 +287,21 @@ def command_for_config(
 
     evaluation = _section(configuration, "evaluation")
     protocol = str(evaluation.get("protocol", "")).strip().lower()
+    if protocol == "donor_grouped_so2_target_minibatch_binary_expression_bce_earlystop_v1":
+        validate_experiment_config(configuration)
+        return [sys.executable, "-m", "torch.distributed.run", "--standalone",
+                "--nnodes=1", "--nproc-per-node=1", "--max-restarts=0",
+                str(selected_paths.project_root / "scripts/train/run_so2_target_minibatch_binary_expression_bce.py"),
+                "--config", "{run_scratch}/config.resolved.yaml", "--run-scratch", "{run_scratch}"]
+    if protocol == "so2_hurdle_single_gpu_runtime_trial_v1":
+        validate_experiment_config(configuration)
+        return [
+            sys.executable,
+            str(selected_paths.project_root / "scripts/diagnostics/so2_hurdle_gpu_trial_worker.py"),
+            "--config", "{run_scratch}/config.resolved.json",
+            "--run-dir", "{run_scratch}", "--run-id", "{run_id}",
+            "--epochs", "2",
+        ]
     if protocol == "posthoc_attention_routing_niche_v1":
         model = _section(configuration, "model")
         campaign = _section(configuration, "campaign")
@@ -525,6 +540,96 @@ def command_for_config(
         script = (
             selected_paths.project_root
             / "scripts/train/run_so2_target_isolated_nb.py"
+        )
+        return [
+            sys.executable,
+            "-m",
+            "torch.distributed.run",
+            "--standalone",
+            "--nnodes=1",
+            "--nproc-per-node=4",
+            "--max-restarts=0",
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
+    if (
+        protocol
+        == "donor_grouped_so2_target_isolated_hurdle_nb_once_per_cell_earlystop_v1"
+    ):
+        model = _section(configuration, "model")
+        campaign = _section(configuration, "campaign")
+        launcher = _section(configuration, "launcher")
+        if (
+            str(model.get("name", "")).strip().lower()
+            != "target-isolated-geometry-modulated-relative-qkv-gat-hurdle-nb2"
+            or campaign.get("campaign_id")
+            != (
+                "cmp_20260928_so2_target_isolated_geometry_modulated_hurdle_"
+                "nb_once_per_cell_seed0"
+            )
+            or launcher.get("requested_gpu") != "0,1,2,3"
+            or launcher.get("process_count") != 4
+            or launcher.get("elastic_max_restarts") != 0
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 hurdle-NB protocol requires its "
+                "registered four-rank once-per-cell campaign on GPUs 0,1,2,3 "
+                "with no elastic restarts."
+            )
+        script = (
+            selected_paths.project_root
+            / "scripts/train/run_so2_target_isolated_hurdle_nb.py"
+        )
+        return [
+            sys.executable,
+            "-m",
+            "torch.distributed.run",
+            "--standalone",
+            "--nnodes=1",
+            "--nproc-per-node=4",
+            "--max-restarts=0",
+            str(script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
+    if (
+        protocol
+        == (
+            "donor_grouped_so2_target_isolated_binary_expression_bce_"
+            "once_per_cell_earlystop_v1"
+        )
+    ):
+        model = _section(configuration, "model")
+        campaign = _section(configuration, "campaign")
+        launcher = _section(configuration, "launcher")
+        if (
+            str(model.get("name", "")).strip().lower()
+            != (
+                "target-isolated-geometry-modulated-relative-qkv-gat-binary-"
+                "expression-bce"
+            )
+            or campaign.get("campaign_id")
+            != (
+                "cmp_20260930_so2_target_isolated_geometry_modulated_binary_"
+                "expression_bce_once_per_cell_seed0"
+            )
+            or launcher.get("requested_gpu") != "0,1,2,3"
+            or launcher.get("process_count") != 4
+            or launcher.get("elastic_max_restarts") != 0
+        ):
+            raise ConfigurationError(
+                "The target-isolated SO2 binary-expression BCE protocol "
+                "requires its registered four-rank once-per-cell campaign on "
+                "GPUs 0,1,2,3 with no elastic restarts."
+            )
+        script = (
+            selected_paths.project_root
+            / "scripts/train/run_so2_target_isolated_binary_expression_bce.py"
         )
         return [
             sys.executable,
@@ -1033,7 +1138,11 @@ class QueueWorker:
                     "primary_metric_value": metric_value,
                     "artifact_roles": (
                         {
-                            "analysis_outputs": "conclusion_bearing_posthoc_readout",
+                            "analysis_outputs": (
+                                "runtime_diagnostic_only"
+                                if _section(configuration, "evaluation").get("artifact_contract") == "runtime_diagnostic"
+                                else "conclusion_bearing_posthoc_readout"
+                            ),
                             "primary_checkpoint": None,
                             "canonical_predictions": None,
                         }

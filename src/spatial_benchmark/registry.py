@@ -2233,6 +2233,7 @@ class Registry:
         worker_id: str,
         *,
         requested_gpu: str | None | object = _ANY_GPU,
+        job_id: str | None = None,
     ) -> dict[str, Any] | None:
         """Atomically claim at most one queued job for *worker_id*."""
 
@@ -2245,6 +2246,9 @@ class Registry:
             elif requested_gpu is not _ANY_GPU:
                 gpu_clause = "AND (requested_gpu IS NULL OR requested_gpu = ?)"
                 parameters.append(str(requested_gpu))
+            if job_id is not None:
+                gpu_clause += " AND job_id = ?"
+                parameters.append(str(job_id))
             row = connection.execute(
                 f"""
                 SELECT job_id FROM queue_jobs

@@ -1,0 +1,54 @@
+masking:
+  type: target_only_uniform_per_cell_integer_count
+  distribution: discrete_uniform_masked_gene_count
+  count_min: 1
+  count_max: 1000
+  count_support_inclusive: true
+  positions_without_replacement: true
+  independent_across_target_cells: true
+  independent_views_per_core_epoch: 1
+  training_mask_realizations_per_target_per_global_epoch: 1
+  target_visit_count_per_global_epoch: 1
+  target_cell_only: true
+  neighbor_cells_artificially_masked: false
+  only_target_query_rows_masked: true
+  neighbor_context_rows_fully_observed: true
+  mask_base_seed: 2026092601
+  model_seed_in_mask_derivation: false
+  training_mask_seed_namespace: bagm.so2.target_isolated_nb.training_masks.v1
+  training_mask_seed_derivation_fields:
+    - training_mask_seed_namespace
+    - mask_base_seed
+    - core_alias
+    - global_epoch
+    - target_row_index
+  validation_masks:
+    fixed_across_epochs: true
+    mask_realizations_per_target: 1
+    seed_namespace: bagm.so2.target_isolated_nb.fixed_validation_masks.v1
+    seed_derivation_fields:
+      - seed_namespace
+      - core_alias
+      - target_row_index
+    legacy_ten_view_overlay_masks_consumed: false
+  paired_comparator_campaign_id: cmp_20260926_so2_target_isolated_geometry_modulated_nb_once_per_cell_seed0
+  paired_comparator_mask_seed_reuse: exact_namespace_base_seed_and_derivation_fields
+  paired_comparator_masks_match_for_equal_core_epoch_and_target_index: true
+  mask_expression_only: true
+  same_mask_indexes_raw_count_likelihood: true
+  explicit_gene_mask_channel: true
+  metadata_masked: false
+  encoder_reapplies_mask: true
+  zero_mask_target_policy: prohibited_by_support_and_fail_closed
+  full_mask_target_allowed: true
+  required_epoch_provenance:
+    - split_role
+    - core_alias
+    - global_epoch
+    - target_count
+    - target_visit_count_min
+    - target_visit_count_max
+    - mask_checksum
+    - masked_entry_count
+    - masked_count_distribution_summary
+    - neighbor_masked_entry_count
