@@ -442,6 +442,7 @@ def _canonical_prediction_split(root: Path) -> str:
         )
     if split == "fit":
         held_in_protocols = {
+            "held_in_so2_genemae_masking_v1",
             "held_in_full_core_fixed_budget",
             "held_in_pooled_10core_fixed_budget",
             "held_in_pooled_so1_14core_relative_qkv_plateau_min150",
@@ -485,6 +486,145 @@ def _canonical_checkpoint_path(root: Path) -> Path:
                 "a last-checkpoint protocol cannot restore a selected best state."
             )
     return root / "checkpoints" / f"{role}.ckpt"
+
+
+def _validate_so12_paper_test_at(
+    root: Path,
+    run_id: str,
+    config: Mapping[str, Any],
+    summary: Mapping[str, Any],
+    final_metrics: Mapping[str, Any],
+    *,
+    tombstoned_paths: Collection[str] = (),
+) -> None:
+    """Bind the new core-split test pass to the validation-selected checkpoint.
+
+    This narrow contract does not change legacy validation-only publications.
+    The trainer owns preventing test access before selection; this receipt and
+    its coverage make that execution assertion explicit and auditable.
+    """
+    evaluation = config.get("evaluation", {})
+    if evaluation.get("protocol") != "so12_pearson_relative_qkv_paper_core_split_v1":
+        return
+    dataset = config.get("dataset", {})
+    expected_cores = ["SO2-C15", "SO2-C23"]
+    if (
+        evaluation.get("canonical_prediction_split") != "validation"
+        or evaluation.get("test_evaluation_after_best_checkpoint_selection") is not True
+        or evaluation.get("test_mask_seed_namespace") != "so12_paper_fixed_test_v1"
+        or evaluation.get("test_mask_views") != 3
+        or dataset.get("test_core_aliases") != expected_cores
+        or dataset.get("test_cells") != 81607
+        or summary.get("test_artifacts_present") is not True
+        or summary.get("checkpoint_reload_verified") is not True
+        or summary.get("checkpoint") != "checkpoints/best.ckpt"
+        or summary.get("primary_metric_name") != "val/masked_huber"
+    ):
+        raise RunValidationError("SO12 paper split lacks its locked final-test semantics.")
+    required_metrics = {
+        "val/masked_huber", "test/masked_huber", "test/pooled/masked_huber",
+        "test/pooled/masked_mae", "test/pooled/masked_mse", "test/pooled/pearson",
+        "test/baseline/equal_core_huber",
+    }
+    if required_metrics - set(final_metrics):
+        raise RunValidationError("SO12 paper split lacks required validation/test metrics.")
+    for name in required_metrics:
+        value = final_metrics[name]
+        if name == "test/pooled/pearson" and value is None:
+            continue
+        _finite_numeric(value, f"SO12 paper split metric {name}")
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            raise RunValidationError(f"SO12 paper split metric {name} must be scalar.")
+    selected_metric = summary.get("primary_metric_value")
+    if (
+        isinstance(selected_metric, bool)
+        or not isinstance(selected_metric, (int, float))
+        or not math.isclose(float(selected_metric), float(final_metrics["val/masked_huber"]),
+                            rel_tol=1e-12, abs_tol=0.0)
+    ):
+        raise RunValidationError("SO12 paper split selection metric does not match validation.")
+    try:
+        receipt = json.loads((root / "diagnostics/test_evaluation.json").read_text())
+    except (OSError, ValueError) as error:
+        raise RunValidationError("SO12 paper split lacks a readable final-test receipt.") from error
+    if not isinstance(receipt, Mapping):
+        raise RunValidationError("SO12 final-test receipt must be a mapping.")
+    expected_receipt = {
+        "checkpoint": "checkpoints/best.ckpt",
+        "selection_completed": True,
+        "test_loaded_after_selection": True,
+        "test_used_for_selection": False,
+        "validation_replay_verified": True,
+        "test_evaluation_count": 1,
+        "mask_namespace": "so12_paper_fixed_test_v1",
+        "test_core_aliases": expected_cores,
+        "mask_views": 3,
+        "evaluated_core_view_count": 6,
+        "test_cells": 81607,
+    }
+    for key, expected in expected_receipt.items():
+        if receipt.get(key) != expected or type(receipt.get(key)) is not type(expected):
+            raise RunValidationError(f"SO12 final-test receipt has invalid {key}.")
+    best_epoch = summary.get("best_epoch")
+    if (type(best_epoch) is not int or best_epoch < 1
+            or type(receipt.get("best_epoch")) is not int
+            or receipt.get("best_epoch") != best_epoch):
+        raise RunValidationError("SO12 final-test receipt uses the wrong selected epoch.")
+    selected_hash = receipt.get("checkpoint_sha256")
+    if not isinstance(selected_hash, str) or re.fullmatch(r"[0-9a-f]{64}", selected_hash) is None:
+        raise RunValidationError("SO12 final-test receipt lacks a checkpoint checksum.")
+    checkpoint = root / "checkpoints/best.ckpt"
+    if checkpoint.is_file():
+        expected_hash = sha256_file(checkpoint)
+    elif "checkpoints/best.ckpt" in tombstoned_paths:
+        checksums = json.loads((root / "provenance/artifact_checksums.json").read_text())
+        expected_hash = checksums["files"]["checkpoints/best.ckpt"]["sha256"]
+    else:
+        raise RunValidationError("SO12 selected test checkpoint is missing.")
+    if selected_hash != expected_hash:
+        raise RunValidationError("SO12 final-test checkpoint differs from selected best.")
+    coverage = receipt.get("core_view_coverage")
+    if not isinstance(coverage, list) or len(coverage) != 6:
+        raise RunValidationError("SO12 final-test coverage must contain exactly six core/views.")
+    expected_pairs = {(core, view) for core in expected_cores for view in range(3)}
+    observed_pairs, sample_keys = set(), set()
+    for item in coverage:
+        if (not isinstance(item, Mapping) or type(item.get("view")) is not int
+                or not isinstance(item.get("core_alias"), str)):
+            raise RunValidationError("SO12 final-test coverage entry is malformed.")
+        pair = (item.get("core_alias"), item["view"])
+        key = item.get("sample_key")
+        if (pair not in expected_pairs or pair in observed_pairs
+                or not isinstance(key, str) or not key or key in sample_keys):
+            raise RunValidationError("SO12 final-test coverage is duplicated or mismatched.")
+        observed_pairs.add(pair)
+        sample_keys.add(key)
+    prediction_relative = "predictions/test.jsonl"
+    prediction_path = root / prediction_relative
+    if not prediction_path.is_file() and prediction_relative in tombstoned_paths:
+        return
+    try:
+        predictions = [json.loads(line) for line in prediction_path.read_text().splitlines() if line.strip()]
+    except (OSError, ValueError) as error:
+        raise RunValidationError("SO12 paper split lacks readable final-test predictions.") from error
+    validated = validate_prediction_rows(predictions, expected_run_id=run_id, expected_split="test")
+    if len(validated) != 6 or {row["sample_key"] for row in validated} != sample_keys:
+        raise RunValidationError("SO12 final-test prediction rows do not match core/view coverage.")
+    nodes = {}
+    for row in validated:
+        if row["dataset_id"] != dataset["dataset_id"] or row.get("aggregation_unit") != "core_mask_view_mean":
+            raise RunValidationError("SO12 final-test prediction dataset or aggregation differs.")
+        n = row.get("node_count")
+        hidden = row.get("masked_entry_count")
+        if (type(n) is not int or n <= 0 or type(hidden) is not int or not 0 < hidden <= n * 1000):
+            raise RunValidationError("SO12 final-test prediction counts are invalid.")
+        nodes[row["sample_key"]] = n
+    for core in expected_cores:
+        sizes = {nodes[item["sample_key"]] for item in coverage if item["core_alias"] == core}
+        if len(sizes) != 1:
+            raise RunValidationError("SO12 final-test core cell counts differ across mask views.")
+    if sum(nodes.values()) != 81607 * 3:
+        raise RunValidationError("SO12 final-test predictions do not cover all test cells.")
 
 
 def _validate_success_contract_at(
@@ -759,6 +899,10 @@ def _validate_success_contract_at(
             raise RunValidationError(
                 f"Canonical {prediction_split} predictions are empty."
             )
+    _validate_so12_paper_test_at(
+        root, run_id, resolved_config, summary, final_metrics,
+        tombstoned_paths=tombstoned_paths,
+    )
 
 
 def _rename_no_replace(source: Path, destination: Path) -> None:

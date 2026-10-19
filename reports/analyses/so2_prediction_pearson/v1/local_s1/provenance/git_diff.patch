@@ -1,0 +1,232 @@
+diff --git a/results/CATALOG.md b/results/CATALOG.md
+index 83c9e4a..c24e47d 100644
+--- a/results/CATALOG.md
++++ b/results/CATALOG.md
+@@ -5,7 +5,11 @@ by hand; run `scripts/results/manage_results.py catalog`.
+ 
+ | Experiment type | Method | Result | Outcome | Status | Stage |
+ |---|---|---|---|---|---|
++| descriptive_analysis | genemae | [res_so2_genemae_ten_percent_masking](descriptive_analysis/genemae/res_so2_genemae_ten_percent_masking/README.md) | inconclusive | verified | exploratory_screen |
++| descriptive_analysis | relative_qkv | [res_so2_binary_occurrence_hurdle_comparison](descriptive_analysis/relative_qkv/res_so2_binary_occurrence_hurdle_comparison/README.md) | negative | verified | exploratory_screen |
+ | descriptive_analysis | relative_qkv | [res_so2_nonzero_reconstruction_comparison](descriptive_analysis/relative_qkv/res_so2_nonzero_reconstruction_comparison/README.md) | negative | verified | exploratory_screen |
+ | descriptive_analysis | relative_qkv | [res_so2_reconstruction_failure_diagnosis](descriptive_analysis/relative_qkv/res_so2_reconstruction_failure_diagnosis/README.md) | inconclusive | verified | exploratory_screen |
++| predictive_benchmark | local_gene_residual | [res_so2_local_gene_count_reconstruction](predictive_benchmark/local_gene_residual/res_so2_local_gene_count_reconstruction/README.md) | negative | verified | exploratory_validation |
++| predictive_benchmark | relative_qkv | [res_so2_bce_optimization_audit](predictive_benchmark/relative_qkv/res_so2_bce_optimization_audit/README.md) | negative | verified | validation_confirmation |
+ 
+-Catalog content SHA-256: `31252cedd68ff4955b09020ebce20d29a67e4a621f50eda5360ebe619cb29d74`
++Catalog content SHA-256: `4516849c7e1bc0188915dfe33904e33887d4e18836aeffce18a9963777029d92`
+diff --git a/results/catalog.json b/results/catalog.json
+index 0617e8a..c4cf3d0 100644
+--- a/results/catalog.json
++++ b/results/catalog.json
+@@ -1,7 +1,71 @@
+ {
+-  "catalog_content_sha256": "31252cedd68ff4955b09020ebce20d29a67e4a621f50eda5360ebe619cb29d74",
+-  "result_count": 2,
++  "catalog_content_sha256": "4516849c7e1bc0188915dfe33904e33887d4e18836aeffce18a9963777029d92",
++  "result_count": 6,
+   "results": [
++    {
++      "campaign_ids": [
++        "cmp_20261005_so2_genemae_masking"
++      ],
++      "directory": "descriptive_analysis/genemae/res_so2_genemae_ten_percent_masking",
++      "evidence_status": {
++        "external_support": "not_tested",
++        "faithfulness": "not_tested",
++        "null_calibration": "not_tested",
++        "patient_replication": "not_tested",
++        "perturbation_support": "not_tested",
++        "predictive_gain": "not_tested",
++        "stability": "mixed"
++      },
++      "experiment_type": "descriptive_analysis",
++      "lifecycle_stage": "exploratory_screen",
++      "manifest_sha256": "18f9dc6ed4236994a2f16b1285b015b08c26ae027156e71bd8731ef7d7abf354",
++      "method_family": "genemae",
++      "outcome": "inconclusive",
++      "result_id": "res_so2_genemae_ten_percent_masking",
++      "run_ids": [
++        "r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b",
++        "r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a",
++        "r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608",
++        "r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275",
++        "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
++        "r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f",
++        "r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d",
++        "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
++        "r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656"
++      ],
++      "status": "verified",
++      "study_axis": "masking_comparison",
++      "title": "SO2 GeneMAE reconstruction under three 10% masking techniques"
++    },
++    {
++      "campaign_ids": [
++        "cmp_20260930_so2_target_isolated_geometry_modulated_binary_expression_bce_once_per_cell_seed0",
++        "cmp_20260928_so2_target_isolated_geometry_modulated_hurdle_nb_once_per_cell_seed0"
++      ],
++      "directory": "descriptive_analysis/relative_qkv/res_so2_binary_occurrence_hurdle_comparison",
++      "evidence_status": {
++        "external_support": "not_tested",
++        "faithfulness": "not_tested",
++        "null_calibration": "not_tested",
++        "patient_replication": "not_tested",
++        "perturbation_support": "not_tested",
++        "predictive_gain": "not_tested",
++        "stability": "not_tested"
++      },
++      "experiment_type": "descriptive_analysis",
++      "lifecycle_stage": "exploratory_screen",
++      "manifest_sha256": "3c2aabc7b64f3315737aa497ef937697b9344597e491538a4bc14666151af248",
++      "method_family": "relative_qkv",
++      "outcome": "negative",
++      "result_id": "res_so2_binary_occurrence_hurdle_comparison",
++      "run_ids": [
++        "r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863",
++        "r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097"
++      ],
++      "status": "verified",
++      "study_axis": "binary_occurrence_hurdle_comparison",
++      "title": "SO2 binary-only supervision does not improve five measured occurrence metrics at matched selected endpoints"
++    },
+     {
+       "campaign_ids": [
+         "cmp_20260905_so2_nonzero_accuracy",
+@@ -64,6 +128,84 @@
+       "status": "verified",
+       "study_axis": "loss_and_spatial_baselines",
+       "title": "SO2 objective mismatch and matched spatial baselines; neural failure cause remains unresolved"
++    },
++    {
++      "campaign_ids": [
++        "cmp_20261004_local_gene_residual"
++      ],
++      "directory": "predictive_benchmark/local_gene_residual/res_so2_local_gene_count_reconstruction",
++      "evidence_status": {
++        "external_support": "not_tested",
++        "faithfulness": "not_tested",
++        "null_calibration": "not_tested",
++        "patient_replication": "not_tested",
++        "perturbation_support": "not_tested",
++        "predictive_gain": "mixed",
++        "stability": "supported"
++      },
++      "experiment_type": "predictive_benchmark",
++      "lifecycle_stage": "exploratory_validation",
++      "manifest_sha256": "d70ba502f9e251b25eb56b02cc100744f4c82e6c2995475c3b6c59681a8b6aaa",
++      "method_family": "local_gene_residual",
++      "outcome": "negative",
++      "result_id": "res_so2_local_gene_count_reconstruction",
++      "run_ids": [
++        "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
++        "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
++        "r_20261004T072106Z_dd0aa417_s000_f00_a01_e0116c2b",
++        "r_20261004T072107Z_dd0aa417_s001_f00_a01_ea627eca",
++        "r_20260926T104132Z_47d710fa_s000_f00_a01_b967dc7c",
++        "r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097",
++        "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de"
++      ],
++      "status": "verified",
++      "study_axis": "simple_count_reconstruction",
++      "title": "Simple local gene corrections improve count RMSE but miss the prespecified NLL margin"
++    },
++    {
++      "campaign_ids": [
++        "cmp_20261001_so2_bce_optimization_audit"
++      ],
++      "directory": "predictive_benchmark/relative_qkv/res_so2_bce_optimization_audit",
++      "evidence_status": {
++        "external_support": "not_tested",
++        "faithfulness": "not_tested",
++        "null_calibration": "not_tested",
++        "patient_replication": "not_tested",
++        "perturbation_support": "not_tested",
++        "predictive_gain": "failed",
++        "stability": "supported"
++      },
++      "experiment_type": "predictive_benchmark",
++      "lifecycle_stage": "validation_confirmation",
++      "manifest_sha256": "3ef417d2145e1efa54d991454c834e064f5a6094278fab132b867beb0c77104b",
++      "method_family": "relative_qkv",
++      "outcome": "negative",
++      "result_id": "res_so2_bce_optimization_audit",
++      "run_ids": [
++        "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd",
++        "r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae",
++        "r_20261001T074811Z_06acf7a5_s000_f00_a01_2aa32391",
++        "r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202",
++        "r_20261001T074811Z_425c1faf_s000_f00_a01_65533cf1",
++        "r_20261001T074811Z_97513f17_s000_f00_a01_bfa65cb7",
++        "r_20261001T082016Z_95cce2a4_s000_f00_a01_df1ebd49",
++        "r_20261001T082215Z_22f0027c_s000_f00_a01_54281998",
++        "r_20261001T082850Z_052d767b_s000_f00_a01_35ab7f19",
++        "r_20261001T082930Z_d0f806f6_s000_f00_a01_57f4d373",
++        "r_20261001T085324Z_32178e25_s000_f00_a01_2dfb5a15",
++        "r_20261001T085435Z_c393af7c_s000_f00_a01_459ab1fb",
++        "r_20261001T092859Z_583aa3f1_s000_f00_a01_5a4a79ea",
++        "r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980",
++        "r_20261001T092859Z_6b2d1296_s000_f00_a01_f647ac07",
++        "r_20261001T092859Z_dac08cb3_s000_f00_a01_ed817509",
++        "r_20261001T101202Z_15baf65c_s001_f00_a01_6427735a",
++        "r_20261001T101202Z_a32d61e8_s001_f00_a01_8332ee26",
++        "r_20261001T101202Z_f8197b29_s000_f00_a01_ed00c19e"
++      ],
++      "status": "verified",
++      "study_axis": "optimization",
++      "title": "SO2 BCE optimization audit at matched target exposure"
+     }
+   ],
+   "schema_name": "bagm_result_catalog",
+diff --git a/src/spatial_benchmark/configuration.py b/src/spatial_benchmark/configuration.py
+index b2382c7..004dcab 100644
+--- a/src/spatial_benchmark/configuration.py
++++ b/src/spatial_benchmark/configuration.py
+@@ -742,6 +742,7 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
+         evaluation.get("artifact_contract", "predictive")
+     ).strip().lower()
+     held_in_fit_protocols = {
++        "held_in_so2_genemae_masking_v1",
+         "held_in_full_core_fixed_budget",
+         "held_in_pooled_10core_fixed_budget",
+         "held_in_pooled_14core_relative_qkv_seed_plateau",
+diff --git a/src/spatial_benchmark/queueing.py b/src/spatial_benchmark/queueing.py
+index 2e408f4..bda9808 100644
+--- a/src/spatial_benchmark/queueing.py
++++ b/src/spatial_benchmark/queueing.py
+@@ -334,6 +334,23 @@ def command_for_config(
+             "--run-scratch",
+             "{run_scratch}",
+         ]
++    if protocol == "held_in_so2_genemae_masking_v1":
++        if _section(configuration, "model").get("name") != "myjju-genemae":
++            raise ConfigurationError("SO2 GeneMAE masking requires myjju-genemae.")
++        runtime = _section(configuration, "metadata").get("runtime", {})
++        if not isinstance(runtime, Mapping):
++            raise ConfigurationError("runtime must be a mapping when supplied.")
++        script_name = (
++            "recover_so2_genemae_masking.py"
++            if runtime.get("checkpoint_recovery")
++            else "run_so2_genemae_masking.py"
++        )
++        return [
++            sys.executable,
++            str(selected_paths.project_root / "scripts/train" / script_name),
++            "--config", "{run_scratch}/config.resolved.yaml",
++            "--run-scratch", "{run_scratch}",
++        ]
+     if protocol == "held_in_pooled_10core_fixed_budget":
+         model = _section(configuration, "model")
+         model_name = str(model.get("name", "")).strip().lower()
+diff --git a/src/spatial_benchmark/run_archive.py b/src/spatial_benchmark/run_archive.py
+index dbc0fe1..89559b6 100644
+--- a/src/spatial_benchmark/run_archive.py
++++ b/src/spatial_benchmark/run_archive.py
+@@ -442,6 +442,7 @@ def _canonical_prediction_split(root: Path) -> str:
+         )
+     if split == "fit":
+         held_in_protocols = {
++            "held_in_so2_genemae_masking_v1",
+             "held_in_full_core_fixed_budget",
+             "held_in_pooled_10core_fixed_budget",
+             "held_in_pooled_so1_14core_relative_qkv_plateau_min150",

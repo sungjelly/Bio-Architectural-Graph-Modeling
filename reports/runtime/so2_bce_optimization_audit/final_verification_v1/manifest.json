@@ -1,0 +1,15 @@
+{
+  "files": {
+    "README.md": "480687b603184ca695c73b5925c144cf9f31489d7fb1b1c04746f2d22371745c",
+    "disk.json": "df1e4176675c9214efb887940a68eae973c2f1beaceded15f19856e53a9cc97c",
+    "doctor.json": "811e31e88aadbf9e63309d7c1aa3fe2ee8a12333ce1ad8b23d848030bec84a9f",
+    "execution.json": "b0783e12529e846cd9877f5877d30e33828409fb2e0cb6aefc7a7d666fa80b6d",
+    "git_status_after.txt": "a4e2cbba213f1a1dd437032460c6f0799e1f492c0f8257f137d81ee67ccfdd0e",
+    "git_status_before.txt": "a4e2cbba213f1a1dd437032460c6f0799e1f492c0f8257f137d81ee67ccfdd0e",
+    "gpu_compute_processes.csv": "185facacd43b2b47152f1040bb6d81a57e8f284965fbf5ff6e6fbf0276871185",
+    "gpu_occupancy.csv": "c9defa40d194b0997a8783b397e63b226112cc4d9fafa9dee1bb2a7c137033b1",
+    "reporting_tests.log": "336d2a1bf9bceb77138c535d82d9a8220ffe83974bff68b084df58dfb35acc7c",
+    "summary.json": "d4fa42dfa0473a222cce1c33fec2aa7c926b3633ba03f8ad6ae8bba51ff2bd32"
+  },
+  "schema": "checksummed_local_report_v1"
+}

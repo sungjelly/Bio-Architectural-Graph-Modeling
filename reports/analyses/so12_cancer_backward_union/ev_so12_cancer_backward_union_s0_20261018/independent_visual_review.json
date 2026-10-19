@@ -1,0 +1,75 @@
+{
+  "blocking_findings": [],
+  "current_source_files_verified": 11,
+  "embedded_png_count": 2,
+  "evaluation_id": "ev_so12_cancer_backward_union_s0_20261018",
+  "figure_files": {
+    "figures/all_settings_best_points.pdf": {
+      "sha256": "da10728c8c25eec6180a11ea042d46bb9370e919f151f68f3a88e477e49e0a08",
+      "size_bytes": 36226
+    },
+    "figures/all_settings_best_points.png": {
+      "sha256": "2ccc98f2c169d97414f8f5b703d185f1f3723517890ec6a23ea6f35fc9b467ed",
+      "size_bytes": 216709
+    },
+    "figures/f1_vs_cell_retention.pdf": {
+      "sha256": "f3775d7a590b98b0ed595ef539dc143ffb258148103b1a764effdad70bfc7684",
+      "size_bytes": 44086
+    },
+    "figures/f1_vs_cell_retention.png": {
+      "sha256": "5282c83240c93c7d8daf151eb8bd87d63651caf16f70d36158f84289f8501417",
+      "size_bytes": 471019
+    }
+  },
+  "independent_metrics_review_sha256": "ce71cad71e67a62372f1c19deed131779443e4999c79dfe2d88d6cbbb7e83d42",
+  "metrics_sha256": "9c25c0c38c4a0f081deddfde9e53e05fcc796b23a63caa0b6258bfd0afbc80db",
+  "observations": [
+    "Both PNGs inspected directly with view_image; their embedded HTML payloads are byte-identical.",
+    "Primary curves show all deletion steps from full retention through empty, with best-F1 stars and nondominated points. The title explicitly directs reading from100% toward0%.",
+    "The second figure retains all56 partitions as112 core-specific best points. Some points overlap; exact coordinates remain available in CSV.",
+    "All14 primary HTML/CSV/summary rows exactly match audited best and90/95%-constrained steps, including fixed count denominators.",
+    "All112 paths empirically attain the parent unrestricted F1; this does not certify greedy optimality at each intermediate cardinality.",
+    "PDFs were checked for hashes and single-page cross-reference structure, not independently rasterized."
+  ],
+  "passed": true,
+  "pdf_count": 2,
+  "pdf_structure_checks": {
+    "all_settings_best_points": {
+      "classic_cross_reference_offsets_verified": 64,
+      "header_eof_trailer_verified": true,
+      "single_page": true
+    },
+    "f1_vs_cell_retention": {
+      "classic_cross_reference_offsets_verified": 106,
+      "header_eof_trailer_verified": true,
+      "single_page": true
+    }
+  },
+  "plot_all_setting_best_points": 112,
+  "plot_primary_paths": 14,
+  "png_count": 2,
+  "pngs_visually_inspected": [
+    "all_settings_best_points",
+    "f1_vs_cell_retention"
+  ],
+  "portable_html_pngs_byte_identical": true,
+  "primary_table_rows_verified_against_metrics_csv_and_html": 14,
+  "report_manifest_sha256": "bb11fef67e14607ec4672fd4904f8c5dcc9378368251ee0ddf0764d5e7e365a5",
+  "report_sha256": "d8baa9deb9d937bd2493fdb98cf9784ca23250e674d54783b6996aeba7d9dfcf",
+  "reviewed_at": "2026-10-18T08:38:44.398854+00:00",
+  "reviewer": "independent_heist_methods_agent",
+  "schema": "so12_cancer_backward_union_independent_visual_review_v1",
+  "source_binding_sha256": "6c5964189ac313ca35809cd29ca9131142a979ef4c49dfbc1386181e01cc2761",
+  "status": "complete",
+  "summary_sha256": "c7cb38c19ba849f66eb71c1c74394be04bc3268aa6b947c00aafc2d737b9267c",
+  "visual_checks": {
+    "best_points_frontier_and_all_steps_distinguished": true,
+    "fixed_cell_denominator_explained": true,
+    "no_clipped_titles_or_legends_observed": true,
+    "pixel_F1_and_cell_retention_axes_distinguished": true,
+    "primary_titles_match_saved_best_steps": true,
+    "removal_direction_100_to_zero_explained": true,
+    "resolution_colors_and_seed_symbols_disambiguated": true,
+    "titles_labels_and_legends_readable": true
+  }
+}

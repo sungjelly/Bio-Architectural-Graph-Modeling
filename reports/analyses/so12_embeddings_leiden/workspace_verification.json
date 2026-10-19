@@ -1,0 +1,19 @@
+{
+  "all_tracked_deletions_in_authorized_audit": true,
+  "tracked_deleted_files": 95,
+  "modified_tracked_files": [
+    " M results/CATALOG.md",
+    " M results/catalog.json",
+    " M src/spatial_benchmark/checkpoint_catalog.py",
+    " M src/spatial_benchmark/configuration.py",
+    " M src/spatial_benchmark/queueing.py",
+    " M src/spatial_benchmark/run_archive.py",
+    " M tests/test_checkpoint_catalog.py"
+  ],
+  "current_training_checkpoints_present": true,
+  "free_disk_gib": 10.311847686767578,
+  "current_training_checkpoint_files": [
+    "best.ckpt",
+    "latest.ckpt"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "embedded_pngs": 2,
+  "figures": {
+    "all_settings_best_points": {
+      "pdf": {
+        "path": "figures/all_settings_best_points.pdf",
+        "sha256": "da10728c8c25eec6180a11ea042d46bb9370e919f151f68f3a88e477e49e0a08",
+        "size_bytes": 36226
+      },
+      "png": {
+        "path": "figures/all_settings_best_points.png",
+        "sha256": "2ccc98f2c169d97414f8f5b703d185f1f3723517890ec6a23ea6f35fc9b467ed",
+        "size_bytes": 216709
+      }
+    },
+    "f1_vs_cell_retention": {
+      "pdf": {
+        "path": "figures/f1_vs_cell_retention.pdf",
+        "sha256": "f3775d7a590b98b0ed595ef539dc143ffb258148103b1a764effdad70bfc7684",
+        "size_bytes": 44086
+      },
+      "png": {
+        "path": "figures/f1_vs_cell_retention.png",
+        "sha256": "5282c83240c93c7d8daf151eb8bd87d63651caf16f70d36158f84289f8501417",
+        "size_bytes": 471019
+      }
+    }
+  },
+  "metrics_sha256": "9c25c0c38c4a0f081deddfde9e53e05fcc796b23a63caa0b6258bfd0afbc80db",
+  "passed": true,
+  "report_path": "report/index.html",
+  "report_record": {
+    "sha256": "d8baa9deb9d937bd2493fdb98cf9784ca23250e674d54783b6996aeba7d9dfcf",
+    "size_bytes": 923557
+  },
+  "status": "complete"
+}

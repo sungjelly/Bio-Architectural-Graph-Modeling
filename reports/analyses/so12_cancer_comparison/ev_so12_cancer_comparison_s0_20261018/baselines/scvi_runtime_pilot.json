@@ -1,0 +1,12 @@
+{
+  "approximate_max_training_seconds": 628.0118194874376,
+  "best_elbo_validation": 412.4886474609375,
+  "best_epoch": 1,
+  "elapsed_seconds": 48.236275139963254,
+  "elbo_validation": 412.4886474609375,
+  "epoch": 1,
+  "epoch_seconds": 6.280118194874376,
+  "estimate_excludes_preparation_and_may_end_early": true,
+  "improved": true,
+  "max_epochs": 100
+}

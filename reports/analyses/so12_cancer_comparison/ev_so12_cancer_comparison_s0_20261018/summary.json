@@ -1,0 +1,122 @@
+{
+  "coverage": [
+    {
+      "all_positive_footprint_dice": 0.6347487519613851,
+      "annotated_coverage": 0.6949420589267119,
+      "annotated_region_pixels": 179579,
+      "cell_footprint_pixels": 268420,
+      "core": 15,
+      "full_region_dice_ceiling": 0.8200186611296554
+    },
+    {
+      "all_positive_footprint_dice": 0.8502023897874988,
+      "annotated_coverage": 0.6501023447605926,
+      "annotated_region_pixels": 403538,
+      "cell_footprint_pixels": 354785,
+      "core": 23,
+      "full_region_dice_ceiling": 0.7879539676127344
+    }
+  ],
+  "evaluation_id": "ev_so12_cancer_comparison_s0_20261018",
+  "exploratory": true,
+  "fit_policy": "same_21_training_cores_validation_only_scvi_stopping_test_frozen",
+  "maximum_defensible_claim": "Exploratory approximate-section cluster-union agreement in two cores; no unbiased cancer classifier accuracy or population superiority claim.",
+  "methods": [
+    "h4",
+    "h3",
+    "h2",
+    "h1",
+    "h0",
+    "pca",
+    "scvi"
+  ],
+  "metric": "Dice/F1=2TP/(2TP+FP+FN); all predicted footprint outside outlined regions is FP",
+  "n_cells": 81607,
+  "passed": true,
+  "pca_training_explained_variance": 0.09407414588015434,
+  "primary_resolution": 1.0,
+  "primary_scores": [
+    {
+      "Method": "h4",
+      "Oracle core 15": 0.7835877356224161,
+      "Oracle core 23": 0.9170742259678218,
+      "Transfer core 15": 0.7456798293992205,
+      "Transfer core 23": 0.8780132881459781
+    },
+    {
+      "Method": "h3",
+      "Oracle core 15": 0.7920809184357633,
+      "Oracle core 23": 0.9143343193663384,
+      "Transfer core 15": 0.7331992234847879,
+      "Transfer core 23": 0.8549746290443266
+    },
+    {
+      "Method": "h2",
+      "Oracle core 15": 0.7797445680405538,
+      "Oracle core 23": 0.9114825555215331,
+      "Transfer core 15": 0.6589422844979549,
+      "Transfer core 23": 0.8614033353573295
+    },
+    {
+      "Method": "h1",
+      "Oracle core 15": 0.7865482362211482,
+      "Oracle core 23": 0.9011414458313864,
+      "Transfer core 15": 0.740009357089945,
+      "Transfer core 23": 0.8113937846809252
+    },
+    {
+      "Method": "h0",
+      "Oracle core 15": 0.7804313680419875,
+      "Oracle core 23": 0.886716850028952,
+      "Transfer core 15": 0.6704539568914053,
+      "Transfer core 23": 0.8151822592934194
+    },
+    {
+      "Method": "PCA",
+      "Oracle core 15": 0.7709676278916294,
+      "Oracle core 23": 0.8648248362289946,
+      "Transfer core 15": 0.6492367109417813,
+      "Transfer core 23": 0.7781262484632443
+    },
+    {
+      "Method": "scVI",
+      "Oracle core 15": 0.7292150135342494,
+      "Oracle core 23": 0.9041324015425279,
+      "Transfer core 15": 0.6687317924741308,
+      "Transfer core 23": 0.8496968218094635
+    }
+  ],
+  "primary_seed": 0,
+  "registration": "Geometry-only similarity, independently visually reviewed; approximate, not pixel-exact",
+  "resolutions": [
+    0.25,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "schema": "so12_cancer_comparison_summary_v1",
+  "scvi_selected_epoch_zero_based": 61,
+  "scvi_validation_elbo": 373.8721008300781,
+  "seeds": [
+    0,
+    1
+  ],
+  "selection": "Oracle selects on the scored core; cross-core transfer selects on the other core. All resolutions and seeds retained.",
+  "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+  "source_sha256": {
+    "clustering_summary.json": "5f440d4183b30eb62424bc612ad8bf3301cc6288ad7f0a4f7a2e3ac5a9546619",
+    "config.resolved.json": "99fad6ee244657fbe13eee240d0d6940afe8f887fac07f275ee70f5f2d7e3644",
+    "core_mixing_summary.json": "88445d7a18223b8b813ec3b878a7e73fac8a948233e9c791a0f203db67a42cbd",
+    "figures/figure_manifest.json": "dcada25fa66eeb8e231777dbb729eea304c89bf63a70d167dab4d9044a842d34",
+    "layers_manifest.json": "a17fbc356a845963be36564a5e3891ec354d3b60aa273d9f64133beb9f8d5d64",
+    "metrics/pixel_agreement.json": "fce64d8159fd5081b9f869260280fb34d05e4ec6521b9f0d1236ab0ecfe73e77",
+    "pca_manifest.json": "b58e9b77f0a7d2a7329fea1c665f3f2b29c3e00b125a4e9195b0e9b7c82436e4",
+    "registration/registration_manifest.json": "ab7a23fe309a67c2a539c937b1cf2c098ed0e92a2eb9f6df1ff3041d8e5874b2",
+    "scvi_manifest.json": "1927873f960e42664c96ae3edc36d694666486e6d04663571183f170f2eb1bd4"
+  },
+  "status": "complete",
+  "test_cores": [
+    15,
+    23
+  ]
+}

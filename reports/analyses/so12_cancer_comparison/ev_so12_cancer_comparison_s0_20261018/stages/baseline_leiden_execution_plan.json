@@ -1,0 +1,20 @@
+{
+  "cgroup_cpu_quota": "3840000 100000",
+  "change_scope": "execution_concurrency_only",
+  "concurrent_neural_workers": 6,
+  "cpu_workers": 2,
+  "final_full_sweep_requires_both_partial_sweeps_complete": true,
+  "gpu_used": false,
+  "logical_cpu_affinity": 80,
+  "methods": [
+    "pca",
+    "scvi"
+  ],
+  "output_scope": [
+    "clustering/pca",
+    "clustering/scvi",
+    "clustering/partial_summary_pca_scvi.json"
+  ],
+  "scientific_settings_unchanged": true,
+  "total_leiden_worker_budget": 8
+}

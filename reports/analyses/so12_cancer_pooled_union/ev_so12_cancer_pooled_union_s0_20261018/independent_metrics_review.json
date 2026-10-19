@@ -1,0 +1,147 @@
+{
+  "audit_source_sha256": "cd6934f6a1c68fbb76bf97fa1f22bc6e8cde5a0ad0de528d81302bfe67a902df",
+  "binary_score_records_checked": 4774,
+  "created_at": "2026-10-18T09:33:17.729255+00:00",
+  "elapsed_seconds": 6.445117590948939,
+  "exact_removals_and_ties_verified": true,
+  "fixed_cell_denominators_and_operating_points_verified": true,
+  "independent_helper_sha256": "01ab5adbdd234f3a7e644b4a85bfbbb3b6ac7fa95ab67dc56f5707744bd0d121",
+  "interpretation": "One shared union is scored by summed native-pixel confusion counts. This is neither independent per-core selection nor mean per-core F1. Native-pixel weighting is not physical-area normalization. Results remain annotation-selected descriptive agreement.",
+  "metrics_sha256": "8374fa7eb348e62e3e47701009979266c6066013c9f7dd087327e9579f68064c",
+  "metrics_summary_sha256": "48cf436485f15882c62aefdb5af9f616731e82ab529d849bc2998faf88373d9d",
+  "n_cells": 81607,
+  "native_pooled_confusion_sums_verified": true,
+  "parent_files_verified_before_after": 326,
+  "parent_manifest_sha256": "e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0",
+  "partition_count": 56,
+  "passed": true,
+  "paths_attaining_pooled_unrestricted_exact_fraction": 56,
+  "pooled_paths_checked": 56,
+  "pooled_unrestricted_exact_optimality_certificates_verified": 56,
+  "primary": [
+    {
+      "attains_parent_exact_fraction": true,
+      "best_f1": 0.8241728152216488,
+      "best_k": 10,
+      "best_macro_diagnostic_f1": 0.8131005316489062,
+      "best_roi_retained_pct": 89.63689371852637,
+      "best_same_union_core_f1": {
+        "15": 0.774441549860452,
+        "23": 0.8517595134373604
+      },
+      "method": "h0",
+      "parent_f1": 0.8241728152216488,
+      "pooled_unrestricted_exact_fraction": "671222/814419",
+      "resolution": 1.0,
+      "seed": 0,
+      "steps": 15
+    },
+    {
+      "attains_parent_exact_fraction": true,
+      "best_f1": 0.8583333234184467,
+      "best_k": 13,
+      "best_macro_diagnostic_f1": 0.8394085201064407,
+      "best_roi_retained_pct": 93.77910719018591,
+      "best_same_union_core_f1": {
+        "15": 0.7788170402128816,
+        "23": 0.9
+      },
+      "method": "h1",
+      "parent_f1": 0.8583333234184467,
+      "pooled_unrestricted_exact_fraction": "721418/840487",
+      "resolution": 1.0,
+      "seed": 0,
+      "steps": 19
+    },
+    {
+      "attains_parent_exact_fraction": true,
+      "best_f1": 0.8601693686209765,
+      "best_k": 12,
+      "best_macro_diagnostic_f1": 0.8410488758471204,
+      "best_roi_retained_pct": 96.43141115444323,
+      "best_same_union_core_f1": {
+        "15": 0.772017998241256,
+        "23": 0.9100797534529848
+      },
+      "method": "h2",
+      "parent_f1": 0.8601693686209765,
+      "pooled_unrestricted_exact_fraction": "741386/861907",
+      "resolution": 1.0,
+      "seed": 0,
+      "steps": 17
+    },
+    {
+      "attains_parent_exact_fraction": true,
+      "best_f1": 0.8662646630553653,
+      "best_k": 10,
+      "best_macro_diagnostic_f1": 0.845831863937954,
+      "best_roi_retained_pct": 90.74249365794556,
+      "best_same_union_core_f1": {
+        "15": 0.7827996472091726,
+        "23": 0.9088640806667353
+      },
+      "method": "h3",
+      "parent_f1": 0.8662646630553653,
+      "pooled_unrestricted_exact_fraction": "712112/822049",
+      "resolution": 1.0,
+      "seed": 0,
+      "steps": 17
+    },
+    {
+      "attains_parent_exact_fraction": true,
+      "best_f1": 0.8630007828129077,
+      "best_k": 11,
+      "best_macro_diagnostic_f1": 0.8434060573175393,
+      "best_roi_retained_pct": 96.70402483813562,
+      "best_same_union_core_f1": {
+        "15": 0.7727151663345431,
+        "23": 0.9140969483005353
+      },
+      "method": "h4",
+      "parent_f1": 0.8630007828129077,
+      "pooled_unrestricted_exact_fraction": "248048/287425",
+      "resolution": 1.0,
+      "seed": 0,
+      "steps": 17
+    },
+    {
+      "attains_parent_exact_fraction": true,
+      "best_f1": 0.7981667752128712,
+      "best_k": 8,
+      "best_macro_diagnostic_f1": 0.7901357360930554,
+      "best_roi_retained_pct": 86.80095414789292,
+      "best_same_union_core_f1": {
+        "15": 0.7648900381691541,
+        "23": 0.8153814340169567
+      },
+      "method": "pca",
+      "parent_f1": 0.7981667752128712,
+      "pooled_unrestricted_exact_fraction": "165448/207285",
+      "resolution": 1.0,
+      "seed": 0,
+      "steps": 13
+    },
+    {
+      "attains_parent_exact_fraction": true,
+      "best_f1": 0.8322910294699722,
+      "best_k": 9,
+      "best_macro_diagnostic_f1": 0.8109507115700836,
+      "best_roi_retained_pct": 89.8943621975692,
+      "best_same_union_core_f1": {
+        "15": 0.7272241431487312,
+        "23": 0.894677279991436
+      },
+      "method": "scvi",
+      "parent_f1": 0.8322910294699722,
+      "pooled_unrestricted_exact_fraction": "115651/138955",
+      "resolution": 1.0,
+      "seed": 0,
+      "steps": 14
+    }
+  ],
+  "same_union_core_component_predictions_checked": 1554,
+  "schema": "so12_cancer_pooled_union_independent_review_v1",
+  "shared_cluster_IDs_verified_on_both_cores": true,
+  "status": "complete",
+  "steps_checked": 777
+}

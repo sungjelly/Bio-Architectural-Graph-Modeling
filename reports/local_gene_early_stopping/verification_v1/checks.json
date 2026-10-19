@@ -1,0 +1,34 @@
+{
+  "checked_at": "2026-10-05T08:03:02.635753+00:00",
+  "command": [
+    "/venv/main/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/unit/spatial_benchmark/test_local_gene_stopping.py",
+    "tests/unit/spatial_benchmark/test_local_gene_early_stopping_runner.py",
+    "tests/unit/infrastructure/test_local_gene_handoff.py",
+    "tests/unit/spatial_benchmark/test_report_local_gene_early_stopping.py",
+    "tests/unit/spatial_benchmark/test_local_gene_residual.py",
+    "tests/unit/spatial_benchmark/test_local_gene_data.py",
+    "tests/unit/spatial_benchmark/test_local_gene_metrics.py",
+    "tests/unit/spatial_benchmark/test_local_gene_runner_review.py",
+    "tests/unit/spatial_benchmark/test_report_local_gene_residual.py"
+  ],
+  "returncode": 0,
+  "cuda_visible_devices": "",
+  "doctor": {
+    "passed": false,
+    "database_integrity": "ok",
+    "free_disk_gb": 18.783,
+    "generic_minimum_disk_gb": 25,
+    "frozen_campaign_minimum_disk_gib": 5,
+    "preexisting_issues": [
+      "one historical checkpoint missing from catalog",
+      "two historical six-core registered paths unavailable",
+      "disk below generic25GB threshold"
+    ],
+    "active_campaign_process_record_count": 4,
+    "active_campaign_process_record_note": "Doctor flags records while the separate training matrix is active; current jobs were not modified."
+  }
+}

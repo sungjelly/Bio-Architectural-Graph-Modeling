@@ -1,0 +1,29 @@
+{
+  "evaluation_id": "ev_so12_h0_hl_e151_20261017T004300Z",
+  "campaign_id": "cmp_20261017_so12_h0_hl_leiden_segmentation",
+  "source_run_id": "r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b",
+  "pca_run_id": "r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4",
+  "checkpoint_sha256": "6b4526508d223fb8a286084f57fc5f4b36129db6afeffaa328672d2c06226af4",
+  "displayed_cores": [
+    1,
+    9,
+    13,
+    15,
+    21,
+    23
+  ],
+  "all_observed_genes": true,
+  "dimensions": 256,
+  "knn": 30,
+  "metric": "cosine",
+  "graph": "unweighted_undirected_union",
+  "leiden_resolution": 1.0,
+  "primary_seed": 0,
+  "stability_seed": 1,
+  "leiden_iterations": -1,
+  "classification": {
+    "lifecycle_stage": "exploratory_screen",
+    "study_axis": "fully_observed_representation_comparison",
+    "scientific_variant": "all_observed_h0_hL_e151"
+  }
+}

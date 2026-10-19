@@ -1,0 +1,20 @@
+{
+  "cost_attribution_measured": false,
+  "immutable_source_run_id": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd",
+  "profiling_performed": false,
+  "reviewed_at": "2026-10-01T08:05:46.356712+00:00",
+  "reviewed_source_files": {
+    "scripts/diagnostics/so2_hurdle_gpu_trial_worker.py": "5913688dc0319f536dd5aeb4140b25659b939cc5a967fe9706db2c28271157d7",
+    "scripts/train/run_so2_geometry_modulated_nb.py": "d924072bd1fa8295ba116d3eec07107ce3fde7dc1ae2a850a65408cbaee576b5",
+    "scripts/train/run_so2_target_isolated_nb.py": "463b0ebd3e72fd658b6f9771e3fe7d3a98fe7eb516a3d486dde07b81bba720ab",
+    "scripts/train/run_so2_target_minibatch_binary_expression_bce.py": "1618c1697a264e7f5b321a463ff3d9d5f2bc602e257b420a9e8d1f3958485e49",
+    "src/spatial_benchmark/binary_expression.py": "d05f09cee78714ee10b1145de3c377e2c882f4442a89c66bf42888cfadda8e31",
+    "src/spatial_benchmark/gradient_direction_observability.py": "3159589fa2b46beb329e691e54b4487c31664171fd053edd789fd920b9c73e14",
+    "src/spatial_benchmark/relative_qkv_graph_transformer.py": "477af34745c95999994956f89a4e1e5f61fa4e5e75543d5ae4d356503b4b07a3",
+    "src/spatial_benchmark/target_cell_masking.py": "81d090223dd6e9a08390202e527f1abee4f18a7db91494ed1407f981a652be02",
+    "src/spatial_benchmark/target_isolated_negative_binomial.py": "262a1b018acf646e9d461eb5b4d88eb5cb50a864940a0656c2a70fed043b6941"
+  },
+  "runtime_settings_changed": false,
+  "schema": "so2_bce_audit_hot_path_read_only_review_v1",
+  "source_provenance_sha256": "46d63bdab5c57bcdd8dc55de6a14fb2fb14a3268dbda570a921a9e1af80016a5"
+}

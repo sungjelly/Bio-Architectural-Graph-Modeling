@@ -1,0 +1,20 @@
+{
+  "cluster_count_by_seed": {
+    "0": 14,
+    "1": 14
+  },
+  "clusters_over_90_percent_one_core": [
+    1,
+    6,
+    8,
+    9
+  ],
+  "cross_core_undirected_edge_fraction": 0.14980219520078666,
+  "interpretation": "h0 is the trained node encoder output before graph message passing. The h0 partition is independent of hL: matching cluster IDs or colors do not indicate matching cell groups across representations. Exploratory transductive grouping of the two test cores under a frozen model. Clusters are not validated cell types, cancer regions, independent donor replication, or causal interactions. Training permits donor overlap and historical sample exposure. Seed 0 is displayed; seed 1 only measures stability.",
+  "seed0_cluster_vs_core_ari_descriptive": 0.06880232603894448,
+  "seed0_seed1_ari": 0.7317281068677163,
+  "seed0_seed1_ari_per_core": {
+    "15": 0.7386996527683357,
+    "23": 0.7354201309277071
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "campaign": "cmp_20261005_so2_genemae_masking",
+  "outcome": "inconclusive",
+  "whole_cell_baseline_outcome": "supported",
+  "all_nine_models_completed_200_epochs": true,
+  "original_production_full_execution_passes": 7,
+  "original_production_verification_failures": 2,
+  "full_nine_run_acceptance_gate_passed": false,
+  "checkpoint_catalog": [
+    {
+      "run_id": "r_20261005T064812Z_79664b14_s000_f00_a01_e8cf9d38",
+      "role": "last",
+      "best_epoch": null,
+      "monitored_metric": "fit/whole_node/masked_huber",
+      "retention_class": "diagnostic",
+      "verification_status": "verified"
+    },
+    {
+      "run_id": "r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+      "role": "last",
+      "best_epoch": 1,
+      "monitored_metric": "fit/whole_node/masked_huber",
+      "retention_class": "diagnostic",
+      "verification_status": "verified"
+    },
+    {
+      "run_id": "r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b",
+      "role": "last",
+      "best_epoch": 199,
+      "monitored_metric": "fit/whole_node/masked_huber",
+      "retention_class": "exploratory_screen",
+      "verification_status": "verified"
+    },
+    {
+      "run_id": "r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a",
+      "role": "last",
+      "best_epoch": 199,
+      "monitored_metric": "fit/whole_node/masked_huber",
+      "retention_class": "exploratory_screen",
+      "verification_status": "verified"
+    },
+    {
+      "run_id": "r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608",
+      "role": "last",
+      "best_epoch": 199,
+      "monitored_metric": "fit/whole_node/masked_huber",
+      "retention_class": "exploratory_screen",
+      "verification_status": "verified"
+    },
+    {
+      "run_id": "r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275",
+      "role": "last",
+      "best_epoch": 199,
+      "monitored_metric": "fit/whole_node/masked_huber",
+      "retention_class": "exploratory_screen",
+      "verification_status": "verified"
+    },
+    {
+      "run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+      "role": "last",
+      "best_epoch": null,
+      "monitored_metric": "fit/whole_node/masked_huber",
+      "retention_class": "exploratory_screen",
+      "verification_status": "verified"
+    },
+    {
+      "run_id": "r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f",
+      "role": "last",
+      "best_epoch": 199,
+      "monitored_metric": "fit/whole_node/masked_huber",
+      "retention_class": "exploratory_screen",
+      "verification_status": "verified"
+    },
+    {
+      "run_id": "r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d",
+      "role": "last",
+      "best_epoch": 199,
+      "monitored_metric": "fit/whole_node/masked_huber",
+      "retention_class": "exploratory_screen",
+      "verification_status": "verified"
+    },
+    {
+      "run_id": "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+      "role": "last",
+      "best_epoch": null,
+      "monitored_metric": "fit/whole_node/masked_huber",
+      "retention_class": "exploratory_screen",
+      "verification_status": "verified"
+    },
+    {
+      "run_id": "r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656",
+      "role": "last",
+      "best_epoch": 199,
+      "monitored_metric": "fit/whole_node/masked_huber",
+      "retention_class": "exploratory_screen",
+      "verification_status": "verified"
+    }
+  ],
+  "every_campaign_bundle_checksum_verified": true,
+  "queue": [
+    {
+      "run_id": "r_20261005T064812Z_79664b14_s000_f00_a01_e8cf9d38",
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b",
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a",
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608",
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275",
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f",
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d",
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656",
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T084509Z_b35cac84_s001_f00_a02_a66df110",
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T084829Z_b35cac84_s001_f00_a03_8bd59a60",
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T085114Z_b35cac84_s002_f00_a02_fbab1145",
+      "status": "failed"
+    }
+  ],
+  "focused_tests_passed": 52,
+  "repository_tests": {
+    "passed": 1437,
+    "failed": 34,
+    "skipped": 4
+  },
+  "result_schema_and_own_sources_verified": true,
+  "report_payloads_verified": 13,
+  "prior_catalog_records_preserved": 5,
+  "global_source_verification_error": "Missing unrelated experiments/campaigns/cmp_20261004_local_gene_residual/frozen_task_contract.md",
+  "doctor_default": "doctor_final_default.json",
+  "doctor_campaign_floor": "doctor_final_campaign_floor.json"
+}

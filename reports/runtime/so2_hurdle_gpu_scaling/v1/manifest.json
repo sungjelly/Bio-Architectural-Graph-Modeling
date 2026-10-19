@@ -1,0 +1,42 @@
+{
+  "command": [
+    "/venv/main/bin/python",
+    "/workspace/BAGM-relative-qkv-analysis/scripts/analysis/report_so2_hurdle_gpu_trial.py",
+    "--isolated-run",
+    "r_20261001T053158Z_94b9eb4c_s000_f00_a01_80f17c59",
+    "--parallel-runs",
+    "r_20261001T054148Z_94b9eb4c_s000_f00_a01_74c220a4",
+    "r_20261001T054148Z_94b9eb4c_s000_f00_a01_fa18c372",
+    "r_20261001T054148Z_94b9eb4c_s000_f00_a01_0c056643",
+    "r_20261001T054148Z_94b9eb4c_s000_f00_a01_3a90d363"
+  ],
+  "completion": "All named run bundles verified; finalized report published without replacement.",
+  "created_at_utc": "2026-10-01T05:52:36.749221+00:00",
+  "files": {
+    "report.md": {
+      "sha256": "51a2486e46deb50a3f21a0d5330ea692a4feedcc79bd890ef6d06164e6dc6108",
+      "size_bytes": 3959
+    },
+    "report_builder.py": {
+      "sha256": "47d2546267fcde3458a41d0bb77decc7bb53c8be1b99d764736a584e7793cdc8",
+      "size_bytes": 19546
+    },
+    "summary.json": {
+      "sha256": "62d992af511ab97ebeecb2a6cb45c9f65a29036fe172069079e75f9077c95376",
+      "size_bytes": 27262
+    },
+    "table.csv": {
+      "sha256": "9d528ae117e47557b1a3559b03da9859271c44e16d983c833ef814e27c74ae83",
+      "size_bytes": 2426
+    }
+  },
+  "schema": "so2_hurdle_gpu_scaling_report_manifest_v1",
+  "source_run_ids": [
+    "r_20261001T053158Z_94b9eb4c_s000_f00_a01_80f17c59",
+    "r_20261001T054148Z_94b9eb4c_s000_f00_a01_74c220a4",
+    "r_20261001T054148Z_94b9eb4c_s000_f00_a01_fa18c372",
+    "r_20261001T054148Z_94b9eb4c_s000_f00_a01_0c056643",
+    "r_20261001T054148Z_94b9eb4c_s000_f00_a01_3a90d363"
+  ],
+  "working_directory": "/workspace/BAGM-relative-qkv-analysis"
+}

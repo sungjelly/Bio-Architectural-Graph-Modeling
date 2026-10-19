@@ -1,0 +1,14 @@
+{
+  "compute": "CPU only; small integer deletion searches and plots, no GPU-capable training",
+  "free_bytes": 6402588672,
+  "git_commit": "f2776df3769620e7c2b1728116a71ca086c7e3b4",
+  "packages": {
+    "matplotlib": "3.11.1",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1"
+  },
+  "python": "3.12.13 | packaged by conda-forge | (main, Aug 11 2026, 10:27:28) [GCC 14.4.0]",
+  "thread_limit": 4
+}

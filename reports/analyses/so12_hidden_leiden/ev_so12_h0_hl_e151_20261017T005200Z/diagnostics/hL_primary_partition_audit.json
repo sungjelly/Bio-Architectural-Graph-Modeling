@@ -1,0 +1,59 @@
+{
+  "schema": "so12_primary_partition_numeric_audit_v1",
+  "status": "passed",
+  "representation": "hL",
+  "seed": 0,
+  "audited_at": "2026-10-17T01:55:09.878865+00:00",
+  "elapsed_seconds": 13.811572561971843,
+  "input_sha256": {
+    "graph_receipt": "338406647944d8dfcaf202a93c920201ec0ed409b70b3ae5b5c324c82ced2791",
+    "seed0_receipt": "167a9a87874ff88933522640762bca8f12b88fc785619b264b97c95a686549f3",
+    "labels": "abcdc518ef600eaa3e55edc452df81dc75cbbe2dc544f828135ba76316da16c0",
+    "edges": "3df3bb5a081f7b67902a9def70bd0cdca5bb41965ac88763dd128524811484f3"
+  },
+  "graph": {
+    "n_cells": 407659,
+    "k": 30,
+    "directed_entries": 12229770,
+    "undirected_edges": 10786423,
+    "degree_min": 30,
+    "degree_max": 1104,
+    "degree_mean": 52.9188512948322,
+    "all_neighbor_rows_unique_and_self_free": true,
+    "union_exact": true
+  },
+  "partition": {
+    "clusters": 22,
+    "sizes": [
+      54344,
+      41355,
+      35111,
+      30745,
+      27213,
+      26999,
+      24213,
+      23986,
+      21584,
+      18210,
+      15267,
+      14680,
+      14608,
+      9981,
+      9713,
+      9583,
+      7721,
+      6861,
+      5979,
+      5924,
+      2523,
+      1059
+    ],
+    "modularity": 0.8277539135080849,
+    "quality": 17857007.702007234,
+    "complete_contiguous_sorted_labels": true
+  },
+  "audit_source_sha256": "b5eedca3716b1d671fa8715d2a5f24bfb097c69f532a9348a33768d4e444d61d",
+  "scope": "Completed hL seed-0 graph and partition only; seed-1 and h0 remain outside this receipt",
+  "gpu_accessed": false,
+  "clustering_repeated": false
+}

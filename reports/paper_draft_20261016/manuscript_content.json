@@ -1,0 +1,344 @@
+{
+  "en": {
+    "title": "BAGM: Geometry-Aware Masked Graph Modeling of Spatial Cell States",
+    "subtitle": "Bio-Architectural Graph Modeling · Initial draft · 16 October 2026",
+    "pages": [
+      [
+        [
+          "heading",
+          "Abstract"
+        ],
+        [
+          "p",
+          "Spatial transcriptomics makes it possible to study a cell together with its tissue context. We propose Bio-Architectural Graph Modeling (BAGM), a masked expression model that learns cell representations using a Relative-Geometric QKV Graph Transformer. Cells form the graph nodes, and measured relative geometry provides an additive bias to attention between neighboring cells. The model predicts hidden expression from visible expression, morphology and spatial context. Preliminary visual observations from an earlier fitted-cohort analysis suggest that the final representations delineate putative tumor-associated regions more clearly than earlier hidden states. These observations motivate quantitative evaluation rather than establish segmentation accuracy. The current study extends the original architecture to donor-separated training and validation. We further propose attention and sensitivity analyses to investigate which inputs support predictions, while distinguishing model dependencies from biological mechanisms."
+        ],
+        [
+          "heading",
+          "1  Introduction and related work"
+        ],
+        [
+          "p",
+          "A cell is part of a tissue, and its state is associated with both intracellular programs and its local environment. Spatial molecular imaging platforms such as CosMx preserve this context while measuring RNA and protein distributions at subcellular resolution [1]. This creates opportunities for richer cell representations, spatial annotation and the study of tissue organization. The present BAGM model uses RNA measurements and morphology/imaging covariates; it does not jointly model a protein-expression assay."
+        ],
+        [
+          "p",
+          "Existing models use several learning objectives. scGPT uses generative pretraining [2], STAGATE reconstructs expression with a spatial graph attention autoencoder [3], and GraphST combines reconstruction and contrastive learning [4]. Masked reconstruction is also established in GraphMAE [5] and spatial methods such as SpaMask [6]. Building on these approaches, we study whether explicitly separating cell features, spatial geometry and neighborhood aggregation supports useful representations and a clearer analysis of model behavior."
+        ],
+        [
+          "p",
+          "BAGM follows a simple design principle: retain the measured organization of the tissue in the computational structure. A node represents a cell, an edge represents a candidate spatial relationship, and an edge feature describes relative geometry. This is a biological inductive bias, not a claim that each edge is a physical interaction or that each learned weight has a direct biological meaning."
+        ],
+        [
+          "heading",
+          "2  Preliminaries"
+        ],
+        [
+          "p",
+          "Let X contain expression features for N cells and G genes, C contain permitted morphology/imaging covariates, and P contain cell coordinates. A graph connects spatial neighbors within each tissue core. For a directed edge j → i, ρᵢⱼ denotes its relative geometry and N(i) the incoming neighbors of cell i. A binary mask M marks expression entries hidden during training. Graph attention [7] aggregates neighbor states with learned, receiver-normalized weights. BAGM uses scaled query–key–value attention with an additional geometry bias, rather than the original additive GAT scoring function."
+        ],
+        [
+          "figure",
+          "architecture"
+        ],
+        [
+          "caption",
+          "Figure 1. BAGM overview. Visible expression, the mask and morphology enter the cell encoder. Relative geometry contributes an attention-logit bias in four graph blocks. The decoder predicts masked expression; the final cell state also supports exploratory clustering. Same-cell information is retained through residual paths. This diagram describes the original Relative-QKV architecture used in the current run."
+        ]
+      ],
+      [
+        [
+          "heading",
+          "3  BAGM model and learning objective"
+        ],
+        [
+          "p",
+          "Data and graph. The current joint-slide study contains 407,659 cells from 28 gastric tissue cores, with 1,000 biological genes and 22 morphology/imaging features. Ten donor groups contribute 20 training cores; four separate donor groups contribute eight validation cores. No donor or graph crosses the split. Within each core, coordinate-based graphs sample neighbors across radial distance bands up to 500 μm, with a nominal budget of 200 neighbors before bidirectional union. Each edge has 70 geometry features, combining distance basis functions, relative orientation and anisotropy. These edges represent neighborhood context, including scales broader than direct contact."
+        ],
+        [
+          "p",
+          "Masking. For each cell and each view, we draw the number of hidden genes uniformly from 0 to G and sample those genes without replacement. Ten mask views are used per training core per epoch. Inputs are recomputed from visible raw counts using frozen training statistics; hidden counts cannot affect input normalization. The targets are quasi-Poisson Pearson residuals computed before masking and standardized with frozen training statistics. Thus, this task predicts masked expression features rather than fitting a raw-count likelihood."
+        ],
+        [
+          "p",
+          "Geometry-aware attention. The encoder combines visible expression, mask indicators and morphology into h⁽⁰⁾. Four independently parameterized, pre-normalized Transformer blocks use width 256 and eight attention heads. For one layer and head a, query qᵢᵃ, key kⱼᵃ and value vⱼᵃ are projections of normalized cell states, and:"
+        ],
+        [
+          "equation",
+          "sᵢⱼᵃ = (qᵢᵃ)ᵀ kⱼᵃ / √32 + fₐ(ρᵢⱼ),    αᵢⱼᵃ = softmaxⱼ∈N(i)(sᵢⱼᵃ)"
+        ],
+        [
+          "equation",
+          "zᵢᵃ = Σⱼ∈N(i) αᵢⱼᵃ vⱼᵃ,       x̂ᵢ = Decoder(hᵢ⁽⁴⁾)"
+        ],
+        [
+          "p",
+          "A small geometry network produces one bias per head. Geometry does not enter the value projection directly. Each block applies multi-head aggregation, a residual update, and a 1,024-wide feed-forward network with a second residual update. There are no graph self-loops. A 256 → 1,024 → 1,000 decoder maps the final state to expression predictions."
+        ],
+        [
+          "equation",
+          "Lview = Σᵢg Mᵢg Huber₁(x̂ᵢg − Xᵢg) / Σᵢg Mᵢg"
+        ],
+        [
+          "p",
+          "The objective averages masked-entry Huber loss equally across cores and views. AdamW uses learning rate 10⁻⁴ and weight decay 10⁻⁵. Three fixed mask views per validation core support checkpoint selection and early stopping. The current experiment is exploratory, single-seed validation; an untouched test cohort is not yet available."
+        ],
+        [
+          "heading",
+          "4  Preliminary observations"
+        ],
+        [
+          "p",
+          "Earlier analyses of the original architecture used 246,063 cells from 14 SO2 cores, with standardized log1p-count features and no held-out donor evaluation. Leiden clustering [8] of the final hidden states produced spatially coherent regions. An author-reported visual comparison suggested sharper putative tumor-associated regions than PCA and scVI [9]; a reproducible scVI comparison, matched clustering settings and independent pathology scoring remain pending. It concerns tissue-domain delineation, not segmentation of individual cells."
+        ],
+        [
+          "p",
+          "The final layer also appeared to show clearer regional structure than the input embedding and intermediate layers. The saved layer analyses confirm that partitions change across depth, but do not establish that only the final layer contains useful biological information. This pattern is consistent with progressive context aggregation; self-only and geometry/graph ablations are needed to isolate the spatial contribution. These historical observations are separate from the current training run, whose final validation results remain pending."
+        ],
+        [
+          "figure",
+          "results_placeholder"
+        ],
+        [
+          "caption",
+          "Figure 2. Planned result panels, not experimental images. Use the same tissue regions for h⁽⁰⁾, intermediate states, h⁽⁴⁾, PCA and scVI, alongside independent tumor annotations. Match clustering settings and report region overlap, boundary agreement and donor-level variability. Replace this placeholder with the final figures."
+        ]
+      ],
+      [
+        [
+          "heading",
+          "5  Biological analysis and next evaluation"
+        ],
+        [
+          "p",
+          "We aim to use BAGM not only for representations, but also to ask what supports each prediction. Planned analyses include attention as a function of distance and cell context, differences between layers and heads, and the contribution of neighbor messages relative to a matched cell-autonomous model. Because there are no graph self-loops, this is not a comparison between a self-attention coefficient and neighbor coefficients. Attention describes information routing and is not, by itself, a measure of biological importance [10]."
+        ],
+        [
+          "p",
+          "For a selected target gene g in cell i, a Jacobian entry Jᵢg,ⱼk = ∂x̂ᵢg/∂xⱼk measures local model sensitivity to gene k in another cell j, where xⱼk is a visible, transformed input feature and morphology, the mask and graph are held fixed. We will distinguish one-hop from multi-hop dependencies and test sensitivities with bounded input perturbations and message ablations. Such quantities may nominate predictive relationships; independent molecular evidence and perturbation experiments are needed before interpreting them as mechanisms or causal effects."
+        ],
+        [
+          "p",
+          "The next evaluation will compare BAGM with PCA, scVI, cell-autonomous and spatial-smoothing baselines, and established spatial models under matched splits. Independent tumor-region annotations will support Dice/IoU and boundary agreement; masked prediction will be assessed on held-out donors. Geometry removal, constrained graph rewiring and multiple seeds will test whether gains depend on meaningful spatial structure. Cell composition, core effects and segmentation spillover remain alternative explanations. Protein measurements are a possible future extension."
+        ],
+        [
+          "heading",
+          "6  Conclusion"
+        ],
+        [
+          "p",
+          "BAGM combines masked expression prediction with geometry-aware graph attention to learn cells in their tissue context. Preliminary regional and layer-wise observations motivate further evaluation. The immediate goal is to establish reproducible spatial predictive value; the longer-term goal is to turn model analyses into testable biological hypotheses."
+        ],
+        [
+          "heading",
+          "References"
+        ],
+        [
+          "references",
+          "all"
+        ]
+      ]
+    ]
+  },
+  "ko": {
+    "title": "BAGM: 공간 기하 정보를 반영한\n마스킹 그래프 기반 세포 상태 모델링",
+    "subtitle": "Bio-Architectural Graph Modeling · 초기 원고 · 2026년 10월 16일",
+    "pages": [
+      [
+        [
+          "heading",
+          "초록"
+        ],
+        [
+          "p",
+          "공간 전사체 데이터는 세포를 주변 조직의 맥락과 함께 분석할 수 있게 한다. 본 연구는 Relative-Geometric QKV Graph Transformer로 세포 표현을 학습하는 마스킹 발현 예측 모델인 BAGM(Bio-Architectural Graph Modeling)을 제안한다. 세포를 그래프의 노드로 두고, 측정된 상대 기하 정보를 이웃 세포 간 어텐션 점수의 편향으로 사용한다. 모델은 관측된 발현값, 형태 정보와 공간 맥락으로 가려진 발현값을 예측한다. 이전 학습 코호트의 예비 시각 분석에서는 최종 표현이 초기·중간층보다 종양 관련 영역으로 추정되는 구조를 더 뚜렷하게 구분하는 양상이 관찰되었다. 이는 정량 평가의 동기이며, 영역 구분 정확도를 입증한 결과는 아니다. 현재 연구는 원래의 모델 구조를 유지하면서 공여자가 분리된 학습·검증으로 확장한다. 나아가 어텐션과 민감도 분석으로 예측에 기여하는 정보를 살펴보되, 모델의 예측 의존성과 생물학적 기전을 구분하고자 한다."
+        ],
+        [
+          "heading",
+          "1  서론 및 관련 연구"
+        ],
+        [
+          "p",
+          "세포는 조직의 일부이며, 세포 상태는 세포 내부의 발현 프로그램뿐 아니라 주변 환경과도 연관된다. CosMx와 같은 공간 분자 이미징 기술은 조직의 맥락을 보존하면서 RNA와 단백질의 분포를 세포 내 수준의 해상도로 측정한다[1]. 이는 더 풍부한 세포 표현, 공간 정보를 활용한 세포 주석화, 조직 구조 분석의 가능성을 열어 준다. 현재 BAGM은 RNA 측정값과 형태·이미징 공변량을 입력으로 사용하며, 단백질 발현 패널을 함께 모델링하지는 않는다."
+        ],
+        [
+          "p",
+          "기존 연구는 다양한 학습 목표를 사용한다. scGPT는 생성적 사전학습을 수행하고[2], STAGATE는 공간 그래프 어텐션 오토인코더로 발현을 재구성하며[3], GraphST는 재구성과 대조 학습을 결합한다[4]. 마스킹 재구성 역시 GraphMAE[5]와 SpaMask 같은 공간 전사체 방법[6]에서 사용되어 왔다. 이러한 접근을 바탕으로, 세포 특징, 공간 기하 정보, 이웃 정보의 통합을 모델 안에서 명시적으로 구분하면 유용한 표현을 학습하면서 모델의 동작도 더 구체적으로 분석할 수 있는지를 묻는다."
+        ],
+        [
+          "p",
+          "BAGM의 설계 원칙은 측정된 조직의 구조를 계산 구조에 반영하는 것이다. 노드는 세포를, 간선은 후보 공간 관계를, 간선 특징은 상대 기하 정보를 나타낸다. 이는 생물학적 구조를 반영한 귀납적 편향이며, 모든 간선이 실제 상호작용이거나 모든 가중치가 직접적인 생물학적 의미를 가진다는 가정은 아니다."
+        ],
+        [
+          "heading",
+          "2  기초 개념"
+        ],
+        [
+          "p",
+          "X는 N개 세포와 G개 유전자의 발현 특징, C는 허용된 형태·이미징 공변량, P는 세포 좌표를 나타낸다. 각 조직 코어 안에서 공간적으로 이웃한 세포를 그래프로 연결한다. 방향 간선 j → i에 대해 ρᵢⱼ는 상대 기하 정보, N(i)는 세포 i로 정보를 보내는 이웃 집합이다. 이진 마스크 M은 학습 중 가리는 발현 항목을 표시한다. 그래프 어텐션[7]은 수신 세포별로 정규화한 가중치로 이웃 상태를 통합한다. BAGM은 원래 GAT의 가산형 점수 대신, 스케일된 query–key–value 점수에 기하 편향을 더한다."
+        ],
+        [
+          "figure",
+          "architecture"
+        ],
+        [
+          "caption",
+          "그림 1. BAGM 개요. 관측 발현값, 마스크와 형태 정보를 세포 인코더에 입력한다. 네 개의 그래프 블록에서 상대 기하 정보는 어텐션 점수의 편향으로 작용한다. 디코더는 가려진 발현을 예측하며, 최종 세포 표현은 탐색적 군집화에도 사용한다. 같은 세포의 정보는 잔차 경로로 유지된다. 현재 학습 중인 원래 Relative-QKV 구조를 나타낸다."
+        ]
+      ],
+      [
+        [
+          "heading",
+          "3  BAGM 모델과 학습 목표"
+        ],
+        [
+          "p",
+          "데이터와 그래프. 현재 두 슬라이드를 통합한 연구는 위 조직 코어 28개, 세포 407,659개, 생물학적 유전자 1,000개, 형태·이미징 특징 22개를 사용한다. 공여자 그룹 10개의 코어 20개를 학습에, 별도 공여자 그룹 4개의 코어 8개를 검증에 사용한다. 공여자나 그래프는 두 분할에 걸쳐 공유되지 않는다. 각 코어에서 좌표를 기준으로 최대 500 μm까지 거리 구간별 이웃을 선택한다. 양방향 합집합 구성 전의 이웃 수는 기본적으로 200개로 설정한다. 간선마다 거리 기저 함수, 상대 방향과 비등방성을 포함한 70차원 기하 특징을 사용한다. 이 간선은 직접 접촉보다 넓은 범위의 주변 맥락도 나타낸다."
+        ],
+        [
+          "p",
+          "마스킹. 각 세포와 마스킹 뷰마다 가릴 유전자 수를 0부터 G까지 균등하게 뽑고, 해당 개수의 유전자를 중복 없이 선택한다. 학습 시 코어당 매 에포크에 10개의 마스킹 뷰를 사용한다. 입력은 관측 가능한 원시 카운트와 학습 데이터에서 고정한 통계만으로 다시 계산하여, 숨겨진 카운트가 입력 정규화에 영향을 주지 않도록 한다. 예측 목표는 마스킹 전 카운트에서 계산하고 고정된 학습 통계로 표준화한 준포아송 Pearson 잔차이다. 따라서 이 과제는 원시 카운트의 우도 추정이 아니라 가려진 발현 특징의 예측이다."
+        ],
+        [
+          "p",
+          "기하 정보를 반영한 어텐션. 인코더는 관측 발현값, 마스크 지시자와 형태 정보를 결합하여 h⁽⁰⁾를 만든다. 너비 256, 어텐션 헤드 8개인 사전 정규화 Transformer 블록 네 개를 독립된 파라미터로 쌓는다. 한 층의 헤드 a에서 qᵢᵃ, kⱼᵃ, vⱼᵃ는 정규화된 세포 상태를 투영한 query, key, value이며 다음과 같이 계산한다."
+        ],
+        [
+          "equation",
+          "sᵢⱼᵃ = (qᵢᵃ)ᵀ kⱼᵃ / √32 + fₐ(ρᵢⱼ),    αᵢⱼᵃ = softmaxⱼ∈N(i)(sᵢⱼᵃ)"
+        ],
+        [
+          "equation",
+          "zᵢᵃ = Σⱼ∈N(i) αᵢⱼᵃ vⱼᵃ,       x̂ᵢ = Decoder(hᵢ⁽⁴⁾)"
+        ],
+        [
+          "p",
+          "작은 기하 인코더가 헤드별 편향을 생성하며, 기하 정보가 value 투영에 직접 들어가지는 않는다. 각 블록은 다중 헤드 통합과 잔차 갱신, 내부 너비 1,024의 순방향 신경망과 두 번째 잔차 갱신을 수행한다. 그래프에는 자기 루프가 없다. 최종 상태는 256 → 1,024 → 1,000 디코더를 거쳐 발현 예측값이 된다."
+        ],
+        [
+          "equation",
+          "Lview = Σᵢg Mᵢg Huber₁(x̂ᵢg − Xᵢg) / Σᵢg Mᵢg"
+        ],
+        [
+          "p",
+          "마스킹된 항목의 Huber 손실을 계산한 뒤 코어와 뷰에 동일한 가중치를 주어 평균한다. AdamW의 학습률은 10⁻⁴, 가중치 감쇠는 10⁻⁵이다. 검증 코어당 고정된 세 개의 마스킹 뷰로 체크포인트를 선택하고 조기 종료를 판단한다. 현재는 단일 시드의 탐색적 검증이며, 독립적인 최종 테스트 코호트는 아직 없다."
+        ],
+        [
+          "heading",
+          "4  예비 관찰 결과"
+        ],
+        [
+          "p",
+          "원래 구조를 사용한 이전 SO2 분석은 코어 14개, 세포 246,063개를 대상으로 표준화한 log1p 카운트를 사용했으며, 별도의 공여자 검증은 없었다. 최종 은닉 상태의 Leiden 군집화[8]는 공간적으로 일관된 영역을 보였다. 저자의 초기 시각 비교에서는 PCA와 scVI[9]보다 종양 관련 영역으로 추정되는 구조가 더 선명하게 구분되는 양상이 관찰되었다. 다만 재현 가능한 scVI 비교, 동일한 군집화 조건과 독립적인 병리 주석을 이용한 평가는 아직 남아 있다. 여기서 구분하는 대상은 개별 세포의 경계가 아니라 조직 내 영역이다."
+        ],
+        [
+          "p",
+          "최종층에서는 입력 임베딩과 중간층보다 영역 구조가 더 뚜렷해 보였다. 저장된 층별 분석은 깊이에 따라 군집 구성이 달라짐을 보여 주지만, 최종층에만 유용한 생물학적 정보가 있다는 결론을 뒷받침하지는 않는다. 이러한 양상은 주변 맥락이 점차 통합된다는 해석과 부합한다. 공간 정보의 기여를 분리하려면 세포 단독 모델과 기하·그래프 제거 실험이 필요하다. 이 관찰은 현재 학습과 구분되는 이전 분석이며, 현재 모델의 최종 검증 결과는 아직 확정되지 않았다."
+        ],
+        [
+          "figure",
+          "results_placeholder"
+        ],
+        [
+          "caption",
+          "그림 2. 실제 결과 이미지가 아닌 예정 패널 구성. 동일한 조직 영역에서 h⁽⁰⁾, 중간층, h⁽⁴⁾, PCA, scVI를 독립적인 종양 주석과 비교한다. 군집화 조건을 맞추고 영역 중첩, 경계 일치도와 공여자별 변동을 제시할 예정이다. 최종 그림으로 교체할 자리이다."
+        ]
+      ],
+      [
+        [
+          "heading",
+          "5  생물학적 분석과 후속 평가"
+        ],
+        [
+          "p",
+          "BAGM의 목표는 표현 학습과 함께 각 예측이 어떤 정보에 의존하는지 살펴보는 것이다. 거리와 세포 맥락에 따른 어텐션 변화, 층·헤드별 차이, 세포 단독 모델에 비해 이웃 메시지가 기여하는 정도를 분석할 계획이다. 그래프에 자기 루프가 없으므로 이는 자기 어텐션 계수와 이웃 어텐션 계수를 직접 비교하는 분석이 아니다. 어텐션은 정보가 전달되는 방식을 나타내며, 그 자체로 생물학적 중요도를 뜻하지는 않는다[10]."
+        ],
+        [
+          "p",
+          "세포 i의 표적 유전자 g에 대해 Jacobian 항 Jᵢg,ⱼk = ∂x̂ᵢg/∂xⱼk는 형태 정보, 마스크와 그래프를 고정했을 때 다른 세포 j의 관측 가능한 변환 입력 특징 xⱼk에 대한 국소적 모델 민감도를 나타낸다. 한 간선을 거치는 의존성과 여러 간선을 거치는 의존성을 구분하고, 제한된 범위의 입력 교란과 메시지 제거로 민감도를 검증하고자 한다. 이 값은 예측 관계의 후보를 제시할 수 있지만, 기전이나 인과적 효과로 해석하려면 독립적인 분자 수준의 근거와 교란 실험이 필요하다."
+        ],
+        [
+          "p",
+          "후속 평가에서는 같은 데이터 분할에서 PCA, scVI, 세포 단독 모델, 공간 평활화 모델 및 기존 공간 분석 방법과 BAGM을 비교한다. 독립적인 종양 영역 주석을 이용해 Dice/IoU와 경계 일치도를 평가하고, 학습에 사용하지 않은 공여자에서 마스킹 예측을 검증한다. 기하 정보 제거, 제약을 유지한 그래프 재배선과 여러 시드의 반복 학습으로 성능 향상이 의미 있는 공간 구조에 의존하는지 확인한다. 세포 조성, 코어 효과, 세포 경계 분할에 따른 신호 혼입은 대안 설명으로 고려한다. 단백질 측정값의 통합은 후속 확장 과제이다."
+        ],
+        [
+          "heading",
+          "6  결론"
+        ],
+        [
+          "p",
+          "BAGM은 마스킹 발현 예측과 기하 정보를 반영한 그래프 어텐션을 결합하여 조직 맥락 속의 세포 표현을 학습한다. 예비 영역 관찰과 층별 변화는 추가 평가의 필요성을 보여 준다. 우선 재현 가능한 공간 정보의 예측 가치를 확인하고, 장기적으로는 모델 분석을 검증 가능한 생물학적 가설로 연결하고자 한다."
+        ],
+        [
+          "heading",
+          "참고문헌"
+        ],
+        [
+          "references",
+          "all"
+        ]
+      ]
+    ]
+  },
+  "references": [
+    {
+      "n": 1,
+      "text": "He S, Bhatt R, Brown C, et al. High-plex imaging of RNA and proteins at subcellular resolution in fixed tissue by spatial molecular imaging. Nature Biotechnology. 2022;40:1794–1806.",
+      "doi": "10.1038/s41587-022-01483-z",
+      "url": "https://doi.org/10.1038/s41587-022-01483-z"
+    },
+    {
+      "n": 2,
+      "text": "Cui H, Wang C, Maan H, et al. scGPT: toward building a foundation model for single-cell multi-omics using generative AI. Nature Methods. 2024;21:1470–1480.",
+      "doi": "10.1038/s41592-024-02201-0",
+      "url": "https://doi.org/10.1038/s41592-024-02201-0"
+    },
+    {
+      "n": 3,
+      "text": "Dong K, Zhang S. Deciphering spatial domains from spatially resolved transcriptomics with an adaptive graph attention auto-encoder. Nature Communications. 2022;13:1739.",
+      "doi": "10.1038/s41467-022-29439-6",
+      "url": "https://doi.org/10.1038/s41467-022-29439-6"
+    },
+    {
+      "n": 4,
+      "text": "Long Y, Ang KS, Li M, et al. Spatially informed clustering, integration, and deconvolution of spatial transcriptomics with GraphST. Nature Communications. 2023;14:1155.",
+      "doi": "10.1038/s41467-023-36796-3",
+      "url": "https://doi.org/10.1038/s41467-023-36796-3"
+    },
+    {
+      "n": 5,
+      "text": "Hou Z, Liu X, Cen Y, et al. GraphMAE: Self-Supervised Masked Graph Autoencoders. Proceedings of KDD. 2022:594–604.",
+      "doi": "10.1145/3534678.3539321",
+      "url": "https://doi.org/10.1145/3534678.3539321"
+    },
+    {
+      "n": 6,
+      "text": "Min W, Fang D, Chen J, Zhang S. SpaMask: Dual masking graph autoencoder with contrastive learning for spatial transcriptomics. PLOS Computational Biology. 2025;21:e1012881.",
+      "doi": "10.1371/journal.pcbi.1012881",
+      "url": "https://doi.org/10.1371/journal.pcbi.1012881"
+    },
+    {
+      "n": 7,
+      "text": "Veličković P, Cucurull G, Casanova A, et al. Graph Attention Networks. ICLR. 2018.",
+      "doi": "arXiv:1710.10903",
+      "url": "https://arxiv.org/abs/1710.10903"
+    },
+    {
+      "n": 8,
+      "text": "Traag VA, Waltman L, van Eck NJ. From Louvain to Leiden: guaranteeing well-connected communities. Scientific Reports. 2019;9:5233.",
+      "doi": "10.1038/s41598-019-41695-z",
+      "url": "https://doi.org/10.1038/s41598-019-41695-z"
+    },
+    {
+      "n": 9,
+      "text": "Lopez R, Regier J, Cole MB, Jordan MI, Yosef N. Deep generative modeling for single-cell transcriptomics. Nature Methods. 2018;15:1053–1058.",
+      "doi": "10.1038/s41592-018-0229-2",
+      "url": "https://doi.org/10.1038/s41592-018-0229-2"
+    },
+    {
+      "n": 10,
+      "text": "Jain S, Wallace BC. Attention is not Explanation. Proceedings of NAACL-HLT. 2019:3543–3556.",
+      "doi": "10.18653/v1/N19-1357",
+      "url": "https://doi.org/10.18653/v1/N19-1357"
+    }
+  ]
+}

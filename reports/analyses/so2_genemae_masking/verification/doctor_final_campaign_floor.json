@@ -1,0 +1,54 @@
+{
+  "busy_timeout_ms": 30000,
+  "checkpoint_catalog": {
+    "categorized_runs": 73,
+    "checkpoint_artifacts": 85,
+    "indexed_checkpoints": 84,
+    "semantic_aliases": 68
+  },
+  "config_checks": [
+    {
+      "path": "configs/base.yaml",
+      "valid": true
+    },
+    {
+      "path": "configs/experiment/edge_feature_ablation_g1.yaml",
+      "valid": true
+    },
+    {
+      "path": "configs/experiment/edge_feature_ablation_g2.yaml",
+      "valid": true
+    }
+  ],
+  "database": "/workspace/BAGM/state/tracking/bagm.sqlite3",
+  "free_disk_gb": 18.135,
+  "integrity_check": [
+    "ok"
+  ],
+  "issues": [
+    {
+      "categorized_runs": 73,
+      "checkpoint_artifacts": 85,
+      "indexed_checkpoints": 84,
+      "kind": "checkpoint_catalog_incomplete",
+      "semantic_aliases": 68
+    }
+  ],
+  "journal_mode": "wal",
+  "minimum_free_disk_gb": 8.0,
+  "ok": false,
+  "project_root": "/workspace/BAGM",
+  "queue_counts": {
+    "cancelled": 0,
+    "claimed": 0,
+    "completed": 51,
+    "failed": 17,
+    "pruned": 0,
+    "queued": 0,
+    "running": 0,
+    "stale": 0
+  },
+  "schema_version": 4,
+  "warnings": [],
+  "worker_lock_available": true
+}

@@ -1,0 +1,15 @@
+{
+  "files": {
+    "attempts.csv": "3ad3b6098ff61cb4fbbedba556eb8d7ae802d4bda0bfb9dff12bd9cb907426cf",
+    "endpoint_comparison.png": "b72440d0e5d383dcedacb5245778be9fb956e45fc7550fd70e46ee886b4f3ab6",
+    "history.csv": "2560687cd1f004694758f2a5d5af6c95c58ed39c080faeda5fe29dcb8e51e7e7",
+    "per_core_endpoints.csv": "ada8c56d90d0df0d9e21e9cd886203c651af772de96415bc36aede9fac991412",
+    "report.md": "31706c5aad8ebf8feeaad5d70f0de0d0cb960192b6f361a23395c28401f23e41",
+    "report_builder.py": "d64bb579327a07ead1cf9a3f1246c540da30cf31fb2c76ba3c9f3a25791f9722",
+    "runs.csv": "261cbd789b28bd33fe6410d341618b298f117fa39ccedd0acb0733513ab4a032",
+    "secondary_metrics.csv": "926de80a80beea5d805974bfbb8037f26f7e1331e06a81a5419c603d5a7cd014",
+    "summary.json": "0730541cd505a27bbfbdc094a84d71b24831e18a72c7b68598c9d0ac93732381",
+    "validation_curves.png": "f06a67bd3af2c2a95094e19a7566e8d667b2f890e08070058d9e6492681974f6"
+  },
+  "schema": "checksummed_local_report_v1"
+}

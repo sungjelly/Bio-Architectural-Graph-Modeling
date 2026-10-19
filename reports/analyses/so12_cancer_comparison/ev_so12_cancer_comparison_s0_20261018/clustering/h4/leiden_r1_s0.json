@@ -1,0 +1,60 @@
+{
+  "elapsed_seconds": 0.006610403070226312,
+  "graph_receipt_sha256": "195edb98b56c67c02b4bf4e1ba2e3bbe624b449c32f695861f89cde9e50f857b",
+  "labels": {
+    "path": "clustering/h4/labels_r1_s0.npy",
+    "relative": true,
+    "sha256": "01c228958c2e2eb0c2d8756d68490e5b68dcca49cc7d28a00388ba669bf886fe",
+    "size_bytes": 326556
+  },
+  "leiden": {
+    "cluster_count": 16,
+    "cluster_size_max": 10877,
+    "cluster_size_min": 649,
+    "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+    "igraph_version": "1.0.0",
+    "implementation": "leidenalg.RBConfigurationVertexPartition",
+    "labels_sha256": "7286ca87cf9083410128b49bf005f12a8fc59708a56dcccf41517ac3b4314fcf",
+    "largest_graph_component_proportion": 1.0,
+    "largest_graph_component_size": 81607,
+    "leidenalg_version": "0.12.0",
+    "modularity": 0.7963687665814565,
+    "n_iterations": -1,
+    "number_of_graph_components": 1,
+    "quality": 3272378.0116102602,
+    "random_seed": 0,
+    "raw_to_sorted_cluster": {
+      "0": 0,
+      "1": 1,
+      "10": 10,
+      "11": 11,
+      "12": 12,
+      "13": 13,
+      "14": 14,
+      "15": 15,
+      "2": 2,
+      "3": 3,
+      "4": 4,
+      "5": 5,
+      "6": 6,
+      "7": 7,
+      "8": 8,
+      "9": 9
+    },
+    "resolution": 1.0
+  },
+  "method": "h4",
+  "n_cells": 81607,
+  "passed": true,
+  "reference_labels": {
+    "path": "/workspace/BAGM/reports/analyses/so12_paper_test_leiden/ev_so12_paper_test_hL_s0_20261017/clustering/hL_labels_seed0.npy",
+    "relative": false,
+    "sha256": "01c228958c2e2eb0c2d8756d68490e5b68dcca49cc7d28a00388ba669bf886fe",
+    "size_bytes": 326556
+  },
+  "resolution": 1.0,
+  "reused_resolution_one": true,
+  "schema": "so12_cancer_common_cosine_leiden_v1",
+  "seed": 0,
+  "status": "complete"
+}

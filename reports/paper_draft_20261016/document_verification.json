@@ -1,0 +1,65 @@
+{
+  "layout": {
+    "en": [
+      {
+        "page": 1,
+        "body_pt": 10.5,
+        "used_pt": 709.44,
+        "bottom_y": 89.45
+      },
+      {
+        "page": 2,
+        "body_pt": 10.5,
+        "used_pt": 638.94,
+        "bottom_y": 159.95
+      },
+      {
+        "page": 3,
+        "body_pt": 10.5,
+        "used_pt": 561.81,
+        "bottom_y": 237.08
+      }
+    ],
+    "ko": [
+      {
+        "page": 1,
+        "body_pt": 9.7,
+        "used_pt": 667.69,
+        "bottom_y": 131.2
+      },
+      {
+        "page": 2,
+        "body_pt": 9.7,
+        "used_pt": 641.13,
+        "bottom_y": 157.76
+      },
+      {
+        "page": 3,
+        "body_pt": 9.7,
+        "used_pt": 561.09,
+        "bottom_y": 237.8
+      }
+    ]
+  },
+  "validation": {
+    "English": {
+      "pages": 3,
+      "text_characters": 11464,
+      "links": 10,
+      "page_bounds_ok": true,
+      "docx_figures": 2
+    },
+    "Korean": {
+      "pages": 3,
+      "text_characters": 6803,
+      "links": 10,
+      "page_bounds_ok": true,
+      "docx_figures": 2
+    }
+  },
+  "powerpoint": {
+    "slides": 3,
+    "pictures": 0,
+    "native_shapes": 101
+  }
+}

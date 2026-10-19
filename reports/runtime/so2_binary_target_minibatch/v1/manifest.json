@@ -1,0 +1,9 @@
+{
+  "files": {
+    "report.md": "1d562423ad3bab97e786ba02aed17bfbb7183fc8ed4dc437897a221dc8a98b95",
+    "report_builder.py": "9d9e687c474ce533476c0ceef6ec7edade8e9bfe47bdd5926302f3bd3e78d828",
+    "summary.json": "46947d6328e78d686e72a2736a0a929d914bde5eff205c0cae3772fc3de7b03a",
+    "table.csv": "bf5ae528d089dffb39049c09fdc6a7b742f9b9eb877286903eec9eaf873ec785"
+  },
+  "schema": "checksummed_local_report_v1"
+}

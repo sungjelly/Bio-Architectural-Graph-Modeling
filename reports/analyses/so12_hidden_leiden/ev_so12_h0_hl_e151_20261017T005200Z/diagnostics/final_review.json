@@ -1,0 +1,107 @@
+{
+  "schema": "so12_hidden_leiden_final_review_v1",
+  "status": "passed",
+  "reviewed_at": "2026-10-17T04:54:19.042342+00:00",
+  "visually_reviewed_cores": [
+    1,
+    9,
+    13,
+    15,
+    21,
+    23
+  ],
+  "overview_and_complete_legend_visually_reviewed": true,
+  "root_visual_observations": [
+    "All six requested cores have five populated panels with identical tissue geometry, orientation, bounds and 100-micrometre scales across methods.",
+    "Core counts and training/validation titles agree with source metadata; core 13 is validation.",
+    "Tissue gaps, separate fragments and original polygon boundaries are preserved.",
+    "Titles, scale bars and method-specific color disclaimer are legible; no panel clipping or blank panels observed.",
+    "Complete legends are readable and consistent across all six cores; matching colors across methods do not imply matching cell identity."
+  ],
+  "figure_records": [
+    {
+      "path": "figures/core_01_five_method_segmentation.png",
+      "sha256": "e44fae01a2c802cf95af4709ebfc2fd0af088351861dfed2381a0ac835380671",
+      "size_bytes": 979041
+    },
+    {
+      "path": "figures/core_09_five_method_segmentation.png",
+      "sha256": "df74fce6a0e4690aea4197df373baeec511436379f455eb33cc255f24142faed",
+      "size_bytes": 970712
+    },
+    {
+      "path": "figures/core_13_five_method_segmentation.png",
+      "sha256": "c246224c68dd65aefe8318c6cf77c3d6ae31523d4d02f915d2de028feb4f1b7e",
+      "size_bytes": 529644
+    },
+    {
+      "path": "figures/core_15_five_method_segmentation.png",
+      "sha256": "5c9feb9f9d51346af71cfd895f7dc04a41075f68c89a98614c9182b080d5fd22",
+      "size_bytes": 1131958
+    },
+    {
+      "path": "figures/core_21_five_method_segmentation.png",
+      "sha256": "63aac7b7cb542ba1c6877f44f9f2e4a758220a8c7bd3e484ba19137ce1ca15fc",
+      "size_bytes": 546821
+    },
+    {
+      "path": "figures/core_23_five_method_segmentation.png",
+      "sha256": "50ff68f56286db6643270fb6ab3e987cbb75be439a939bc07dd36f50de79068c",
+      "size_bytes": 1241802
+    },
+    {
+      "path": "figures/six_core_five_method_segmentation.png",
+      "sha256": "5b36106623965edb8b8005f6ac295f47130f042bc83ccb8295ea4dd4203df558",
+      "size_bytes": 3779326
+    },
+    {
+      "path": "figures/cluster_color_keys.png",
+      "sha256": "96b902fe4fa2f80bc2f6d280541b73c0f9288350d9769a76a34a4cee333349da",
+      "size_bytes": 381345
+    }
+  ],
+  "independent_numeric_audit": {
+    "path": "diagnostics/independent_numeric_audit.json",
+    "sha256": "b9d147a36570507892e4b7f8c41333496333008ff3b8dab07f5da5656c4c6e5a",
+    "size_bytes": 32922
+  },
+  "independent_render_review": {
+    "path": "diagnostics/final_render_review.json",
+    "sha256": "3bd2f9c8ba0a2fa5cefaae844f6e2a072daa2737ad5eb2398fd9d098ed3620fb",
+    "size_bytes": 21393
+  },
+  "download_archive_check": {
+    "path": "diagnostics/download_archive_check.json",
+    "sha256": "8c87553408104b8048ecffe31e1fce2f745b926bcb3b73a79c67547f13b32637",
+    "size_bytes": 416
+  },
+  "cohort": {
+    "all_cells": 407659,
+    "all_cores": 28,
+    "displayed_cells": 117996,
+    "displayed_cores": [
+      1,
+      9,
+      13,
+      15,
+      21,
+      23
+    ],
+    "all_observed_genes": true,
+    "checkpoint_epoch": 151
+  },
+  "all_prespecified_leiden_seeds_complete": true,
+  "primary_seed": 0,
+  "stability_seed": 1,
+  "h0_seed_ARI": 0.8069532157597211,
+  "hL_seed_ARI": 0.8837090007869288,
+  "primary_h0_hL_ARI": 0.3701562885697946,
+  "polygon_alignment_rule": "centroid_tolerance_or_polygon_covers_coordinate",
+  "polygon_alignment_failures": 0,
+  "pca_labels_and_historical_colors_unchanged": true,
+  "interpretation": "Descriptive all-cell transductive comparison; pipelines differ. Five hL clusters are over 90 percent from one core, so this does not establish biological identities or batch removal.",
+  "historical_pending_primary_preview_receipts_preserved": true,
+  "failed_attempt_provenance_preserved": true,
+  "training_changed_or_restarted": false,
+  "ready_for_immutable_publication": true
+}

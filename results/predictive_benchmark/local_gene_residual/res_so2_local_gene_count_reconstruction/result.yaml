@@ -1,0 +1,211 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so2_local_gene_count_reconstruction
+title: Simple local gene corrections improve count RMSE but miss the prespecified
+  NLL margin
+status: verified
+outcome: negative
+experiment_type: predictive_benchmark
+method_family: local_gene_residual
+lifecycle_stage: exploratory_validation
+study_axis: simple_count_reconstruction
+campaign_ids:
+- cmp_20261004_local_gene_residual
+method:
+  name: Local Gene Residual count reconstruction
+  model_family: Two-layer MLP with gene-wise local residuals and hurdle NB2 output
+  graph_context: Up to 16 clean non-self nearest neighbors within 75 micrometers;
+    same-gene log1p mean and positive fraction; self-only control
+  masking_or_perturbation: Inherited target-isolated Uniform1..1000 gene masking with
+    identical fixed validation masks
+  evaluation_design: 'Four fixed-budget 32-epoch runs: local/self crossed with seeds0/1;
+    lowest-NLL checkpoint selection; terminal epochs29..32; two cores from one held-out
+    donor; historical NB/hurdle endpoints'
+  implementation_version: 866313cb473549e834fbd7d0809c60a27cbb3c3a plus checksummed
+    source snapshots in every run
+conclusion:
+  question: Can a simple new count model improve reconstruction over BAGM, and does
+    direct local gene evidence help?
+  estimand: Partial-gene reconstruction from visible target genes, permitted covariates
+    and clean non-self neighbors on the existing held-out validation donor
+  observed_result: Across both local seeds, selected NLL=0.326651015, MAE=0.223390653,
+    RMSE=1.100784904; historical hurdle NLL=0.328241753, MAE=0.225991939, RMSE=1.168484806.
+    NLL improved by 0.001590738, below the prespecified 0.002 margin; the full practical
+    criterion did not pass. RMSE improved 5.794% and MAE 1.151%. Local context improves
+    NLL over matched self-only controls in both seeds and both cores. All four runs
+    completed and replayed.
+  strongest_alternative_explanation: Historical optimization and stopping differ;
+    reused validation data and donor-specific local copying or segmentation effects
+    can explain gains without general patient-level improvement.
+  controls:
+  - Matched self-only controls in both seeds
+  - Train-only gene constants and always-zero MAE reference
+  - Exact inherited splits and masks; self-exclusion and hidden-value invariance tests
+  - All-seed reporting, fixed budget, checkpoint replay and immutable bundle checks
+  remaining_uncertainty: One validation donor, no sealed test set; two optimizer seeds;
+    no spatial-block, segmentation-perturbation, realistic-null, independent patient
+    or causal evaluation. The .002 primary improvement criterion failed.
+  maximum_defensible_claim: On this reused validation split the simpler model lowers
+    NLL, MAE and RMSE versus the historical hurdle endpoint; its local component adds
+    paired predictive value. A material .002 NLL gain and independent generalization
+    are not established.
+evidence:
+  predictive_gain:
+    status: mixed
+    summary: Both local seeds improve historical NLL and RMSE and beat their self-only
+      controls; the prespecified .002 mean NLL margin does not pass.
+  stability:
+    status: supported
+    summary: Direction of local-versus-self NLL gain agrees in both seeds and both
+      cores of one donor; wider stability was not tested.
+  faithfulness:
+    status: not_tested
+    summary: Ablation tests predictive contribution; no attribution faithfulness analysis.
+  null_calibration:
+    status: not_tested
+    summary: No mechanism-breaking spatial nulls were run.
+  patient_replication:
+    status: not_tested
+    summary: One held-out donor is available; two cores are not independent donor
+      replication.
+  external_support:
+    status: not_tested
+    summary: No external cohort or molecular support evaluated.
+  perturbation_support:
+    status: not_tested
+    summary: No controlled biological perturbations evaluated.
+provenance:
+  created_at_utc: '2026-10-04T07:48:16Z'
+  updated_at_utc: '2026-10-04T07:48:16Z'
+  git_commit: 866313cb473549e834fbd7d0809c60a27cbb3c3a
+  run_ids:
+  - r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5
+  - r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983
+  - r_20261004T072106Z_dd0aa417_s000_f00_a01_e0116c2b
+  - r_20261004T072107Z_dd0aa417_s001_f00_a01_ea627eca
+  - r_20260926T104132Z_47d710fa_s000_f00_a01_b967dc7c
+  - r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097
+  - r_20261004T071603Z_178fc589_s000_f00_a01_254a98de
+  expected_seeds:
+  - 0
+  - 1
+  included_seeds:
+  - 0
+  - 1
+  expected_folds:
+  - 0
+  included_folds:
+  - 0
+  failed_or_excluded_runs: []
+  sources:
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5/provenance/artifact_checksums.json
+    sha256: 618689af937aa1c0e1cf0640024ae878ba7a8629f62929eaeb6b91d19b4893fa
+    verification_status: verified
+    run_id: r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5/summary.json
+    sha256: 1b5aaffdfb021430e9aa4801f9720ca60a4f2b98c7afd9ced6352b3a102aa662
+    verification_status: verified
+    run_id: r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983/provenance/artifact_checksums.json
+    sha256: 1101a6958085bc44c5b8f03489732cc2fc6d51658da62ee6d32f798aaaa8e88a
+    verification_status: verified
+    run_id: r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983/summary.json
+    sha256: 828e4854c9d48b600c63d3a91cc0af91daf5db67a4330ac20ddab36121db4b4d
+    verification_status: verified
+    run_id: r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T072106Z_dd0aa417_s000_f00_a01_e0116c2b/provenance/artifact_checksums.json
+    sha256: 80f6881a31d7f0d4e4d74d8a4aa3721c204443a4cc3f7cf6226c04c69f57a12c
+    verification_status: verified
+    run_id: r_20261004T072106Z_dd0aa417_s000_f00_a01_e0116c2b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T072106Z_dd0aa417_s000_f00_a01_e0116c2b/summary.json
+    sha256: 0f453a09ee2a77b02b36aaa4f49ae4c1c5ca62b8bb68e6f311a140a4f3259ae3
+    verification_status: verified
+    run_id: r_20261004T072106Z_dd0aa417_s000_f00_a01_e0116c2b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T072107Z_dd0aa417_s001_f00_a01_ea627eca/provenance/artifact_checksums.json
+    sha256: 867dc43592ab9923dc1379d7875fc6aa0978972564a10dd949b5b4e19c8f56c6
+    verification_status: verified
+    run_id: r_20261004T072107Z_dd0aa417_s001_f00_a01_ea627eca
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T072107Z_dd0aa417_s001_f00_a01_ea627eca/summary.json
+    sha256: 85a3b6478955a435960b75e5640e0a5d1c771529a2d7611a7feea3d22a9dadf5
+    verification_status: verified
+    run_id: r_20261004T072107Z_dd0aa417_s001_f00_a01_ea627eca
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260926T104132Z_47d710fa_s000_f00_a01_b967dc7c/provenance/artifact_checksums.json
+    sha256: 789065e23192cdb7e8d644584f7ac54c42e4ba0b9da66f45b103bbb124211ee7
+    verification_status: verified
+    run_id: r_20260926T104132Z_47d710fa_s000_f00_a01_b967dc7c
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260926T104132Z_47d710fa_s000_f00_a01_b967dc7c/summary.json
+    sha256: 82e83697d32d69f698e2508cd4d1916c6c9f2832b3b03e4c47a44058147172ff
+    verification_status: verified
+    run_id: r_20260926T104132Z_47d710fa_s000_f00_a01_b967dc7c
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097/provenance/artifact_checksums.json
+    sha256: a289bdadecc50625362e306085350e5d806b69f348175f9cc0bf4164c68b7116
+    verification_status: verified
+    run_id: r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097/summary.json
+    sha256: 1b5ecdf3a372e0d092dbbaacd6335134b9f9e5930ca842ca0b78b4872e8fac40
+    verification_status: verified
+    run_id: r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T071603Z_178fc589_s000_f00_a01_254a98de/provenance/artifact_checksums.json
+    sha256: bb4ae3deeb0dbbc0116ffda04a532e2c1c869b4d918530f41ce841189a088297
+    verification_status: verified
+    run_id: r_20261004T071603Z_178fc589_s000_f00_a01_254a98de
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T071603Z_178fc589_s000_f00_a01_254a98de/summary.json
+    sha256: 641c301afddd6a4ffa36ecc152887f2cedb1f41e745bf381f7d8e4cf3bf8371c
+    verification_status: verified
+    run_id: r_20261004T071603Z_178fc589_s000_f00_a01_254a98de
+  - kind: report
+    root: report
+    path: local_gene_residual/v1/manifest.json
+    sha256: 1296acbd337221cecca208410cf7e074ad7ab5a8244d2ab19fbf1b27b258d285
+    verification_status: verified
+  - kind: report
+    root: report
+    path: local_gene_residual/v1/summary.json
+    sha256: cdefe8d319a2739a8732a15004c740382cdf91b3b74dd858b69b36ac23c8a6f1
+    verification_status: verified
+  - kind: report
+    root: report
+    path: local_gene_residual/verification_v1/manifest.json
+    sha256: 37b5fda1cd9d77ba56a1a54ec2e9651aa631477793224d6b52e84531eab1e2fd
+    verification_status: verified
+  - kind: report
+    root: report
+    path: local_gene_residual/verification_v1/summary.json
+    sha256: f3e6c40984a96556167255e87f60211c5e276b0feba46aa34662690371545855
+    verification_status: verified
+  - kind: campaign_record
+    root: project
+    path: experiments/campaigns/cmp_20261004_local_gene_residual/frozen_task_contract.md
+    sha256: 500863ee987c2da541ebacd6fb1dfc51c8f0dd6aa9e8660485eacdff5d78e121
+    verification_status: verified
+files: []

@@ -1,0 +1,220 @@
+[
+  {
+    "model": "SO2 baseline: Gene mean (all fit)",
+    "training_strategy": "Per-gene MSE-optimal mean of the equal-core fitted standardized log1p distribution; no neural training.",
+    "performance": "Equal-core held-in standardized Huber 0.270998; all-entry MSE 0.999797; positive-entry MSE 8.780938; positive recall 0.074431.",
+    "caveats": "Exploratory descriptive reference, same 14 fitted cores/fixed masks as SO2 Huber models. Constants are target-derived fitted references, not held-out estimates.",
+    "sources": [
+      "/workspace/BAGM/reports/analyses/so2_failure_diagnosis/comparison/v1/matched_summary.csv",
+      "/workspace/BAGM/experiments/campaigns/cmp_20260906_so2_failure_diagnosis/README.md"
+    ],
+    "status": "evaluated baseline",
+    "metrics_details": {
+      "predictor": "gene_mean",
+      "label": "Gene mean (all fit)",
+      "all_huber": "0.2709982877811928",
+      "all_mse_z": "0.9997966112941918",
+      "positive_mse_z": "8.780937627322066",
+      "positive_mse_log1p": "0.7565577176573538",
+      "zero_mse_z": "0.10229250350146708",
+      "positive_recall": "0.0744310811100447",
+      "zero_specificity": "0.9907582049206031"
+    }
+  },
+  {
+    "model": "SO2 baseline: Always zero",
+    "training_strategy": "Always predict zero raw count; transform to the common standardized-log scale.",
+    "performance": "Equal-core held-in standardized Huber 0.263637; all-entry MSE 1.110121; positive-entry MSE 10.718155; positive recall 0.000000.",
+    "caveats": "Exploratory descriptive reference, same 14 fitted cores/fixed masks as SO2 Huber models. Constants are target-derived fitted references, not held-out estimates.",
+    "sources": [
+      "/workspace/BAGM/reports/analyses/so2_failure_diagnosis/comparison/v1/matched_summary.csv",
+      "/workspace/BAGM/experiments/campaigns/cmp_20260906_so2_failure_diagnosis/README.md"
+    ],
+    "status": "evaluated baseline",
+    "metrics_details": {
+      "predictor": "zero_count",
+      "label": "Always zero",
+      "all_huber": "0.2636367688491125",
+      "all_mse_z": "1.1101211697878144",
+      "positive_mse_z": "10.7181547365259",
+      "positive_mse_log1p": "1.0738463731522097",
+      "zero_mse_z": "7.330664069126169e-17",
+      "positive_recall": "0.0",
+      "zero_specificity": "1.0"
+    }
+  },
+  {
+    "model": "SO2 baseline: Huber constant (all fit)",
+    "training_strategy": "Fit one Huber-optimal constant per gene on the equal-core fitted cohort distribution; no neural network.",
+    "performance": "Equal-core held-in standardized Huber 0.253725; all-entry MSE 1.038081; positive-entry MSE 9.863362; positive recall 0.067581.",
+    "caveats": "Exploratory descriptive reference, same 14 fitted cores/fixed masks as SO2 Huber models. Constants are target-derived fitted references, not held-out estimates.",
+    "sources": [
+      "/workspace/BAGM/reports/analyses/so2_failure_diagnosis/comparison/v1/matched_summary.csv",
+      "/workspace/BAGM/experiments/campaigns/cmp_20260906_so2_failure_diagnosis/README.md"
+    ],
+    "status": "evaluated baseline",
+    "metrics_details": {
+      "predictor": "huber_constant",
+      "label": "Huber constant (all fit)",
+      "all_huber": "0.25372452768883785",
+      "all_mse_z": "1.0380812099235943",
+      "positive_mse_z": "9.863362330230842",
+      "positive_mse_log1p": "0.868106884119401",
+      "zero_mse_z": "0.019512986147696244",
+      "positive_recall": "0.06758099006698508",
+      "zero_specificity": "0.9921981671397846"
+    }
+  },
+  {
+    "model": "SO2 baseline: Local 16: mean log1p",
+    "training_strategy": "Average observed log1p expression from up to 16 neighbors within 75 micrometers; exclude self and hidden entries.",
+    "performance": "Equal-core held-in standardized Huber 0.315378; all-entry MSE 1.085565; positive-entry MSE 8.531141; positive recall 0.137595.",
+    "caveats": "Exploratory descriptive reference, same 14 fitted cores/fixed masks as SO2 Huber models. Constants are target-derived fitted references, not held-out estimates.",
+    "sources": [
+      "/workspace/BAGM/reports/analyses/so2_failure_diagnosis/comparison/v1/matched_summary.csv",
+      "/workspace/BAGM/experiments/campaigns/cmp_20260906_so2_failure_diagnosis/README.md"
+    ],
+    "status": "evaluated baseline",
+    "metrics_details": {
+      "predictor": "local_log_mean",
+      "label": "Local 16: mean log1p",
+      "all_huber": "0.3153780711382153",
+      "all_mse_z": "1.0855648797069952",
+      "positive_mse_z": "8.531140629468476",
+      "positive_mse_log1p": "0.6869853916654528",
+      "zero_mse_z": "0.2378363505331414",
+      "positive_recall": "0.13759483943055684",
+      "zero_specificity": "0.9764835042116992"
+    }
+  },
+  {
+    "model": "SO2 baseline: Local 16: mean count",
+    "training_strategy": "Average observed raw counts from up to 16 neighbors within 75 micrometers, then transform for evaluation.",
+    "performance": "Equal-core held-in standardized Huber 0.390436; all-entry MSE 1.242584; positive-entry MSE 7.898872; positive recall 0.223806.",
+    "caveats": "Exploratory descriptive reference, same 14 fitted cores/fixed masks as SO2 Huber models. Constants are target-derived fitted references, not held-out estimates.",
+    "sources": [
+      "/workspace/BAGM/reports/analyses/so2_failure_diagnosis/comparison/v1/matched_summary.csv",
+      "/workspace/BAGM/experiments/campaigns/cmp_20260906_so2_failure_diagnosis/README.md"
+    ],
+    "status": "evaluated baseline",
+    "metrics_details": {
+      "predictor": "local_count_mean",
+      "label": "Local 16: mean count",
+      "all_huber": "0.39043600288516334",
+      "all_mse_z": "1.2425838203837134",
+      "positive_mse_z": "7.898871660175472",
+      "positive_mse_log1p": "0.6193993900757356",
+      "zero_mse_z": "0.4886082009071659",
+      "positive_recall": "0.22380624047851067",
+      "zero_specificity": "0.9249942032771673"
+    }
+  },
+  {
+    "model": "SO2 baseline: Full graph: mean log1p",
+    "training_strategy": "Average observed log1p expression across the original radial-stratified k200/r500 graph; exclude hidden entries.",
+    "performance": "Equal-core held-in standardized Huber 0.270516; all-entry MSE 0.982751; positive-entry MSE 8.589392; positive recall 0.106526.",
+    "caveats": "Exploratory descriptive reference, same 14 fitted cores/fixed masks as SO2 Huber models. Constants are target-derived fitted references, not held-out estimates.",
+    "sources": [
+      "/workspace/BAGM/reports/analyses/so2_failure_diagnosis/comparison/v1/matched_summary.csv",
+      "/workspace/BAGM/experiments/campaigns/cmp_20260906_so2_failure_diagnosis/README.md"
+    ],
+    "status": "evaluated baseline",
+    "metrics_details": {
+      "predictor": "full_graph_log_mean",
+      "label": "Full graph: mean log1p",
+      "all_huber": "0.27051553126033256",
+      "all_mse_z": "0.9827505247617828",
+      "positive_mse_z": "8.589392370074684",
+      "positive_mse_log1p": "0.7009908739674252",
+      "zero_mse_z": "0.11732085493438914",
+      "positive_recall": "0.10652567841442333",
+      "zero_specificity": "0.9888791072261279"
+    }
+  },
+  {
+    "model": "SO2 train-fitted gene-prevalence binary baseline",
+    "training_strategy": "One expression-occurrence probability per gene estimated from training cores; evaluate unchanged on target-isolated validation masks.",
+    "performance": "Validation BCE 0.278080; exact AUROC 0.642495; exact AP 0.169597.",
+    "caveats": "One validation donor group, no independent test. Reference used in BCE optimization audit.",
+    "sources": [
+      "/workspace/BAGM/reports/analyses/so2_bce_optimization_audit/confirmation_v1/summary.json"
+    ],
+    "status": "evaluated baseline",
+    "metrics_details": {
+      "binary_cross_entropy_sum": 5202369.203330459,
+      "detection_accuracy": 0.9160003414544216,
+      "detection_auroc_exact": 0.6424947172087516,
+      "detection_average_precision_exact": 0.16959735940313558,
+      "detection_balanced_accuracy": 0.5242843610336672,
+      "detection_brier_score": 0.07461677981536276,
+      "detection_f1": 0.09867894671336877,
+      "detection_false_negative": 1432677,
+      "detection_false_positive": 138806,
+      "detection_mcc": 0.12173232003252746,
+      "detection_precision": 0.382620724010479,
+      "detection_recall": 0.05664376553135506,
+      "detection_specificity": 0.9919249565359793,
+      "detection_threshold": 0.5,
+      "detection_true_negative": 17050699,
+      "detection_true_positive": 86025,
+      "masked_entries": 18708207,
+      "observed_positive_rate": 0.08117838336939505,
+      "pooled_masked_binary_cross_entropy": 0.27807951896889205,
+      "positive_entries": 1518702,
+      "predicted_positive_class_rate": 0.012017773803764306,
+      "predicted_positive_probability_mean": 0.11932219210050499
+    }
+  },
+  {
+    "model": "SO2 train-fitted per-gene hurdle-count constant baseline",
+    "training_strategy": "Training-only per-gene hurdle constants with fixed NB2 dispersion theta=1; BF16 head logits followed by FP32 likelihood.",
+    "performance": "Validation count NLL 0.371358; raw RMSE 1.364136; raw MAE 0.338528.",
+    "caveats": "Fixed theta was not fitted by maximum likelihood. One validation donor group, no independent test.",
+    "sources": [
+      "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5/diagnostics/train_fitted_constant_baseline.json"
+    ],
+    "status": "evaluated baseline",
+    "metrics_details": {
+      "count_nll": 0.37135821134876795,
+      "detection_accuracy": 0.9160003414544216,
+      "detection_auroc": 0.6424838241017882,
+      "detection_auroc_defined": 1,
+      "detection_average_precision": 0.16915303502701956,
+      "detection_average_precision_defined": 1,
+      "detection_bce": 0.27807341994679124,
+      "detection_brier": 0.07461449613707409,
+      "detection_f1": 0.09867894671336877,
+      "detection_histogram_bins": 4096,
+      "detection_precision": 0.382620724010479,
+      "detection_precision_defined": 1,
+      "detection_recall": 0.05664376553135506,
+      "false_negative": 1432677,
+      "false_positive": 138806,
+      "log1p_count_mae": 0.21856177002980307,
+      "log1p_count_rmse": 0.3307036270616692,
+      "masked_entries": 18708207,
+      "mean_nonzero_probability": 0.11931152480006911,
+      "observed_count_mean": 0.15125051802131545,
+      "observed_positive_fraction": 0.08117838336939505,
+      "observed_raw_count_mean": 0.15125051802131545,
+      "positive_conditional_count_nll": 1.1491334029096063,
+      "positive_conditional_raw_count_mae": 1.1402059312915136,
+      "positive_conditional_raw_count_rmse": 4.211177658841316,
+      "positive_entries": 1518702,
+      "positive_marginal_raw_count_mae": 1.5801580319392659,
+      "positive_marginal_raw_count_rmse": 4.395886981354848,
+      "positive_metrics_defined": 1,
+      "predicted_count_mean": 0.2554441987756693,
+      "predicted_positive_fraction": 0.012017773803764306,
+      "predicted_raw_count_mean": 0.2554441987756693,
+      "raw_count_mae": 0.33852803531114145,
+      "raw_count_rmse": 1.3641357221441315,
+      "true_negative": 17050699,
+      "true_positive": 86025,
+      "zero_entries": 17189505,
+      "zero_metrics_defined": 1,
+      "zero_raw_count_mae": 0.2288293581741834,
+      "zero_raw_count_rmse": 0.563919070646505
+    }
+  }
+]

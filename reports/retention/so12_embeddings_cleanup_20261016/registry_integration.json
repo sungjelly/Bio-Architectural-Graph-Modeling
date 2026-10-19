@@ -1,0 +1,72 @@
+{
+  "scope": "Instructions only; no database modification or deletion performed by storage-audit agent.",
+  "source": "src/spatial_benchmark/artifact_retention.py:_sqlite_backup,_assert_registry_plan_current,_mark_pending,_mark_deleted,verify_retention_result",
+  "before_application": [
+    "Create consistent SQLite backup via sqlite3.Connection.backup(), verify PRAGMA integrity_check equals ok. Do not copy WAL database file alone.",
+    "Recheck every candidate hash/size and real path, all owners terminal, protected-path exclusions, and exact artifact row identity/status against audit. Never touch current run/model/analysis.",
+    "Sort registered candidates by artifact_id when using _assert_registry_plan_current and verify_retention_result.",
+    "Preserve all original artifact rows, checksum/size/path, checkpoint roles and retention metadata, runs/statuses, metrics, configs and completion markers."
+  ],
+  "existing_tombstone_schema": {
+    "artifacts.status": [
+      "present",
+      "retention_deletion_pending",
+      "deleted_by_retention"
+    ],
+    "checkpoint_catalog.verification_status": [
+      "verified",
+      "retention_deletion_pending",
+      "deleted_by_retention"
+    ],
+    "separate_tombstone_table": false
+  },
+  "pending_transaction": {
+    "begin": "BEGIN IMMEDIATE",
+    "per_artifact": "UPDATE artifacts SET status = ? WHERE artifact_id = ? AND status = ?",
+    "per_artifact_parameters": [
+      "retention_deletion_pending",
+      "artifact_id",
+      "present"
+    ],
+    "require_per_artifact_rowcount": 1,
+    "per_checkpoint_or_optional_catalog_row": "UPDATE checkpoint_catalog SET verification_status = ?, updated_at = ? WHERE artifact_id = ?",
+    "catalog_parameters": [
+      "retention_deletion_pending",
+      "UTC ISO timestamp",
+      "artifact_id"
+    ],
+    "finish": "COMMIT"
+  },
+  "file_operation": "Unlink only audit file paths after rechecking all identities. Do not recursively delete broad directories or follow symlinks. Record each completed deletion. Retain enough inventory to recover interrupted pending state.",
+  "deleted_transaction": {
+    "precondition": "Every corresponding exact payload path absent and not symlink.",
+    "begin": "BEGIN IMMEDIATE",
+    "per_artifact": "UPDATE artifacts SET status = ? WHERE artifact_id = ? AND status = ?",
+    "per_artifact_parameters": [
+      "deleted_by_retention",
+      "artifact_id",
+      "retention_deletion_pending"
+    ],
+    "require_per_artifact_rowcount": 1,
+    "per_checkpoint_or_optional_catalog_row": "UPDATE checkpoint_catalog SET verification_status = ?, updated_at = ? WHERE artifact_id = ?",
+    "catalog_parameters": [
+      "deleted_by_retention",
+      "UTC ISO timestamp",
+      "artifact_id"
+    ],
+    "finish": "COMMIT"
+  },
+  "after_application": [
+    "Recheck every intended deletion absent, all 32 registered artifact statuses deleted_by_retention, and all 30 checkpoint catalog statuses deleted_by_retention. No pending statuses should remain.",
+    "Record audit hash, registry backup path, exact deleted counts/bytes and before/after disk availability in application_receipt.json with sha256.",
+    "Confirm current training still running and protected reports/current best/latest checkpoints still present."
+  ],
+  "helper_limitations": [
+    "Top-level compact_registered_artifacts/retire_registered_run_bundles call assert_no_live_experiments globally and will refuse while current training is running. Do not stop training to satisfy this. A scoped application must independently establish no selected path belongs to active writer.",
+    "verify_candidates assumes each selected file lies inside artifacts/runs/<run_id>. The two registered report files are outside run roots, so use exact audit identity checks for them instead. Scoped _mark_pending/_mark_deleted themselves operate by exact artifact IDs."
+  ],
+  "registered_report_files_outside_bundle": {
+    "631": "manifest.json under so2_14core_geometry_modulated_hl",
+    "632": "contextual_leiden_resolution_1p0_spatial_14cores.png under same report"
+  }
+}

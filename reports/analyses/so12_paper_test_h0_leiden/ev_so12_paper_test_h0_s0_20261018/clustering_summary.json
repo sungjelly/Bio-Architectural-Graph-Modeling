@@ -1,0 +1,52 @@
+{
+  "cells_per_core": {
+    "15": 38145,
+    "23": 43462
+  },
+  "manifest_path": "clustering/clustering_manifest.json",
+  "manifest_sha256": "a331608fc30cb8b2746d6122f57631aabcc55019cd5758d38ffb8f100cda2755",
+  "metrics": {
+    "cluster_count_by_seed": {
+      "0": 14,
+      "1": 14
+    },
+    "clusters_over_90_percent_one_core": [
+      1,
+      6,
+      8,
+      9
+    ],
+    "cross_core_undirected_edge_fraction": 0.14980219520078666,
+    "interpretation": "h0 is the trained node encoder output before graph message passing. The h0 partition is independent of hL: matching cluster IDs or colors do not indicate matching cell groups across representations. Exploratory transductive grouping of the two test cores under a frozen model. Clusters are not validated cell types, cancer regions, independent donor replication, or causal interactions. Training permits donor overlap and historical sample exposure. Seed 0 is displayed; seed 1 only measures stability.",
+    "seed0_cluster_vs_core_ari_descriptive": 0.06880232603894448,
+    "seed0_seed1_ari": 0.7317281068677163,
+    "seed0_seed1_ari_per_core": {
+      "15": 0.7386996527683357,
+      "23": 0.7354201309277071
+    }
+  },
+  "n_cells": 81607,
+  "output_sha256": {
+    "clustering/cluster_sizes.csv": "d0bd4f75de416943eb5a936df5a27ea78e4c43d575cf17de5f3a52e71ef42e8c",
+    "clustering/clusters.csv.gz": "37282731d0e7cb4255ab1ff36e13d3f4f659fa835e144d2930f2851db74e752a",
+    "clustering/core_composition.csv": "a8c29f673af2f67224bc014e410d5138f486ad0dafba657326b3765ec333725a",
+    "clustering/cpu_neighbor_audit.json": "41cbd26e96847435d81c1b5484619e155701c13500469db87e41e1f2bb34cb57",
+    "clustering/h0_knn_cosine_distances.npy": "86bae0962603d23c466db07b609432848c9afe18e9bbe53c468974359556a4eb",
+    "clustering/h0_knn_indices.npy": "c21598efcf73d14edbcdc5877ac8edd6c42f830a70f259442cc563693ce8c6e6",
+    "clustering/h0_labels_seed0.npy": "d3b1581922febc8e3a380a7c7422e97bbfd875c232f85ce878c4ebae9a0fcfea",
+    "clustering/h0_labels_seed1.npy": "0c6440ce8b1f42b37c068163ed9fa074e8e9b8f454b7a1419c8d680c6a2eaaca",
+    "clustering/h0_undirected_edges.npy": "cb4591735de2ad0ad835e0b32924ea3894d667da70b561ef60ba500fcfc328b5",
+    "clustering/input_binding.json": "30a03dcd8cb6df27bb84f47dae9ae0c1eb0d5e4ddcda846303d50779dd1ff4eb",
+    "clustering/metrics.json": "118d0d5d169e2dfe5b05b6b902787cb6b603fd3642f66ad06004c949847611d6",
+    "clustering/neighbor_pilot.json": "25452e257c9fd729e99db632f67344d6761ec8bb36f176e01e01c5e17668d61f"
+  },
+  "passed": true,
+  "representation": "trained_node_encoder_output_before_graph_blocks",
+  "representation_name": "h0",
+  "schema": "so12_paper_test_h0_leiden_v1",
+  "status": "complete",
+  "test_core_numbers": [
+    15,
+    23
+  ]
+}

@@ -1,0 +1,1171 @@
+{
+  "schema": "so2_historical_e300_pearson_v1",
+  "source_run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+  "status": "completed",
+  "verified": true,
+  "checkpoint_sha256": "1fbc2c92a1c35180f7ef644a269740f98a214be1896013667fe67279582570bd",
+  "epoch": 300,
+  "seed": 0,
+  "split": "fitted_cohort_all14",
+  "mask_protocol": "original_simultaneous_uniform_per_cell",
+  "target_scales": [
+    "gene_standardized_log1p_counts",
+    "log1p_raw_counts"
+  ],
+  "log_predictions_clipped": false,
+  "normalization_fit_scope": "all14_fitted_cores",
+  "per_core": [
+    {
+      "core": "SO2-C15",
+      "n_cells": 38145,
+      "mask_seed": 8265482739995307972,
+      "mask_checksum": "e23435d27312cc1ecd925e87972b5fc90122aeeb7d3b314a7d9bccdde1d00fba",
+      "masked_entries": 19016155,
+      "metrics": {
+        "standardized": {
+          "n_masked": 19016155,
+          "masked_huber": 0.31163213587605915,
+          "masked_mse": 1.1877236995742468,
+          "masked_mae": 0.4854053750572686,
+          "pooled_pearson": 0.3430815577252975,
+          "masked_r2": 0.0874482601887544,
+          "gene_pearson_mean": 0.25434421070360225,
+          "gene_pearson_median": 0.21491877059338327,
+          "cell_pearson_mean": 0.2566938427411923,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 38078,
+          "masked_rmse": 1.0898273714557947,
+          "n_cells": 38145,
+          "n_undefined_cells": 67,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 19016155,
+          "masked_huber": 0.048975400071594045,
+          "masked_mse": 0.10040609402591119,
+          "masked_mae": 0.14696583967467539,
+          "pooled_pearson": 0.6529513621900614,
+          "masked_r2": 0.4059270551398708,
+          "gene_pearson_mean": 0.25434421070465035,
+          "gene_pearson_median": 0.21491877041984567,
+          "cell_pearson_mean": 0.5649842118280461,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 37733,
+          "masked_rmse": 0.3168692064967992,
+          "n_cells": 38145,
+          "n_undefined_cells": 412,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.3116321563720703,
+        "masked_mae": 0.4854053556919098,
+        "masked_mse": 1.1877236366271973,
+        "masked_r2": 0.08744817972183228,
+        "mean_y_true": 0.12558220326900482,
+        "mean_y_pred": -0.0626140832901001
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 8.235927033005282,
+      "duration_seconds": 50.23488023900427
+    },
+    {
+      "core": "SO2-C16",
+      "n_cells": 16229,
+      "mask_seed": 7517611926002701093,
+      "mask_checksum": "7a4a7cac86e7da2ba58b6396cd6b5afdfc1c5d4e2cf28a529d3b22a06ecfcfbf",
+      "masked_entries": 8080897,
+      "metrics": {
+        "standardized": {
+          "n_masked": 8080897,
+          "masked_huber": 0.29352716095909215,
+          "masked_mse": 1.1260463365421183,
+          "masked_mae": 0.4590618083876195,
+          "pooled_pearson": 0.2950521899353264,
+          "masked_r2": 0.05240651352049708,
+          "gene_pearson_mean": 0.24351112547755507,
+          "gene_pearson_median": 0.2153468687302817,
+          "cell_pearson_mean": 0.22934973344265502,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 16200,
+          "masked_rmse": 1.0611533049197548,
+          "n_cells": 16229,
+          "n_undefined_cells": 29,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 8080897,
+          "masked_huber": 0.0445784897234984,
+          "masked_mse": 0.09133520741548655,
+          "masked_mae": 0.13645726989057336,
+          "pooled_pearson": 0.577046034097437,
+          "masked_r2": 0.3103178417093918,
+          "gene_pearson_mean": 0.24351112547082807,
+          "gene_pearson_median": 0.2153468677555519,
+          "cell_pearson_mean": 0.49992395710186904,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 16026,
+          "masked_rmse": 0.30221715274862637,
+          "n_cells": 16229,
+          "n_undefined_cells": 203,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.29352715611457825,
+        "masked_mae": 0.45906177163124084,
+        "masked_mse": 1.1260464191436768,
+        "masked_r2": 0.05240654945373535,
+        "mean_y_true": 0.08149025589227676,
+        "mean_y_pred": -0.12139306217432022
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 3.280015351017937,
+      "duration_seconds": 20.8042117850855
+    },
+    {
+      "core": "SO2-C17",
+      "n_cells": 9041,
+      "mask_seed": 2605985374172134709,
+      "mask_checksum": "2812e07662d01093c77a869cd7085cf3917a38457d7dfceb1be6ad6523b18090",
+      "masked_entries": 4546796,
+      "metrics": {
+        "standardized": {
+          "n_masked": 4546796,
+          "masked_huber": 0.23138440946293456,
+          "masked_mse": 0.9233843387446805,
+          "masked_mae": 0.36179266502823215,
+          "pooled_pearson": 0.24299674030855392,
+          "masked_r2": 0.029011652388497677,
+          "gene_pearson_mean": 0.23336855588471286,
+          "gene_pearson_median": 0.2201537091553248,
+          "cell_pearson_mean": 0.14782017116591226,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 9018,
+          "masked_rmse": 0.9609288936985299,
+          "n_cells": 9041,
+          "n_undefined_cells": 23,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 4546796,
+          "masked_huber": 0.03575162116056719,
+          "masked_mse": 0.07340335816613872,
+          "masked_mae": 0.1072285626708886,
+          "pooled_pearson": 0.4410009973117714,
+          "masked_r2": 0.17138805182457328,
+          "gene_pearson_mean": 0.2333685558451526,
+          "gene_pearson_median": 0.22015370910588938,
+          "cell_pearson_mean": 0.336579118986415,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 8868,
+          "masked_rmse": 0.270930541220695,
+          "n_cells": 9041,
+          "n_undefined_cells": 173,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.23138441145420074,
+        "masked_mae": 0.361792653799057,
+        "masked_mse": 0.9233842492103577,
+        "masked_r2": 0.029011666774749756,
+        "mean_y_true": -0.018780676648020744,
+        "mean_y_pred": -0.18756909668445587
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 1.9135376890189946,
+      "duration_seconds": 12.309194617904723
+    },
+    {
+      "core": "SO2-C18",
+      "n_cells": 11696,
+      "mask_seed": 4181812364218124178,
+      "mask_checksum": "d7f599b523e805713cb5a0be65cbdab571817b20ef3d8ea9d46af06a91f42e5f",
+      "masked_entries": 5838825,
+      "metrics": {
+        "standardized": {
+          "n_masked": 5838825,
+          "masked_huber": 0.22528664570261128,
+          "masked_mse": 0.9004369897669079,
+          "masked_mae": 0.3516985670637167,
+          "pooled_pearson": 0.24981137240691428,
+          "masked_r2": 0.03285508898090905,
+          "gene_pearson_mean": 0.23978862413612206,
+          "gene_pearson_median": 0.2259089261645361,
+          "cell_pearson_mean": 0.15725568464768003,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 11667,
+          "masked_rmse": 0.9489135839300162,
+          "n_cells": 11696,
+          "n_undefined_cells": 29,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 5838825,
+          "masked_huber": 0.034465973572612066,
+          "masked_mse": 0.07100208011363503,
+          "masked_mae": 0.10332791447045721,
+          "pooled_pearson": 0.41803817970789536,
+          "masked_r2": 0.1512994647715158,
+          "gene_pearson_mean": 0.23978862419331998,
+          "gene_pearson_median": 0.22590892694882736,
+          "cell_pearson_mean": 0.29488939570844547,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 11450,
+          "masked_rmse": 0.26646215512457866,
+          "n_cells": 11696,
+          "n_undefined_cells": 246,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.22528663277626038,
+        "masked_mae": 0.35169854760169983,
+        "masked_mse": 0.9004369378089905,
+        "masked_r2": 0.032855093479156494,
+        "mean_y_true": -0.028196848928928375,
+        "mean_y_pred": -0.19319911301136017
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 2.4530009920708835,
+      "duration_seconds": 16.266027233097702
+    },
+    {
+      "core": "SO2-C19",
+      "n_cells": 19119,
+      "mask_seed": 4214739733307397462,
+      "mask_checksum": "0883216b70b8c2a8563e6dedba9bfcd6d0af0cb1cf5f881ccf1cb2bab94a59ba",
+      "masked_entries": 9489619,
+      "metrics": {
+        "standardized": {
+          "n_masked": 9489619,
+          "masked_huber": 0.22674098145500543,
+          "masked_mse": 0.9051959511022207,
+          "masked_mae": 0.3542441168797391,
+          "pooled_pearson": 0.27353695578677434,
+          "masked_r2": 0.047959131054646775,
+          "gene_pearson_mean": 0.24845727766203937,
+          "gene_pearson_median": 0.223117822282078,
+          "cell_pearson_mean": 0.1851164629600006,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 19073,
+          "masked_rmse": 0.9514178635606022,
+          "n_cells": 19119,
+          "n_undefined_cells": 46,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 9489619,
+          "masked_huber": 0.035966382157743636,
+          "masked_mse": 0.07377108075417417,
+          "masked_mae": 0.10646821660398936,
+          "pooled_pearson": 0.5442111153302229,
+          "masked_r2": 0.2773758490090207,
+          "gene_pearson_mean": 0.2484572776787952,
+          "gene_pearson_median": 0.22311782312389195,
+          "cell_pearson_mean": 0.42531431259993296,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 18762,
+          "masked_rmse": 0.2716083223212687,
+          "n_cells": 19119,
+          "n_undefined_cells": 357,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.2267409712076187,
+        "masked_mae": 0.3542441129684448,
+        "masked_mse": 0.905195951461792,
+        "masked_r2": 0.047959089279174805,
+        "mean_y_true": -0.016746601089835167,
+        "mean_y_pred": -0.17646284401416779
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 4.048639897024259,
+      "duration_seconds": 25.24133900506422
+    },
+    {
+      "core": "SO2-C20",
+      "n_cells": 12155,
+      "mask_seed": 445111010811834950,
+      "mask_checksum": "8c6634343611f038cc9eaa3f557207c4e60c4e9df527f61728e0bca36e2b8e16",
+      "masked_entries": 6073238,
+      "metrics": {
+        "standardized": {
+          "n_masked": 6073238,
+          "masked_huber": 0.23993190316668764,
+          "masked_mse": 0.940694902472706,
+          "masked_mae": 0.3773388402155341,
+          "pooled_pearson": 0.242335032141213,
+          "masked_r2": 0.02776375981785939,
+          "gene_pearson_mean": 0.22387989157070398,
+          "gene_pearson_median": 0.1966178712406115,
+          "cell_pearson_mean": 0.18456245521732265,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 12128,
+          "masked_rmse": 0.9698942738632423,
+          "n_cells": 12155,
+          "n_undefined_cells": 27,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 6073238,
+          "masked_huber": 0.03723343746370194,
+          "masked_mse": 0.07628355613162269,
+          "masked_mae": 0.11297170046365625,
+          "pooled_pearson": 0.5262374660728742,
+          "masked_r2": 0.2558467236420915,
+          "gene_pearson_mean": 0.2238798915461133,
+          "gene_pearson_median": 0.19661787136711686,
+          "cell_pearson_mean": 0.4118834573115048,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 11966,
+          "masked_rmse": 0.27619477933448106,
+          "n_cells": 12155,
+          "n_undefined_cells": 189,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.2399318963289261,
+        "masked_mae": 0.37733885645866394,
+        "masked_mse": 0.9406949281692505,
+        "masked_r2": 0.027763843536376953,
+        "mean_y_true": -0.001173501368612051,
+        "mean_y_pred": -0.17335402965545654
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 2.3526144090574235,
+      "duration_seconds": 15.911867956863716
+    },
+    {
+      "core": "SO2-C21",
+      "n_cells": 4897,
+      "mask_seed": 7239903343639837266,
+      "mask_checksum": "e8c84a63fcfab612d264b132d05adf7b6fcc04fce055bdbfbec66a22a175d652",
+      "masked_entries": 2457799,
+      "metrics": {
+        "standardized": {
+          "n_masked": 2457799,
+          "masked_huber": 0.2194663349437592,
+          "masked_mse": 0.8943856354183051,
+          "masked_mae": 0.34089068530856725,
+          "pooled_pearson": 0.26127488928340853,
+          "masked_r2": 0.042399527317574126,
+          "gene_pearson_mean": 0.2401222193210381,
+          "gene_pearson_median": 0.21514982603587712,
+          "cell_pearson_mean": 0.20536056108644526,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 4887,
+          "masked_rmse": 0.9457196389090717,
+          "n_cells": 4897,
+          "n_undefined_cells": 10,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 2457799,
+          "masked_huber": 0.03567264262630924,
+          "masked_mse": 0.07322276961169885,
+          "masked_mae": 0.10338229212913126,
+          "pooled_pearson": 0.5435812189610442,
+          "masked_r2": 0.27753270047497725,
+          "gene_pearson_mean": 0.24012221932885194,
+          "gene_pearson_median": 0.2151498256083908,
+          "cell_pearson_mean": 0.43044726107152514,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 4821,
+          "masked_rmse": 0.2705970613508189,
+          "n_cells": 4897,
+          "n_undefined_cells": 76,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.21946632862091064,
+        "masked_mae": 0.34089064598083496,
+        "masked_mse": 0.894385576248169,
+        "masked_r2": 0.04239952564239502,
+        "mean_y_true": -0.0268313679844141,
+        "mean_y_pred": -0.18196462094783783
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 1.1175427150446922,
+      "duration_seconds": 6.648144509876147
+    },
+    {
+      "core": "SO2-C22",
+      "n_cells": 11443,
+      "mask_seed": 3493053915119516864,
+      "mask_checksum": "5e9e7fed155f566a04895846c88c87642bc8078efcaa1418a4069796775dbac0",
+      "masked_entries": 5757380,
+      "metrics": {
+        "standardized": {
+          "n_masked": 5757380,
+          "masked_huber": 0.24452798584027785,
+          "masked_mse": 1.0328679219598897,
+          "masked_mae": 0.3735272159367375,
+          "pooled_pearson": 0.2171656422564015,
+          "masked_r2": 0.010514027405276405,
+          "gene_pearson_mean": 0.22438388607657436,
+          "gene_pearson_median": 0.21086706598099636,
+          "cell_pearson_mean": 0.14419431847597494,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 11422,
+          "masked_rmse": 1.0163010980806277,
+          "n_cells": 11443,
+          "n_undefined_cells": 21,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 5757380,
+          "masked_huber": 0.03865257962401671,
+          "masked_mse": 0.07955769268043211,
+          "masked_mae": 0.10940012288339765,
+          "pooled_pearson": 0.37933318494735135,
+          "masked_r2": 0.11708200669440694,
+          "gene_pearson_mean": 0.2243838860966613,
+          "gene_pearson_median": 0.2108670661386068,
+          "cell_pearson_mean": 0.26045967024413463,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 11209,
+          "masked_rmse": 0.2820597324689083,
+          "n_cells": 11443,
+          "n_undefined_cells": 234,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.24452796578407288,
+        "masked_mae": 0.3735271990299225,
+        "masked_mse": 1.0328679084777832,
+        "masked_r2": 0.01051408052444458,
+        "mean_y_true": -0.009972897358238697,
+        "mean_y_pred": -0.1946326196193695
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 2.256198109127581,
+      "duration_seconds": 14.368863150011748
+    },
+    {
+      "core": "SO2-C23",
+      "n_cells": 43462,
+      "mask_seed": 446152683737251927,
+      "mask_checksum": "2042b112355df8879e87636904c6067483b55a8be5f8cbd7ea87e921fe9db390",
+      "masked_entries": 21805498,
+      "metrics": {
+        "standardized": {
+          "n_masked": 21805498,
+          "masked_huber": 0.3264315823773895,
+          "masked_mse": 1.239038951103026,
+          "masked_mae": 0.513045937223416,
+          "pooled_pearson": 0.2971354195468518,
+          "masked_r2": 0.05570060355033668,
+          "gene_pearson_mean": 0.2660267252969795,
+          "gene_pearson_median": 0.2385832721561557,
+          "cell_pearson_mean": 0.20154692088274026,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 43377,
+          "masked_rmse": 1.1131212652281088,
+          "n_cells": 43462,
+          "n_undefined_cells": 85,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 21805498,
+          "masked_huber": 0.04887662901884395,
+          "masked_mse": 0.09972623189294398,
+          "masked_mae": 0.15171490543545196,
+          "pooled_pearson": 0.5964452789693413,
+          "masked_r2": 0.33384456495624704,
+          "gene_pearson_mean": 0.26602672530720495,
+          "gene_pearson_median": 0.23858327142379018,
+          "cell_pearson_mean": 0.4968202993638161,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 42955,
+          "masked_rmse": 0.31579460396426023,
+          "n_cells": 43462,
+          "n_undefined_cells": 507,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.3264315724372864,
+        "masked_mae": 0.5130459666252136,
+        "masked_mse": 1.2390389442443848,
+        "masked_r2": 0.055700600147247314,
+        "mean_y_true": 0.13217182457447052,
+        "mean_y_pred": -0.07374294102191925
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 8.11899094004184,
+      "duration_seconds": 51.79976218799129
+    },
+    {
+      "core": "SO2-C24",
+      "n_cells": 14506,
+      "mask_seed": 6850554398271923663,
+      "mask_checksum": "37c2644ef8cc282428bca85aacc7160f8fce9d8aff221877a54ef6134ce33ced",
+      "masked_entries": 7216971,
+      "metrics": {
+        "standardized": {
+          "n_masked": 7216971,
+          "masked_huber": 0.2595339357576977,
+          "masked_mse": 1.0098542497218668,
+          "masked_mae": 0.40744243912746736,
+          "pooled_pearson": 0.24396092537213743,
+          "masked_r2": 0.02400100339769007,
+          "gene_pearson_mean": 0.23371475141436823,
+          "gene_pearson_median": 0.22319291407639885,
+          "cell_pearson_mean": 0.15365695231512902,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 14471,
+          "masked_rmse": 1.0049150460222331,
+          "n_cells": 14506,
+          "n_undefined_cells": 35,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 7216971,
+          "masked_huber": 0.03874478589851703,
+          "masked_mse": 0.07928694087009079,
+          "masked_mae": 0.11944849320560522,
+          "pooled_pearson": 0.4449811440860726,
+          "masked_r2": 0.17300773411500414,
+          "gene_pearson_mean": 0.23371475140519438,
+          "gene_pearson_median": 0.2231929141255769,
+          "cell_pearson_mean": 0.3409733881656016,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 14222,
+          "masked_rmse": 0.2815793686868603,
+          "n_cells": 14506,
+          "n_undefined_cells": 284,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.25953394174575806,
+        "masked_mae": 0.4074424207210541,
+        "masked_mse": 1.0098543167114258,
+        "masked_r2": 0.024000942707061768,
+        "mean_y_true": 0.018452469259500504,
+        "mean_y_pred": -0.16656345129013062
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 2.7540756191592664,
+      "duration_seconds": 16.97507584001869
+    },
+    {
+      "core": "SO2-C25",
+      "n_cells": 13147,
+      "mask_seed": 1962717799303215009,
+      "mask_checksum": "0c9be276ef3e69419cc877dd9bc15aec5b94bbfa94b5b1b1e1a90f9a18f4d8d5",
+      "masked_entries": 6516487,
+      "metrics": {
+        "standardized": {
+          "n_masked": 6516487,
+          "masked_huber": 0.17669927172610742,
+          "masked_mse": 0.7105962923487592,
+          "masked_mae": 0.27263311554805997,
+          "pooled_pearson": 0.38352095686281934,
+          "masked_r2": 0.1283878958204483,
+          "gene_pearson_mean": 0.3551410478909056,
+          "gene_pearson_median": 0.33888904932304953,
+          "cell_pearson_mean": 0.20658094188925036,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 13121,
+          "masked_rmse": 0.8429687374682167,
+          "n_cells": 13147,
+          "n_undefined_cells": 26,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 6516487,
+          "masked_huber": 0.028885313666358502,
+          "masked_mse": 0.05910678983545307,
+          "masked_mae": 0.08344410243762554,
+          "pooled_pearson": 0.5322507402730184,
+          "masked_r2": 0.26903258789192963,
+          "gene_pearson_mean": 0.35514104802243707,
+          "gene_pearson_median": 0.33888904941989306,
+          "cell_pearson_mean": 0.38755621864426515,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 12751,
+          "masked_rmse": 0.24311888004729923,
+          "n_cells": 13147,
+          "n_undefined_cells": 396,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.17669926583766937,
+        "masked_mae": 0.2726331055164337,
+        "masked_mse": 0.7105962634086609,
+        "masked_r2": 0.12838786840438843,
+        "mean_y_true": -0.07869966328144073,
+        "mean_y_pred": -0.19868196547031403
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 2.9859857440460473,
+      "duration_seconds": 15.891730943927541
+    },
+    {
+      "core": "SO2-C26",
+      "n_cells": 14856,
+      "mask_seed": 7242451793595856234,
+      "mask_checksum": "16443526d80ad27f89da73c43667227151bd1e3d40bb44fd2f49cada8fa53035",
+      "masked_entries": 7404075,
+      "metrics": {
+        "standardized": {
+          "n_masked": 7404075,
+          "masked_huber": 0.212122957283278,
+          "masked_mse": 0.8434337437212737,
+          "masked_mae": 0.3314737489930889,
+          "pooled_pearson": 0.25527212571819563,
+          "masked_r2": 0.03731440901942318,
+          "gene_pearson_mean": 0.24257112184164573,
+          "gene_pearson_median": 0.23128804057307334,
+          "cell_pearson_mean": 0.18374686117363648,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 14824,
+          "masked_rmse": 0.9183864892959138,
+          "n_cells": 14856,
+          "n_undefined_cells": 32,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 7404075,
+          "masked_huber": 0.03334118845836564,
+          "masked_mse": 0.06809022536292024,
+          "masked_mae": 0.0993212549533113,
+          "pooled_pearson": 0.47266379888070154,
+          "masked_r2": 0.20361801422112713,
+          "gene_pearson_mean": 0.24257112190188765,
+          "gene_pearson_median": 0.23128803846465404,
+          "cell_pearson_mean": 0.38278244466662315,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 14481,
+          "masked_rmse": 0.2609410380965789,
+          "n_cells": 14856,
+          "n_undefined_cells": 375,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.21212294697761536,
+        "masked_mae": 0.3314737379550934,
+        "masked_mse": 0.8434337973594666,
+        "masked_r2": 0.03731435537338257,
+        "mean_y_true": -0.0424865260720253,
+        "mean_y_pred": -0.19534799456596375
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 3.100828557042405,
+      "duration_seconds": 17.95717419194989
+    },
+    {
+      "core": "SO2-C27",
+      "n_cells": 24245,
+      "mask_seed": 5842673416056854563,
+      "mask_checksum": "64c5ae36a9893bcd35948bf744a6b15977eca058363e5a0dd14a233fd29743c5",
+      "masked_entries": 12115867,
+      "metrics": {
+        "standardized": {
+          "n_masked": 12115867,
+          "masked_huber": 0.19493758193175498,
+          "masked_mse": 0.7873053335981126,
+          "masked_mae": 0.3046864058768641,
+          "pooled_pearson": 0.2246007621080398,
+          "masked_r2": 0.02308286037140095,
+          "gene_pearson_mean": 0.21260405203041238,
+          "gene_pearson_median": 0.19065232326911705,
+          "cell_pearson_mean": 0.1722094611846038,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 24194,
+          "masked_rmse": 0.8873022785940047,
+          "n_cells": 24245,
+          "n_undefined_cells": 51,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 12115867,
+          "masked_huber": 0.03086411058509828,
+          "masked_mse": 0.06317962059273124,
+          "masked_mae": 0.09103448681308444,
+          "pooled_pearson": 0.44910397927005147,
+          "masked_r2": 0.18220247324897954,
+          "gene_pearson_mean": 0.21260405207731395,
+          "gene_pearson_median": 0.190652324096947,
+          "cell_pearson_mean": 0.3215318668058341,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 23551,
+          "masked_rmse": 0.2513555660667399,
+          "n_cells": 24245,
+          "n_undefined_cells": 694,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.1949375718832016,
+        "masked_mae": 0.30468639731407166,
+        "masked_mse": 0.7873053550720215,
+        "masked_r2": 0.02308279275894165,
+        "mean_y_true": -0.06713967770338058,
+        "mean_y_pred": -0.2118709683418274
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 4.953564530937001,
+      "duration_seconds": 29.435387927107513
+    },
+    {
+      "core": "SO2-C28",
+      "n_cells": 13122,
+      "mask_seed": 6789154356155973710,
+      "mask_checksum": "26823abfb41bd523d87a0dfeef23ed51fd94c6b9eedebe0c1e332e457ba5b88c",
+      "masked_entries": 6583647,
+      "metrics": {
+        "standardized": {
+          "n_masked": 6583647,
+          "masked_huber": 0.19024414546820095,
+          "masked_mse": 0.7629002233911514,
+          "masked_mae": 0.2952443241869579,
+          "pooled_pearson": 0.3140558005415271,
+          "masked_r2": 0.07540711189940641,
+          "gene_pearson_mean": 0.28863483120587974,
+          "gene_pearson_median": 0.27491774846801603,
+          "cell_pearson_mean": 0.18707505897223706,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 13096,
+          "masked_rmse": 0.8734415970121594,
+          "n_cells": 13122,
+          "n_undefined_cells": 26,
+          "n_undefined_genes": 0
+        },
+        "log1p": {
+          "n_masked": 6583647,
+          "masked_huber": 0.0298524899384765,
+          "masked_mse": 0.0612483984421429,
+          "masked_mae": 0.08806259587867891,
+          "pooled_pearson": 0.4526249734490846,
+          "masked_r2": 0.1861086485981558,
+          "gene_pearson_mean": 0.28863483132220713,
+          "gene_pearson_median": 0.2749177480105684,
+          "cell_pearson_mean": 0.318929125215422,
+          "n_valid_genes": 1000,
+          "n_valid_cells": 12774,
+          "masked_rmse": 0.2474841377586509,
+          "n_cells": 13122,
+          "n_undefined_cells": 348,
+          "n_undefined_genes": 0
+        }
+      },
+      "native_metric_replay": {
+        "masked_huber": 0.1902441382408142,
+        "masked_mae": 0.29524433612823486,
+        "masked_mse": 0.7629002928733826,
+        "masked_r2": 0.07540708780288696,
+        "mean_y_true": -0.06997702270746231,
+        "mean_y_pred": -0.20748314261436462
+      },
+      "native_absolute_differences": {
+        "masked_huber": 0.0,
+        "masked_mae": 0.0,
+        "masked_mse": 0.0,
+        "masked_r2": 0.0,
+        "mean_y_true": 0.0,
+        "mean_y_pred": 0.0
+      },
+      "prior_float64_absolute_differences": {
+        "standardized": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        },
+        "log1p": {
+          "masked_mae": 0.0,
+          "masked_mse": 0.0
+        }
+      },
+      "inference_seconds": 2.6696901391260326,
+      "duration_seconds": 15.931206774897873
+    }
+  ],
+  "global": {
+    "standardized": {
+      "n_masked": 122903254,
+      "masked_huber": 0.25669777238755537,
+      "masked_mse": 1.003489618723795,
+      "masked_mae": 0.40091925896256564,
+      "pooled_pearson": 0.2970178281222927,
+      "masked_r2": 0.059866851593786796,
+      "gene_pearson_mean": 0.27132726058241036,
+      "gene_pearson_median": 0.231633815675101,
+      "cell_pearson_mean": 0.1958581168998234,
+      "n_valid_genes": 1000,
+      "n_valid_cells": 245556,
+      "masked_rmse": 1.001743289832178,
+      "n_cells": 246063,
+      "n_undefined_cells": 507,
+      "n_undefined_genes": 0
+    },
+    "log1p": {
+      "n_masked": 122903254,
+      "masked_huber": 0.03973838676631427,
+      "masked_mse": 0.08138030753151461,
+      "masked_mae": 0.11961306359547799,
+      "pooled_pearson": 0.5611582724775751,
+      "masked_r2": 0.2948888314869159,
+      "gene_pearson_mean": 0.27132726061833345,
+      "gene_pearson_median": 0.23163381714422537,
+      "cell_pearson_mean": 0.42189213075145165,
+      "n_valid_genes": 1000,
+      "n_valid_cells": 241569,
+      "masked_rmse": 0.285272339233082,
+      "n_cells": 246063,
+      "n_undefined_cells": 4494,
+      "n_undefined_genes": 0
+    }
+  },
+  "equal_core": {
+    "standardized": {
+      "masked_mae": 0.37346323177380486,
+      "masked_mse": 0.9474188978189474,
+      "masked_rmse": 0.9703065315741627,
+      "masked_huber": 0.23946193085363257,
+      "masked_r2": 0.048160846052337176,
+      "pooled_pearson": 0.2745571692852472,
+      "cell_pearson_mean": 0.18679781615391283,
+      "gene_pearson_mean": 0.2504677371794671,
+      "gene_pearson_median": 0.22997172914634995
+    },
+    "log1p": {
+      "masked_mae": 0.11137341125075188,
+      "masked_mse": 0.07640143184967009,
+      "masked_rmse": 0.2755151818347547,
+      "masked_huber": 0.037275788854693084,
+      "masked_r2": 0.23675597973552076,
+      "pooled_pearson": 0.5021763909676377,
+      "cell_pearson_mean": 0.3909339091223883,
+      "gene_pearson_mean": 0.250467737207187,
+      "gene_pearson_median": 0.22997172900068216
+    }
+  },
+  "verification": {
+    "passed": true,
+    "atol": 2e-06,
+    "native_equal_core_absolute_differences": {
+      "masked_huber": 0.0,
+      "masked_mae": 0.0,
+      "masked_mse": 0.0,
+      "masked_r2": 0.0
+    },
+    "all_original_masks_and_sources_verified": true
+  },
+  "source_hashes": {
+    "/workspace/BAGM/artifacts/runs/2026/08/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/provenance/artifact_checksums.json": "ad0fc5fab67fb5e3a7ad2f2d7aa2522c332a3696999e5305f8698ff63e4ec5ad",
+    "/workspace/BAGM/artifacts/runs/2026/08/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/checkpoints/last.ckpt": "1fbc2c92a1c35180f7ef644a269740f98a214be1896013667fe67279582570bd",
+    "/workspace/BAGM/artifacts/runs/2026/08/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/config.resolved.yaml": "6558ec8e135570cf5f38a105c97c7abdc858f9feafc3d7e7626e69ddc4ef98d1",
+    "/workspace/BAGM/artifacts/runs/2026/08/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/diagnostics/held_in_fit_metrics_by_core.json": "316051bd0173c570468fe6366aa055bc79011e32c462ecccd84a1324be6979d1",
+    "/workspace/BAGM/artifacts/runs/2026/08/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/metrics/final.json": "8b1fc9b0f8d006a470c7c865001d76c9667ba92b9a52bcea1e46fe0794598d8e",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/manifest.json": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/manifest.json": "c4a632473e458ae6e6eeab92c026ebf6e4d18ae49b568723f0e66a67db4fc90f",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cohort_statistics.npz": "ef0027cb383d1731afc5671e372c86c04c72e6fdec8c1a4b65fef48535c1124f",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/manifest.json": "86e5b1bf3be8a368b42e64a64e4078c6fb2c1a01f9e3f1b153b85c597d6b5549",
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/relative_qkv_graph_transformer.py": "477af34745c95999994956f89a4e1e5f61fa4e5e75543d5ae4d356503b4b07a3",
+    "/workspace/BAGM/scripts/analysis/pearson_historical_replay.py": "2a63858a48eb6b2a35a7f40322e5ad729336d78ee42ffe9aa1889ce456200118",
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/training.py": "c781e145a434f633c488997cf1d875a3ef933e02c495d1e0bf4af8ecf3a87bfc",
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/pooled_relative_qkv_training.py": "fc4c58f9ee4fc21529e089094cc2dbfd82e3e6c1c04e58bf9b901c93252eba7b",
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/adjacency_ablation.py": "f1e2d0aa76613dd5a71e6a94d79f12b691dd4541d1eef3843d153bb662457b67",
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_recurrent_hl_clustering.py": "d847a163580e4accafe8c47c468781cd19d916ba7362e54349c479dd924ae1a4",
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C15.npz": "29d7840a6786a4a685f35ca55b9d3a7e65a559d161eb83d6fbfa6dbb6b0b4ebd",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C15/edge_index.npy": "687ac4de2e8c1f8c9872d8b89f88d3e961f15122c80b586f9a85df41040b5242",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C15/relative_geometry.npy": "c1d9bbb1a3cb887e97214f9bc3e48d671755bb8b99c32248bfeeda1a836a2cd7",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_15.json": "94c7ac7abf4993feb64e81ff4c642095c382afd1b6df8f871c1e13b7b86b79b9",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C16.npz": "eba070ae48d7bd0d56b643e7f2153168369d8b86c3bbacc26a3f67d87b4150eb",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C16/edge_index.npy": "9297b0202d976385f345cbb85f7923dd03581f0de1ee4216632751db9b47dc8c",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C16/relative_geometry.npy": "882f0f2cc87f0c577d0d4d8df0929455f463c14461adccf575ac000e02a2be71",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_16.json": "b94f721e2bbb8b58c0d75a9785c1965aed21ab63aa950a6165ff288a607e1b92",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C17.npz": "a5e3ecca416d33e40026581912a7bd08df3337d01ec442e425061eaf904b4698",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C17/edge_index.npy": "73efbf5ed58c2938e7e6194cbfa1795b5f1e01aae778c1b85fd574fb561becd7",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C17/relative_geometry.npy": "4ca4a1c7ce053538d804014e394a34e4b0142ac82bbbe49c7a6723b911cca8d4",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_17.json": "c680476b367e7f443a96fc1afd56c053aaf2e26590f72a24ba67295c965c6033",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C18.npz": "8ceaff86bc4f1a4bdde71aebbd5eed9488b6e167d941e81864417fe47049a99e",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C18/edge_index.npy": "609ce98f2a0aef0341a229831f2c1fb7b8a8ba98a999b66142c7c5f225e25ff3",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C18/relative_geometry.npy": "9ea3dcd518046d693a468928860d2056c5016c0698eb8b0a94d98528cc2da633",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_18.json": "dc14512e0b3488d960fb1c0a116f7b44905d472d68f68c1bcffdf54f8d6e9495",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C19.npz": "60907223f98b8e75efa857211a757a2e72309ec915fcd347303086739b529da2",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C19/edge_index.npy": "ef189be65b6c79b774dec74b53770e00ca9f064dac4b6964d1b8baffbb387232",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C19/relative_geometry.npy": "552c4575902385656c8306291030bca955053457e408a1f9100d2e4e9e3a88ec",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_19.json": "f26558ed79b1504ec7348400abdccb33235fccd49c752b7c3e8e46adbe0566d5",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C20.npz": "03228c8838f17acfdc491418252c9044bce73d83acc68b103dcaf0f7102abce9",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C20/edge_index.npy": "1a7c3ce62003a50387c4feeb52ba07b9e08b97458afceee4e6b306cff91a0788",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C20/relative_geometry.npy": "72e47ee45b732a96bafdc70615ca8fe3dcf30de6cbd91587a6c79f023c90ce24",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_20.json": "268c63249953d3ae3edda3da24cae8e2460e9cb905969ea456fffebc422fdc68",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C21.npz": "02a4a2ffbc9a5fb08607c95b00fe875f0a6fb4b40cc8e1da56c554f0b0df6df9",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C21/edge_index.npy": "837d441f8d51355b383ccdd608705942b806d1fa0830157f2307f521d265e83d",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C21/relative_geometry.npy": "fee71d8789cb02ff1b10317eb6185aac80ef8de9e3f885a9967eb06ce2fdd41d",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_21.json": "0f14a32bcf19ee6e518660c3b39c34565f393dd205ad11d91119c87e33aeca4a",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C22.npz": "e71c4c73d0424037860cab1a38fdf2a12ba1065df6e2073784aeefa11806693c",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C22/edge_index.npy": "4edbd1c7f14201eb37c882842cee5ce8bae5813e596ff9aea5d0b7d07bacb6ce",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C22/relative_geometry.npy": "83f9acf3cff5dde555e18e90801bd9ac3271e69e06e401e117d6ba0ca4e0aa82",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_22.json": "b35766a0f58d102a32cbf60b824fff07f578a09af427b38d26654536e638dbf5",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C23.npz": "fdb4a6f6c607ddb650afef9f1f93fb8eecb0be4c1ae593f6f59c4dbf4402c837",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C23/edge_index.npy": "e60ef66b9673bb0227eda10cff63e19bacae72577ca83f7b98724ed15f0674f3",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C23/relative_geometry.npy": "147ad19008ada2d3875e5915cbe3e80cfdeb92da9954a8c06dd9b9cac109f211",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_23.json": "b3bdbb941b590d3111988fe9030c7c2b0a327529752271bfd18b57b14b4e9de8",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C24.npz": "885b526394f2a55af898ede297a089fd2b2d7e711a0b7275b1fdd820334e7706",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C24/edge_index.npy": "607531a001f75ece1bb1a8ef3a1bdcf457784e950dc7e692982e7b0bbd1c7762",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C24/relative_geometry.npy": "24ce65ec7188751213dad33c757db634fae5c19812c5916a4f22232ea55b1399",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_24.json": "81eef0e69e2a10d19d9e374e3352960bcf53aed76baa83d6867ff3fa9ef4df8c",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C25.npz": "35f66ab45a154acbfb0ef61c0b62d181fc9fefab08290cf8494ed440bc40b833",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C25/edge_index.npy": "c3be3303cd04f27d5d32f2c9cd07143b1c73d5a55dbb078408e677bb8adc252d",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C25/relative_geometry.npy": "e189200e29beb916403b83bd086e3deba73dab1e68385b6f67049e347a4aee8f",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_25.json": "c82ddfee36731f45b1ff73a3467e82ed9774f221fa7e440355dd2564d66ae3da",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C26.npz": "1c719c24035a747326ccb4dfd3f43063b9ea0896849b0e00c5a9ea8b164dba31",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C26/edge_index.npy": "5f3ac7a1bd59481dfa7cec36099c7d74933c996ce998afb2e9435e63a15cd938",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C26/relative_geometry.npy": "8ae9eb0fac4dd103b2e923749926ffa36c50fe3c2a2bbc7b5357920bea4998f0",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_26.json": "bb8c8df3d7b7763c199c1830454bfca28b0eabdef08ea40aaad5c65f1d9cfdc2",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C27.npz": "d1b1b963d05583a58dafc70e7b8f32f4bdec971713839c9a8a9d58f50474e653",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C27/edge_index.npy": "1a02681a569f644a325f85e38741e1c400bf200a34e25251a6836af1399a588e",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C27/relative_geometry.npy": "b75057509143153fc75dc1930c9f47c7b61e41aecfc41b59a40e075f3cc1c387",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_27.json": "23f5bbad05252f522779dc37e774b726fd39e9e293c7ab3a7a60e9c1e139ad35",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C28.npz": "7e8aebef10d0c0f35fb8de25507030e22dcae81c1783bf85f53416948145c998",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C28/edge_index.npy": "63b63367150d7146513dd4755f306664eeb7ab92049d6a880deac32fcb307448",
+    "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C28/relative_geometry.npy": "44b24de7f0063f9b0af82ffa86ce1cd37c8fec3df25909c9039347cf6f68e6dc",
+    "/workspace/BAGM/reports/analyses/so2_nonzero_metrics/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/v1/core_28.json": "8ce77530727a927fcbe734af42f5edc0d4be50b25b3a60c9c7192351dc6344fd"
+  },
+  "row_level_predictions_saved": false,
+  "duration_seconds": 318.4731612720061,
+  "hardware": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "device": "cuda:0",
+    "torch": "2.13.0+cu130",
+    "cuda": "13.0",
+    "peak_allocated_gib": 1.1051983833312988,
+    "peak_reserved_gib": 2.44921875,
+    "peak_host_rss_gib": 9.245342254638672,
+    "amp": true,
+    "amp_dtype": "auto"
+  }
+}

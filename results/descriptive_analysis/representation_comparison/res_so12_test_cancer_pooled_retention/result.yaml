@@ -1,0 +1,150 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so12_test_cancer_pooled_retention
+title: 'Pooled-core backward cluster removal: micro F1 and in-region cell retention'
+status: verified
+outcome: inconclusive
+experiment_type: descriptive_analysis
+method_family: representation_comparison
+lifecycle_stage: exploratory_screen
+study_axis: pooled_cluster_retention
+campaign_ids:
+- cmp_20261018_so12_cancer_pooled_union
+method:
+  name: Pooled backward removal of shared global clusters for frozen h0-h4, PCA and
+    scVI
+  model_family: Relative-QKV graph encoder, training-fitted PCA50 and negative-binomial
+    scVI50
+  graph_context: Unchanged parent joint 81607-test-cell cosine k30 unweighted undirected
+    graph per representation; Leiden RBConfiguration resolutions .25,.5,1,2 and seeds
+    0,1
+  masking_or_perturbation: No refitting. Start every global cluster overlapping either
+    annotation; use the same retained cluster IDs on both cores. Remove one cluster
+    maximizing the remaining pooled pixel F1, with exact ties resolved by lexicographic
+    retained IDs; continue to empty.
+  evaluation_design: Annotation-selected shared union on cores 15 and 23, optimizing
+    micro Dice/F1 computed from summed pixel TP, FP and FN. The path maximum breaks
+    ties by fewest clusters then IDs. Full paths, nondominated points and best F1
+    at ≥90%/≥95% pooled unweighted cell retention are reported. Primary resolution
+    1 seed 0 stays fixed; all settings are retained.
+  implementation_version: so12_cancer_pooled_union_v1 with immutable code, environment
+    and parent source binding
+conclusion:
+  question: How does pooled annotated-region micro F1 change as one shared set of
+    global clusters is removed across both test cores?
+  estimand: Micro pixel Dice/F1 = 2ΣTP/(2ΣTP+ΣFP+ΣFN) along one deterministic shared-cluster
+    deletion path, versus pooled unweighted retention of cells with at least one valid
+    owned pixel inside their core annotation. Cell denominators stay fixed; cluster
+    retention is relative to initial global positive-overlap clusters. The pooled
+    metric is not the mean of core F1 scores or the combination of independently optimized
+    core unions.
+  observed_result: 'Fixed resolution 1, Leiden seed 0; one shared global cluster-ID
+    union applies to both cores 15 and 23. Annotation-selected backward path maxima:
+    h4: pooled micro F1=0.8630, clusters=11/16 (68.8%), in-region cells=51081/52822
+    (96.7%), F1 at ≥90% retention=0.8630, F1 at ≥95% retention=0.8630 | h3: pooled
+    micro F1=0.8663, clusters=10/16 (62.5%), in-region cells=47932/52822 (90.7%),
+    F1 at ≥90% retention=0.8663, F1 at ≥95% retention=0.8654 | h2: pooled micro F1=0.8602,
+    clusters=12/16 (75.0%), in-region cells=50937/52822 (96.4%), F1 at ≥90% retention=0.8602,
+    F1 at ≥95% retention=0.8602 | h1: pooled micro F1=0.8583, clusters=13/18 (72.2%),
+    in-region cells=49536/52822 (93.8%), F1 at ≥90% retention=0.8583, F1 at ≥95% retention=0.8260
+    | h0: pooled micro F1=0.8242, clusters=10/14 (71.4%), in-region cells=47348/52822
+    (89.6%), F1 at ≥90% retention=0.8218, F1 at ≥95% retention=0.7868 | pca: pooled
+    micro F1=0.7982, clusters=8/12 (66.7%), in-region cells=45850/52822 (86.8%), F1
+    at ≥90% retention=0.7972, F1 at ≥95% retention=0.7972 | scvi: pooled micro F1=0.8323,
+    clusters=9/13 (69.2%), in-region cells=47484/52822 (89.9%), F1 at ≥90% retention=0.8305,
+    F1 at ≥95% retention=0.8069. All 56 partitions and complete pooled paths are retained.'
+  strongest_alternative_explanation: Annotation prevalence, unequal core pixel contributions,
+    fragmented cellular states, approximate registration and annotation-selected overfitting
+    can improve pooled overlap while hiding core heterogeneity and without independent
+    predictive superiority.
+  controls:
+  - Identical canonical cells, frozen parent partitions and registration, complete
+    immutable parent checksum verification.
+  - One shared global cluster-ID set at every step; pooled confusion counts are summed
+    across cores before computing F1.
+  - Independent native-raster audit of deletion steps, fixed denominators, operating
+    points and exact pooled unrestricted reference.
+  - Selected outside pixels remain FP and omitted inside pixels remain FN; full-region
+    scores include uncovered positive pixels.
+  - All 56 partitions and paths through empty, both Leiden seeds and all four resolutions;
+    primary resolution 1 seed 0 fixed in advance.
+  - Unweighted pooled cell retention with fixed denominators; majority-inside sensitivity
+    requires at least half the valid owned cell area inside its annotation.
+  - Full F1-retention curves and nondominated points, plus illustrative ≥90% and ≥95%
+    retention constraints; no combined weighted objective or fixed-cardinality optimality
+    claim.
+  remaining_uncertainty: Cluster groups are selected using both scored annotations.
+    Scores are descriptive agreement, not independent cancer-classifier accuracy.
+    Registration is approximate, annotation exhaustiveness is unverified, and only
+    two cores contribute biological observations. Pooling weights native evaluable
+    pixels equally, not cores or calibrated physical area. Greedy removal does not
+    certify globally optimal subsets at every cluster count.
+  maximum_defensible_claim: Exploratory pooled overlap and cell-retention tradeoffs
+    for one shared cluster group across two approximately aligned test cores; no independent
+    accuracy or population superiority.
+evidence:
+  predictive_gain:
+    status: not_tested
+    summary: Annotation-selected pooled overlap is not independent predictive accuracy
+      or graph-specific expression gain.
+  stability:
+    status: mixed
+    summary: All four resolutions, both Leiden seeds and majority-inside cell sensitivity
+      are retained; there is one fitted encoder seed.
+  faithfulness:
+    status: not_applicable
+    summary: No attribution or cell-cell mechanism inference.
+  null_calibration:
+    status: not_tested
+    summary: The empty endpoint and exact pooled unrestricted reference characterize
+      the path; no new biological null calibration or population p-value is established.
+  patient_replication:
+    status: not_tested
+    summary: Two cores, donor overlap permitted and one fitted encoder seed; pooling
+      pixels or cells does not create independent biological replicates.
+  external_support:
+    status: mixed
+    summary: Supplied hand-outlined histology uses approximate-section registration
+      and uncertain annotation exhaustiveness; the annotations also select clusters.
+  perturbation_support:
+    status: not_tested
+    summary: Computational cluster removal is not a controlled biological perturbation.
+provenance:
+  created_at_utc: '2026-10-18T09:46:00.580254Z'
+  updated_at_utc: '2026-10-18T09:46:00.580254Z'
+  git_commit: f2776df3769620e7c2b1728116a71ca086c7e3b4
+  run_ids:
+  - r_20261017T044837Z_caf76350_s000_f00_a01_12df41be
+  - r_20261018T052052Z_04078a70_s000_f00_a01_14d78fb9
+  expected_seeds:
+  - 0
+  - 1
+  included_seeds:
+  - 0
+  - 1
+  expected_folds:
+  - 0
+  included_folds:
+  - 0
+  failed_or_excluded_runs: []
+  sources:
+  - kind: evaluation
+    root: report
+    path: analyses/so12_cancer_pooled_union/ev_so12_cancer_pooled_union_s0_20261018/manifest.json
+    sha256: 8727217f27775252d22d16bb5f14b06b2707b904aa7b2c1117e5c0b987f1d9b2
+    verification_status: verified
+    run_id: r_20261017T044837Z_caf76350_s000_f00_a01_12df41be
+  - kind: evaluation
+    root: report
+    path: analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018/manifest.json
+    sha256: e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0
+    verification_status: verified
+    run_id: r_20261017T044837Z_caf76350_s000_f00_a01_12df41be
+  - kind: report
+    root: report
+    path: analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018/scvi_run_registration.json
+    sha256: 954b0c7224d45595f64ea22b30054f21c38505b68851c11fce369a593b138b88
+    verification_status: verified
+    run_id: r_20261018T052052Z_04078a70_s000_f00_a01_14d78fb9
+files: []

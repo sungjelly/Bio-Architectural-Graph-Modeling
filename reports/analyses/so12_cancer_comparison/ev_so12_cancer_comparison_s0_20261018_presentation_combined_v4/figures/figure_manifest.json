@@ -1,0 +1,131 @@
+{
+  "annotations_shifted": false,
+  "audits": [
+    {
+      "all_cluster_pixels_preserved": true,
+      "core": 15,
+      "histology_sha256": "5fc5f50580bc0383a7e770122350a0361dcb23b4769f6571db0389c99743b215",
+      "occupied_pixels": 271689,
+      "raster_sha256": "00f3b79e9831a150be2c8cbe0ad3d3fca024d60c2389b98d31488f5861454731"
+    },
+    {
+      "all_cluster_pixels_preserved": true,
+      "core": 23,
+      "histology_sha256": "83f51dfcdd07426dc447a8a88594d716decf54505ad3f613fa198d2927e78e00",
+      "occupied_pixels": 362066,
+      "raster_sha256": "c06153c231688a9b8057b15798821f63abf791872e662b093f5ef97b1e6b630e"
+    }
+  ],
+  "clustering_manifest_sha256": "5f440d4183b30eb62424bc612ad8bf3301cc6288ad7f0a4f7a2e3ac5a9546619",
+  "color_keys": {
+    "path": "figures/cluster_color_keys.csv",
+    "sha256": "2cf9a3f0f1d0a4bb1e47da457fc21609838dfe53ba3e2c3bdf70ffbd6725b075"
+  },
+  "figures": {
+    "cores_15_23_five_panel": {
+      "pdf": {
+        "path": "cores_15_23_five_panel.pdf",
+        "sha256": "26f94b877d40943712388251f00df520af52182a9675b176c7311cea76cf9b24",
+        "size_bytes": 4637049
+      },
+      "png": {
+        "path": "cores_15_23_five_panel.png",
+        "sha256": "d1a3ef5ecfd241c50e3a081d87983a77bae8ee9b8b6b70fd62521f7a7cdc5a5f",
+        "size_bytes": 7092877
+      }
+    }
+  },
+  "interpretation": "Presentation-only restyling; all labels, cell footprints, registration, metrics and scientific conclusions are unchanged.",
+  "layout": {
+    "columns": [
+      "gt",
+      "h4",
+      "h0",
+      "pca",
+      "scvi"
+    ],
+    "dpi": 300,
+    "figure_inches": [
+      22,
+      12.6
+    ],
+    "footer_removed": true,
+    "method_label_fontsize_pt": 20,
+    "rows": [
+      15,
+      23
+    ],
+    "scale_bar_fontsize_pt": 14,
+    "suptitles_removed": true
+  },
+  "n_cells": 81607,
+  "partitions": {
+    "h0": {
+      "path": "clustering/h0/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "d3b1581922febc8e3a380a7c7422e97bbfd875c232f85ce878c4ebae9a0fcfea",
+      "size_bytes": 326556
+    },
+    "h1": {
+      "path": "clustering/h1/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "294f9a24ec216779777fcc6a5ee50eb46534c1ded2c80d2d0c87969a3a7365ed",
+      "size_bytes": 326556
+    },
+    "h2": {
+      "path": "clustering/h2/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "4f9160415f41a0235b6ab2048e191a48a954dae10f742592fe8a9d153d4771c6",
+      "size_bytes": 326556
+    },
+    "h3": {
+      "path": "clustering/h3/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "31c9f0b35197ae8bfe89bdde1b7a4849d897a0a5f262190c1ece063c0113a423",
+      "size_bytes": 326556
+    },
+    "h4": {
+      "path": "clustering/h4/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "01c228958c2e2eb0c2d8756d68490e5b68dcca49cc7d28a00388ba669bf886fe",
+      "size_bytes": 326556
+    },
+    "pca": {
+      "path": "clustering/pca/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "9a9279e899eaade414af115ba3093c6c67eb17d35ae89d5426ba655066b1016d",
+      "size_bytes": 326556
+    },
+    "scvi": {
+      "path": "clustering/scvi/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "f8bba4adb75ae1d8eb97888df93a2537aec9b05322880cdc847847b53e5db504",
+      "size_bytes": 326556
+    }
+  },
+  "primary_methods": [
+    "gt",
+    "h4",
+    "h0",
+    "pca",
+    "scvi"
+  ],
+  "registration_manifest_sha256": "ab7a23fe309a67c2a539c937b1cf2c098ed0e92a2eb9f6df1ff3041d8e5874b2",
+  "renderer_sha256": "8613bfb9a422c31ac0ef0689fdf640117884fe1c848dce16da46b083c8442887",
+  "resolution": 1.0,
+  "revision": "combined_publication_v4",
+  "schema": "so12_cancer_presentation_revision_v1",
+  "scientific_inputs_and_metrics_changed": false,
+  "seed": 0,
+  "source": "/workspace/BAGM/reports/analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018",
+  "source_figure_manifest_sha256": "dcada25fa66eeb8e231777dbb729eea304c89bf63a70d167dab4d9044a842d34",
+  "source_manifest_sha256": "e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0",
+  "status": "complete",
+  "style": {
+    "outline": "#000000",
+    "outline_width_pt": 1.5,
+    "palette": "original turbo, unchanged",
+    "palette_rule": "Original cluster color keys preserved exactly",
+    "white_halo_width_pt": 2.15
+  }
+}

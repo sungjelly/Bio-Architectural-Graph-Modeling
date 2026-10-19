@@ -1,0 +1,31 @@
+{
+  "gpu_query_fields": [
+    "index",
+    "utilization.gpu",
+    "utilization.memory",
+    "clocks.current.sm",
+    "clocks.current.memory",
+    "power.draw",
+    "power.limit",
+    "temperature.gpu",
+    "clocks_event_reasons.hw_thermal_slowdown",
+    "clocks_event_reasons.sw_thermal_slowdown",
+    "clocks_event_reasons.sw_power_cap",
+    "clocks_event_reasons.hw_slowdown"
+  ],
+  "interval_seconds": 30,
+  "limitations": [
+    "Observations start after first-wave epoch1, not at stage launch.",
+    "Cgroup CPU counters cover the shared cgroup, not an individual experiment.",
+    "Throttled microseconds are counter deltas, not a wall-time percentage.",
+    "Point-sampled GPU utilization, clocks and flags can miss brief events.",
+    "Batch/LR assignments are not randomized across physical GPUs, so timing comparisons are device/contention confounded."
+  ],
+  "purpose": "describe device/runtime contention; no scientific score selection",
+  "read_only_for_experiments": true,
+  "runtime_settings_changed": false,
+  "schema": "so2_bce_audit_runtime_observer_v1",
+  "stage_id": "grid_a_v1",
+  "stage_plan_sha256": "1f0dc481221680c05910e0a3d8c7b5c84edd9d6fd7bd9064041a03a9bfa9486d",
+  "started_at": "2026-10-01T08:00:16.856111+00:00"
+}

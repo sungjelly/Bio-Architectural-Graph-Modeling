@@ -408,6 +408,160 @@ _OWNED_FIELDS = {
 }
 
 
+def _validate_so12_train_validation(
+    config: Mapping[str, Any], *, paper_core_split: bool = False,
+) -> None:
+    """Keep both explicit joint-slide protocols separate from held-in fits."""
+
+    expected_sections = {
+        "model": {
+            "name": "relative-qkv-gat",
+            "embedding_dim": 256,
+            "hidden_dim": 256,
+            "graph_layers": 4,
+            "attention_heads": 8,
+            "attention_head_dim": 32,
+            "ffn_dim": 1024,
+            "decoder_dim": 1024,
+            "relative_geometry_dim": 70,
+            "relative_geometry_role": "attention_logit_bias_only",
+            "dropout": 0.1,
+            "attention_dropout": 0.0,
+            "implicit_self_loops": False,
+            "edge_key_vectors": False,
+            "edge_value_vectors": False,
+            "edge_value_gates": False,
+        },
+        "masking": {
+            "type": "uniform_per_cell_integer_count",
+            "independent_views_per_core_epoch": 10,
+            "independent_across_cells": True,
+            "explicit_gene_mask_channel": True,
+            "metadata_masked": False,
+        },
+        "dataset": {
+            "target_scale": "train_standardized_quasipoisson_pearson_phi1p01_clip10",
+            "input_scale": "observed_only_quasipoisson_pearson_frozen_train_statistics",
+            "training_core_aliases": [
+                *[f"SO1-C{core:02d}" for core in range(1, 11)],
+                *[f"SO2-C{core:02d}" for core in range(15, 25)],
+            ],
+            "validation_core_aliases": [
+                *[f"SO1-C{core:02d}" for core in range(11, 15)],
+                *[f"SO2-C{core:02d}" for core in range(25, 29)],
+            ],
+        },
+        "graph": {
+            "kind": "radial_stratified_knn",
+            "neighbor_k": 200,
+            "radius_um": 500.0,
+            "symmetry": "union",
+            "self_loops": False,
+            "cross_core_edges": False,
+            "coordinates_are_node_covariates": False,
+        },
+        "trainer": {
+            "learning_rate": 1e-4,
+            "weight_decay": 1e-5,
+            "gradient_clip_norm": 1.0,
+            "huber_delta": 1.0,
+            "minimum_global_epochs": 50,
+            "max_epochs": 300,
+            "early_stopping": True,
+            "early_stopping_patience": 25,
+            "early_stopping_min_delta": 1e-4,
+            "restore_best": True,
+            "primary_checkpoint_role": "best",
+        },
+        "evaluation": {
+            "canonical_prediction_split": "validation",
+            "splits": ["validation"],
+            "primary_metric": "val/masked_huber",
+            "primary_direction": "minimize",
+            "validation_mask_views": 3,
+        },
+        "launcher": {
+            "requested_gpu": "0,1,2,3",
+            "requested_gpu_count": 4,
+            "process_count": 4,
+            "distributed": True,
+        },
+    }
+    if paper_core_split:
+        def alias(core: int) -> str:
+            return f"SO{1 if core <= 14 else 2}-C{core:02d}"
+
+        expected_sections["dataset"].update({
+            "dataset_id": "so12_paper_core_split",
+            "version": "v1",
+            "split_id": "so12_paper_21train_5val_2test_v1",
+            "training_core_aliases": [alias(core) for core in (
+                1, 3, 4, 6, 7, 8, 9, 10, 11, 12, 14, 16, 17, 18,
+                19, 20, 21, 22, 24, 25, 26,
+            )],
+            "validation_core_aliases": [alias(core) for core in (2, 5, 13, 27, 28)],
+            "test_core_aliases": [alias(core) for core in (15, 23)],
+            "total_cells": 407659,
+            "training_cells": 264491,
+            "validation_cells": 61561,
+            "test_cells": 81607,
+            "donor_overlap_permitted": True,
+            "historical_test_exposure_disclosed": True,
+            "generalization_scope": "core_holdout_with_documented_donor_overlap",
+            "normalization_application": "one_frozen_training_fit_shared_by_all_partitions",
+        })
+        expected_sections["dataset"]["normalization_fit_core_aliases"] = (
+            expected_sections["dataset"]["training_core_aliases"]
+        )
+        expected_sections["masking"].update({
+            "train_seed_namespace": "so12_paper_training_v1",
+            "all_graph_cells_masked_by_same_rule": True,
+        })
+        expected_sections["trainer"].update({
+            "batch_size": 2,
+            "cores_per_optimizer_update": 2,
+            "core_visits_per_global_epoch": 21,
+            "optimizer_updates_per_global_epoch": 11,
+            "distributed_world_size": 4,
+        })
+        expected_sections["evaluation"].update({
+            "splits": ["validation", "test"],
+            "test_mask_views": 3,
+            "test_evaluation_after_best_checkpoint_selection": True,
+            "mask_seed_namespace": "so12_paper_fixed_validation_v1",
+            "test_mask_seed_namespace": "so12_paper_fixed_test_v1",
+            "uncertainty_unit": "core",
+            "expected_seeds": [0],
+            "expected_folds": [0],
+            "selection_partition": "validation",
+        })
+        expected_sections["campaign"] = {
+            "campaign_id": "cmp_20261017_so12_paper_core_split",
+        }
+    protocol_label = "SO12 paper-core-split" if paper_core_split else "SO12 train-validation"
+    for section, expected in expected_sections.items():
+        actual = _mapping(config, section)
+        for field, value in expected.items():
+            if actual.get(field) != value:
+                raise ConfigurationError(
+                    f"{protocol_label} protocol requires "
+                    f"{section}.{field}={value!r}."
+                )
+    trainer = _mapping(config, "trainer")
+    if trainer.get("scheduler") not in {None, "none"}:
+        raise ConfigurationError(
+            "SO12 train-validation protocol requires a fixed learning rate."
+        )
+    if trainer.get("checkpoint_policy") not in {
+        "best_and_latest", "atomic_best_and_latest"
+    }:
+        raise ConfigurationError(
+            "SO12 train-validation protocol requires best and latest checkpoints."
+        )
+    if config.get("seed") != 0:
+        raise ConfigurationError("SO12 train-validation protocol requires seed 0.")
+
+
 def validate_experiment_config(config: Mapping[str, Any]) -> None:
     """Validate required groups, types, and scientific parameter ownership.
 
@@ -742,6 +896,7 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
         evaluation.get("artifact_contract", "predictive")
     ).strip().lower()
     held_in_fit_protocols = {
+        "held_in_so2_genemae_masking_v1",
         "held_in_full_core_fixed_budget",
         "held_in_pooled_10core_fixed_budget",
         "held_in_pooled_14core_relative_qkv_seed_plateau",
@@ -1064,6 +1219,11 @@ def validate_experiment_config(config: Mapping[str, Any]) -> None:
             "fit prediction/metric semantics require "
             "an explicit held-in fit evaluation protocol."
         )
+
+    if protocol == "so12_pearson_relative_qkv_train_validation_v1":
+        _validate_so12_train_validation(config)
+    elif protocol == "so12_pearson_relative_qkv_paper_core_split_v1":
+        _validate_so12_train_validation(config, paper_core_split=True)
 
     token_task = "masked_expression_token_classification"
     token_family = "tokenized_edge_conditioned_gatv2"

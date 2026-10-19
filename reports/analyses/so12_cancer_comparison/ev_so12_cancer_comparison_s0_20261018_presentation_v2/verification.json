@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "source_publication_files_verified": 326,
+  "original_publication_unchanged": true,
+  "verified_figures": [
+    "combined_five_panel.pdf",
+    "combined_five_panel.png",
+    "core_15_five_panel.pdf",
+    "core_15_five_panel.png",
+    "core_23_five_panel.pdf",
+    "core_23_five_panel.png"
+  ],
+  "cluster_id_counts_unchanged": true,
+  "all_cluster_colors_distinct": true,
+  "focused_tests": "4 passed",
+  "visual_review": {
+    "reviewers": [
+      "root",
+      "figure_review"
+    ],
+    "cores": [
+      15,
+      23
+    ],
+    "combined_reviewed": true,
+    "outcome": "Distinct restrained colors; clear black outlines; no visible blue rim; labels and scale bars readable."
+  }
+}

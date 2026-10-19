@@ -1,0 +1,14 @@
+{
+  "schema": "so12_primary_delivery_publication_reference_v1",
+  "recorded_at": "2026-10-17T03:51:13.410780+00:00",
+  "parent_evaluation_id": "ev_so12_h0_hl_e151_20261017T005200Z",
+  "artifact_id": 2804,
+  "scope": "primary_seed0_deliverables_only",
+  "bundle_path": "/workspace/BAGM/reports/analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery",
+  "manifest_sha256": "1ef870678568f68ff6f4bd9da8707fbe1fe0a429a821616f9dd1d2410e167762",
+  "primary_status": "verified_and_published",
+  "parent_evaluation_completed": false,
+  "secondary_seed1_status_at_recording": "pending",
+  "original_full_evaluation_gates_unchanged": true,
+  "result_catalog_sha256": "ad6f8c231643fcc870be26fbfe762d3cc230cd7ee5a4e5ccb6088a76ed174ff1"
+}

@@ -1,0 +1,9 @@
+{
+  "action": "remove only this aborted uv no-cache installation temporary cache",
+  "path": "/tmp/.tmpemN4QM",
+  "bytes": 695818694,
+  "reason": "uv attempted duplicate inherited base dependencies; interrupted before installation; not used by any data/model/source artifact",
+  "planned_scvi": "1.5.1",
+  "dry_run_missing_packages": 54,
+  "expected_expanded_payload_bytes": 352030909
+}

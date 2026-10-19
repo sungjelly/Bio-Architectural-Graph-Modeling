@@ -1,0 +1,36 @@
+BAGM attached-paper review — 17 October 2026
+
+Objective: assess the attached BAGM_Paper.pdf against the current implementation
+and experiment record; produce a corrected manuscript PDF with an explicit
+change record in the existing Google Drive paper folder.
+
+Scope: editorial and source audit only. No training, new scientific experiment,
+raw-data access, modification of other reports, publication or sharing changes.
+The user's request authorizes export of this revised manuscript and its change
+record. It does not authorize uploading raw data or patient-level records.
+
+Sources: attached three-page PDF; current model source and configurations;
+campaign documentation and aggregate result records; primary cited literature.
+Keep historical models, completed exploratory validation and active paper-split
+work distinct. The alternative explanations are cell-autonomous prediction,
+composition, broad spatial context and segmentation spillover.
+
+Permitted claims: implementation agreement; scoped exploratory predictive and
+visual observations. No new-donor generalization for a donor-overlapping split,
+graph-specific gain without matched controls, validated tumor-region accuracy,
+or biological/causal effects from attention or derivatives alone.
+
+Deliverables: corrected PDF, editable DOCX, structured manuscript source, build
+script, change record, verification report and checksums. The PDF contains the
+change record, so its interpretation is self-contained. Upload the PDF to the
+existing BAGM Draft Paper folder and verify it through Drive metadata readback.
+
+Acceptance: all sections/references of the attached paper are addressed; correct
+architecture, normalization, estimand and split; observations have provenance
+and limits; no invented results/annotations; text extraction and visual checks
+pass, equations are readable, no clipping or missing glyphs; uploaded PDF is
+verified with correct MIME type and file size. Existing files remain untouched.
+
+Build: /tmp/bagm-paper-review-env/bin/python reports/paper_review_20261017/build_review.py
+Verification: script-generated page/text/font checks plus rendered-page review.
+No empirical model tests are necessary because model code is not modified.

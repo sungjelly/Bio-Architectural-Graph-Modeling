@@ -1,0 +1,137 @@
+{
+  "campaign_id": "cmp_20261001_so2_binary_expression_target_minibatch",
+  "created_at": "2026-10-01T07:27:18.827467+00:00",
+  "failed_attempts": [
+    {
+      "reason": "Pilot minimum_epochs equaled maximum_epochs; the epoch controller requires a strict inequality. The attempt completed its first training and validation pass, then failed before checkpoint commit.",
+      "run_id": "r_20261001T070447Z_141a30b5_s000_f00_a01_710b2c74",
+      "source_hashes": {
+        "_FAILED": "dec80b2cf887abd2432b15f63a39c9fafea37494bd9e2b725162eac22420fe3f",
+        "logs/stderr.log": "ae0d0225c823fc67bd2dd65ef56c0e52c5256eadccc417ef0735ae4d6e36b363",
+        "provenance/artifact_checksums.json": "0d791ed106bacc9f1187ab0a3b8082b89907a941f809c9c223cf864ad59aa3cb",
+        "summary.json": "e93e0f75b227b13e1935f0fd4d71c5356a32c90feac0753428a06808bfa9369c"
+      }
+    },
+    {
+      "reason": "Pilot minimum_epochs equaled maximum_epochs; the epoch controller requires a strict inequality. The attempt completed its first training and validation pass, then failed before checkpoint commit.",
+      "run_id": "r_20261001T070449Z_8f1694f7_s000_f00_a01_9060ae12",
+      "source_hashes": {
+        "_FAILED": "60b031f61f06883c04ff7a968e7c9349ffcdd2d6061e4cf192a654d8a50ee324",
+        "logs/stderr.log": "2e9780fc194719321770fc2ba93a37c2945e2452e52efa0f9c858890a7cd6b11",
+        "provenance/artifact_checksums.json": "88d7113134cffd0ccaef7778544d23134958130ece607d11e07971dbdc2196e6",
+        "summary.json": "73ee75a5f5b8691dc6c63cc33e405d6779588c482bae8b6f8f47066257463736"
+      }
+    },
+    {
+      "reason": "Pilot minimum_epochs equaled maximum_epochs; the epoch controller requires a strict inequality. The attempt completed its first training and validation pass, then failed before checkpoint commit.",
+      "run_id": "r_20261001T070451Z_7921e6b8_s000_f00_a01_aca29682",
+      "source_hashes": {
+        "_FAILED": "3cf211792f7b731b48b9a723a4deeefddea74d180695568aedaa4f2dc6138e3d",
+        "logs/stderr.log": "c7d2bc7daa5c5dcfe853759a6e8e74fd90f0c5fbeb7cb6c478d29ee2c482843f",
+        "provenance/artifact_checksums.json": "824b40d70e6b57a1db179ad1a6800744050a718a96f40c56a16a0064e9d47d48",
+        "summary.json": "f9c3dcb41a2028f5ad41b86b743e79dae967fabec00c823ab2075f154f03480e"
+      }
+    }
+  ],
+  "limitations": [
+    "Two epochs only; timings include validation but exclude startup, checkpoint I/O and final replay.",
+    "Candidates ran on different cards with concurrent host and I/O load.",
+    "Runtime pilots are not independent scientific replicates or evidence of predictive superiority.",
+    "ETA scales observed epoch time and does not predict early stopping or future contention."
+  ],
+  "pilots": [
+    {
+      "correctness_and_resource_gates_passed": true,
+      "epoch_seconds": [
+        269.732135733997,
+        255.22789297699637
+      ],
+      "estimated_180_epoch_hours": 13.124000717774834,
+      "estimated_50_epoch_hours": 3.6455557549374538,
+      "mean_epoch_seconds": 262.4800143554967,
+      "minimum_physical_free_gib": 20.32330322265625,
+      "optimizer_steps_per_epoch": 413,
+      "peak_allocated_gib": 2.06290340423584,
+      "peak_process_rss_gib": 19.716270446777344,
+      "peak_reserved_gib": 2.416015625,
+      "peak_shared_cgroup_gib": 52.01814270019531,
+      "physical_gpu": "0",
+      "run_id": "r_20261001T071512Z_ea5598e5_s000_f00_a02_2b3f9d91",
+      "source_hashes": {
+        "_SUCCESS": "5abd2809590a0ac30c0c2406d477f5ece942dfdcf59ac445a1829ff81c097ea9",
+        "config.resolved.yaml": "dd6e3466a8c3e057d3fc65a24c1825566694dfd225c4bcf3889114d971815f39",
+        "diagnostics/target_minibatch_preflight.json": "f6ba69fe8dd8b7fbef054abe1e2a25e7635df16779f2037aa356941339ea3edf",
+        "diagnostics/target_minibatch_resource_samples.jsonl": "324b64db6d2cb1dcf799f5fc05cc52ce8cfd650b17a352136ab7b5ca6789f0f4",
+        "provenance/artifact_checksums.json": "4366a46fef479f17f982dd358f3d4d7d602282add34d55b812343d5b64ecf525",
+        "results/epoch_metrics.csv": "b5019e7cbcb2abd0a1112b3d90ee40555a7a55c222239fbca854f3c44c75c82a",
+        "summary.json": "10f790e67f2093e976cdc0051e87fbaca56c3255ce8978460d977fde339273e8"
+      },
+      "target_batch_size": 512,
+      "training_targets_per_second_including_validation": 795.0929159785366
+    },
+    {
+      "correctness_and_resource_gates_passed": true,
+      "epoch_seconds": [
+        220.54628852699534,
+        219.0054936309898
+      ],
+      "estimated_180_epoch_hours": 10.988794553949628,
+      "estimated_50_epoch_hours": 3.0524429316526747,
+      "mean_epoch_seconds": 219.77589107899257,
+      "minimum_physical_free_gib": 20.21978759765625,
+      "optimizer_steps_per_epoch": 209,
+      "peak_allocated_gib": 2.237151622772217,
+      "peak_process_rss_gib": 19.71987533569336,
+      "peak_reserved_gib": 2.521484375,
+      "peak_shared_cgroup_gib": 51.840824127197266,
+      "physical_gpu": "1",
+      "run_id": "r_20261001T071514Z_b891ab91_s000_f00_a02_3f586be8",
+      "source_hashes": {
+        "_SUCCESS": "bcc90078e317b12d29d11933aeeb60c10a43dd8a3db15568f27cc834296b9313",
+        "config.resolved.yaml": "087db30e6c627ac72790012d7c2d7e4cfd3ef62922a651d9bd66495964b1b154",
+        "diagnostics/target_minibatch_preflight.json": "9b33a2ffc54b5809f3f5c357254782d345a0374bfafe8592505d8eef6dd40104",
+        "diagnostics/target_minibatch_resource_samples.jsonl": "a0a04083bd24275746e320b989e4406eb8ef1b27ed9e888081a89cb48f721c5a",
+        "provenance/artifact_checksums.json": "afd7765f62c9b385547717b9cc5cea6dc327f0afbef90d168f0e5818f0e359fc",
+        "results/epoch_metrics.csv": "6274c0ecc4cccffdd60ae0c73d219595a065c240e1537ac0500e591e05130b72",
+        "summary.json": "0a941c5fc45f097a61bdcf136adf733dd86e54b2cb296143d147cbf5d1f44f54"
+      },
+      "target_batch_size": 1024,
+      "training_targets_per_second_including_validation": 949.5855026472844
+    },
+    {
+      "correctness_and_resource_gates_passed": true,
+      "epoch_seconds": [
+        207.22164620799595,
+        204.8866383269924
+      ],
+      "estimated_180_epoch_hours": 10.302707113374709,
+      "estimated_50_epoch_hours": 2.86186308704853,
+      "mean_epoch_seconds": 206.05414226749417,
+      "minimum_physical_free_gib": 19.95806884765625,
+      "optimizer_steps_per_epoch": 108,
+      "peak_allocated_gib": 2.4869508743286133,
+      "peak_process_rss_gib": 19.71811294555664,
+      "peak_reserved_gib": 2.78125,
+      "peak_shared_cgroup_gib": 52.01749801635742,
+      "physical_gpu": "2",
+      "run_id": "r_20261001T071516Z_37baa123_s000_f00_a02_0e765ab7",
+      "source_hashes": {
+        "_SUCCESS": "47beaf0aa0d74b61c2ab0e717080a8377982011e44cec2e59b01c25fde136039",
+        "config.resolved.yaml": "0868393560f411d5218d98575e1e2e641161430bdefc9701b33a14a3c965c97d",
+        "diagnostics/target_minibatch_preflight.json": "f7978e5b5962c0976b23596d48edb67ddbc102f1fdd2a7dee9335068d303e1f0",
+        "diagnostics/target_minibatch_resource_samples.jsonl": "be9e8b2b6f4a2e65cc93c268fc51cfa2a2c60cec83ad659ac8fa39d218e904e1",
+        "provenance/artifact_checksums.json": "340b164ef7f6762881aebb6ef42925de16b3cee5f3a3c6ce17da9b56f2e91015",
+        "results/epoch_metrics.csv": "cdcf2f4cb521eda463688920aae0eeca7a9373401032ceaf5b7dfd19cba02889",
+        "summary.json": "24fb1339a74cfbf9dc74c5a27a53af1aafbcb5f2df85c1c8e65d879984023b37"
+      },
+      "target_batch_size": 2048,
+      "training_targets_per_second_including_validation": 1012.8211823525306
+    }
+  ],
+  "schema": "so2_binary_target_minibatch_resource_selection_v1",
+  "selected_pilot_run_id": "r_20261001T071514Z_b891ab91_s000_f00_a02_3f586be8",
+  "selected_target_batch_size": 1024,
+  "selection_rule": "prefer_1024_if_passing_and_within_25_percent_of_fastest_otherwise_fastest_passing",
+  "selection_uses_validation_score": false,
+  "source_run_id": "r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863"
+}

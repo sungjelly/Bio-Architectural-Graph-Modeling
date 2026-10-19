@@ -1,0 +1,754 @@
+{
+  "cores": [
+    1,
+    9,
+    13,
+    15,
+    21,
+    23
+  ],
+  "created_at": "2026-10-17T04:48:52.471790+00:00",
+  "figures": {
+    "core_01": {
+      "pdf": "core_01_five_method_segmentation.pdf",
+      "png": "core_01_five_method_segmentation.png"
+    },
+    "core_09": {
+      "pdf": "core_09_five_method_segmentation.pdf",
+      "png": "core_09_five_method_segmentation.png"
+    },
+    "core_13": {
+      "pdf": "core_13_five_method_segmentation.pdf",
+      "png": "core_13_five_method_segmentation.png"
+    },
+    "core_15": {
+      "pdf": "core_15_five_method_segmentation.pdf",
+      "png": "core_15_five_method_segmentation.png"
+    },
+    "core_21": {
+      "pdf": "core_21_five_method_segmentation.pdf",
+      "png": "core_21_five_method_segmentation.png"
+    },
+    "core_23": {
+      "pdf": "core_23_five_method_segmentation.pdf",
+      "png": "core_23_five_method_segmentation.png"
+    },
+    "legend": {
+      "pdf": "cluster_color_keys.pdf",
+      "png": "cluster_color_keys.png"
+    },
+    "overview": {
+      "pdf": "six_core_five_method_segmentation.pdf",
+      "png": "six_core_five_method_segmentation.png"
+    }
+  },
+  "files": {
+    "figures/cluster_color_keys.pdf": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/cluster_color_keys.pdf",
+      "sha256": "50a15b973e3edcbd13f30039fc37ec8bd1ae9a75c106f52533e9323c60f60454",
+      "size_bytes": 19276
+    },
+    "figures/cluster_color_keys.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/cluster_color_keys.png",
+      "sha256": "96b902fe4fa2f80bc2f6d280541b73c0f9288350d9769a76a34a4cee333349da",
+      "size_bytes": 381345
+    },
+    "figures/core_01_five_method_segmentation.pdf": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_01_five_method_segmentation.pdf",
+      "sha256": "2eef33a7bd4dd16f34f103d16ff4872025665e7dc00f9d21554ee97445d72fd6",
+      "size_bytes": 598508
+    },
+    "figures/core_01_five_method_segmentation.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_01_five_method_segmentation.png",
+      "sha256": "e44fae01a2c802cf95af4709ebfc2fd0af088351861dfed2381a0ac835380671",
+      "size_bytes": 979041
+    },
+    "figures/core_09_five_method_segmentation.pdf": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_09_five_method_segmentation.pdf",
+      "sha256": "2e525ebda2bb66a9bb6955885c071ecccfb6fb75699dd3c7ea2072ae4be848de",
+      "size_bytes": 575618
+    },
+    "figures/core_09_five_method_segmentation.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_09_five_method_segmentation.png",
+      "sha256": "df74fce6a0e4690aea4197df373baeec511436379f455eb33cc255f24142faed",
+      "size_bytes": 970712
+    },
+    "figures/core_13_five_method_segmentation.pdf": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_13_five_method_segmentation.pdf",
+      "sha256": "797dec3d97716bb5c251abc9d6a2432a3d7dc3ae47300ea12cf35d60802917c4",
+      "size_bytes": 343120
+    },
+    "figures/core_13_five_method_segmentation.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_13_five_method_segmentation.png",
+      "sha256": "c246224c68dd65aefe8318c6cf77c3d6ae31523d4d02f915d2de028feb4f1b7e",
+      "size_bytes": 529644
+    },
+    "figures/core_15_five_method_segmentation.pdf": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_15_five_method_segmentation.pdf",
+      "sha256": "a298b289da2ea87e83414ba0f13b6e3f71814d8c17b38a33897208d8e48308fc",
+      "size_bytes": 614743
+    },
+    "figures/core_15_five_method_segmentation.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_15_five_method_segmentation.png",
+      "sha256": "5c9feb9f9d51346af71cfd895f7dc04a41075f68c89a98614c9182b080d5fd22",
+      "size_bytes": 1131958
+    },
+    "figures/core_21_five_method_segmentation.pdf": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_21_five_method_segmentation.pdf",
+      "sha256": "05fb1ee1ecfa433b9d7abc2e0468653f1c697db64b4359ab769c6e34044f2d89",
+      "size_bytes": 326431
+    },
+    "figures/core_21_five_method_segmentation.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_21_five_method_segmentation.png",
+      "sha256": "63aac7b7cb542ba1c6877f44f9f2e4a758220a8c7bd3e484ba19137ce1ca15fc",
+      "size_bytes": 546821
+    },
+    "figures/core_23_five_method_segmentation.pdf": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_23_five_method_segmentation.pdf",
+      "sha256": "872d86a879faa2617aa54bd257b56fd10f3f94b79cb6318a42447f9b726786c2",
+      "size_bytes": 624158
+    },
+    "figures/core_23_five_method_segmentation.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/core_23_five_method_segmentation.png",
+      "sha256": "50ff68f56286db6643270fb6ab3e987cbb75be439a939bc07dd36f50de79068c",
+      "size_bytes": 1241802
+    },
+    "figures/six_core_five_method_segmentation.pdf": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/six_core_five_method_segmentation.pdf",
+      "sha256": "7a031445a966893be7116a76a44bf1550d02c58e461ee418c1217375f3bda53c",
+      "size_bytes": 2059757
+    },
+    "figures/six_core_five_method_segmentation.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/figures/six_core_five_method_segmentation.png",
+      "sha256": "5b36106623965edb8b8005f6ac295f47130f042bc83ccb8295ea4dd4203df558",
+      "size_bytes": 3779326
+    },
+    "report/cluster_color_keys.csv": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/report/cluster_color_keys.csv",
+      "sha256": "8d9eb2e3e4e65994abe73784a46c34fff7de1f9e7a062112fe72aa91f6b42af6",
+      "size_bytes": 3342
+    },
+    "report/cluster_color_keys.json": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/report/cluster_color_keys.json",
+      "sha256": "8956630c49bae02fb6f29b8c6227a8c00e9eb70474ff3c52c108523f9ed30889",
+      "size_bytes": 14962
+    },
+    "report/comparison_ari.csv": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/report/comparison_ari.csv",
+      "sha256": "57d17ea3433442ff60b4d0168d6c84793a27a3315f1317373bf2bb492bebcaa3",
+      "size_bytes": 8968
+    },
+    "report/comparison_cluster_counts.csv": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/report/comparison_cluster_counts.csv",
+      "sha256": "aa6379d5819ee068818ed673cda3d2fbe1b57ef08473fc45cb82e18b9b84f362",
+      "size_bytes": 1030
+    },
+    "report/comparison_metrics.json": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/report/comparison_metrics.json",
+      "sha256": "d3c3277c116c7469acac8c964552690ea9a2872c8002ce9ffcdf7713b707d37a",
+      "size_bytes": 9502
+    },
+    "report/index.html": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/report/index.html",
+      "sha256": "8c429d566dabed9fc039e9e5fb28a4608c0287da3c8f77f84c16a43fca930742",
+      "size_bytes": 5950924
+    },
+    "report/segmentation_qc.json": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/report/segmentation_qc.json",
+      "sha256": "2a95fa58ea6ec1cc10afcc17f1b238c9ceb3a807f1198ee58aaf77d4b7c67ffb",
+      "size_bytes": 1458
+    }
+  },
+  "inputs": {
+    "cells": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/cells.parquet",
+      "sha256": "d485d5e202488e40814a5b979dfa425bfca5da12287f32d4c6002536a55acac1",
+      "size_bytes": 5493230
+    },
+    "clustering_summary": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/summary.json",
+      "sha256": "b5e145b2663060bdd1b2e4dce20ff1a4dd6902b448c9426238aa92ff9776f926",
+      "size_bytes": 7339
+    },
+    "h0_labels": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/h0_labels.npy",
+      "sha256": "9ca66fd2c0c9aed384535ba6aace269839b7767b23e26a88c77a146256d93afa",
+      "size_bytes": 1630764
+    },
+    "hL_labels": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/hL_labels.npy",
+      "sha256": "abcdc518ef600eaa3e55edc452df81dc75cbbe2dc544f828135ba76316da16c0",
+      "size_bytes": 1630764
+    },
+    "historical_color_keys": {
+      "path": "/workspace/BAGM/reports/analyses/so12_embeddings_leiden/cluster_color_keys.csv",
+      "sha256": "fb03edc66489595b2224d0417e225317b5e72ffb48ab2d9ea25a13526a9d15bd",
+      "size_bytes": 1136
+    },
+    "pca_checksums": {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/checksums.json",
+      "sha256": "1013b827a76f0519277cecb5e9305059d88a406dc158619a34baa38b1f39b6dc",
+      "size_bytes": 10022
+    },
+    "pca_run_dir": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4",
+    "pca_sources": {
+      "_SUCCESS": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/_SUCCESS",
+        "sha256": "294c44ffed66f824e7d3c67b9740f91bc10349bd44edfbec33de46a602ada717",
+        "size_bytes": 50
+      },
+      "cells.csv.gz": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/cells.csv.gz",
+        "sha256": "d339e066d33713e9448d0272c18a42aa98cf42449fac91e351f079c9e658b5d5",
+        "size_bytes": 7580080
+      },
+      "methods/kernel_pca/clusters.csv.gz": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/methods/kernel_pca/clusters.csv.gz",
+        "sha256": "6548d395af88341d428b76d2013da992302c53351a1754ccca5597e9710181c0",
+        "size_bytes": 1426579
+      },
+      "methods/pca/clusters.csv.gz": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/methods/pca/clusters.csv.gz",
+        "sha256": "ff39bf9b243f50e04c570fe7b6a928b7793e62f1b28ea1d813d25a18affd3cf8",
+        "size_bytes": 1414892
+      },
+      "methods/spatial_pca/clusters.csv.gz": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/methods/spatial_pca/clusters.csv.gz",
+        "sha256": "3cc603c98f8a7b7abfa3a1e01e8b824a2e7cc4fe4a0beac57e584bcc7684c45d",
+        "size_bytes": 1299781
+      },
+      "resolved_config.json": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/resolved_config.json",
+        "sha256": "ccef571fc804b445a3bdc345077557b5c7847f83d55679cfcfd62b6f6fe7d819",
+        "size_bytes": 2615
+      }
+    },
+    "raw_polygons": {
+      "SO_1": {
+        "path": "/workspace/BAGM/data/raw/26040302SO_1-polygons.csv/26040302SO_1-polygons.csv",
+        "sha256": "72b89055b30639ec9477b2f1ea9c16a08eeb2b88fd2bb21609da11e1ba2e1ee0",
+        "size_bytes": 169623108
+      },
+      "SO_2": {
+        "path": "/workspace/BAGM/data/raw/26040302SO_2-polygons.csv/26040302SO_2-polygons.csv",
+        "sha256": "bc1457eca09583557fc36696daa87f0a628d0fa37c0ba073b8ea2abf47f8172e",
+        "size_bytes": 235642998
+      }
+    },
+    "renderer": {
+      "path": "/workspace/BAGM/scripts/analysis/so12_hidden_maps.py",
+      "sha256": "b335a25a03279756e4bcbd304e318e7c872cf31745a18e214512c0f7c61630ce",
+      "size_bytes": 30992
+    }
+  },
+  "methods": [
+    "h0",
+    "hL",
+    "pca",
+    "kernel_pca",
+    "spatial_pca"
+  ],
+  "partition_comparison": {
+    "interpretation": "ARI measures agreement of existing partitions on the same cells; 1 is identical membership up to relabeling, approximately 0 is chance-level agreement, and negative values are possible. It is not a biological-validity or model-performance ranking.",
+    "method_order": [
+      "h0",
+      "hL",
+      "pca",
+      "kernel_pca",
+      "spatial_pca"
+    ],
+    "metric": "adjusted_rand_index",
+    "pipeline_comparability": {
+      "h0_hL": "256-dimensional direct hidden representations; cosine k30 exhaustive FP32 neighbor search; unweighted undirected-union graph; Leiden until convergence.",
+      "limitation": "Observed differences combine representation and clustering-pipeline differences. These comparisons are not a controlled encoder ablation. Cluster IDs and colors are independent across methods.",
+      "previous_PCA_methods": "32-dimensional encoders; Euclidean k30 approximate HNSW neighbors; exponential distance weights and arithmetic-mean symmetrization; Leiden for two iterations. Original partitions are reused.",
+      "shared": "All 407659 mapped cells; primary Leiden resolution 1.0 and seed 0. Subsets retain the full-cohort labels; no subset is reclustered.",
+      "spatial_PCA": "Training-fitted neighborhood-augmented PCA; 15 neighbors within 50 micrometres, within the same core and slide, spatial weight 0.3."
+    },
+    "populations": {
+      "all_cells": {
+        "cells": 407659,
+        "observed_cluster_counts": {
+          "h0": 16,
+          "hL": 22,
+          "kernel_pca": 21,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.3701562885697946,
+            0.2460894284501147,
+            0.22243367077472284,
+            0.23682493279767716
+          ],
+          [
+            0.3701562885697946,
+            1.0,
+            0.2849100927644078,
+            0.27736674118010246,
+            0.39323740331417256
+          ],
+          [
+            0.2460894284501147,
+            0.2849100927644078,
+            1.0,
+            0.6500466027665274,
+            0.5141487633669886
+          ],
+          [
+            0.22243367077472284,
+            0.27736674118010246,
+            0.6500466027665274,
+            1.0,
+            0.49926449469408807
+          ],
+          [
+            0.23682493279767716,
+            0.39323740331417256,
+            0.5141487633669886,
+            0.49926449469408807,
+            1.0
+          ]
+        ]
+      },
+      "core_01": {
+        "cells": 8924,
+        "observed_cluster_counts": {
+          "h0": 16,
+          "hL": 20,
+          "kernel_pca": 20,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.40853373247226515,
+            0.2522532925210394,
+            0.21222539706053667,
+            0.2591819380280916
+          ],
+          [
+            0.40853373247226515,
+            1.0,
+            0.2642013830959738,
+            0.26076186693672987,
+            0.3732001914769442
+          ],
+          [
+            0.2522532925210394,
+            0.2642013830959738,
+            1.0,
+            0.6274855908576277,
+            0.5150181889253385
+          ],
+          [
+            0.21222539706053667,
+            0.26076186693672987,
+            0.6274855908576277,
+            1.0,
+            0.4985762221818536
+          ],
+          [
+            0.2591819380280916,
+            0.3732001914769442,
+            0.5150181889253385,
+            0.4985762221818536,
+            1.0
+          ]
+        ]
+      },
+      "core_09": {
+        "cells": 17223,
+        "observed_cluster_counts": {
+          "h0": 15,
+          "hL": 17,
+          "kernel_pca": 20,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.5194747978317628,
+            0.15410690807952493,
+            0.13974715294305937,
+            0.1657737969969934
+          ],
+          [
+            0.5194747978317628,
+            1.0,
+            0.1521412685499673,
+            0.1537514995409712,
+            0.22538269363403005
+          ],
+          [
+            0.15410690807952493,
+            0.1521412685499673,
+            1.0,
+            0.6869694020493112,
+            0.4894280564241086
+          ],
+          [
+            0.13974715294305937,
+            0.1537514995409712,
+            0.6869694020493112,
+            1.0,
+            0.5004593598298026
+          ],
+          [
+            0.1657737969969934,
+            0.22538269363403005,
+            0.4894280564241086,
+            0.5004593598298026,
+            1.0
+          ]
+        ]
+      },
+      "core_13": {
+        "cells": 5345,
+        "observed_cluster_counts": {
+          "h0": 14,
+          "hL": 11,
+          "kernel_pca": 20,
+          "pca": 19,
+          "spatial_pca": 16
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.29681764454494264,
+            0.2684788506015772,
+            0.2520088170988383,
+            0.31812185826146316
+          ],
+          [
+            0.29681764454494264,
+            1.0,
+            0.3660572095092328,
+            0.32628201294376186,
+            0.6144384932203
+          ],
+          [
+            0.2684788506015772,
+            0.3660572095092328,
+            1.0,
+            0.7842185565964487,
+            0.5708812714125812
+          ],
+          [
+            0.2520088170988383,
+            0.32628201294376186,
+            0.7842185565964487,
+            1.0,
+            0.5165866317644471
+          ],
+          [
+            0.31812185826146316,
+            0.6144384932203,
+            0.5708812714125812,
+            0.5165866317644471,
+            1.0
+          ]
+        ]
+      },
+      "core_15": {
+        "cells": 38145,
+        "observed_cluster_counts": {
+          "h0": 16,
+          "hL": 20,
+          "kernel_pca": 21,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.25907083555627336,
+            0.5027217531894128,
+            0.29530956713365003,
+            0.3034986792151868
+          ],
+          [
+            0.25907083555627336,
+            1.0,
+            0.29389888149070453,
+            0.45706619160050815,
+            0.705280745408732
+          ],
+          [
+            0.5027217531894128,
+            0.29389888149070453,
+            1.0,
+            0.4872611574493128,
+            0.3850083192753608
+          ],
+          [
+            0.29530956713365003,
+            0.45706619160050815,
+            0.4872611574493128,
+            1.0,
+            0.5508869436317149
+          ],
+          [
+            0.3034986792151868,
+            0.705280745408732,
+            0.3850083192753608,
+            0.5508869436317149,
+            1.0
+          ]
+        ]
+      },
+      "core_21": {
+        "cells": 4897,
+        "observed_cluster_counts": {
+          "h0": 15,
+          "hL": 17,
+          "kernel_pca": 21,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.2598357920555409,
+            0.22893245846600957,
+            0.2720127546289934,
+            0.19181083348012737
+          ],
+          [
+            0.2598357920555409,
+            1.0,
+            0.3219567299800206,
+            0.33668952601567115,
+            0.454873188776426
+          ],
+          [
+            0.22893245846600957,
+            0.3219567299800206,
+            1.0,
+            0.6759956600156052,
+            0.45972916917088563
+          ],
+          [
+            0.2720127546289934,
+            0.33668952601567115,
+            0.6759956600156052,
+            1.0,
+            0.42999207706344644
+          ],
+          [
+            0.19181083348012737,
+            0.454873188776426,
+            0.45972916917088563,
+            0.42999207706344644,
+            1.0
+          ]
+        ]
+      },
+      "core_23": {
+        "cells": 43462,
+        "observed_cluster_counts": {
+          "h0": 16,
+          "hL": 18,
+          "kernel_pca": 21,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.30274610556351406,
+            0.21637892178549345,
+            0.22599664787470672,
+            0.28243155897057737
+          ],
+          [
+            0.30274610556351406,
+            1.0,
+            0.2893976123259978,
+            0.3134719762949041,
+            0.5768611791442425
+          ],
+          [
+            0.21637892178549345,
+            0.2893976123259978,
+            1.0,
+            0.7705496519770451,
+            0.4913647338795224
+          ],
+          [
+            0.22599664787470672,
+            0.3134719762949041,
+            0.7705496519770451,
+            1.0,
+            0.5318511209859191
+          ],
+          [
+            0.28243155897057737,
+            0.5768611791442425,
+            0.4913647338795224,
+            0.5318511209859191,
+            1.0
+          ]
+        ]
+      },
+      "requested_cores": {
+        "cells": 117996,
+        "observed_cluster_counts": {
+          "h0": 16,
+          "hL": 22,
+          "kernel_pca": 21,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.3073985844326938,
+            0.3099199945761966,
+            0.22349538696888643,
+            0.26797619278849255
+          ],
+          [
+            0.3073985844326938,
+            1.0,
+            0.3223382177716715,
+            0.36097262499127725,
+            0.6019284411347983
+          ],
+          [
+            0.3099199945761966,
+            0.3223382177716715,
+            1.0,
+            0.6284958813536595,
+            0.479630308650992
+          ],
+          [
+            0.22349538696888643,
+            0.36097262499127725,
+            0.6284958813536595,
+            1.0,
+            0.5103868779359346
+          ],
+          [
+            0.26797619278849255,
+            0.6019284411347983,
+            0.479630308650992,
+            0.5103868779359346,
+            1.0
+          ]
+        ]
+      }
+    },
+    "schema": "so12_five_method_partition_comparison_v1"
+  },
+  "qc": {
+    "all_cell_count": 407659,
+    "cells_per_core": {
+      "1": 8924,
+      "9": 17223,
+      "13": 5345,
+      "15": 38145,
+      "21": 4897,
+      "23": 43462
+    },
+    "cluster_counts": {
+      "h0": 16,
+      "hL": 22,
+      "kernel_pca": 21,
+      "pca": 19,
+      "spatial_pca": 17
+    },
+    "color_sources": {
+      "h0": "deterministic_turbo_0.04_to_0.96",
+      "hL": "deterministic_turbo_0.04_to_0.96",
+      "kernel_pca": "existing_color_keys_verified_against_original_palette",
+      "pca": "existing_color_keys_verified_against_original_palette",
+      "spatial_pca": "existing_color_keys_verified_against_original_palette"
+    },
+    "polygons": {
+      "alignment_mismatches": 0,
+      "alignment_rule": "centroid_tolerance_or_polygon_covers_coordinate",
+      "centroid_tolerance_exceeded": 1,
+      "centroid_tolerance_um": 5.0,
+      "containment_accepted": 1,
+      "coordinate_outside_polygon_count": 8,
+      "covered_cells": 117996,
+      "maximum_centroid_distance_um": 6.798546332601801,
+      "median_centroid_distance_um": 0.39748949765896224,
+      "pixel_size_um": 0.120281,
+      "repaired_cells": 0,
+      "selected_vertex_rows": 2699846,
+      "simple_polygon_without_holes_count": 117996,
+      "source_rows_scanned": 9930213
+    },
+    "polygons_sampled": false,
+    "selected_cell_count": 117996,
+    "slide_qualified_join": {
+      "all_source_and_target_cells_matched": true,
+      "coordinate_atol_um": 1e-08,
+      "keys": [
+        "slide",
+        "fov",
+        "cell_ID"
+      ],
+      "one_to_one": true
+    }
+  },
+  "rendering": {
+    "actual_cell_polygons": true,
+    "coordinate_units": "micrometres",
+    "equal_physical_aspect": true,
+    "html_portable_embedded_images": true,
+    "invert_y": true,
+    "method_namespaces_independent": true,
+    "orientation_basis": "repository CosMx global-image plotting convention",
+    "overview_png_dpi": 220,
+    "per_core_png_dpi": 300,
+    "polygon_layer_rasterized_in_pdf": true,
+    "scale_bar_um": 100,
+    "shared_bounds_per_core": {
+      "1": [
+        8785.8294202,
+        10358.936506799999,
+        -288.1692198,
+        1756.8002298
+      ],
+      "9": [
+        4604.028914275001,
+        8353.602653725,
+        6523.112269275,
+        10285.315513725
+      ],
+      "13": [
+        719.674300275,
+        2841.4852667249997,
+        5978.1190582750005,
+        8669.340278725
+      ],
+      "15": [
+        6693.65569215,
+        11269.83053385,
+        2141.5009661500003,
+        5430.54882685
+      ],
+      "21": [
+        4425.43267845,
+        6863.17973355,
+        5381.426066450001,
+        6985.86635355
+      ],
+      "23": [
+        4016.2848288499995,
+        8098.898615149999,
+        10864.36328285,
+        13450.320586150001
+      ]
+    }
+  },
+  "schema": "so12_hidden_and_pca_segmentation_comparison_v1",
+  "status": "complete"
+}

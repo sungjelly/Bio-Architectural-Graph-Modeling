@@ -1,0 +1,71 @@
+{
+  "core": "SO2-C20",
+  "n_cells": 12155,
+  "mask_seed": 445111010811834950,
+  "mask_checksum": "8c6634343611f038cc9eaa3f557207c4e60c4e9df527f61728e0bca36e2b8e16",
+  "masked_entries": 6073238,
+  "metrics": {
+    "standardized": {
+      "n_masked": 6073238,
+      "masked_huber": 0.23993190316668764,
+      "masked_mse": 0.940694902472706,
+      "masked_mae": 0.3773388402155341,
+      "pooled_pearson": 0.242335032141213,
+      "masked_r2": 0.02776375981785939,
+      "gene_pearson_mean": 0.22387989157070398,
+      "gene_pearson_median": 0.1966178712406115,
+      "cell_pearson_mean": 0.18456245521732265,
+      "n_valid_genes": 1000,
+      "n_valid_cells": 12128,
+      "masked_rmse": 0.9698942738632423,
+      "n_cells": 12155,
+      "n_undefined_cells": 27,
+      "n_undefined_genes": 0
+    },
+    "log1p": {
+      "n_masked": 6073238,
+      "masked_huber": 0.03723343746370194,
+      "masked_mse": 0.07628355613162269,
+      "masked_mae": 0.11297170046365625,
+      "pooled_pearson": 0.5262374660728742,
+      "masked_r2": 0.2558467236420915,
+      "gene_pearson_mean": 0.2238798915461133,
+      "gene_pearson_median": 0.19661787136711686,
+      "cell_pearson_mean": 0.4118834573115048,
+      "n_valid_genes": 1000,
+      "n_valid_cells": 11966,
+      "masked_rmse": 0.27619477933448106,
+      "n_cells": 12155,
+      "n_undefined_cells": 189,
+      "n_undefined_genes": 0
+    }
+  },
+  "native_metric_replay": {
+    "masked_huber": 0.2399318963289261,
+    "masked_mae": 0.37733885645866394,
+    "masked_mse": 0.9406949281692505,
+    "masked_r2": 0.027763843536376953,
+    "mean_y_true": -0.001173501368612051,
+    "mean_y_pred": -0.17335402965545654
+  },
+  "native_absolute_differences": {
+    "masked_huber": 0.0,
+    "masked_mae": 0.0,
+    "masked_mse": 0.0,
+    "masked_r2": 0.0,
+    "mean_y_true": 0.0,
+    "mean_y_pred": 0.0
+  },
+  "prior_float64_absolute_differences": {
+    "standardized": {
+      "masked_mae": 0.0,
+      "masked_mse": 0.0
+    },
+    "log1p": {
+      "masked_mae": 0.0,
+      "masked_mse": 0.0
+    }
+  },
+  "inference_seconds": 2.3526144090574235,
+  "duration_seconds": 15.911867956863716
+}

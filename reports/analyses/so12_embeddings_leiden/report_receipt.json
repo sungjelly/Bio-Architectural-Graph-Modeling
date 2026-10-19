@@ -1,0 +1,29 @@
+{
+  "html": "report/index.html",
+  "summary": "report/report_summary.csv",
+  "figures": {
+    "embedding": {
+      "png": "embedding_dimensions.png",
+      "pdf": "embedding_dimensions.pdf"
+    },
+    "spatial_pca": {
+      "png": "spatial_pca.png",
+      "pdf": "spatial_pca.pdf"
+    },
+    "spatial_kernel_pca": {
+      "png": "spatial_kernel_pca.png",
+      "pdf": "spatial_kernel_pca.pdf"
+    },
+    "spatial_spatial_pca": {
+      "png": "spatial_spatial_pca.png",
+      "pdf": "spatial_spatial_pca.pdf"
+    },
+    "composition": {
+      "png": "cluster_composition.png",
+      "pdf": "cluster_composition.pdf"
+    }
+  },
+  "embedding_display_cells": 30000,
+  "spatial_display_cells_per_method": 407659,
+  "sampling_affects_clustering": false
+}

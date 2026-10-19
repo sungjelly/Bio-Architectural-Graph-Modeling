@@ -1,0 +1,17 @@
+{
+  "code": {
+    "scripts/analysis/so12_hidden_clustering.py": "40e8a58c32ebc210ad52341d417df41fd194ada956d86985244b0a147b1cfce8",
+    "scripts/analysis/so12_hidden_maps.py": "b335a25a03279756e4bcbd304e318e7c872cf31745a18e214512c0f7c61630ce",
+    "scripts/analysis/so12_paper_test_clustering.py": "3f611bf6dcada219e12c749a8cb378e3292faaffa530abe7cfcf5e240a91d122",
+    "src/spatial_benchmark/attention_niche_geometry.py": "7a0e8f0805ef73b3aaf4c62f39b97065387fd95d0be283690954407245e6a835",
+    "src/spatial_benchmark/data.py": "85f4ac46e89fbb5823d9d30c758aa8fd831d56a160fa6b9e15ace29a68f2fd74",
+    "src/spatial_benchmark/relative_qkv_embedding_clustering.py": "ce91615830cbb7ae96aecb7adfb21d33e0f6639f08e239e7ede788955f434c13"
+  },
+  "files": {
+    "cells.csv.gz": "d68ee95082b948b6a3a87ce01ee5148582e012f3e037ada6d58ee3bac7529cb1",
+    "embeddings/core_15_receipt.json": "dbb7f87ec0414589df2268f17319e20c7427b1ea4f5483eb02321b9c0443c210",
+    "embeddings/core_23_receipt.json": "95eaad6634c8989a949ce6ae4f569b1de1445d08606005c4fc23e9a83259036c",
+    "embeddings/hL.npy": "27a6532b6d24d207361360faa521da5a46a587adc0c402deb05f0cf647315c61",
+    "extraction_manifest.json": "540ac19c2a8681a11d1243633acdf45cba9561116e28b55e7a453161d8cc9e45"
+  }
+}

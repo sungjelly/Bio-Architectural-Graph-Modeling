@@ -1,0 +1,207 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so2_genemae_ten_percent_masking
+title: SO2 GeneMAE reconstruction under three 10% masking techniques
+status: verified
+outcome: inconclusive
+experiment_type: descriptive_analysis
+method_family: genemae
+lifecycle_stage: exploratory_screen
+study_axis: masking_comparison
+campaign_ids:
+- cmp_20261005_so2_genemae_masking
+method:
+  name: Matched SO2 GeneMAE masking comparison
+  model_family: Dual-path GeneMAE
+  graph_context: Spatial k15 union, Gaussian distance feature, coordinate-only tiles
+    of at most 7000 cells
+  masking_or_perturbation: 10% whole cells, 10% entries per cell, or contiguous 10%
+    cell blocks; all-gene masking for hidden cells
+  evaluation_design: All 14 cores fitted; 3 seeds per method, 200 epochs; identical
+    3 replicates per evaluation task; equal-core aggregation
+  implementation_version: held_in_so2_genemae_masking_v1; executed source and configs
+    preserved in each run
+conclusion:
+  question: How does whole-cell reconstruction compare with gene-entry and spatial-block
+    masking?
+  estimand: Three separately reported fitted-cohort masked log1p-count reconstruction
+    tasks
+  observed_result: Whole-cell-trained GeneMAE has equal-core Huber 0.038705 on fixed
+    10% whole-cell masks, 7.93% improvement over visible per-gene means; 14/14 cores
+    and 3/3 seeds favor it. The prespecified reconstruction baseline gate is supported.
+    On the same whole-cell evaluation masks, whole-cell training has 21.86% lower
+    Huber than training with individual genes masks; 11.08% lower Huber than training
+    with spatial block masks. The all-zero predictor has lower MAE (0.099643 versus
+    0.148733); its Huber is 0.050397 and MSE 0.112680, compared with model MSE 0.079474.
+    This metric disagreement makes the primary loss and positive-expression errors
+    important to interpretation. All nine models completed 200 training epochs. Seven
+    original runs passed all execution checks; individual-gene seeds 1 and 2 failed
+    the final exact CPU replay/invariance assertion. Independent fresh CPU replay
+    and hidden-target checks passed, but full evaluation replays failed the prespecified
+    numerical agreement gate only for median gene-wise Pearson (maximum differences
+    6.24e-7 and 7.36e-7). The strict gate remains failed; the nine-run verification
+    criterion is not met. All seeds remain in this explicitly descriptive comparison,
+    using their original recorded evaluations. Reconstruction loss replay differences
+    and every secondary metric discrepancy are retained in replay_audit.json. The
+    overall campaign outcome is inconclusive under its full verification contract;
+    the narrower whole-cell baseline result is supported.
+  strongest_alternative_explanation: Sparsity, cell identity, regional fields and
+    segmentation spillover rather than useful cell interactions
+  controls:
+  - Visible gene mean, zero and neighbor mean
+  - Identical evaluation masks across all nine models
+  - Frozen model graph relabeling and self-edge-only ablation on whole-cell masks
+  - Synthetic neighbor-smoothing recovery, constant-profile model optimization and
+    hidden-target invariance checks; no planted biological interaction recovery claim
+  remaining_uncertainty: Sparsity, broad spatial fields, cell identity and segmentation
+    spillover remain alternative explanations. Visible means, neighbor smoothing and
+    frozen-model graph ablations address some shortcuts but do not replace trained
+    matched self/morphology/regional controls. Node-label permutation is not a confounder-preserving
+    biological null. No patient-held-out split, population interval, calibration,
+    biological mechanism or causal effect is established. All uncertainty bars describe
+    technical seed variability only. Training masks are shared across seeds within
+    each method, while initialization, dropout and traversal order vary with seed.
+    Tiling removes cross-tile edges and may especially limit block reconstruction.
+    Equal epoch budgets visit every tile; spatial-block tiles without targets skip
+    optimization, so optimizer-step counts differ. Pooled Pearson can reflect differences
+    in average abundance between genes; mean gene-wise Pearson is reported separately.
+    The full tables expose positive and zero errors, undefined correlations and core
+    heterogeneity.
+  maximum_defensible_claim: Descriptive matched reconstruction comparison within the
+    fitted SO2 cohort, conditional on the specified architecture, masks and training
+    budget
+evidence:
+  predictive_gain:
+    status: not_tested
+    summary: Patient-held-out graph-specific gain is not tested; the narrower fitted-cohort
+      whole-cell baseline gate is supported
+  stability:
+    status: mixed
+    summary: All three seeds and masks reported; individual-gene seeds1/2 fail strict
+      numerical replay in median gene Pearson; graph, segmentation and independent-patient
+      robustness untested
+  faithfulness:
+    status: not_tested
+    summary: Graph-use ablations are diagnostic; no attribution faithfulness study
+  null_calibration:
+    status: not_tested
+    summary: Topology-preserving label permutation does not preserve biological confounders
+  patient_replication:
+    status: not_tested
+    summary: All fourteen cores belong to fitting; no independent patient test
+  external_support:
+    status: not_tested
+    summary: No orthogonal validation
+  perturbation_support:
+    status: not_tested
+    summary: No biological perturbation
+provenance:
+  created_at_utc: '2026-10-05T09:08:13.195054Z'
+  updated_at_utc: '2026-10-05T09:08:13.195054Z'
+  git_commit: f2776df3769620e7c2b1728116a71ca086c7e3b4
+  run_ids:
+  - r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b
+  - r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a
+  - r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608
+  - r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275
+  - r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d
+  - r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f
+  - r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d
+  - r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b
+  - r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656
+  expected_seeds:
+  - 0
+  - 1
+  - 2
+  included_seeds:
+  - 0
+  - 1
+  - 2
+  expected_folds:
+  - 0
+  included_folds:
+  - 0
+  failed_or_excluded_runs:
+  - run_id: r_20261005T064812Z_79664b14_s000_f00_a01_e8cf9d38
+    reason: 'diagnostic resource pilot: spatial_benchmark.identifiers.IdentifierError:
+      Unsupported canonical JSON value: bool'
+  - run_id: r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063
+    reason: diagnostic resource pilot
+  - run_id: r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d
+    reason: 'production failure: ValueError: Checkpoint replay or hidden-target invariance
+      failed; retained in the descriptive comparison with failed verification explicitly
+      flagged'
+  - run_id: r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b
+    reason: 'production failure: ValueError: Checkpoint replay or hidden-target invariance
+      failed; retained in the descriptive comparison with failed verification explicitly
+      flagged'
+  - run_id: r_20261005T084509Z_b35cac84_s001_f00_a02_a66df110
+    reason: 'production failure: Unknown root fields: runtime'
+  - run_id: r_20261005T084829Z_b35cac84_s001_f00_a03_8bd59a60
+    reason: 'production failure:        [3.814500e+06, 4.483183e-02, 9.088973e-02,
+      ..., 1.109278e-02,...'
+  - run_id: r_20261005T085114Z_b35cac84_s002_f00_a02_fbab1145
+    reason: 'production failure:        [3.814500e+06, 4.484702e-02, 9.091845e-02,
+      ..., 1.109516e-02,...'
+  sources:
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b/_SUCCESS
+    sha256: 88748ebaa7897e8c42e5392340a7b5bcb2a0d89531ffb75f155cbfd143803a2c
+    verification_status: verified
+    run_id: r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a/_SUCCESS
+    sha256: a48ab8f2164fa5ef02ff6efdae482a164da9804f4fa9982f321de94a2737e4e4
+    verification_status: verified
+    run_id: r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608/_SUCCESS
+    sha256: c9b4ddc07cc3b1c3657605ea07d2b65cfa61d2977ef35600650706ede4f83e1c
+    verification_status: verified
+    run_id: r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275/_SUCCESS
+    sha256: cc800238725805c9bd393c41cf0e099d9c4401bcf3e877f9f313d640185b4e54
+    verification_status: verified
+    run_id: r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d/_FAILED
+    sha256: da5edf727b6b9a3d8c07b76e872561c4fd233315e70b8a64577a07907a9dde56
+    verification_status: verified
+    run_id: r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f/_SUCCESS
+    sha256: b0436f90882cd9c34d064027f5bd299cddcf5ea36113d8b76c2d4d4ac0fd344e
+    verification_status: verified
+    run_id: r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d/_SUCCESS
+    sha256: a958fdbfbf631766fdbbb62c3c318fbd09ec8a21699f497e6cfe93bc66958a4d
+    verification_status: verified
+    run_id: r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b/_FAILED
+    sha256: e8da4be1f154b547423e97770d8ace3ae7d127cef0528648d5932daa8aeed42c
+    verification_status: verified
+    run_id: r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656/_SUCCESS
+    sha256: 908d03b66995405b29abb20e56c372e96f50a30730503a966ca49617d7160123
+    verification_status: verified
+    run_id: r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656
+  - kind: report
+    root: report
+    path: analyses/so2_genemae_masking/v1/manifest.json
+    sha256: 794eb2662f3a6fec91792cb93dc8fba68e949c61d1f30a97fa0fd8481a2ed2c1
+    verification_status: verified
+files: []

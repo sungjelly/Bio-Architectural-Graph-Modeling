@@ -1,0 +1,10 @@
+{
+  "ops/supervisor/bagm-so12-cancer-baseline-leiden.conf": "e5e63ab4a2176ad3444e2aa66969cdeb997fe2dec518757d91225881d9d15807",
+  "ops/supervisor/bagm-so12-cancer-baseline-leiden.sh": "cb57806b5aed83c831a200539b6a023b2d92f85fe0f081c3bb8051d0237fe078",
+  "scripts/analysis/run_so12_cancer_baseline_leiden.py": "21fac27839e67b5105eee1325f178a586c05cc53c372a41a55ac4347d0631463",
+  "scripts/analysis/run_so12_cancer_neural.py": "113c9e03642fc29e3957d5cc949c51f8e119601aea42eeb595d2ffc3d768e1b3",
+  "scripts/analysis/so12_cancer_clustering.py": "545a7b73dde734a0549b7ce268ed06067124a7491bbc80057cd6f8274df756ba",
+  "scripts/analysis/so12_cancer_metrics.py": "099d256bd6118c3117aa5f050e5b409c20ca499e3f8e8249283ade19e36f49b1",
+  "scripts/analysis/so12_hidden_clustering.py": "40e8a58c32ebc210ad52341d417df41fd194ada956d86985244b0a147b1cfce8",
+  "src/spatial_benchmark/relative_qkv_embedding_clustering.py": "ce91615830cbb7ae96aecb7adfb21d33e0f6639f08e239e7ede788955f434c13"
+}

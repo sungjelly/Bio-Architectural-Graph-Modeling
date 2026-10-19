@@ -1,0 +1,54 @@
+{
+  "ops/supervisor/bagm-so12-cancer-pooled-union.conf": {
+    "sha256": "452f6da4d925758a1bb0ad68b9f363fcbafaa63f0008015d7a2f018b0e363cbb",
+    "size_bytes": 374
+  },
+  "ops/supervisor/bagm-so12-cancer-pooled-union.sh": {
+    "sha256": "5aef0270a686388514eb5db1a53abafe3d59fd5f2e031250d00364eef01ff22c",
+    "size_bytes": 502
+  },
+  "scripts/analysis/audit_so12_cancer_backward_union.py": {
+    "sha256": "01ab5adbdd234f3a7e644b4a85bfbbb3b6ac7fa95ab67dc56f5707744bd0d121",
+    "size_bytes": 17374
+  },
+  "scripts/analysis/audit_so12_cancer_pooled_union.py": {
+    "sha256": "cd6934f6a1c68fbb76bf97fa1f22bc6e8cde5a0ad0de528d81302bfe67a902df",
+    "size_bytes": 15104
+  },
+  "scripts/analysis/promote_so12_cancer_pooled_union_result.py": {
+    "sha256": "706854c5ddb0d97a9af46f352dc6fe96007e97e046283f894872d8eee809e9c8",
+    "size_bytes": 13148
+  },
+  "scripts/analysis/run_so12_cancer_limited_union.py": {
+    "sha256": "84bcb0eb074dcb5173aece0052a155c609027c2f9133a282d03c9804faaf7b6e",
+    "size_bytes": 15775
+  },
+  "scripts/analysis/run_so12_cancer_pooled_union.py": {
+    "sha256": "389dc09a622bfe8f81ffa6896c0ad1252b101a2d3db58b9fa70e9f87967dbc71",
+    "size_bytes": 11211
+  },
+  "scripts/analysis/so12_cancer_backward_metrics.py": {
+    "sha256": "4335a474926f308b5fa416dbf71693aa39609dae02daedec0cf1b9fcfec8f00c",
+    "size_bytes": 13328
+  },
+  "scripts/analysis/so12_cancer_limited_metrics.py": {
+    "sha256": "6d90d50cce29f09d00ce9c81690cf927780ccec3079ae4e20b00831b375e33a8",
+    "size_bytes": 18602
+  },
+  "scripts/analysis/so12_cancer_metrics.py": {
+    "sha256": "099d256bd6118c3117aa5f050e5b409c20ca499e3f8e8249283ade19e36f49b1",
+    "size_bytes": 22345
+  },
+  "scripts/analysis/so12_cancer_pooled_metrics.py": {
+    "sha256": "4c35d997fec20743e3e0c2ca187fa4833066da098b42b4ed7407d0ee553c8ddf",
+    "size_bytes": 14864
+  },
+  "scripts/analysis/so12_cancer_pooled_report.py": {
+    "sha256": "efc18ba3f07e181d877a032f62b9a91e10fbeddb6200b00d2b92fdc53b5d068f",
+    "size_bytes": 12972
+  },
+  "tests/unit/spatial_benchmark/test_so12_cancer_pooled_metrics.py": {
+    "sha256": "6ba4ae55c0724d855933b9e9bc1432c209c24dde170a70efd55bb11df6ee6ebb",
+    "size_bytes": 7192
+  }
+}

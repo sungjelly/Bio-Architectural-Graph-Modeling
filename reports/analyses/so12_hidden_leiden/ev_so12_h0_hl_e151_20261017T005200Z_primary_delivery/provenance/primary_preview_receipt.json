@@ -1,0 +1,843 @@
+{
+  "cluster_counts": {
+    "h0": 16,
+    "hL": 22,
+    "kernel_pca": 21,
+    "pca": 19,
+    "spatial_pca": 17
+  },
+  "core_order": [
+    1,
+    9,
+    13,
+    15,
+    21,
+    23
+  ],
+  "created_at": "2026-10-17T02:14:13.767249+00:00",
+  "elapsed_seconds": 103.29682633304037,
+  "evaluation_id": "ev_so12_h0_hl_e151_20261017T005200Z",
+  "files": {
+    "core_01_primary_preview.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/primary_preview/core_01_primary_preview.png",
+      "sha256": "2ba264f54797c3ed3acaa4307d65e900393fba1e5a225b48f70eabca15ddf67a",
+      "size_bytes": 561236
+    },
+    "core_09_primary_preview.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/primary_preview/core_09_primary_preview.png",
+      "sha256": "415d7e501af1fffd26226c09293be0c2661b0b59377e7681a1c65c0d9f44ee8c",
+      "size_bytes": 543080
+    },
+    "core_13_primary_preview.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/primary_preview/core_13_primary_preview.png",
+      "sha256": "ec45e55fb6b1ecde44edea3834e1be41e97862fe16014f7cb9a29980ef36c874",
+      "size_bytes": 301837
+    },
+    "core_15_primary_preview.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/primary_preview/core_15_primary_preview.png",
+      "sha256": "c00c6f4ad763d73347f534df67d790186e636e9e8edceeabf487dc7a22b4368d",
+      "size_bytes": 578607
+    },
+    "core_21_primary_preview.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/primary_preview/core_21_primary_preview.png",
+      "sha256": "cb8fff7aa8d35da55c6fbe7be3f5d01f3fd8e9cc5db270f83e36c5fe0d032b6f",
+      "size_bytes": 315717
+    },
+    "core_23_primary_preview.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/primary_preview/core_23_primary_preview.png",
+      "sha256": "06586bfc7a5749ebd67e3f3fa76d6cdf98c31aca5b5e0a031e837a26ca1cc01a",
+      "size_bytes": 612900
+    },
+    "six_core_primary_preview.png": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/primary_preview/six_core_primary_preview.png",
+      "sha256": "2319d19dd78f5e9d23b3497fcd50e65cc92e4308491cedbd09b23116350658d2",
+      "size_bytes": 2453382
+    }
+  },
+  "full_analysis_complete": false,
+  "global_method_palettes": {
+    "h0": {
+      "0": "#3b2f80",
+      "1": "#4559cb",
+      "2": "#4682f8",
+      "3": "#35abf8",
+      "4": "#1bd0d5",
+      "5": "#1fe9af",
+      "6": "#4ef97d",
+      "7": "#8bff4b",
+      "8": "#b7f735",
+      "9": "#dde037",
+      "10": "#f7c13a",
+      "11": "#fe9b2d",
+      "12": "#f66c19",
+      "13": "#e2430a",
+      "14": "#c32503",
+      "15": "#9b0f01"
+    },
+    "hL": {
+      "0": "#3b2f80",
+      "1": "#434eba",
+      "2": "#466be3",
+      "3": "#4687fb",
+      "4": "#38a5fb",
+      "5": "#25c0e7",
+      "6": "#18d7ca",
+      "7": "#1fe9af",
+      "8": "#3cf58e",
+      "9": "#69fd66",
+      "10": "#92ff47",
+      "11": "#b1f936",
+      "12": "#cdec34",
+      "13": "#e7d739",
+      "14": "#f7c13a",
+      "15": "#fea732",
+      "16": "#fc8725",
+      "17": "#f46617",
+      "18": "#e5470b",
+      "19": "#d23105",
+      "20": "#b91e02",
+      "21": "#9b0f01"
+    },
+    "kernel_pca": {
+      "0": "#3b2f80",
+      "1": "#4451bf",
+      "2": "#476ee6",
+      "3": "#458cfd",
+      "4": "#35abf8",
+      "5": "#20c7df",
+      "6": "#18ddc2",
+      "7": "#27eea4",
+      "8": "#4ef97d",
+      "9": "#7dff56",
+      "10": "#a1fd3d",
+      "11": "#c1f334",
+      "12": "#dde037",
+      "13": "#f2c93a",
+      "14": "#fdae35",
+      "15": "#fe9029",
+      "16": "#f66c19",
+      "17": "#e84b0c",
+      "18": "#d43305",
+      "19": "#bc2002",
+      "20": "#9b0f01"
+    },
+    "pca": {
+      "0": "#3b2f80",
+      "1": "#4454c3",
+      "2": "#4776ee",
+      "3": "#4196ff",
+      "4": "#2cb7f0",
+      "5": "#1ad4d0",
+      "6": "#1fe9af",
+      "7": "#43f787",
+      "8": "#75fe5c",
+      "9": "#a1fd3d",
+      "10": "#c6f034",
+      "11": "#e3db38",
+      "12": "#f7c13a",
+      "13": "#fea130",
+      "14": "#fa7b1f",
+      "15": "#ed5510",
+      "16": "#da3907",
+      "17": "#be2102",
+      "18": "#9b0f01"
+    },
+    "spatial_pca": {
+      "0": "#3b2f80",
+      "1": "#4456c7",
+      "2": "#467df4",
+      "3": "#3aa3fc",
+      "4": "#20c7df",
+      "5": "#19e2bb",
+      "6": "#38f491",
+      "7": "#71fe5f",
+      "8": "#a1fd3d",
+      "9": "#c8ef34",
+      "10": "#e9d539",
+      "11": "#fbb637",
+      "12": "#fe9029",
+      "13": "#f36315",
+      "14": "#df3f08",
+      "15": "#c12302",
+      "16": "#9b0f01"
+    }
+  },
+  "limitations": "Preview only. Both primary partitions are genuine complete seed-0 outputs; seed-1 stability validation and full report publication remain pending. The five pipelines retain their original clustering differences. No biological interpretation is assigned.",
+  "method_order": [
+    "h0",
+    "hL",
+    "pca",
+    "kernel_pca",
+    "spatial_pca"
+  ],
+  "n_cells_clustering": 407659,
+  "n_cells_displayed": 117996,
+  "palette_provenance": {
+    "h0": "deterministic_turbo_0.04_to_0.96",
+    "hL": "deterministic_turbo_0.04_to_0.96",
+    "kernel_pca": "existing_color_keys_verified_against_original_palette",
+    "pca": "existing_color_keys_verified_against_original_palette",
+    "spatial_pca": "existing_color_keys_verified_against_original_palette"
+  },
+  "partition_comparison": {
+    "interpretation": "ARI measures agreement of existing partitions on the same cells; 1 is identical membership up to relabeling, approximately 0 is chance-level agreement, and negative values are possible. It is not a biological-validity or model-performance ranking.",
+    "method_order": [
+      "h0",
+      "hL",
+      "pca",
+      "kernel_pca",
+      "spatial_pca"
+    ],
+    "metric": "adjusted_rand_index",
+    "pipeline_comparability": {
+      "h0_hL": "256-dimensional direct hidden representations; cosine k30 exhaustive FP32 neighbor search; unweighted undirected-union graph; Leiden until convergence.",
+      "limitation": "Observed differences combine representation and clustering-pipeline differences. These comparisons are not a controlled encoder ablation. Cluster IDs and colors are independent across methods.",
+      "previous_PCA_methods": "32-dimensional encoders; Euclidean k30 approximate HNSW neighbors; exponential distance weights and arithmetic-mean symmetrization; Leiden for two iterations. Original partitions are reused.",
+      "shared": "All 407659 mapped cells; primary Leiden resolution 1.0 and seed 0. Subsets retain the full-cohort labels; no subset is reclustered.",
+      "spatial_PCA": "Training-fitted neighborhood-augmented PCA; 15 neighbors within 50 micrometres, within the same core and slide, spatial weight 0.3."
+    },
+    "populations": {
+      "all_cells": {
+        "cells": 407659,
+        "observed_cluster_counts": {
+          "h0": 16,
+          "hL": 22,
+          "kernel_pca": 21,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.3701562885697946,
+            0.2460894284501147,
+            0.22243367077472284,
+            0.23682493279767716
+          ],
+          [
+            0.3701562885697946,
+            1.0,
+            0.2849100927644078,
+            0.27736674118010246,
+            0.39323740331417256
+          ],
+          [
+            0.2460894284501147,
+            0.2849100927644078,
+            1.0,
+            0.6500466027665274,
+            0.5141487633669886
+          ],
+          [
+            0.22243367077472284,
+            0.27736674118010246,
+            0.6500466027665274,
+            1.0,
+            0.49926449469408807
+          ],
+          [
+            0.23682493279767716,
+            0.39323740331417256,
+            0.5141487633669886,
+            0.49926449469408807,
+            1.0
+          ]
+        ]
+      },
+      "core_01": {
+        "cells": 8924,
+        "observed_cluster_counts": {
+          "h0": 16,
+          "hL": 20,
+          "kernel_pca": 20,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.40853373247226515,
+            0.2522532925210394,
+            0.21222539706053667,
+            0.2591819380280916
+          ],
+          [
+            0.40853373247226515,
+            1.0,
+            0.2642013830959738,
+            0.26076186693672987,
+            0.3732001914769442
+          ],
+          [
+            0.2522532925210394,
+            0.2642013830959738,
+            1.0,
+            0.6274855908576277,
+            0.5150181889253385
+          ],
+          [
+            0.21222539706053667,
+            0.26076186693672987,
+            0.6274855908576277,
+            1.0,
+            0.4985762221818536
+          ],
+          [
+            0.2591819380280916,
+            0.3732001914769442,
+            0.5150181889253385,
+            0.4985762221818536,
+            1.0
+          ]
+        ]
+      },
+      "core_09": {
+        "cells": 17223,
+        "observed_cluster_counts": {
+          "h0": 15,
+          "hL": 17,
+          "kernel_pca": 20,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.5194747978317628,
+            0.15410690807952493,
+            0.13974715294305937,
+            0.1657737969969934
+          ],
+          [
+            0.5194747978317628,
+            1.0,
+            0.1521412685499673,
+            0.1537514995409712,
+            0.22538269363403005
+          ],
+          [
+            0.15410690807952493,
+            0.1521412685499673,
+            1.0,
+            0.6869694020493112,
+            0.4894280564241086
+          ],
+          [
+            0.13974715294305937,
+            0.1537514995409712,
+            0.6869694020493112,
+            1.0,
+            0.5004593598298026
+          ],
+          [
+            0.1657737969969934,
+            0.22538269363403005,
+            0.4894280564241086,
+            0.5004593598298026,
+            1.0
+          ]
+        ]
+      },
+      "core_13": {
+        "cells": 5345,
+        "observed_cluster_counts": {
+          "h0": 14,
+          "hL": 11,
+          "kernel_pca": 20,
+          "pca": 19,
+          "spatial_pca": 16
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.29681764454494264,
+            0.2684788506015772,
+            0.2520088170988383,
+            0.31812185826146316
+          ],
+          [
+            0.29681764454494264,
+            1.0,
+            0.3660572095092328,
+            0.32628201294376186,
+            0.6144384932203
+          ],
+          [
+            0.2684788506015772,
+            0.3660572095092328,
+            1.0,
+            0.7842185565964487,
+            0.5708812714125812
+          ],
+          [
+            0.2520088170988383,
+            0.32628201294376186,
+            0.7842185565964487,
+            1.0,
+            0.5165866317644471
+          ],
+          [
+            0.31812185826146316,
+            0.6144384932203,
+            0.5708812714125812,
+            0.5165866317644471,
+            1.0
+          ]
+        ]
+      },
+      "core_15": {
+        "cells": 38145,
+        "observed_cluster_counts": {
+          "h0": 16,
+          "hL": 20,
+          "kernel_pca": 21,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.25907083555627336,
+            0.5027217531894128,
+            0.29530956713365003,
+            0.3034986792151868
+          ],
+          [
+            0.25907083555627336,
+            1.0,
+            0.29389888149070453,
+            0.45706619160050815,
+            0.705280745408732
+          ],
+          [
+            0.5027217531894128,
+            0.29389888149070453,
+            1.0,
+            0.4872611574493128,
+            0.3850083192753608
+          ],
+          [
+            0.29530956713365003,
+            0.45706619160050815,
+            0.4872611574493128,
+            1.0,
+            0.5508869436317149
+          ],
+          [
+            0.3034986792151868,
+            0.705280745408732,
+            0.3850083192753608,
+            0.5508869436317149,
+            1.0
+          ]
+        ]
+      },
+      "core_21": {
+        "cells": 4897,
+        "observed_cluster_counts": {
+          "h0": 15,
+          "hL": 17,
+          "kernel_pca": 21,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.2598357920555409,
+            0.22893245846600957,
+            0.2720127546289934,
+            0.19181083348012737
+          ],
+          [
+            0.2598357920555409,
+            1.0,
+            0.3219567299800206,
+            0.33668952601567115,
+            0.454873188776426
+          ],
+          [
+            0.22893245846600957,
+            0.3219567299800206,
+            1.0,
+            0.6759956600156052,
+            0.45972916917088563
+          ],
+          [
+            0.2720127546289934,
+            0.33668952601567115,
+            0.6759956600156052,
+            1.0,
+            0.42999207706344644
+          ],
+          [
+            0.19181083348012737,
+            0.454873188776426,
+            0.45972916917088563,
+            0.42999207706344644,
+            1.0
+          ]
+        ]
+      },
+      "core_23": {
+        "cells": 43462,
+        "observed_cluster_counts": {
+          "h0": 16,
+          "hL": 18,
+          "kernel_pca": 21,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.30274610556351406,
+            0.21637892178549345,
+            0.22599664787470672,
+            0.28243155897057737
+          ],
+          [
+            0.30274610556351406,
+            1.0,
+            0.2893976123259978,
+            0.3134719762949041,
+            0.5768611791442425
+          ],
+          [
+            0.21637892178549345,
+            0.2893976123259978,
+            1.0,
+            0.7705496519770451,
+            0.4913647338795224
+          ],
+          [
+            0.22599664787470672,
+            0.3134719762949041,
+            0.7705496519770451,
+            1.0,
+            0.5318511209859191
+          ],
+          [
+            0.28243155897057737,
+            0.5768611791442425,
+            0.4913647338795224,
+            0.5318511209859191,
+            1.0
+          ]
+        ]
+      },
+      "requested_cores": {
+        "cells": 117996,
+        "observed_cluster_counts": {
+          "h0": 16,
+          "hL": 22,
+          "kernel_pca": 21,
+          "pca": 19,
+          "spatial_pca": 17
+        },
+        "pairwise_ari": [
+          [
+            1.0,
+            0.3073985844326938,
+            0.3099199945761966,
+            0.22349538696888643,
+            0.26797619278849255
+          ],
+          [
+            0.3073985844326938,
+            1.0,
+            0.3223382177716715,
+            0.36097262499127725,
+            0.6019284411347983
+          ],
+          [
+            0.3099199945761966,
+            0.3223382177716715,
+            1.0,
+            0.6284958813536595,
+            0.479630308650992
+          ],
+          [
+            0.22349538696888643,
+            0.36097262499127725,
+            0.6284958813536595,
+            1.0,
+            0.5103868779359346
+          ],
+          [
+            0.26797619278849255,
+            0.6019284411347983,
+            0.479630308650992,
+            0.5103868779359346,
+            1.0
+          ]
+        ]
+      }
+    },
+    "schema": "so12_five_method_partition_comparison_v1"
+  },
+  "polygon_qc": {
+    "alignment_mismatches": 0,
+    "alignment_rule": "centroid_tolerance_or_polygon_covers_coordinate",
+    "centroid_tolerance_exceeded": 1,
+    "centroid_tolerance_um": 5.0,
+    "containment_accepted": 1,
+    "coordinate_outside_polygon_count": 8,
+    "covered_cells": 117996,
+    "maximum_centroid_distance_um": 6.798546332601801,
+    "median_centroid_distance_um": 0.39748949765896224,
+    "pixel_size_um": 0.120281,
+    "repaired_cells": 0,
+    "source_rows_scanned": 9930213,
+    "vertices": 2699846
+  },
+  "publication_gates_satisfied": false,
+  "rendering": {
+    "cells_sampled": false,
+    "equal_aspect": true,
+    "independent_method_cluster_namespaces": true,
+    "invert_y": true,
+    "matched_core_bounds": {
+      "1": [
+        8785.8294202,
+        10358.936506799999,
+        -288.1692198,
+        1756.8002298
+      ],
+      "9": [
+        4604.028914275001,
+        8353.602653725,
+        6523.112269275,
+        10285.315513725
+      ],
+      "13": [
+        719.674300275,
+        2841.4852667249997,
+        5978.1190582750005,
+        8669.340278725
+      ],
+      "15": [
+        6693.65569215,
+        11269.83053385,
+        2141.5009661500003,
+        5430.54882685
+      ],
+      "21": [
+        4425.43267845,
+        6863.17973355,
+        5381.426066450001,
+        6985.86635355
+      ],
+      "23": [
+        4016.2848288499995,
+        8098.898615149999,
+        10864.36328285,
+        13450.320586150001
+      ]
+    },
+    "original_cell_polygons": true,
+    "scale_bar_um": 100
+  },
+  "schema": "so12_primary_partition_preview_v1",
+  "sources": {
+    "PCA": {
+      "_SUCCESS": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/_SUCCESS",
+        "sha256": "294c44ffed66f824e7d3c67b9740f91bc10349bd44edfbec33de46a602ada717",
+        "size_bytes": 50
+      },
+      "cells.csv.gz": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/cells.csv.gz",
+        "sha256": "d339e066d33713e9448d0272c18a42aa98cf42449fac91e351f079c9e658b5d5",
+        "size_bytes": 7580080
+      },
+      "methods/kernel_pca/clusters.csv.gz": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/methods/kernel_pca/clusters.csv.gz",
+        "sha256": "6548d395af88341d428b76d2013da992302c53351a1754ccca5597e9710181c0",
+        "size_bytes": 1426579
+      },
+      "methods/pca/clusters.csv.gz": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/methods/pca/clusters.csv.gz",
+        "sha256": "ff39bf9b243f50e04c570fe7b6a928b7793e62f1b28ea1d813d25a18affd3cf8",
+        "size_bytes": 1414892
+      },
+      "methods/spatial_pca/clusters.csv.gz": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/methods/spatial_pca/clusters.csv.gz",
+        "sha256": "3cc603c98f8a7b7abfa3a1e01e8b824a2e7cc4fe4a0beac57e584bcc7684c45d",
+        "size_bytes": 1299781
+      },
+      "resolved_config.json": {
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/resolved_config.json",
+        "sha256": "ccef571fc804b445a3bdc345077557b5c7847f83d55679cfcfd62b6f6fe7d819",
+        "size_bytes": 2615
+      }
+    },
+    "PCA_checksums": {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/checksums.json",
+      "sha256": "1013b827a76f0519277cecb5e9305059d88a406dc158619a34baa38b1f39b6dc",
+      "size_bytes": 10022
+    },
+    "cells": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/cells.parquet",
+      "sha256": "d485d5e202488e40814a5b979dfa425bfca5da12287f32d4c6002536a55acac1",
+      "size_bytes": 5493230
+    },
+    "extraction_inputs": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/extraction_inputs.json",
+      "sha256": "dd791fca7299900e2e6ce3e7bb33eb793ae91a4d267fa410bd84861f0fca5e77",
+      "size_bytes": 60082
+    },
+    "extraction_manifest": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/embeddings/extraction_manifest.json",
+      "sha256": "cf2b52de5a93cbdf5c3ef8b0709dcee2517167053d75a111485c81aaf6261b77",
+      "size_bytes": 6664
+    },
+    "historical_color_keys": {
+      "path": "/workspace/BAGM/reports/analyses/so12_embeddings_leiden/cluster_color_keys.csv",
+      "sha256": "fb03edc66489595b2224d0417e225317b5e72ffb48ab2d9ea25a13526a9d15bd",
+      "size_bytes": 1136
+    },
+    "preview_code": {
+      "path": "/workspace/BAGM/scripts/analysis/render_so12_primary_preview.py",
+      "sha256": "5fb4d317af3378a2883c85447d8f7afc79675adfe99600748a683cf2d1905e30",
+      "size_bytes": 12994
+    },
+    "primary_partitions": {
+      "h0": {
+        "graph_receipt": {
+          "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/h0/graph_receipt.json",
+          "sha256": "ed323f1e19abfeb340f424f3820ea2dc66e9dfaa9e8a17b11d1da523a64b65d0",
+          "size_bytes": 9025
+        },
+        "labels": {
+          "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/h0_labels.npy",
+          "sha256": "9ca66fd2c0c9aed384535ba6aace269839b7767b23e26a88c77a146256d93afa",
+          "size_bytes": 1630764
+        },
+        "leiden": {
+          "cluster_count": 16,
+          "cluster_size_max": 65607,
+          "cluster_size_min": 7897,
+          "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+          "igraph_version": "1.0.0",
+          "implementation": "leidenalg.RBConfigurationVertexPartition",
+          "labels_sha256": "29087517efea96fc2926a649aa6419e186992ab96366d640b9eb8349033aa71d",
+          "largest_graph_component_proportion": 1.0,
+          "largest_graph_component_size": 407659,
+          "leidenalg_version": "0.12.0",
+          "modularity": 0.7573038596174425,
+          "n_iterations": -1,
+          "number_of_graph_components": 1,
+          "quality": 17112197.04572625,
+          "random_seed": 0,
+          "raw_to_sorted_cluster": {
+            "0": 0,
+            "1": 1,
+            "10": 10,
+            "11": 11,
+            "12": 12,
+            "13": 13,
+            "14": 14,
+            "15": 15,
+            "2": 2,
+            "3": 3,
+            "4": 4,
+            "5": 5,
+            "6": 6,
+            "7": 7,
+            "8": 8,
+            "9": 9
+          },
+          "resolution": 1.0
+        },
+        "seed0_receipt": {
+          "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/h0/leiden_seed0_receipt.json",
+          "sha256": "648ab5d1cdc40c8da4cb361b041970e94b48023000fdf0ab989c218d9a9cd453",
+          "size_bytes": 1133
+        }
+      },
+      "hL": {
+        "graph_receipt": {
+          "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/hL/graph_receipt.json",
+          "sha256": "338406647944d8dfcaf202a93c920201ec0ed409b70b3ae5b5c324c82ced2791",
+          "size_bytes": 9025
+        },
+        "labels": {
+          "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/hL_labels.npy",
+          "sha256": "abcdc518ef600eaa3e55edc452df81dc75cbbe2dc544f828135ba76316da16c0",
+          "size_bytes": 1630764
+        },
+        "leiden": {
+          "cluster_count": 22,
+          "cluster_size_max": 54344,
+          "cluster_size_min": 1059,
+          "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+          "igraph_version": "1.0.0",
+          "implementation": "leidenalg.RBConfigurationVertexPartition",
+          "labels_sha256": "de6049fca0dfd05544952506fb38a9c95a7315664b8ee6e3411aba93322ba2a4",
+          "largest_graph_component_proportion": 1.0,
+          "largest_graph_component_size": 407659,
+          "leidenalg_version": "0.12.0",
+          "modularity": 0.8277539135080849,
+          "n_iterations": -1,
+          "number_of_graph_components": 1,
+          "quality": 17857007.70200723,
+          "random_seed": 0,
+          "raw_to_sorted_cluster": {
+            "0": 0,
+            "1": 1,
+            "10": 10,
+            "11": 11,
+            "12": 12,
+            "13": 13,
+            "14": 14,
+            "15": 15,
+            "16": 16,
+            "17": 17,
+            "18": 18,
+            "19": 19,
+            "2": 2,
+            "20": 20,
+            "21": 21,
+            "3": 3,
+            "4": 4,
+            "5": 5,
+            "6": 6,
+            "7": 7,
+            "8": 8,
+            "9": 9
+          },
+          "resolution": 1.0
+        },
+        "seed0_receipt": {
+          "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/hL/leiden_seed0_receipt.json",
+          "sha256": "167a9a87874ff88933522640762bca8f12b88fc785619b264b97c95a686549f3",
+          "size_bytes": 1229
+        }
+      }
+    },
+    "raw_polygons": {
+      "SO_1": {
+        "path": "/workspace/BAGM/data/raw/26040302SO_1-polygons.csv/26040302SO_1-polygons.csv",
+        "sha256": "72b89055b30639ec9477b2f1ea9c16a08eeb2b88fd2bb21609da11e1ba2e1ee0",
+        "size_bytes": 169623108
+      },
+      "SO_2": {
+        "path": "/workspace/BAGM/data/raw/26040302SO_2-polygons.csv/26040302SO_2-polygons.csv",
+        "sha256": "bc1457eca09583557fc36696daa87f0a628d0fa37c0ba073b8ea2abf47f8172e",
+        "size_bytes": 235642998
+      }
+    },
+    "resolved_config": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/config.resolved.json",
+      "sha256": "208ebb37ae19eb459980883e62010a0fee25641b7bd6a7960d3f8b9145448157",
+      "size_bytes": 896
+    },
+    "reused_renderer_code": {
+      "path": "/workspace/BAGM/scripts/analysis/so12_hidden_maps.py",
+      "sha256": "b335a25a03279756e4bcbd304e318e7c872cf31745a18e214512c0f7c61630ce",
+      "size_bytes": 30992
+    }
+  },
+  "status": "primary_partitions_complete_stability_pending"
+}

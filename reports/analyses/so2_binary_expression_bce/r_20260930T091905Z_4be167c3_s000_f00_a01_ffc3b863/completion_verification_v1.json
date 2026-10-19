@@ -1,0 +1,114 @@
+{
+  "bundle_verification": {
+    "file_count": 39,
+    "present_file_count": 39,
+    "run_path": "/workspace/BAGM/artifacts/runs/2026/09/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863",
+    "status": "success",
+    "tombstoned_file_count": 0,
+    "valid": true
+  },
+  "checkpoint_catalog": {
+    "artifact_id": 775,
+    "artifact_status": "present",
+    "best_epoch": 123,
+    "kind": "checkpoints",
+    "monitored_metric": "val/target_only_masked_binary_cross_entropy",
+    "monitored_mode": "min",
+    "monitored_value": 0.2401795339072312,
+    "path": "/workspace/BAGM/artifacts/runs/2026/09/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/checkpoints/best.ckpt",
+    "retention_class": "retain_exploratory_validation_selected_binary_expression_model",
+    "role": "best",
+    "sha256": "2320932a771ab670ddb2d90420adffdfba09a4818d673936b2431c7e039e5316",
+    "size_bytes": 61784913,
+    "verification_status": "verified"
+  },
+  "queue_job": {
+    "attempt_count": 1,
+    "campaign_id": "cmp_20260930_so2_target_isolated_geometry_modulated_binary_expression_bce_once_per_cell_seed0",
+    "failure_category": null,
+    "finished_at": "2026-09-30T19:07:56.202595Z",
+    "job_id": "q_a3649dc5f738ae679625",
+    "run_id": "r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863",
+    "started_at": "2026-09-30T09:19:06.014201Z",
+    "status": "completed"
+  },
+  "registry_access": "mode=ro; query_only; transaction_snapshot",
+  "registry_database": "/workspace/BAGM/state/tracking/bagm.sqlite3",
+  "registry_schema_version": 4,
+  "run": {
+    "artifact_path": "/workspace/BAGM/artifacts/runs/2026/09/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863",
+    "attempt": 1,
+    "campaign_id": "cmp_20260930_so2_target_isolated_geometry_modulated_binary_expression_bce_once_per_cell_seed0",
+    "duration_seconds": 7900.098767549658,
+    "end_time": "2026-09-30T19:07:53.982620Z",
+    "failure_category": null,
+    "fold": 0,
+    "primary_metric_name": "val/target_only_masked_binary_cross_entropy",
+    "primary_metric_value": 0.2401795339072312,
+    "run_id": "r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863",
+    "seed": 0,
+    "start_time": "2026-09-30T09:19:06.022085Z",
+    "status": "completed"
+  },
+  "run_id": "r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863",
+  "schema": "so2_binary_expression_bce_completion_verification_v1",
+  "scope": "Lifecycle, existing best-checkpoint replay evidence and catalog verification only; histories, secondary metrics, report inspection and documentation are verified separately.",
+  "semantics": {
+    "alias_id": "run.exploratory-screen.so2-donor-grouped-ta.target-isolated.k200-r500-union.target-only.disabled.d256.s000.f00.a01.vf95a63d2f4e3.x7390515b8bce",
+    "alias_type": "semantic",
+    "attempt_known": 1,
+    "category_key": "exploratory-screen/so2-donor-grouped-target-isolated-geometry-modulated-binary-expression-bce/cosmx-so2-nb-train12-val2-v1/target-isolated-geometry-modulated-relative-qkv-gat-binary-expression-bce/target-isolated-geometry-modulated-relative-qkv-gat-binary-expression-bce/k200-r500-union/target-only-uniform-per-cell-integer-count/edge-disabled/d256",
+    "classification_confidence": "high",
+    "fold_known": 1,
+    "lifecycle_stage": "exploratory_screen",
+    "preferred": 1,
+    "retention_class": "retain_exploratory_validation_selected_binary_expression_model",
+    "seed_known": 1,
+    "study_axis": "so2_donor_grouped_target_isolated_geometry_modulated_binary_expression_bce"
+  },
+  "sources": {
+    "_SUCCESS": {
+      "sha256": "e53af18c271cfb65cd2219be5b94671d2194c6bd911d1ffe0b2e5ecb4f52de72",
+      "size_bytes": 211
+    },
+    "checkpoints/best.ckpt": {
+      "sha256": "2320932a771ab670ddb2d90420adffdfba09a4818d673936b2431c7e039e5316",
+      "size_bytes": 61784913
+    },
+    "config.resolved.yaml": {
+      "sha256": "446762ca954847dba04eecdd889e03692553332568dd08f4950f232c53f4a7b1",
+      "size_bytes": 21921
+    },
+    "diagnostics/final_checkpoint_reload_verification.json": {
+      "sha256": "366bdb91e8eb122fffb9396b180a076aebd6960939773adf12a6736354f39ec8",
+      "size_bytes": 385
+    },
+    "manifest.yaml": {
+      "sha256": "ce88e9b61c2d36d3ad3da38713ceacfaff1c268f4cb91a22692ea3a3c7a78544",
+      "size_bytes": 1335
+    },
+    "metrics/final.json": {
+      "sha256": "9d44afc3b96f82afd157d8847f2d6eaf8857af72c233503adde8a60326af1adf",
+      "size_bytes": 1421
+    },
+    "provenance/artifact_checksums.json": {
+      "sha256": "a7a50ed1eb38988586f0c75948f955e4786da53b66dfc9d63205f89eec34cefd",
+      "size_bytes": 6887
+    },
+    "provenance/so2_target_isolated_binary_expression_training.json": {
+      "sha256": "fb8ace08b4e9945b48dca856c31b40c8781f758dbb38346c01b21c527a356bd4",
+      "size_bytes": 7118
+    },
+    "summary.json": {
+      "sha256": "29cf0c8213e4dd71d6e28c1f936861e55f9c072d458c53463114fda56c86c4ba",
+      "size_bytes": 1618
+    }
+  },
+  "status": "verified",
+  "verified_at_utc": "2026-09-30T19:08:11.119809+00:00",
+  "verifier": {
+    "path": "verify_bce_completion_v1.py",
+    "sha256": "e904d7849f6e10d917f6645c427751dcfa49c4af901e36ea1d4e948375634391",
+    "size_bytes": 14016
+  }
+}

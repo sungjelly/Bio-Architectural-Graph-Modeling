@@ -1,0 +1,133 @@
+BAGM manuscript consistency audit — 17 October 2026
+Read-only audit of source/campaign records; no raw patient data accessed.
+
+DECISION
+The supplied paper is not fully consistent with current work. It mixes the current
+joint-slide Pearson experiment with the historical geometry-modulated cosine
+model and unsupported pathology-comparison language. A revised draft should
+distinguish completed exploratory evidence from the active paper-specific run.
+
+1. ARCHITECTURE: MATERIAL ERROR
+Appendix A and Figure 1 describe geometry-conditioned feature gates, L2-normalized
+Q/K, a bounded trainable temperature, and tanh biases. These belong to the
+September SO2 geometry-modulated variant, not the current original Relative-QKV.
+Current model: four independent pre-LayerNorm blocks; width 256, eight heads of
+32 dimensions. Per head, for sender j and receiver i:
+ q_i = W_Q LN(h_i), k_j = W_K LN(h_j), v_j = W_V LN(h_j)
+ s_ij = (q_i dot k_j)/sqrt(32) + b_ij
+ b_ij = W_2 GELU(LN(W_1 rho_ij + a_1)) + a_2
+ alpha_ij = softmax over incoming neighbors j of s_ij
+ z_i = sum_j alpha_ij v_j.
+Geometry network: 70 -> 128 -> LN -> GELU -> 8; its final weights AND bias
+are zero-initialized. It has no feature gate, no Q/K normalization, no learned
+temperature, and no tanh bounding. Geometry directly enters logits only.
+Output projection is bias-free; residual/FFN and decoder dimensions in the
+paper otherwise agree. Values are projections of encoded cell states containing
+visible RNA, mask and morphology information plus prior graph context; they
+are not exclusively molecular/RNA content. No implicit or explicit self edges.
+Self information is retained through residual paths.
+Evidence: src/spatial_benchmark/relative_qkv_graph_transformer.py:1-36,
+168-208, 245-275, 283-315, 476-505; src/spatial_benchmark/models.py:192-320,
+348-367; experiments/campaigns/cmp_20261017_so12_paper_core_split/configs/seed0.yaml:1-30.
+Historical variant identity: experiments/campaigns/
+cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2/README.md:3-14.
+
+2. METHODS: NECESSARY SPECIFICATION
+407,659 mapped cells, 28 cores, two slides, 1,000 biological RNA genes and
+22 morphology/imaging covariates. RNA measurements and selected image-derived
+intensities are inputs; this is not a jointly modeled protein-expression panel.
+340 unmapped SO2 FOV246 cells are excluded (existing cohort definition).
+Graph: coordinate-only within-core radial-stratified selection with nominal
+200 neighbors before bidirectional union, maximum 500 micrometres; final degree
+can exceed 200. Shell quotas 48/64/48/40 in 0-50/50-150/150-300/300-500 um.
+No self or cross-core/slide edges; no absolute coordinates or IDs as node inputs.
+70 geometry features: 64 distance RBFs plus receiver/source axial alignment,
+orientation-tensor alignment, receiver/source anisotropy and normalized distance.
+These encode spatial context and do not establish direct contact/communication.
+Evidence: current config:60-150; src/spatial_benchmark/relative_geometry.py:1-46.
+
+Each graph cell independently draws a masked-gene count uniformly from integers
+0 through 1,000 inclusive, with positions sampled without replacement. Ten
+training views/core/epoch, three fixed evaluation views/core. This is a broad
+partial-gene masking law with rare zero/whole-cell endpoints, not a dedicated
+whole-node prediction benchmark. Morphology remains visible.
+Train-fitted quasi-Poisson Pearson transform (phi 1.01), residual mean/sample SD,
+upper clip 10. Input exposure is estimated from visible counts divided by visible
+training gene-frequency mass, clamped at one; fully masked expression is zero.
+Fully observed transformed arrays are supervised targets ONLY. Hidden full-cell
+totals cannot enter inputs. The target is standardized residual features, not
+raw transcript counts or a count likelihood. Normalization supports joint-slide
+analysis but does not establish removal of batch effects.
+Evidence: current core-split README:24-29,48-59; prior Oct16 training README:50-72;
+src/spatial_benchmark/so12_relative_qkv_data.py:122-171.
+
+3. CURRENT PAPER SPLIT AND STATUS
+21 training cores / 264,491 cells; 5 validation cores / 61,561 cells; 2 test cores
+/ 81,607 cells. Core/section holdout permits donor overlap, with both test cores
+from SO2. Samples were used in earlier experiments, so this is a new-run holdout,
+not new-donor validation or a historically untouched confirmatory test.
+New preprocessing is fitted only on the 21 training cores. Selection uses
+equal-core validation masked Huber; test loads after checkpoint selection.
+At 12:49 UTC the active run r_20261017T044837Z_caf76350_s000_f00_a01_12df41be
+had completed epoch 157; best epoch 155. Final test and reserved-test Leiden
+analysis were still pending. Do not include transient scores as final results.
+Evidence: cmp_20261017_so12_paper_core_split/README.md:32-68;
+scratch/active_runs/ctrl_so12_paper_split_seed0/status.json;
+scratch/active_runs/ctrl_so12_paper_test_leiden/status.json;
+active run results/epoch_metrics.jsonl, epoch 157.
+
+4. COMPLETED PREDECESSOR PREDICTION EVIDENCE
+Previous Oct16 run used donor-separated 20 training / 8 validation cores,
+301,198 / 106,461 cells from 10 / 4 donor groups; no test partition. Validation
+was previously examined in preprocessing, so it is exploratory selection data.
+Completed epoch151 model: equal-core masked Huber 0.19611390; pooled MAE
+0.30815995, MSE 1.00588773, Pearson 0.13449855. Baselines: zero Huber
+0.20935822, equal-core training mean 0.21024251, equal-cell training mean
+0.20910161. Huber improved 6.33%, 6.72%, 6.21%, respectively, in all eight
+cores; MAE improved 26.8-28.2%, but MSE was 0.58-0.70% worse. This is mixed
+single-seed evidence over constants, not demonstrated graph-specific gain.
+Evidence: cmp_20261016_so12_pearson_relative_qkv_train_validation/README.md:
+29-48,321-363. Final bundle r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b.
+
+5. COMPLETED REPRESENTATION EVIDENCE AND CANCER LANGUAGE
+The previous model's fully observed h0/h4 representations were clustered jointly
+across all 407,659 cells, including train and validation. h0/h4 yielded 16/22
+primary clusters, between-representation ARI 0.3701562886. Two Leiden seeds on
+each fixed graph gave ARI 0.8069532158 / 0.8837090008. These measure algorithmic
+stability, not independent model seeds or biological reproducibility.
+PCA-family comparison uses different representation dimensions, distances,
+neighbor methods, edge weighting and Leiden convergence settings, so it does
+not isolate encoder quality. h4-h0 also includes FFN/residual transformations.
+Clinician cancer-region masks have not been located; no verified quantitative
+pathology scoring exists in the audited current campaigns. Paper statements
+that BAGM showed clearer correspondence with clinician-identified cancer than
+PCA should become explicitly author-reported preliminary visual impressions,
+if retained at all. No validated cancer boundary superiority is supported.
+Evidence: cmp_20261017_so12_h0_hl_leiden_segmentation/README.md:23-38,
+68-87,218-248; cmp_20261017_so12_paper_core_split/README.md:44-46;
+cmp_20261017_so12_paper_test_leiden/README.md:47-55.
+
+6. PRECISION / RECALL / AUPRC
+The current Pearson regression run reports masked Huber, MAE, MSE and Pearson,
+not a matched binary occurrence benchmark. The manuscript does not specify
+which historical endpoint, target threshold, prediction scale, masks, population
+or PR integration definition produced these statements. Do not assign historical
+count-detection limitations to current Pearson model performance. Either omit
+the metric claim, or explicitly label it historical, name its endpoint and
+evaluation definition and supply verified values. AP and trapezoidal PR AUC
+must not be interchanged. Larger datasets alone will not resolve this ambiguity.
+Historical nonzero comparison: cmp_20260905_so2_nonzero_accuracy/README.md:
+25-57,144-189 (fitted-cohort standardized-log1p models; fixed count threshold .5,
+recall approximately 13%, not current held-out Pearson evidence).
+
+7. INTERPRETATION
+Attention is computational routing, not biological importance. Jacobians are
+local model sensitivities; specify raw-count versus normalized-feature scale,
+hold mask/graph fixed, and distinguish one-hop from multihop paths. A raw-count
+derivative includes the normalization's cross-gene exposure pathway. No current
+matched self-only, geometry-removal, graph-null or independent pathology test
+establishes graph-specific benefit, mechanism or causal influence.
+
+Recommended manuscript scope: exploratory BAGM methodology plus accurately
+labeled completed predecessor evidence, with the current paper-core experiment
+described as ongoing. Retain a dated status and a visible change log.

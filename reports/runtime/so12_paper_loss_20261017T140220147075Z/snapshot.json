@@ -1,0 +1,47 @@
+{
+  "run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+  "run_status_at_snapshot": "running",
+  "snapshot_utc": "2026-10-17T14:02:20.147075+00:00",
+  "source_metrics": "/workspace/BAGM/scratch/active_runs/r_20261017T044837Z_caf76350_s000_f00_a01_12df41be/results/epoch_metrics.jsonl",
+  "complete_metrics_sha256": "8883e7d20b20611f403db5fab23d35d8c6cc7d2ccd0f389be253676f064095a1",
+  "completed_epochs": 177,
+  "best_epoch": 177,
+  "best_validation_huber": 0.1954052527830341,
+  "latest_training_huber": 0.20357419578802016,
+  "latest_validation_huber": 0.1954052527830341,
+  "selection": {
+    "epoch": 177,
+    "best_value": 0.1954052527830341,
+    "best_epoch": 177,
+    "patience_best": 0.19543247222712742,
+    "bad_validations": 5,
+    "improved": true,
+    "stop_reason": null
+  },
+  "matplotlib_version": "3.11.1",
+  "scope": "live_training_diagnostic_only",
+  "normalization_or_model_changed": false,
+  "verification": "contiguous_epochs_finite_losses_best_checkpoint_match_valid_png_pdf",
+  "files": {
+    "epoch_metrics.snapshot.jsonl": {
+      "sha256": "8883e7d20b20611f403db5fab23d35d8c6cc7d2ccd0f389be253676f064095a1",
+      "size_bytes": 289420
+    },
+    "loss_curve.pdf": {
+      "sha256": "ac03fbde39091b0265cba93d75a1f20f80cb77fef62f8f0b8435f616967ec7ad",
+      "size_bytes": 34359
+    },
+    "loss_curve.png": {
+      "sha256": "a2fa3bdb4eba7bc3dac2769afdf549279bf76be18550ce9380b94592974ff59e",
+      "size_bytes": 253698
+    },
+    "losses.csv": {
+      "sha256": "662d158295317c6d3e9827b789f15bfc9c7f371a52fdaddb18b73c26d73c5125",
+      "size_bytes": 11315
+    },
+    "plot_source.py": {
+      "sha256": "fa945f4b50fa400d94d348a8f881f17ff96189c067fcc8a749f869bd47e1c20c",
+      "size_bytes": 7853
+    }
+  }
+}

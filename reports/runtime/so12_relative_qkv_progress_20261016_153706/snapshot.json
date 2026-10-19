@@ -1,0 +1,46 @@
+{
+  "run_id": "r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b",
+  "snapshot_utc": "2026-10-16T15:37:06.965190+00:00",
+  "completed_epochs": 88,
+  "history_snapshot_sha256": "2af527d59ec4b2660f776f08b2e1bfa429c5c0bb1a641b346e6900b22c7b8ee2",
+  "best_epoch": 86,
+  "best": {
+    "equal_core_huber": 0.1966749440652639,
+    "pooled_huber": 0.19801040464925687,
+    "pooled_mae": 0.3088735295445431,
+    "pooled_mse": 1.0099502468308235,
+    "pooled_pearson": 0.12152992040685312,
+    "masked_entries": 159816944,
+    "per_core_huber": {
+      "SO1-C11": 0.2179787836948371,
+      "SO1-C12": 0.2186059304317489,
+      "SO1-C13": 0.16526777947448865,
+      "SO1-C14": 0.21398453025278266,
+      "SO2-C25": 0.1774793556613153,
+      "SO2-C26": 0.19350627616096042,
+      "SO2-C27": 0.19412682751792168,
+      "SO2-C28": 0.1924500693280565
+    },
+    "view_count": 24
+  },
+  "baseline": {
+    "equal_core_huber": 0.21024251346534736,
+    "pooled_huber": 0.21044601292038856,
+    "pooled_mae": 0.42893796167810583,
+    "pooled_mse": 0.998908310108024,
+    "pooled_pearson": 0.03227131007328207,
+    "masked_entries": 159816944,
+    "per_core_huber": {
+      "SO1-C11": 0.2282585506425593,
+      "SO1-C12": 0.2287135502283506,
+      "SO1-C13": 0.19347735240043037,
+      "SO1-C14": 0.22376587445187593,
+      "SO2-C25": 0.19050085527473284,
+      "SO2-C26": 0.20651607651057513,
+      "SO2-C27": 0.2058556884313909,
+      "SO2-C28": 0.2048521597828639
+    },
+    "view_count": 24
+  },
+  "note": "Live exploratory validation; not final model performance. Training and validation use different donor cohorts."
+}

@@ -1,0 +1,21 @@
+{
+  "h0": {
+    "manifest_sha256": "6629c8a144e4d9949a75fc79978788fcc796fda9a88a94e9dea601cc9f0b8928",
+    "path": "/workspace/BAGM/reports/analyses/so12_paper_test_h0_leiden/ev_so12_paper_test_h0_s0_20261018"
+  },
+  "h4": {
+    "cell_rows_sha256": "a8d320f2fada025851e9536faca70876daf000451646d0510efa56317e105352",
+    "cells_sha256": "d68ee95082b948b6a3a87ce01ee5148582e012f3e037ada6d58ee3bac7529cb1",
+    "checkpoint_epoch": 194,
+    "checkpoint_sha256": "8d93aca7f24cd5d7bb2308b0361e8b13ea9b17d1719c4aea0159c1e0e277bd64",
+    "config_sha256": "db5baf007b808091f7e1f865d2f245197567c5865417abe02542c73c95bfb53f",
+    "embedding_sha256": "27a6532b6d24d207361360faa521da5a46a587adc0c402deb05f0cf647315c61",
+    "evaluation_id": "ev_so12_paper_test_hL_s0_20261017",
+    "extraction_manifest_sha256": "540ac19c2a8681a11d1243633acdf45cba9561116e28b55e7a453161d8cc9e45",
+    "fitted_parameters_sha256": "2770f5bbc469ba17ef9c6399b4c4803619d99f15669e4a608573bc68a4a1fafc",
+    "manifest_sha256": "872ba556648f9570d273f920c20947b898f50a8f177427c4b61dbe1ad1730c2a",
+    "path": "/workspace/BAGM/reports/analyses/so12_paper_test_leiden/ev_so12_paper_test_hL_s0_20261017",
+    "preprocessing_fingerprint": "4fcce9791bed083a9592b6c1a1ee32020fcec9ca03ca4477e3f1a87a64bd64f2",
+    "verified": true
+  }
+}

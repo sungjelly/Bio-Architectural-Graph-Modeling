@@ -1,0 +1,157 @@
+{
+  "limitations": [
+    "Two-epoch diagnostics establish execution correctness and observed resource feasibility only.",
+    "Different optimizer step counts do not establish equivalent training trajectories.",
+    "Physical GPU memory is sampled every five seconds; brief unsampled peaks are possible.",
+    "No hyperparameter winner or generalization claim is selected by this report."
+  ],
+  "outcome": "both_runtime_smokes_verified",
+  "runs": [
+    {
+      "bundle_verification": {
+        "file_count": 45,
+        "present_file_count": 45,
+        "run_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd",
+        "status": "success",
+        "tombstoned_file_count": 0,
+        "valid": true
+      },
+      "checkpoint": {
+        "best_epoch": 2,
+        "monitored_metric": "val/target_only_masked_binary_cross_entropy",
+        "monitored_value": 0.2452599345837899,
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd/checkpoints/best.ckpt",
+        "role": "best",
+        "sha256": "98498202dd650969a945af9e762bb6882dd05e89d1a7dc35a359b4bd009056fd",
+        "size_bytes": 61735061,
+        "verification_status": "verified"
+      },
+      "completed_epochs": 2,
+      "epoch_durations_seconds": [
+        {
+          "epoch": 1,
+          "training_duration_seconds": 206.4309240500006,
+          "validation_duration_seconds": 12.266564642006415
+        },
+        {
+          "epoch": 2,
+          "training_duration_seconds": 215.18521517798945,
+          "validation_duration_seconds": 12.143798382996465
+        }
+      ],
+      "fixed_terminal_endpoint_verified": true,
+      "immutable_source_checksums": {
+        "_SUCCESS": "ab824f4bf545c54f744cc788e59d6a4b570532efb1f1169792d0868a1db71724",
+        "config.resolved.yaml": "29c0044d3cc64be4d10d7ca3e38ca2e953e5fc364ef45007db95e8ee0f8d8867",
+        "diagnostics/optimization_audit_preflight.json": "e4ed70d98b9356bd0fd5aaa5d0c503f0ef0ab25474773a8f2777901e36f2a0a5",
+        "manifest.yaml": "1b59094cb37346ba71456415fdaec04430b327357ab9cec386eadc9b865b6747",
+        "provenance/artifact_checksums.json": "8cb558d4ff359413baf47a010eeaee81c43183678348a92fbf1b790268be9c79",
+        "provenance/frozen_task_contract.md": "938aab47480af206e6e76e625f4f4a42117d98d064d7bca474fc90656610158d",
+        "provenance/source_files.json": "46d63bdab5c57bcdd8dc55de6a14fb2fb14a3268dbda570a921a9e1af80016a5",
+        "results/epoch_metrics.csv": "228b18174010915fa93a898656de917c3758942a82fa4f2a34f5a218126cd269",
+        "results/optimization_audit_endpoint.json": "c8b42185a41865ec590a6c3fe8567ebc48f7d76600949efb89098032c09a04ab"
+      },
+      "minimum_recorded_disk_free_gib": 21.00546646118164,
+      "optimizer_batch_mode": "target_window",
+      "optimizer_updates_per_epoch": 209,
+      "physical_gpu": "0",
+      "resource_gates": {
+        "allocator_headroom_bytes": 22588620800,
+        "headroom_bytes": 21710831616,
+        "headroom_measurement": "minimum_of_allocator_remainder_and_sampled_physical_free; physical_sampling_is_not_continuous",
+        "maximum_sampled_cgroup_memory_bytes": 50760355840,
+        "minimum_sampled_physical_free_bytes": 21710831616,
+        "peak_allocated_bytes": 2402123264,
+        "peak_reserved_bytes": 2707423232,
+        "resource_gate_passed": true,
+        "total_device_bytes": 25296044032
+      },
+      "run_id": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd",
+      "selected_checkpoint_replay_verified": true,
+      "total_optimizer_updates": 418,
+      "total_run_duration_seconds": 588.354803995011,
+      "training_target_visits": 417392,
+      "training_targets_per_epoch": 208696,
+      "validation_targets_per_epoch": 37367
+    },
+    {
+      "bundle_verification": {
+        "file_count": 45,
+        "present_file_count": 45,
+        "run_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae",
+        "status": "success",
+        "tombstoned_file_count": 0,
+        "valid": true
+      },
+      "checkpoint": {
+        "best_epoch": 2,
+        "monitored_metric": "val/target_only_masked_binary_cross_entropy",
+        "monitored_value": 0.2613789231645769,
+        "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae/checkpoints/best.ckpt",
+        "role": "best",
+        "sha256": "09e70a68269746ec68fa77dd917bf2f83f1e6a154b47c24b25cddd4ab4a12056",
+        "size_bytes": 61735061,
+        "verification_status": "verified"
+      },
+      "completed_epochs": 2,
+      "epoch_durations_seconds": [
+        {
+          "epoch": 1,
+          "training_duration_seconds": 173.05431723799848,
+          "validation_duration_seconds": 12.594059065988404
+        },
+        {
+          "epoch": 2,
+          "training_duration_seconds": 172.1889168869966,
+          "validation_duration_seconds": 12.699415688010049
+        }
+      ],
+      "fixed_terminal_endpoint_verified": true,
+      "immutable_source_checksums": {
+        "_SUCCESS": "aaa3bc9213408277a0c3ecd8618f571709b2cead70ca93cfb1aa5ff9b190ee76",
+        "config.resolved.yaml": "c2aff00edb2e42ce0c8bf09c63e954a22c0902cea3ddcc8e0e0cc9c35187433a",
+        "diagnostics/optimization_audit_preflight.json": "e9d1575697004af997e9a61bd4403c7862973db35318d8bb51a82cce4c0f3a6c",
+        "manifest.yaml": "40f2881bbd2f3aa48d34e4a8239824a355fa8632b196eb119fd7257b0e566d80",
+        "provenance/artifact_checksums.json": "94132b8e369c5fdfefa035c572bf40d7b0b0b78048c83409e680ad3837e61e39",
+        "provenance/frozen_task_contract.md": "938aab47480af206e6e76e625f4f4a42117d98d064d7bca474fc90656610158d",
+        "provenance/source_files.json": "46d63bdab5c57bcdd8dc55de6a14fb2fb14a3268dbda570a921a9e1af80016a5",
+        "results/epoch_metrics.csv": "cea058f83c8e349ac4e3fd25e87a2ac6364441385b71550da0418be0f5e14170",
+        "results/optimization_audit_endpoint.json": "63497e1bfa0df7ef1f27b7403a211f4a6eec910e3425b49801a4a723c28a947a"
+      },
+      "minimum_recorded_disk_free_gib": 20.891921997070312,
+      "optimizer_batch_mode": "core_pair",
+      "optimizer_updates_per_epoch": 6,
+      "physical_gpu": "1",
+      "resource_gates": {
+        "allocator_headroom_bytes": 5998051328,
+        "headroom_bytes": 5119148032,
+        "headroom_measurement": "minimum_of_allocator_remainder_and_sampled_physical_free; physical_sampling_is_not_continuous",
+        "maximum_sampled_cgroup_memory_bytes": 50508255232,
+        "minimum_sampled_physical_free_bytes": 5119148032,
+        "peak_allocated_bytes": 15977680384,
+        "peak_reserved_bytes": 19297992704,
+        "resource_gate_passed": true,
+        "total_device_bytes": 25296044032
+      },
+      "run_id": "r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae",
+      "selected_checkpoint_replay_verified": true,
+      "total_optimizer_updates": 12,
+      "total_run_duration_seconds": 516.0872041330003,
+      "training_target_visits": 417392,
+      "training_targets_per_epoch": 208696,
+      "validation_targets_per_epoch": 37367
+    }
+  ],
+  "schema": "so2_bce_optimization_audit_smoke_verification_v1",
+  "scientific_score_selection_performed": false,
+  "scope": "independent_read_only_verification_of_immutable_smoke_bundles_and_checkpoint_catalog",
+  "shared_checks": {
+    "checkpoint_files_distinct_inodes": true,
+    "no_test_claim": true,
+    "train_fitted_prevalence_reference_byte_identical": true,
+    "training_masks_match_across_modes_in_both_epochs": true,
+    "training_source_provenance_byte_identical": true,
+    "validation_masks_fixed_across_epochs_and_modes": true
+  },
+  "verified_at": "2026-10-01T07:50:34.731371+00:00"
+}

@@ -1,0 +1,31 @@
+{
+  "schema": "so2_bce_paired_seed_window_order_prefix_verification_v1",
+  "observed_utc": "2026-10-01T10:50:06.255423+00:00",
+  "checks": [
+    {
+      "variant": "comparator",
+      "run_ids": [
+        "r_20261001T101202Z_f8197b29_s000_f00_a01_ed00c19e",
+        "r_20261001T101202Z_a32d61e8_s001_f00_a01_8332ee26"
+      ],
+      "complete_common_epochs": 7,
+      "chronological_updates": 2891,
+      "identical_window_order": true,
+      "identical_full_training_coverage_receipts": true,
+      "canonical_window_sequence_sha256": "9a20461d4fda9527d057896c200bc7dfd7960723c951126516ea915defff65ab"
+    },
+    {
+      "variant": "incumbent",
+      "run_ids": [
+        "r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980",
+        "r_20261001T101202Z_15baf65c_s001_f00_a01_6427735a"
+      ],
+      "complete_common_epochs": 9,
+      "chronological_updates": 1881,
+      "identical_window_order": true,
+      "identical_full_training_coverage_receipts": true,
+      "canonical_window_sequence_sha256": "9fc4c621b8e1b6a4e0620c19e44c58166d133a650f67e5b4532e16439fe0773f"
+    }
+  ],
+  "scope": "Complete currently observed prefixes only; runtime and predictive metrics are not selected or compared here."
+}

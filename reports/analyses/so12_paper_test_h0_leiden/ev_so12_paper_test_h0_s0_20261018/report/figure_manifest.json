@@ -1,0 +1,145 @@
+{
+  "active_output_bytes": 127859233,
+  "bounds_um": {
+    "15": [
+      6693.65569215,
+      11269.83053385,
+      2141.5009661500003,
+      5430.54882685
+    ],
+    "23": [
+      4016.2848288499995,
+      8098.898615149999,
+      10864.36328285,
+      13450.320586150001
+    ]
+  },
+  "clustering_manifest_sha256": "a331608fc30cb8b2746d6122f57631aabcc55019cd5758d38ffb8f100cda2755",
+  "equal_physical_aspect": true,
+  "figures": {
+    "core_15": {
+      "pdf": "core_15_h0_leiden_segmentation.pdf",
+      "png": "core_15_h0_leiden_segmentation.png"
+    },
+    "core_23": {
+      "pdf": "core_23_h0_leiden_segmentation.pdf",
+      "png": "core_23_h0_leiden_segmentation.png"
+    },
+    "legend": {
+      "pdf": "shared_cluster_color_key.pdf",
+      "png": "shared_cluster_color_key.png"
+    },
+    "overview": {
+      "pdf": "test_cores_h0_leiden.pdf",
+      "png": "test_cores_h0_leiden.png"
+    }
+  },
+  "html_embedded_previews": true,
+  "input_binding": {
+    "code": {
+      "scripts/analysis/so12_hidden_clustering.py": "40e8a58c32ebc210ad52341d417df41fd194ada956d86985244b0a147b1cfce8",
+      "scripts/analysis/so12_hidden_maps.py": "b335a25a03279756e4bcbd304e318e7c872cf31745a18e214512c0f7c61630ce",
+      "scripts/analysis/so12_paper_test_h0_clustering.py": "b5f60f23333f30fd6263af112bdca4bb64475f8cd1a601d08a9430abd4c15e18",
+      "src/spatial_benchmark/attention_niche_geometry.py": "7a0e8f0805ef73b3aaf4c62f39b97065387fd95d0be283690954407245e6a835",
+      "src/spatial_benchmark/data.py": "85f4ac46e89fbb5823d9d30c758aa8fd831d56a160fa6b9e15ace29a68f2fd74",
+      "src/spatial_benchmark/relative_qkv_embedding_clustering.py": "ce91615830cbb7ae96aecb7adfb21d33e0f6639f08e239e7ede788955f434c13"
+    },
+    "files": {
+      "cells.csv.gz": "d68ee95082b948b6a3a87ce01ee5148582e012f3e037ada6d58ee3bac7529cb1",
+      "embeddings/core_15_receipt.json": "ac6e519e60d94db95154fed6020fa545e2e83edd3134627883fd59185518bce8",
+      "embeddings/core_23_receipt.json": "8e32382b703fc607699558bbebf10c6126a93ce97cf744a6ce074f4b70b6a096",
+      "embeddings/h0.npy": "003041285b8a06e2d1be2a6a4fb8c31b9b2d8ffe46be0f6d0c0a882d864755a9",
+      "extraction_manifest.json": "8788546157c8cd08d2871adb7e3a534d0be4e8b8c26dac1a4db537e3c54ea8f0"
+    }
+  },
+  "interpretation": "h0 is the trained node encoder output before graph message passing. The h0 partition is independent of hL: matching cluster IDs or colors do not indicate matching cell groups across representations. Exploratory transductive grouping of the two test cores under a frozen model. Clusters are not validated cell types, cancer regions, independent donor replication, or causal interactions. Training permits donor overlap and historical sample exposure. Seed 0 is displayed; seed 1 only measures stability.",
+  "invert_y": true,
+  "output_sha256": {
+    "figures/core_15_h0_leiden_segmentation.pdf": "054c9befd9b328326fcdc3bd959db2da03a5f471b45ce7233d132af9de2855db",
+    "figures/core_15_h0_leiden_segmentation.png": "7b3378955d18aeb78a4b75b7fb9fe8590d63fe3ed7bc72aaa726e41e5ac4960a",
+    "figures/core_23_h0_leiden_segmentation.pdf": "e91db3600dabcf433f1b18514a8d75addb09310b4fd9729e0e6c70bcd6e3584f",
+    "figures/core_23_h0_leiden_segmentation.png": "ff276bbc8f2b9c79e8c23e05e9b15640bea16fb9d40cffd965ed1e66382b290a",
+    "figures/shared_cluster_color_key.pdf": "57c3cd2f8ea2dced89810b5c88db50d4af6c1ee6ab1e04def26bae2e3a8bb478",
+    "figures/shared_cluster_color_key.png": "392db0e774dcb91d17ad62ab457d34a5e469cb2a7c04d8c61f722daba126d193",
+    "figures/test_cores_h0_leiden.pdf": "a9719a0b8f498944483e81858b411c04a1f003eef6e83c0418da4b6b5582771e",
+    "figures/test_cores_h0_leiden.png": "9d98012458500fd44ec129a98f5a9b58b9480020773508ae82fb20c605a8a605",
+    "report/cluster_color_keys.csv": "26954dd6a718fa55cff57657fb49256fab0423dbc1f8f455fd706fed9c7c2603",
+    "report/index.html": "bc95b9071f1290ac7baf8d844794ddad35d3df17f0315c39a71184fdb9c89849",
+    "report/segmentation_qc.json": "49583634884ad91dfec9e399edb1e3c8947e24527cf043be39fa50a1df005ed3"
+  },
+  "polygon_layer_rasterized_in_pdf": true,
+  "qc": {
+    "actual_cell_polygons": true,
+    "cells": 81607,
+    "centroid_alignment_rule": "centroid_tolerance_or_polygon_covers_coordinate",
+    "centroid_mismatch_count": 0,
+    "centroid_tolerance_exceeded_count": 0,
+    "centroid_tolerance_um": 5.0,
+    "containment_accepted_count": 0,
+    "coordinate_outside_polygon_count": 6,
+    "covered_cells_per_core": {
+      "15": 38145,
+      "23": 43462
+    },
+    "cross_representation_label_alignment": false,
+    "export_checks": {
+      "core_15": {
+        "pdf_bytes": 156904,
+        "png_bytes": 267873,
+        "png_dimensions": [
+          1406,
+          1436
+        ],
+        "verified": true
+      },
+      "core_23": {
+        "pdf_bytes": 161799,
+        "png_bytes": 295959,
+        "png_dimensions": [
+          1406,
+          1379
+        ],
+        "verified": true
+      },
+      "legend": {
+        "pdf_bytes": 7896,
+        "png_bytes": 39431,
+        "png_dimensions": [
+          1821,
+          296
+        ],
+        "verified": true
+      },
+      "overview": {
+        "pdf_bytes": 352399,
+        "png_bytes": 649388,
+        "png_dimensions": [
+          3058,
+          1544
+        ],
+        "verified": true
+      }
+    },
+    "manual_visual_review": "not_performed",
+    "maximum_centroid_distance_um": 4.032010271222432,
+    "median_centroid_distance_um": 0.4025034538190281,
+    "palette_scope": "h0_only_shared_across_test_cores",
+    "palette_source": "deterministic_turbo_0.04_to_0.96",
+    "pixel_size_um": 0.120281,
+    "polygons_sampled": false,
+    "repaired_cells": 0,
+    "selected_vertex_rows": 1723887,
+    "shared_palette": true,
+    "slide_qualified_key_order_verified": true,
+    "source_rows_scanned": 5731515
+  },
+  "raw_polygons": {
+    "path": "/workspace/BAGM/data/raw/26040302SO_2-polygons.csv/26040302SO_2-polygons.csv",
+    "sha256": "bc1457eca09583557fc36696daa87f0a628d0fa37c0ba073b8ea2abf47f8172e"
+  },
+  "representation": "trained_node_encoder_output_before_graph_blocks",
+  "representation_name": "h0",
+  "scale_bar_um": 100,
+  "schema": "so12_paper_test_h0_leiden_v1_figures",
+  "status": "complete"
+}

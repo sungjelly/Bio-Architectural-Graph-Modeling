@@ -1,0 +1,522 @@
+{
+  "analysis_status": "exploratory_designed_after_learning_curve_observation",
+  "audit": {
+    "absolute_bce_improvement_from_epoch1": 0.033478191549836916,
+    "histories_contiguous": true,
+    "losses_and_gradient_norms_finite": true,
+    "post_first_epoch_gradient_norms_positive": true,
+    "primary_optimization_criterion_passed": true,
+    "relative_bce_improvement_from_epoch1": 0.1223360001765747,
+    "resume_gradient_boundary_epochs": [
+      18
+    ],
+    "secondary_replay_tolerance": 1e-06,
+    "secondary_replay_verified": true,
+    "target_coverage_and_fixed_masks_verified": true
+  },
+  "builder": {
+    "path": "/workspace/BAGM/scripts/analysis/report_so2_binary_expression_bce.py",
+    "sha256": "f26c6fc9ea88b9479f3f4fdb0ae5e8dd002048a95fda96dd5ba753f56ff7b2f4",
+    "size_bytes": 43440,
+    "snapshot": "report_builder.py"
+  },
+  "comparator_summary": {
+    "best_epoch": 164,
+    "campaign_id": "cmp_20260928_so2_target_isolated_geometry_modulated_hurdle_nb_once_per_cell_seed0",
+    "checkpoint": "checkpoints/best.ckpt",
+    "checkpoint_count": 1,
+    "checkpoint_reload_verified": true,
+    "checkpoint_selection_state": {
+      "bad_validations": 0,
+      "best_epoch": 164,
+      "best_value": 0.3282417527371811,
+      "completed_epoch": 171,
+      "improved": false,
+      "should_stop": false,
+      "stop_reason": null
+    },
+    "duration_seconds": 10158.003202402033,
+    "epoch_metrics_rows": 171,
+    "final_epoch": 171,
+    "generalization_estimate": false,
+    "gradient_direction_recorded_every_epoch": true,
+    "loss_recorded_every_epoch": true,
+    "model_name": "target-isolated-geometry-modulated-relative-qkv-gat-hurdle-nb2",
+    "model_seed": 0,
+    "optimizer_steps": 1026,
+    "parameter_count": 6160088,
+    "patience_control_state": {
+      "bad_validations": 25,
+      "best_epoch": 146,
+      "best_value": 0.3282593085350189,
+      "completed_epoch": 171,
+      "improved": false,
+      "should_stop": true,
+      "stop_reason": "patience"
+    },
+    "peak_vram_gib": 5.381822109222412,
+    "primary_metric_name": "val/target_only_masked_hurdle_negative_binomial_nll",
+    "primary_metric_value": 0.3282417527371811,
+    "protocol": "donor_grouped_so2_target_isolated_hurdle_nb_once_per_cell_earlystop_v1",
+    "run_id": "r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097",
+    "status": "success",
+    "stop_reason": "patience",
+    "stopped_early": true,
+    "target_coverage_verified_every_epoch": true,
+    "test_artifacts_present": false,
+    "unbiased_test_estimate": false,
+    "world_size": 4
+  },
+  "comparison": [
+    {
+      "binary_bce": 0.2401795339072312,
+      "binary_minus_hurdle": 0.0001953838360886362,
+      "hurdle_metric_source": "metrics/final.json",
+      "hurdle_nb": 0.23998415007114257,
+      "label": "Detection BCE",
+      "metric": "bce",
+      "preferred_direction": "lower"
+    },
+    {
+      "binary_bce": 0.06594928695529283,
+      "binary_minus_hurdle": 6.457957145027116e-05,
+      "hurdle_metric_source": "metrics/final.json",
+      "hurdle_nb": 0.06588470738384256,
+      "label": "Brier score",
+      "metric": "detection_brier_score",
+      "preferred_direction": "lower"
+    },
+    {
+      "binary_bce": 0.68682535051741,
+      "binary_minus_hurdle": -0.0014057012957111592,
+      "hurdle_metric_source": "metrics/final.json",
+      "hurdle_nb": 0.6882310518131212,
+      "label": "Precision at 0.5",
+      "metric": "detection_precision",
+      "preferred_direction": "higher"
+    },
+    {
+      "binary_bce": 0.07905830110186199,
+      "binary_minus_hurdle": -0.0013722244390275279,
+      "hurdle_metric_source": "metrics/final.json",
+      "hurdle_nb": 0.08043052554088952,
+      "label": "Recall at 0.5",
+      "metric": "detection_recall",
+      "preferred_direction": "higher"
+    },
+    {
+      "binary_bce": 0.14179502395904375,
+      "binary_minus_hurdle": -0.0022339917267359954,
+      "hurdle_metric_source": "metrics/final.json",
+      "hurdle_nb": 0.14402901568577975,
+      "label": "F1 at 0.5",
+      "metric": "detection_f1",
+      "preferred_direction": "higher"
+    },
+    {
+      "binary_bce": 0.9968150915340495,
+      "binary_minus_hurdle": 3.414874366658438e-05,
+      "hurdle_metric_source": "metrics/final.json",
+      "hurdle_nb": 0.9967809427903829,
+      "label": "Specificity at 0.5",
+      "metric": "detection_specificity",
+      "preferred_direction": "higher"
+    },
+    {
+      "binary_bce": 0.9223130789604798,
+      "binary_minus_hurdle": -8.001835771864751e-05,
+      "hurdle_metric_source": "derived_from_confusion_counts",
+      "hurdle_nb": 0.9223930973181984,
+      "label": "Accuracy at 0.5",
+      "metric": "detection_accuracy",
+      "preferred_direction": "higher"
+    },
+    {
+      "binary_bce": 0.5379366963179557,
+      "binary_minus_hurdle": -0.0006690378476804648,
+      "hurdle_metric_source": "derived_from_confusion_counts",
+      "hurdle_nb": 0.5386057341656362,
+      "label": "Balanced accuracy at 0.5",
+      "metric": "detection_balanced_accuracy",
+      "preferred_direction": "higher"
+    },
+    {
+      "binary_bce": 0.21537392824970591,
+      "binary_minus_hurdle": -0.0021584926972613994,
+      "hurdle_metric_source": "derived_from_confusion_counts",
+      "hurdle_nb": 0.21753242094696731,
+      "label": "MCC at 0.5",
+      "metric": "detection_matthews_correlation_coefficient",
+      "preferred_direction": "higher"
+    },
+    {
+      "binary_bce": 0.08257626466274953,
+      "binary_minus_hurdle": -0.00023223402328050036,
+      "hurdle_metric_source": "metrics/final.json",
+      "hurdle_nb": 0.08280849868603003,
+      "label": "Mean predicted probability",
+      "metric": "predicted_positive_probability_mean",
+      "preferred_direction": "descriptive"
+    },
+    {
+      "binary_bce": 0.00934418782088524,
+      "binary_minus_hurdle": -0.0001427715654418408,
+      "hurdle_metric_source": "derived_from_confusion_counts",
+      "hurdle_nb": 0.009486959386327081,
+      "label": "Predicted positive fraction at 0.5",
+      "metric": "predicted_positive_class_rate",
+      "preferred_direction": "descriptive"
+    }
+  ],
+  "comparison_checks": {
+    "dataset_and_graph_match": true,
+    "exact_mask_receipts_and_core_order_match_through_epoch": 129,
+    "final_thresholds_equal_0_5": true
+  },
+  "comparison_limits": [
+    "One validation donor group, one seed, no test split",
+    "Hurdle selected on joint NLL; binary selected on BCE",
+    "No new inference or threshold selection",
+    "Hurdle AUROC/AUPRC/ECE unavailable",
+    "Registry/checkpoint catalog verified separately by monitor"
+  ],
+  "created_at_utc": "2026-09-30T19:08:19.842250+00:00",
+  "detection_metrics": {
+    "bce": 0.2401795339072312,
+    "detection_accuracy": 0.9223130789604798,
+    "detection_auprc_histogram_4096": 0.29842499568833336,
+    "detection_auroc_histogram_4096": 0.7706061865201054,
+    "detection_balanced_accuracy": 0.5379366963179557,
+    "detection_brier_score": 0.06594928695529283,
+    "detection_expected_calibration_error_histogram_4096": 0.0033693397904145383,
+    "detection_f1": 0.14179502395904375,
+    "detection_false_negative": 1398636.0,
+    "detection_false_positive": 54747.0,
+    "detection_matthews_correlation_coefficient": 0.21537392824970591,
+    "detection_precision": 0.68682535051741,
+    "detection_recall": 0.07905830110186199,
+    "detection_specificity": 0.9968150915340495,
+    "detection_threshold": 0.5,
+    "detection_true_negative": 17134758.0,
+    "detection_true_positive": 120066.0,
+    "observed_positive_rate": 0.08117838336939505,
+    "predicted_positive_class_rate": 0.00934418782088524,
+    "predicted_positive_probability_mean": 0.08257626466274953
+  },
+  "evidence": {
+    "external_support": "not_established",
+    "faithfulness": "not_established",
+    "graph_specific_predictive_gain": "not_established",
+    "null_calibration": "not_established",
+    "patient_replication": "not_established",
+    "perturbation": "not_established",
+    "seed_stability": "not_established"
+  },
+  "report_environment": {
+    "matplotlib": "3.11.1",
+    "numpy": "2.5.2",
+    "python": "3.12.13 | packaged by conda-forge | (main, Aug 11 2026, 10:27:28) [GCC 14.4.0]"
+  },
+  "retrospective_references": {
+    "all_negative_accuracy": 0.9188216166306049,
+    "all_negative_balanced_accuracy": 0.5,
+    "auprc": 0.08117838336939505,
+    "auroc": 0.5,
+    "bce": 0.28163800153745605,
+    "brier": 0.07458845344292657,
+    "fit_scope": "observed_validation_prevalence_not_training_fitted_baseline"
+  },
+  "run_summary": {
+    "best_epoch": 123,
+    "campaign_id": "cmp_20260930_so2_target_isolated_geometry_modulated_binary_expression_bce_once_per_cell_seed0",
+    "checkpoint": "checkpoints/best.ckpt",
+    "checkpoint_count": 1,
+    "checkpoint_reload_verified": true,
+    "checkpoint_selection_state": {
+      "bad_validations": 0,
+      "best_epoch": 123,
+      "best_value": 0.2401795339072312,
+      "completed_epoch": 129,
+      "improved": false,
+      "should_stop": false,
+      "stop_reason": null
+    },
+    "duration_seconds": 6860.868386394999,
+    "epoch_metrics_rows": 129,
+    "final_epoch": 129,
+    "generalization_estimate": false,
+    "gradient_direction_recorded_every_epoch": true,
+    "loss_recorded_every_epoch": true,
+    "model_name": "target-isolated-geometry-modulated-relative-qkv-gat-binary-expression-bce",
+    "model_seed": 0,
+    "optimizer_steps": 774,
+    "parameter_count": 5134088,
+    "patience_control_state": {
+      "bad_validations": 25,
+      "best_epoch": 104,
+      "best_value": 0.24023593295177886,
+      "completed_epoch": 129,
+      "improved": false,
+      "should_stop": true,
+      "stop_reason": "patience"
+    },
+    "peak_vram_gib": 5.076786518096924,
+    "primary_metric_name": "val/target_only_masked_binary_cross_entropy",
+    "primary_metric_value": 0.2401795339072312,
+    "protocol": "donor_grouped_so2_target_isolated_binary_expression_bce_once_per_cell_earlystop_v1",
+    "run_id": "r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863",
+    "status": "success",
+    "stop_reason": "patience",
+    "stopped_early": true,
+    "target_coverage_verified_every_epoch": true,
+    "test_artifacts_present": false,
+    "unbiased_test_estimate": false,
+    "world_size": 4
+  },
+  "runtime": {
+    "devices": [
+      {
+        "index": "0",
+        "memory_total_mib": "24576",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      {
+        "index": "1",
+        "memory_total_mib": "24576",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      {
+        "index": "2",
+        "memory_total_mib": "24576",
+        "name": "NVIDIA GeForce RTX 3090"
+      },
+      {
+        "index": "3",
+        "memory_total_mib": "24576",
+        "name": "NVIDIA GeForce RTX 3090"
+      }
+    ],
+    "duration_scope": "Runner duration covers resumed process; epoch sum excludes setup, partial epochs and interruption downtime.",
+    "framework": {
+      "cuda_available": true,
+      "cuda_build": "13.0",
+      "cuda_device_count": 4,
+      "cudnn_version": 92000,
+      "version": "2.13.0+cu130"
+    },
+    "parallel_schedule": "Four DDP ranks, one per GPU; four disjoint target shards per core; six two-core optimizer updates per epoch.",
+    "peak_allocated_vram_gib": 5.076786518096924,
+    "recovery_receipts": [
+      {
+        "ended_at": "2026-09-30T19:07:53.092883Z",
+        "event": "training_finished_entering_verified_publication",
+        "prior_completed_epoch_duration_seconds": 1019.0622085146606,
+        "recovery_duration_seconds": 6880.146863369002,
+        "wall_elapsed_including_interruption_seconds": 35327.070833
+      },
+      {
+        "duration_policy": "Registry duration is prior completed-epoch durations plus recovery runtime; excludes downtime and cannot recover pre-interruption setup or partial-epoch time.",
+        "event": "resume_existing_run",
+        "prior_checkpoint_completed_epoch": 17,
+        "prior_completed_epoch_duration_seconds": 1019.0622085146606,
+        "started_at": "2026-09-30T17:13:12.966666Z"
+      }
+    ],
+    "runner_duration_seconds": 6860.868386394999,
+    "sum_completed_epoch_seconds": 7326.103396490642,
+    "wall_elapsed_including_interruption_seconds": 35327.070833
+  },
+  "schema": "so2_binary_expression_bce_completion_report_v1",
+  "source_bundles": {
+    "r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097": {
+      "path": "/workspace/BAGM/artifacts/runs/2026/09/r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097",
+      "sources": {
+        "_SUCCESS": {
+          "sha256": "709a571ce6441684578448aabd85edd5bcbe9f00609c87261afc44374f1f90c9",
+          "size_bytes": 211
+        },
+        "checkpoints/best.ckpt": {
+          "sha256": "a01db7d4e68ab838d30ed6b5bd5a6f55b200b9109cd28123cbc5a305b0c9e1ee",
+          "size_bytes": 74100169
+        },
+        "config.resolved.yaml": {
+          "sha256": "a7641d002bbe654253fcaa1f8a315989a50b4a445dcb94fc1c471a604ed80bc7",
+          "size_bytes": 21952
+        },
+        "diagnostics/final_checkpoint_reload_verification.json": {
+          "sha256": "f06612673338fc444a36576b84890aae61c1a3c4b5a46dead3c8adb1f5776542",
+          "size_bytes": 385
+        },
+        "manifest.yaml": {
+          "sha256": "7e110467fd9b863c7b8d69d578a14b918ccd30d7da529032358d918c28a25ffa",
+          "size_bytes": 1279
+        },
+        "metrics/final.json": {
+          "sha256": "89c51c513c10a4af56038976997681f6bee832f22865da290e38c24b458ad199",
+          "size_bytes": 1574
+        },
+        "provenance/artifact_checksums.json": {
+          "sha256": "a289bdadecc50625362e306085350e5d806b69f348175f9cc0bf4164c68b7116",
+          "size_bytes": 4796
+        },
+        "provenance/hardware.json": {
+          "sha256": "4eeaf23c342d02aa9400b1b511dac48cdc263929731ae367d4162f8f3e80acf2",
+          "size_bytes": 1448
+        },
+        "provenance/so2_target_isolated_hurdle_nb_training.json": {
+          "sha256": "a0e8a294ba9a3098b4c5b74573fee2e8861130e2456ce27044b29729b91d2f5e",
+          "size_bytes": 2812
+        },
+        "results/epoch_metrics.csv": {
+          "sha256": "8877ee5c128ec0e003b180ed28ad09921d9dd148a84667af7779cefc1072a437",
+          "size_bytes": 18018414
+        },
+        "results/per_core_epoch_metrics.csv": {
+          "sha256": "9d5639bd0a9f095ffbfa7049a78eceaa6723051cc36685610e790f5128650acd",
+          "size_bytes": 710111
+        },
+        "summary.json": {
+          "sha256": "1b5ecdf3a372e0d092dbbaacd6335134b9f9e5930ca842ca0b78b4872e8fac40",
+          "size_bytes": 1592
+        }
+      }
+    },
+    "r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863": {
+      "path": "/workspace/BAGM/artifacts/runs/2026/09/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863",
+      "sources": {
+        "_SUCCESS": {
+          "sha256": "e53af18c271cfb65cd2219be5b94671d2194c6bd911d1ffe0b2e5ecb4f52de72",
+          "size_bytes": 211
+        },
+        "checkpoints/best.ckpt": {
+          "sha256": "2320932a771ab670ddb2d90420adffdfba09a4818d673936b2431c7e039e5316",
+          "size_bytes": 61784913
+        },
+        "config.resolved.yaml": {
+          "sha256": "446762ca954847dba04eecdd889e03692553332568dd08f4950f232c53f4a7b1",
+          "size_bytes": 21921
+        },
+        "diagnostics/final_checkpoint_reload_verification.json": {
+          "sha256": "366bdb91e8eb122fffb9396b180a076aebd6960939773adf12a6736354f39ec8",
+          "size_bytes": 385
+        },
+        "manifest.yaml": {
+          "sha256": "ce88e9b61c2d36d3ad3da38713ceacfaff1c268f4cb91a22692ea3a3c7a78544",
+          "size_bytes": 1335
+        },
+        "metrics/final.json": {
+          "sha256": "9d44afc3b96f82afd157d8847f2d6eaf8857af72c233503adde8a60326af1adf",
+          "size_bytes": 1421
+        },
+        "provenance/artifact_checksums.json": {
+          "sha256": "a7a50ed1eb38988586f0c75948f955e4786da53b66dfc9d63205f89eec34cefd",
+          "size_bytes": 6887
+        },
+        "provenance/hardware.json": {
+          "sha256": "4eeaf23c342d02aa9400b1b511dac48cdc263929731ae367d4162f8f3e80acf2",
+          "size_bytes": 1448
+        },
+        "provenance/recovery_20260930T171312946056Z_end.json": {
+          "sha256": "91261fddc54dadfae660f57f677fe80eedda8f5991246c80623ee8505b8c6c93",
+          "size_bytes": 672
+        },
+        "provenance/recovery_20260930T171312946056Z_start.json": {
+          "sha256": "b55bd52732c3085aa73ec872c61d80d279a19780f2eb14316f0397840dae1154",
+          "size_bytes": 1989
+        },
+        "provenance/so2_target_isolated_binary_expression_training.json": {
+          "sha256": "fb8ace08b4e9945b48dca856c31b40c8781f758dbb38346c01b21c527a356bd4",
+          "size_bytes": 7118
+        },
+        "results/detection_curve_histogram_4096.json": {
+          "sha256": "924d19877516dc1604ff04bf293cb41a15601f1c5379616c3a429009275b225a",
+          "size_bytes": 167431
+        },
+        "results/epoch_metrics.csv": {
+          "sha256": "947fecfbb71c7aced592eb870becc1d421f7d5fc7c24e166feb23a76987a3763",
+          "size_bytes": 13984955
+        },
+        "results/gradient_direction_by_block.csv": {
+          "sha256": "2b97084c4f7ba7d56ec6b33717866f5726efb5c498134430997497be69b6234b",
+          "size_bytes": 148846
+        },
+        "results/gradient_direction_detection_head.csv": {
+          "sha256": "8ce830b08f1650b778e7b8958999d8cd95c7e55f47dc9123a3f70b6480360484",
+          "size_bytes": 36263
+        },
+        "results/gradient_direction_metrics.csv": {
+          "sha256": "1779bfb114061c39163c835e9cc91747415798792210109926bb6e4df0c54739",
+          "size_bytes": 35804
+        },
+        "results/per_core_epoch_metrics.csv": {
+          "sha256": "4355f3cd6b884e30fef89b4f8edcd93c6437e6616116c3cc736a828e26540740",
+          "size_bytes": 502535
+        },
+        "summary.json": {
+          "sha256": "29cf0c8213e4dd71d6e28c1f936861e55f9c072d458c53463114fda56c86c4ba",
+          "size_bytes": 1618
+        }
+      }
+    }
+  },
+  "validation_core_metrics_at_selected_epoch": [
+    {
+      "core_alias": "SO2-C27",
+      "coverage_receipt_sha256": "027ebb57b71e06f458406d771e7b6186eb8dbee6df5219769790a8a1a84fc322",
+      "detection_accuracy": "0.9217086926129054",
+      "detection_auprc_histogram_4096": "0.2979846490087841",
+      "detection_auroc_histogram_4096": "0.7697824780398894",
+      "detection_balanced_accuracy": "0.5369482980001463",
+      "detection_brier_score": "0.0664904619325235",
+      "detection_expected_calibration_error_histogram_4096": "0.0038558427397717048",
+      "detection_f1": "0.13848066215690596",
+      "detection_false_negative": "916878",
+      "detection_false_positive": "33327",
+      "detection_mcc": "0.21403792006694358",
+      "detection_precision": "0.6961848762477779",
+      "detection_recall": "0.0768872968026048",
+      "detection_specificity": "0.9970092991976878",
+      "detection_true_negative": "11110215",
+      "detection_true_positive": "76368",
+      "global_epoch": "123",
+      "masked_entries": "12136788",
+      "observed_positive_rate": "0.08183763282344554",
+      "pooled_masked_binary_cross_entropy": "0.24178726282439802",
+      "positive_entries": "993246",
+      "predicted_positive_class_rate": "0.009038223292686665",
+      "predicted_positive_probability_mean": "0.08319696085745232",
+      "schema": "so2_target_isolated_binary_expression_bce_once_per_cell_per_core_metrics_v1",
+      "split": "validation",
+      "target_cells": "24245"
+    },
+    {
+      "core_alias": "SO2-C28",
+      "coverage_receipt_sha256": "3e523231620902f1842e7797167115675d14ed7f49229c263861b761aa450020",
+      "detection_accuracy": "0.9234293232557534",
+      "detection_auprc_histogram_4096": "0.29901306452102927",
+      "detection_auroc_histogram_4096": "0.7720019753032227",
+      "detection_balanced_accuracy": "0.5398095968045384",
+      "detection_brier_score": "0.06494978806935156",
+      "detection_expected_calibration_error_histogram_4096": "0.004296145116608206",
+      "detection_f1": "0.14798484186571031",
+      "detection_false_negative": "481758",
+      "detection_false_positive": "21420",
+      "detection_mcc": "0.21802238827103898",
+      "detection_precision": "0.671058693448816",
+      "detection_recall": "0.08316205353064766",
+      "detection_specificity": "0.9964571400784292",
+      "detection_true_negative": "6024543",
+      "detection_true_positive": "43698",
+      "global_epoch": "123",
+      "masked_entries": "6571419",
+      "observed_positive_rate": "0.07996081211683503",
+      "pooled_masked_binary_cross_entropy": "0.23721021099095949",
+      "positive_entries": "525456",
+      "predicted_positive_class_rate": "0.009909275302640115",
+      "predicted_positive_probability_mean": "0.08142989762581056",
+      "schema": "so2_target_isolated_binary_expression_bce_once_per_cell_per_core_metrics_v1",
+      "split": "validation",
+      "target_cells": "13122"
+    }
+  ]
+}

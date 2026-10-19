@@ -1,0 +1,26 @@
+[
+  {
+    "method": "whole_cell",
+    "gpu_cpu_vs_cpu_exact": false,
+    "hidden_invariance_exact": true,
+    "replay_max_abs": 4.76837158203125e-07,
+    "invariance_max_abs": 0.0,
+    "all_weights_exact": true
+  },
+  {
+    "method": "partial_gene",
+    "gpu_cpu_vs_cpu_exact": true,
+    "hidden_invariance_exact": true,
+    "replay_max_abs": 0.0,
+    "invariance_max_abs": 0.0,
+    "all_weights_exact": true
+  },
+  {
+    "method": "spatial_block",
+    "gpu_cpu_vs_cpu_exact": true,
+    "hidden_invariance_exact": true,
+    "replay_max_abs": 0.0,
+    "invariance_max_abs": 0.0,
+    "all_weights_exact": true
+  }
+]

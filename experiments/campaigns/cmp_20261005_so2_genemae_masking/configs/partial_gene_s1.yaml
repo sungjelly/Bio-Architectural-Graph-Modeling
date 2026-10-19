@@ -1,0 +1,124 @@
+schema_version: 1
+seed: 1
+fold: 0
+campaign:
+  campaign_id: cmp_20261005_so2_genemae_masking
+classification:
+  schema_version: 1
+  lifecycle_stage: exploratory_screen
+  study_axis: so2_masking_comparison
+  scientific_variant: partial_gene_10pct
+  retention_class: exploratory_screen
+  classification_confidence: high
+model:
+  name: myjju-genemae
+  family: myjju_dual_path_genemae
+  source_architecture: dual_path_genemae_sb50
+  source_fidelity_repair: assign_self_hidden_constructor_attribute
+  input_genes: 1000
+  output_genes: 1000
+  graph_layers: 4
+  graph_hidden_dim: 256
+  attention_heads: 6
+  attention_concat: false
+  embedding_dim: 192
+  self_hidden_dim: 512
+  self_hidden_layers: 2
+  fusion_hidden_dim: 256
+  dropout: 0.2
+  drop_edge: 0.2
+  decoder: mlp
+  learned_per_gene_mask_token: true
+  expected_trainable_parameters: 6888016
+  trainable_node_identifiers: false
+  trainable_edge_identifiers: false
+  uses_graph_inputs: true
+  uses_edge_inputs: true
+graph:
+  kind: symmetric_spatial_knn_tiled
+  neighbor_k: 15
+  k: 15
+  radius_um: 1.0
+  radius_applied: false
+  radius_role: schema_required_not_applied
+  symmetry: union
+  maximum_tile_nodes: 7000
+  tiling: recursive_median_longest_axis
+  edge_feature: gaussian_distance_kernel
+  edge_scale: within_tile_median_edge_length
+  edge_dropout: 0.2
+  constructed_graph_self_loops: false
+  convolution_add_self_loops: true
+  cross_core_edges: false
+  cross_tile_edges: false
+  coordinates_are_node_covariates: false
+  neighbor_sampling: false
+masking:
+  type: expression_masking
+  method: partial_gene
+  rate: 0.1
+  train_seed_namespace: train-v1
+  model_seed_in_masks: false
+dataset:
+  dataset_id: so2_genemae_log1p_v1
+  version: v1
+  split_id: so2_genemae_all_fit_v1
+  dataset_fingerprint: 69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158
+  split_fingerprint: 3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2
+  preprocessing_version: elementwise_log1p_counts_v1
+  task: masked_expression_regression
+  target_scale: log1p_raw_counts
+  prepared_artifact_reference: data/processed/so2_14core_relative_qkv_v1
+  generalization_scope: fit_only_transductive
+  total_fit_cells: 246063
+features:
+  use_edge_features: true
+  edge_features:
+  - gaussian_distance_kernel
+  node_features:
+  - visible_expression
+  - mask_token
+trainer:
+  learning_rate: 0.0015
+  weight_decay: 0.0001
+  batch_size: 1
+  max_epochs: 200
+  optimizer: AdamW
+  scheduler: cosine
+  precision: fp32
+  gradient_clip_norm: 5.0
+  restore_best: false
+  primary_checkpoint_role: last
+  checkpoint_policy: last_only
+  early_stopping: false
+evaluation:
+  protocol: held_in_so2_genemae_masking_v1
+  splits:
+  - fit
+  canonical_prediction_split: fit
+  primary_metric: fit/whole_node/masked_huber
+  primary_direction: minimize
+  methods:
+  - whole_cell
+  - partial_gene
+  - spatial_block
+  replicates: 3
+  mask_seed_namespace: evaluation-v1
+  diagnostic_only: false
+  expected_seeds:
+  - 0
+  - 1
+  - 2
+  expected_folds:
+  - 0
+metadata:
+  execution_role: production
+  implementation_sha256:
+    src/spatial_benchmark/myjju_genemae.py: 3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7
+    src/spatial_benchmark/so2_genemae_masking.py: ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1
+    scripts/train/run_so2_genemae_masking.py: f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7
+  pilot:
+    path: artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063
+    success_sha256: 0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd
+  fold_meaning: one_fitted_cohort_not_cv
+  selection_policy: final_epoch_only

@@ -1,0 +1,77 @@
+{
+  "aggregation": "Pooled native-pixel micro F1 from summed TP/FP/FN, one shared selected cluster-ID union",
+  "all_pixels_achromatic": false,
+  "axis_labels": {
+    "x": "Cell representation",
+    "y": "Pooled pixel F1"
+  },
+  "axis_limits": [
+    0.78,
+    0.88
+  ],
+  "bar_extrema_exact": true,
+  "bar_width": 0.42,
+  "colors": [
+    "#5E778B",
+    "#6C8495",
+    "#7D93A0",
+    "#8DA1AC",
+    "#9DAFB7",
+    "#ACA293",
+    "#80988D"
+  ],
+  "label_bounds_verified": true,
+  "matplotlib_version": "3.11.1",
+  "method_order": [
+    "h4",
+    "h3",
+    "h2",
+    "h1",
+    "h0",
+    "pca",
+    "scvi"
+  ],
+  "original_bar_width": 0.66,
+  "passed": true,
+  "presentation_only": true,
+  "primary_resolution": 1,
+  "primary_seed": 0,
+  "scores": {
+    "h0": 0.8241728152216488,
+    "h1": 0.8583333234184467,
+    "h2": 0.8601693686209765,
+    "h3": 0.8662646630553653,
+    "h4": 0.8630007828129077,
+    "pca": 0.7981667752128712,
+    "scvi": 0.8322910294699722
+  },
+  "script": {
+    "sha256": "00f63a01c197d9c7f9b17b0a25cb514fd197b717aa0612950bbbdc6139a7c4a6",
+    "size_bytes": 9240
+  },
+  "source_evaluation": "ev_so12_cancer_pooled_union_s0_20261018",
+  "source_manifest_sha256": "8727217f27775252d22d16bb5f14b06b2707b904aa7b2c1117e5c0b987f1d9b2",
+  "source_summary": {
+    "sha256": "f4b2462aa734dd9acd075e5f0a706daef27cec30af748690551824c8e5d473b2",
+    "size_bytes": 6832
+  },
+  "style": "muted",
+  "tick_labels": [
+    "$h_{4}$",
+    "$h_{3}$",
+    "$h_{2}$",
+    "$h_{1}$",
+    "$h_{0}$",
+    "PCA",
+    "scVI"
+  ],
+  "top_corner_radius_pt": 1.7,
+  "visual_review": {
+    "notes": "Subtle muted color variation, correct sentence-case axis labels, legible subscripts, clean spacing, no clipping. Scores and bar geometry preserved.",
+    "passed": true,
+    "reviewers": [
+      "root",
+      "figure_review"
+    ]
+  }
+}

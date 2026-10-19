@@ -1,0 +1,92 @@
+{
+  "cells_per_core": {
+    "15": 38145,
+    "23": 43462
+  },
+  "manifest_path": "report/figure_manifest.json",
+  "manifest_sha256": "5cdfc18944fc09950f8d4bf075ffd15db71e4e54a7feb55bc224487100eeed1c",
+  "n_cells": 81607,
+  "output_sha256": {
+    "figures/core_15_hL_leiden_segmentation.pdf": "e227c1081200cc1194a49b913cfdc471d9fafaa64cdaccecad1738d57ff629bc",
+    "figures/core_15_hL_leiden_segmentation.png": "299aa1319565a3d264a0570819e7ccaa85de2395b6e529e40a744788a2964174",
+    "figures/core_23_hL_leiden_segmentation.pdf": "7e9550d858bcf7a68bfa8da20ea9cb1264e819853437b2fe45f699dd5c26aa02",
+    "figures/core_23_hL_leiden_segmentation.png": "cb71c577b08f14725ce7001dd97fba46d5004bb66297d2f26bf1bada262cc298",
+    "figures/shared_cluster_color_key.pdf": "0918ff74c8829d7585d9637ba03b953af24033328d651e235d87849b29e72985",
+    "figures/shared_cluster_color_key.png": "e805d0815f804947f6eb55b8e896a115826c7f0563421f6d9ea272dca3ef7194",
+    "figures/test_cores_hL_leiden.pdf": "d4a7fe41194c4eabeaadb6e7b3fa77aa5748bda37e8dbb7325e2ae2fcd933a6f",
+    "figures/test_cores_hL_leiden.png": "32c153165af62a0ed072847d065eeb3cc47a7a86fac3c5f98ea124d78aa43971",
+    "report/cluster_color_keys.csv": "201bce7856f1e566a52670f18df1bd71602695d887ab0736be7d0845db88ba70",
+    "report/index.html": "919d92b42d833ab5b01ee9d285e07a981b464ffe1ea005447442782d8add1886",
+    "report/segmentation_qc.json": "87eb61bf6e451e974d1419e43e7daa1a46861257dbd950ed79fecc7c3a82976c"
+  },
+  "passed": true,
+  "qc": {
+    "actual_cell_polygons": true,
+    "cells": 81607,
+    "centroid_alignment_rule": "centroid_tolerance_or_polygon_covers_coordinate",
+    "centroid_mismatch_count": 0,
+    "centroid_tolerance_exceeded_count": 0,
+    "centroid_tolerance_um": 5.0,
+    "containment_accepted_count": 0,
+    "coordinate_outside_polygon_count": 6,
+    "covered_cells_per_core": {
+      "15": 38145,
+      "23": 43462
+    },
+    "export_checks": {
+      "core_15": {
+        "pdf_bytes": 143907,
+        "png_bytes": 201827,
+        "png_dimensions": [
+          1406,
+          1077
+        ],
+        "verified": true
+      },
+      "core_23": {
+        "pdf_bytes": 133385,
+        "png_bytes": 183017,
+        "png_dimensions": [
+          1406,
+          961
+        ],
+        "verified": true
+      },
+      "legend": {
+        "pdf_bytes": 8100,
+        "png_bytes": 46054,
+        "png_dimensions": [
+          1821,
+          296
+        ],
+        "verified": true
+      },
+      "overview": {
+        "pdf_bytes": 302709,
+        "png_bytes": 463950,
+        "png_dimensions": [
+          3058,
+          1354
+        ],
+        "verified": true
+      }
+    },
+    "manual_visual_review": "not_performed",
+    "maximum_centroid_distance_um": 4.032010271222432,
+    "median_centroid_distance_um": 0.4025034538190281,
+    "palette_source": "deterministic_turbo_0.04_to_0.96",
+    "pixel_size_um": 0.120281,
+    "polygons_sampled": false,
+    "repaired_cells": 0,
+    "selected_vertex_rows": 1723887,
+    "shared_palette": true,
+    "slide_qualified_key_order_verified": true,
+    "source_rows_scanned": 5731515
+  },
+  "schema": "so12_paper_test_hL_leiden_v1",
+  "status": "complete",
+  "test_core_numbers": [
+    15,
+    23
+  ]
+}

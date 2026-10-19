@@ -1,0 +1,60 @@
+{
+  "global_epoch": 86,
+  "train_equal_core_huber": 0.21463578633964064,
+  "validation": {
+    "equal_core_huber": 0.1966749440652639,
+    "pooled_huber": 0.19801040464925687,
+    "pooled_mae": 0.3088735295445431,
+    "pooled_mse": 1.0099502468308235,
+    "pooled_pearson": 0.12152992040685312,
+    "masked_entries": 159816944,
+    "per_core_huber": {
+      "SO1-C11": 0.2179787836948371,
+      "SO1-C12": 0.2186059304317489,
+      "SO1-C13": 0.16526777947448865,
+      "SO1-C14": 0.21398453025278266,
+      "SO2-C25": 0.1774793556613153,
+      "SO2-C26": 0.19350627616096042,
+      "SO2-C27": 0.19412682751792168,
+      "SO2-C28": 0.1924500693280565
+    },
+    "view_count": 24
+  },
+  "selection": {
+    "epoch": 86,
+    "best_value": 0.1966749440652639,
+    "best_epoch": 86,
+    "patience_best": 0.19667657485484086,
+    "bad_validations": 1,
+    "improved": true,
+    "stop_reason": null
+  },
+  "learning_rate": 0.0001,
+  "optimizer_steps": 860,
+  "epoch_seconds": 256.6402628829237,
+  "mean_gradient_norm": 0.005370334954932332,
+  "memory": [
+    {
+      "rank": 0,
+      "allocated_gib": 7.1869120597839355,
+      "reserved_gib": 17.576171875
+    },
+    {
+      "rank": 1,
+      "allocated_gib": 7.186584949493408,
+      "reserved_gib": 17.921875
+    },
+    {
+      "rank": 2,
+      "allocated_gib": 15.539286613464355,
+      "reserved_gib": 17.509765625
+    },
+    {
+      "rank": 3,
+      "allocated_gib": 15.537172794342041,
+      "reserved_gib": 17.544921875
+    }
+  ],
+  "validation_mask_sha256": "60d49f2b3a7e21b0928c79767ab0690afee98197ce26e20d3f47ede5f7f55b68",
+  "training_mask_sha256": "f2fc82d230d6e54916111bb475413f4b4e95304887c0c594d52246a0271d86a3"
+}

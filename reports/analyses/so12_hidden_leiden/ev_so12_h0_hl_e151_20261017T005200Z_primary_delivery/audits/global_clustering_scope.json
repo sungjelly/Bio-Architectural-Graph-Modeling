@@ -1,0 +1,58 @@
+{
+  "schema": "global_clustering_scope_v1",
+  "checked_at": "2026-10-17T01:30:08.902450+00:00",
+  "n_cells": 407659,
+  "core_count": 28,
+  "core_counts": {
+    "1": 8924,
+    "2": 7450,
+    "3": 12190,
+    "4": 14657,
+    "5": 11399,
+    "6": 18212,
+    "7": 10722,
+    "8": 4972,
+    "9": 17223,
+    "10": 14756,
+    "11": 18145,
+    "12": 7816,
+    "13": 5345,
+    "14": 9785,
+    "15": 38145,
+    "16": 16229,
+    "17": 9041,
+    "18": 11696,
+    "19": 19119,
+    "20": 12155,
+    "21": 4897,
+    "22": 11443,
+    "23": 43462,
+    "24": 14506,
+    "25": 13147,
+    "26": 14856,
+    "27": 24245,
+    "28": 13122
+  },
+  "split_counts": {
+    "train": 301198,
+    "validation": 106461
+  },
+  "neighbor_scope": "One joint all-cell neighbor graph per representation; cross-core neighbors allowed.",
+  "model_inference_graph_scope": "Original spatial model graphs remain within each complete core.",
+  "graphs": {
+    "h0": {
+      "edge_count": 11298105,
+      "cross_core_edge_count": 7608340,
+      "cross_core_edge_fraction": 0.6734173562734636,
+      "distinct_cross_core_pairs": 378,
+      "sha256": "ba33b22e137bea8cf56e8eef8d14849e1d903ac7c82a82a090cf09c4084e03a1"
+    },
+    "hL": {
+      "edge_count": 10786423,
+      "cross_core_edge_count": 4599527,
+      "cross_core_edge_fraction": 0.42641819257412766,
+      "distinct_cross_core_pairs": 378,
+      "sha256": "3df3bb5a081f7b67902a9def70bd0cdca5bb41965ac88763dd128524811484f3"
+    }
+  }
+}

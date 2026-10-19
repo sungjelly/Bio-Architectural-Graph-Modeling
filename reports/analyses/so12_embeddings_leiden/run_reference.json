@@ -1,0 +1,10 @@
+{
+  "run_id": "r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4",
+  "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4",
+  "report_html_sha256": "1de4d519466fee76e0ffcb627b41f542d03b749be24bb936a44071b4b49eadbb",
+  "checksums_json_sha256": "1013b827a76f0519277cecb5e9305059d88a406dc158619a34baa38b1f39b6dc",
+  "verified_bundle_files": 68,
+  "source_bundle_bytes": 568493750,
+  "all_checksums_verified": true,
+  "free_disk_gib": 10.351009368896484
+}

@@ -1,0 +1,187 @@
+{
+  "schema": "so12_all_observed_hidden_extraction_v1",
+  "verified": true,
+  "verified_at": "2026-10-17T00:56:09.057536+00:00",
+  "n_cells": 407659,
+  "dimensions": 256,
+  "core_count": 28,
+  "inputs_sha256": "8594f76bc669ef19c1c27da2bb4f2d044e6b5c4c423b5c66861bc34f8984e878",
+  "cells_sha256": "d485d5e202488e40814a5b979dfa425bfca5da12287f32d4c6002536a55acac1",
+  "checkpoint_sha256": "6b4526508d223fb8a286084f57fc5f4b36129db6afeffaa328672d2c06226af4",
+  "checkpoint_epoch": 151,
+  "all_observed": true,
+  "dtype": "float32",
+  "tf32": false,
+  "deterministic_algorithms": true,
+  "cudnn_deterministic": true,
+  "cores": [
+    {
+      "core_number": 1,
+      "receipt_sha256": "70f07dc592f10626ac1298814fabfcb84cee4b659bce8587682631de37a52341",
+      "elapsed_seconds": 0.6196950180456042,
+      "peak_allocated_bytes": 1469433856
+    },
+    {
+      "core_number": 2,
+      "receipt_sha256": "2eb134c071d3460ef1ac3784dc7eb1d782d0f2c280264e793894c3d7c4a0b001",
+      "elapsed_seconds": 0.4798835669644177,
+      "peak_allocated_bytes": 1331794432
+    },
+    {
+      "core_number": 3,
+      "receipt_sha256": "cd2c8cb9dde1849fc074017799bf5c3993f86b1410d6dbb46d772af900b045c5",
+      "elapsed_seconds": 0.8403083980083466,
+      "peak_allocated_bytes": 1739389952
+    },
+    {
+      "core_number": 4,
+      "receipt_sha256": "f78877b47b2af87fffcd4f9d35e9706c99534ebf780043dbaf58cc6f802fd78c",
+      "elapsed_seconds": 0.9069769328925759,
+      "peak_allocated_bytes": 1902126080
+    },
+    {
+      "core_number": 5,
+      "receipt_sha256": "9dd92630a74226c40983ba4b87929fcc7ae22c9437d749aabfbdcfd24fc132c3",
+      "elapsed_seconds": 0.7478513491805643,
+      "peak_allocated_bytes": 1684427264
+    },
+    {
+      "core_number": 6,
+      "receipt_sha256": "47d0af90b3176cd13930aa451b47f34fa7af355ba3cf5a9c3c9f094a5b5bf74a",
+      "elapsed_seconds": 1.3077634531073272,
+      "peak_allocated_bytes": 2192921600
+    },
+    {
+      "core_number": 7,
+      "receipt_sha256": "1b8ffbbb625d4efb966626ac522ee4c737aeaef3a545dbe2a88fce6b0b8aec84",
+      "elapsed_seconds": 0.7276389240287244,
+      "peak_allocated_bytes": 1600521216
+    },
+    {
+      "core_number": 8,
+      "receipt_sha256": "68fdd25fcf74c8489d62c4e4796e5b6c5556e04f4c6a9718a624e64abedf7c2f",
+      "elapsed_seconds": 0.3369385350961238,
+      "peak_allocated_bytes": 1135634944
+    },
+    {
+      "core_number": 9,
+      "receipt_sha256": "dcf21b2c9033afb308911bee7905dc955a897d6e0c61d086b74e3746fb0952c8",
+      "elapsed_seconds": 1.215516875963658,
+      "peak_allocated_bytes": 2188126208
+    },
+    {
+      "core_number": 10,
+      "receipt_sha256": "8650d2833c50e72efc70119a9d9e8fcca7742de03bf6d18ef17da8d9478aef1c",
+      "elapsed_seconds": 1.0306309130974114,
+      "peak_allocated_bytes": 1951958016
+    },
+    {
+      "core_number": 11,
+      "receipt_sha256": "c860819fba482c81f6269bee616d31e8b77862b045daf2c6a0d9a9e6fe8dce12",
+      "elapsed_seconds": 1.653653615852818,
+      "peak_allocated_bytes": 2255503360
+    },
+    {
+      "core_number": 12,
+      "receipt_sha256": "3cdbe70538166ac6692fcf7ccd375cc447a4e99820c162fdb3277cb142d543f8",
+      "elapsed_seconds": 0.5640865589957684,
+      "peak_allocated_bytes": 1367634432
+    },
+    {
+      "core_number": 13,
+      "receipt_sha256": "012ee3e4ed3034851d9cddfbf284b966d54e99e0e1f125d85711040e9e799c56",
+      "elapsed_seconds": 0.37225444591604173,
+      "peak_allocated_bytes": 1175798272
+    },
+    {
+      "core_number": 14,
+      "receipt_sha256": "027de7bd79ee615f4fccb2557a096db95234f858af7ce74e797468b23cd44141",
+      "elapsed_seconds": 0.6429639609996229,
+      "peak_allocated_bytes": 1543262720
+    },
+    {
+      "core_number": 15,
+      "receipt_sha256": "a8df9671f477f53d9ce541e1741d272d6ec434d5954282b2d5b9197ce8150ecb",
+      "elapsed_seconds": 3.422426942968741,
+      "peak_allocated_bytes": 3844705792
+    },
+    {
+      "core_number": 16,
+      "receipt_sha256": "739454e327f5be76f95fa3e30d009ad9af1c452f037d1b85edbf4a9484cef61b",
+      "elapsed_seconds": 1.2986271020490676,
+      "peak_allocated_bytes": 2057663488
+    },
+    {
+      "core_number": 17,
+      "receipt_sha256": "08010e935f26887c456c6f58bf85347064144da0e5563a62c39ac9456263ecd2",
+      "elapsed_seconds": 0.6707259411923587,
+      "peak_allocated_bytes": 1480804864
+    },
+    {
+      "core_number": 18,
+      "receipt_sha256": "a1f41fab70e2912348afc9def64fb5a671c92c5050f2378e90fac6272e897915",
+      "elapsed_seconds": 0.8579109879210591,
+      "peak_allocated_bytes": 1700681728
+    },
+    {
+      "core_number": 19,
+      "receipt_sha256": "14d4079407dbb5b53b50a2bca816e3bd98dbdb1367d47926cf207b8e5eddb0e0",
+      "elapsed_seconds": 1.9249699651263654,
+      "peak_allocated_bytes": 2336018944
+    },
+    {
+      "core_number": 20,
+      "receipt_sha256": "137919ded00df9ddfcd1b3c698f85aee8911c4f7c3cc3ec3ce1432ac0e3d161c",
+      "elapsed_seconds": 0.8596154791302979,
+      "peak_allocated_bytes": 1719271424
+    },
+    {
+      "core_number": 21,
+      "receipt_sha256": "0ec37165dec36c386e9826ab4fddefbd758a8b438a7a511444887a9737982c40",
+      "elapsed_seconds": 0.3735474238637835,
+      "peak_allocated_bytes": 1168114176
+    },
+    {
+      "core_number": 22,
+      "receipt_sha256": "d81484c0e6747e16a5fbe30b145a25a4ebcad52a23dc8ff6b80e367ba14ee6c2",
+      "elapsed_seconds": 0.8393132290802896,
+      "peak_allocated_bytes": 1671013888
+    },
+    {
+      "core_number": 23,
+      "receipt_sha256": "6e7a0f7bb23a946ea1750c11c3d87518b08eea858180274612d40bb1ac34a16a",
+      "elapsed_seconds": 5.094759065890685,
+      "peak_allocated_bytes": 4639191040
+    },
+    {
+      "core_number": 24,
+      "receipt_sha256": "8d0b2204bc5caaa1f03643b96de7470b001383eac15bfc71f987a18b1937ac0a",
+      "elapsed_seconds": 1.076817308086902,
+      "peak_allocated_bytes": 1923489280
+    },
+    {
+      "core_number": 25,
+      "receipt_sha256": "c65173fd3016859b736af0e59bf3268129f48605fedb04416dd74d83e11af3a2",
+      "elapsed_seconds": 0.9354139941278845,
+      "peak_allocated_bytes": 1857811968
+    },
+    {
+      "core_number": 26,
+      "receipt_sha256": "1de8cce6528053e803445d0f6681ee939aa876871f7967039053d42bd4602c71",
+      "elapsed_seconds": 0.9676158151123673,
+      "peak_allocated_bytes": 1906311168
+    },
+    {
+      "core_number": 27,
+      "receipt_sha256": "3a6dac514b14b3fbf723fcf93f3bbcd3cd65c589e55c162425e4d3aab4985685",
+      "elapsed_seconds": 2.107926737051457,
+      "peak_allocated_bytes": 2754644480
+    },
+    {
+      "core_number": 28,
+      "receipt_sha256": "5a67cdb8a013b329abdc89aff2915e9fb074d39c688dc8f12afbafc1b9e0da27",
+      "elapsed_seconds": 0.8701913240365684,
+      "peak_allocated_bytes": 1791178752
+    }
+  ]
+}

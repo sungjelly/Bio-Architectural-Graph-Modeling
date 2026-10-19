@@ -1,0 +1,20 @@
+{
+  "15": {
+    "anatomical_correspondence_confirmed": true,
+    "evidence": "Main elongated tissue, broad lower pole, narrow upper shaft, and upper-right hook match after rotation. Root and subagent independently inspected tissue-only overlays. This supports approximate section alignment, not pixel-exact histology.",
+    "reviewed_at": "2026-10-18T05:20:16.292131+00:00",
+    "reviewers": [
+      "slide_data_audit",
+      "root"
+    ]
+  },
+  "23": {
+    "anatomical_correspondence_confirmed": true,
+    "evidence": "Upper paired islands, separate upper-right island, left narrow strip, main upper body and broad lower body match after rotation. Central stromal bridge has different cell coverage and dominates large boundary distances; pixel-perfect correspondence is not claimed.",
+    "reviewed_at": "2026-10-18T05:20:16.292155+00:00",
+    "reviewers": [
+      "slide_data_audit",
+      "root"
+    ]
+  }
+}

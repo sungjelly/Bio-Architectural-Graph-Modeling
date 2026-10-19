@@ -1,0 +1,1527 @@
+{
+  "schema": "so12_all_observed_hidden_extraction_v1",
+  "prepared_at": "2026-10-17T00:54:45.175192+00:00",
+  "source_run_id": "r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b",
+  "source_run_dir": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b",
+  "checkpoint_relative_path": "checkpoints/best.ckpt",
+  "checkpoint_sha256": "6b4526508d223fb8a286084f57fc5f4b36129db6afeffaa328672d2c06226af4",
+  "checkpoint_epoch": 151,
+  "checkpoint_validation_huber": 0.19611389608203156,
+  "binding": {
+    "config_sha256": "db617a7f8ad5272a105894de850b8e91b8cb971c68ca0f501a4640e3fa02bc14",
+    "dataset_sha256": "6245171fe58e41ed20e496131aff8ee7641e0db4b21497f92a888bfd452fbea3",
+    "source_sha256": {
+      "so12_relative_qkv_training.py": "69328341b73689a3dde6c7aeb603b644d60ce37240acb3f5209462e3380d257e",
+      "so12_relative_qkv_data.py": "224a93215ebe1e7ee27756e0823d267f23c3a96e5feb29f3a853d8561c6e174c",
+      "relative_qkv_graph_transformer.py": "b6f54251da687704b9e2779ec0868142b52f516ae647dda53e97baf1c00ee511",
+      "pooled_relative_qkv_training_v2.py": "0eb75849b42aa48d0727b5fea2d3f1e381767720c0d251cdbe4d5dd0b0c7fc3b"
+    }
+  },
+  "dataset_metadata": {
+    "provenance": {
+      "schema": "so12_relative_qkv_training_data_v1",
+      "preprocessing_run_id": "r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410",
+      "source_manifest": {
+        "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/manifest.json",
+        "sha256": "c5c10869268cb5e0ab9787705c41ab4a3be613062b80bc85352d6cc7fcd5a611",
+        "checksum_verified": true,
+        "size_bytes": 33827
+      },
+      "source_files": [
+        {
+          "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410/derived_dataset_reference.json",
+          "sha256": "2091104719f672d0d1daba4582a5c8de394532b4706d90ffc7eeafa7c4fbb1d9",
+          "checksum_verified": true,
+          "size_bytes": 164
+        },
+        {
+          "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/manifest.json",
+          "sha256": "c5c10869268cb5e0ab9787705c41ab4a3be613062b80bc85352d6cc7fcd5a611",
+          "checksum_verified": true,
+          "size_bytes": 33827
+        },
+        {
+          "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/fitted_parameters.npz",
+          "sha256": "8bfb16a75fcf165dd5bc990d68eebc782e7a3d84938e400c54ec9a327dbd3b98",
+          "checksum_verified": true,
+          "size_bytes": 150898
+        },
+        {
+          "path": "/workspace/BAGM/data/raw/Gastric Study_2.xlsx",
+          "sha256": "30a1c3de1fee0d0045ac6bbfa849f9bb47de437c1b11428e6e16ac48d06fd5e0",
+          "checksum_verified": true,
+          "size_bytes": 24709
+        },
+        {
+          "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/manifest.json",
+          "sha256": "15f9da492959c35d89020b3956047ec163a5f3537eaaefd5b8a011cb9279b440",
+          "checksum_verified": true,
+          "size_bytes": 40097
+        },
+        {
+          "path": "/workspace/BAGM/data/raw/26040302SO_1_metadata_file.csv/26040302SO_1_metadata_file.csv",
+          "sha256": "9c90e5a074a098781924fca1219f8d7e00df7abf397176a8f434a5e3a64450c3",
+          "checksum_verified": true,
+          "size_bytes": 121363693
+        },
+        {
+          "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/manifest.json",
+          "sha256": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "checksum_verified": true,
+          "size_bytes": 40073
+        },
+        {
+          "path": "/workspace/BAGM/data/raw/26040302SO_2_metadata_file.csv/26040302SO_2_metadata_file.csv",
+          "sha256": "2c970dfbd935faf4e6dc0e1068aef0a5fa4ae783c204244ec5f203b89c82d798",
+          "checksum_verified": true,
+          "size_bytes": 185403684
+        }
+      ],
+      "graph_manifests": [
+        {
+          "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/manifest.json",
+          "sha256": "754e98fa1b2d8b488892c4effbf095cf26da6d99c927ee45e9ee01c2d64b978f"
+        },
+        {
+          "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/manifest.json",
+          "sha256": "c4a632473e458ae6e6eeab92c026ebf6e4d18ae49b568723f0e66a67db4fc90f"
+        }
+      ],
+      "observations_sha256": "c388d88d86d5c6edbef182db5b3d7f40a3d60a1807c5e479589f40211fda7dc4",
+      "genes_sha256": "046eb86c7ea8f1fe6977598a0190132340400fc61802fcde63ab5ac0e9502b03",
+      "dataset_fingerprint": "c747c75c991325eeb66cc6c16b2b98320e5d1657175521b0191d2df637102cf8",
+      "split_fingerprint": "42f09eb47ab7b8e656364960048752f3190eb499c23ad81305fe07600de658ab",
+      "preprocessing_fingerprint": "4c789439143de619c9dc6412faf25005be89a56bd62587ad79728d2699b3566a",
+      "split": {
+        "training_core_numbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24
+        ],
+        "validation_core_numbers": [
+          11,
+          12,
+          13,
+          14,
+          25,
+          26,
+          27,
+          28
+        ],
+        "training_cells": 301198,
+        "validation_cells": 106461,
+        "training_donor_groups": 10,
+        "validation_donor_groups": 4,
+        "donor_overlap": false,
+        "independent_test": false,
+        "scope": "reused_preprocessing_diagnostic_donors_as_exploratory_validation"
+      },
+      "preprocessing": {
+        "target": "frozen_train_standardized_full_observation_pearson_upper_clip10",
+        "input": "visible_count_over_visible_training_frequency_mass_pearson",
+        "phi": 1.01,
+        "upper_clip": 10.0,
+        "full_mask_exposure": 1.0,
+        "pearson_parameters_sha256": "8bfb16a75fcf165dd5bc990d68eebc782e7a3d84938e400c54ec9a327dbd3b98",
+        "metadata": {
+          "names": [
+            "Area",
+            "Area.um2",
+            "AspectRatio",
+            "Width",
+            "Height",
+            "Mean.PanCK",
+            "Max.PanCK",
+            "Mean.G",
+            "Max.G",
+            "Mean.Membrane",
+            "Max.Membrane",
+            "Mean.CD45",
+            "Max.CD45",
+            "Mean.DAPI",
+            "Max.DAPI",
+            "SplitRatioToLocal",
+            "NucArea",
+            "NucAspectRatio",
+            "Circularity",
+            "Eccentricity",
+            "Perimeter",
+            "Solidity"
+          ],
+          "fit_scope": "pooled_training_cells_only",
+          "training_cells": 301198,
+          "transform": "training_median_imputation_log1p_then_population_standardization",
+          "sd_ddof": 0,
+          "median": [
+            5216.0,
+            75.4625098881652,
+            0.83,
+            89.0,
+            89.0,
+            1073.6,
+            3616.0,
+            173.0,
+            476.0,
+            1289.9,
+            5304.0,
+            763.0,
+            6060.0,
+            368.1,
+            768.0,
+            0.0,
+            2320.0,
+            0.79,
+            0.85,
+            0.74,
+            283.0,
+            0.98
+          ],
+          "mean": [
+            8.528877566591392,
+            4.308734436778706,
+            0.5869363736439581,
+            4.476347198973783,
+            4.476866838484462,
+            7.025477400950918,
+            8.27821063852344,
+            5.201148291787971,
+            6.806838389668825,
+            7.160922910565559,
+            8.638422827532112,
+            6.680332333936655,
+            8.65096848241698,
+            5.922996483958362,
+            6.587046192291429,
+            0.033212835373680125,
+            6.95780550204398,
+            0.520796544159852,
+            0.6024119585203227,
+            0.5402502702696904,
+            5.6313208790973155,
+            0.6739379304134513
+          ],
+          "scale": [
+            0.5629960734354574,
+            0.5537456456726072,
+            0.08130208610757843,
+            0.3214582474792013,
+            0.32048760327287007,
+            0.8359119942885883,
+            0.875000988582789,
+            0.22235565155658285,
+            1.2951819633724329,
+            0.8799696425912038,
+            0.7109755513496133,
+            0.43558225868451605,
+            0.5932228157688533,
+            0.5507343375628879,
+            0.582100872490088,
+            0.1465434262519488,
+            2.4034003376514437,
+            0.19074827541262104,
+            0.05805488310639546,
+            0.08397577456428028,
+            0.278047379702777,
+            0.026495013293227013
+          ],
+          "missing_indicator_indices": []
+        },
+        "constant_baseline": "equal_core_training_target_mean_per_gene",
+        "constant_baseline_sha256": "730416034b782f75f87e7bb6308b03f571d5c62ca3bc5bdd024a4fac88709ede"
+      },
+      "source_file_checksums_verified": true,
+      "graph_arrays_loaded": true,
+      "row_alignment_verified": true,
+      "direct_donor_identifiers_returned": false,
+      "excluded_unmapped_cells": 340,
+      "target_normalization_uses_full_counts_but_inputs_do_not": true,
+      "core_sizes": {
+        "SO1-C01": 8924,
+        "SO1-C02": 7450,
+        "SO1-C03": 12190,
+        "SO1-C04": 14657,
+        "SO1-C05": 11399,
+        "SO1-C06": 18212,
+        "SO1-C07": 10722,
+        "SO1-C08": 4972,
+        "SO1-C09": 17223,
+        "SO1-C10": 14756,
+        "SO1-C11": 18145,
+        "SO1-C12": 7816,
+        "SO1-C13": 5345,
+        "SO1-C14": 9785,
+        "SO2-C15": 38145,
+        "SO2-C16": 16229,
+        "SO2-C17": 9041,
+        "SO2-C18": 11696,
+        "SO2-C19": 19119,
+        "SO2-C20": 12155,
+        "SO2-C21": 4897,
+        "SO2-C22": 11443,
+        "SO2-C23": 43462,
+        "SO2-C24": 14506,
+        "SO2-C25": 13147,
+        "SO2-C26": 14856,
+        "SO2-C27": 24245,
+        "SO2-C28": 13122
+      }
+    },
+    "train_aliases": [
+      "SO1-C01",
+      "SO1-C02",
+      "SO1-C03",
+      "SO1-C04",
+      "SO1-C05",
+      "SO1-C06",
+      "SO1-C07",
+      "SO1-C08",
+      "SO1-C09",
+      "SO1-C10",
+      "SO2-C15",
+      "SO2-C16",
+      "SO2-C17",
+      "SO2-C18",
+      "SO2-C19",
+      "SO2-C20",
+      "SO2-C21",
+      "SO2-C22",
+      "SO2-C23",
+      "SO2-C24"
+    ],
+    "validation_aliases": [
+      "SO1-C11",
+      "SO1-C12",
+      "SO1-C13",
+      "SO1-C14",
+      "SO2-C25",
+      "SO2-C26",
+      "SO2-C27",
+      "SO2-C28"
+    ],
+    "train_cells": 301198,
+    "validation_cells": 106461
+  },
+  "source_files": [
+    {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410/derived_dataset_reference.json",
+      "sha256": "2091104719f672d0d1daba4582a5c8de394532b4706d90ffc7eeafa7c4fbb1d9",
+      "size_bytes": 164,
+      "mtime_ns": 1792139149785670685
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/manifest.json",
+      "sha256": "c5c10869268cb5e0ab9787705c41ab4a3be613062b80bc85352d6cc7fcd5a611",
+      "size_bytes": 33827,
+      "mtime_ns": 1792139149246667972
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/observations.csv.gz",
+      "sha256": "c388d88d86d5c6edbef182db5b3d7f40a3d60a1807c5e479589f40211fda7dc4",
+      "size_bytes": 8949894,
+      "mtime_ns": 1792139107244456012
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C01.npy",
+      "sha256": "c24a8592f6730db5d798cc3bd5d3bf95ccd62e5d8222e67e38db53138b6b513a",
+      "size_bytes": 35696128,
+      "mtime_ns": 1792139109417467006
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C02.npy",
+      "sha256": "398ecdaaf666bcad793b9b35b2cfb93885690eebdf5ad30079ef675b7e4a5092",
+      "size_bytes": 29800128,
+      "mtime_ns": 1792139109464467244
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C03.npy",
+      "sha256": "56b58e573ad94174455d503af856195a71de2668d4decb0f37084bdd9ff24992",
+      "size_bytes": 48760128,
+      "mtime_ns": 1792139109536467608
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C04.npy",
+      "sha256": "cd68a329cd5910a98984e93695e5d4a083e7c62160b3311fc3833f8627e7fb02",
+      "size_bytes": 58628128,
+      "mtime_ns": 1792139109628468073
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C05.npy",
+      "sha256": "8047688bc9104a9a511f39e64fad833321ecfb235be9d407793d041b543ff151",
+      "size_bytes": 45596128,
+      "mtime_ns": 1792139109700468437
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C06.npy",
+      "sha256": "cab227a76aa0fcde0695ee9db05d1727628662f98cf4a74897046bb5b43fee87",
+      "size_bytes": 72848128,
+      "mtime_ns": 1792139109813469009
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C07.npy",
+      "sha256": "d6f2b2cf536d82d13931b8ae79f852c655938a0101dcff4dbb11fc83313f4e51",
+      "size_bytes": 42888128,
+      "mtime_ns": 1792139109882469358
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C08.npy",
+      "sha256": "a282222c00adae277b95e3e02ed89d2365b98d6758216fad6a0d685adf981375",
+      "size_bytes": 19888128,
+      "mtime_ns": 1792139109901469454
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C09.npy",
+      "sha256": "463433a9b7c1eaf38b77eced79b67f9c90fafbdc33bfd62d40645b1323464100",
+      "size_bytes": 68892128,
+      "mtime_ns": 1792139110006469985
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C10.npy",
+      "sha256": "c3830288c06e53422a4a5dd892593c9717b08cb7667ede7635b10fb6a9507abb",
+      "size_bytes": 59024128,
+      "mtime_ns": 1792139110100470461
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C11.npy",
+      "sha256": "2aa13d2ecd42d4a00a909f25ba2cfc06de3e29eed5013eaaf5dab03f3c5978c6",
+      "size_bytes": 72580128,
+      "mtime_ns": 1792139110212471027
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C12.npy",
+      "sha256": "a75f39e0102810d719c3f997f12cb8cb7f63c931b5fc3ac1a36af196d06d4ffc",
+      "size_bytes": 31264128,
+      "mtime_ns": 1792139110242471179
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C13.npy",
+      "sha256": "72c816ead21f3ad1f2d0c8bbc3f911ba3d8f45fa340be71fb4a0a5b3b4647cf4",
+      "size_bytes": 21380128,
+      "mtime_ns": 1792139110275471346
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO1-C14.npy",
+      "sha256": "4e6f8796d3a10f44f2f282aa9dfe7d5fa2b341c16fe8eb367bfa9ccc46a405df",
+      "size_bytes": 39140128,
+      "mtime_ns": 1792139110334471644
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C15.npy",
+      "sha256": "eaabc84a35dd76af5268b05afee13b4d889a94bab365121d17eb0f1324c6e219",
+      "size_bytes": 152580128,
+      "mtime_ns": 1792139110566472818
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C16.npy",
+      "sha256": "e86a37a2ac88a0de7931cd322c57d7e13da3b6597bed5b8208e77e08c532bce0",
+      "size_bytes": 64916128,
+      "mtime_ns": 1792139110672473354
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C17.npy",
+      "sha256": "3d5edf32c27e346f27b482fa0e42502b0ffd0c2dce1bec0ba62970d877309097",
+      "size_bytes": 36164128,
+      "mtime_ns": 1792139110703473511
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C18.npy",
+      "sha256": "906026079208d0e29714e2b019ab9f3f1b977609b4536db4de48c6a7652e273d",
+      "size_bytes": 46784128,
+      "mtime_ns": 1792139110774473870
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C19.npy",
+      "sha256": "f306a3c79be169a9e24a8001c69f55e90b5eb995ab657107c8e587b90c85c737",
+      "size_bytes": 76476128,
+      "mtime_ns": 1792139110891474462
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C20.npy",
+      "sha256": "0621c027ebf133e6f07e5ebac3892d1a27db9aa622204db759542b36f6f4ffb6",
+      "size_bytes": 48620128,
+      "mtime_ns": 1792139110932474669
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C21.npy",
+      "sha256": "0bcf6426ab2144539fec8f0da0fc544706b212fda1177d766bcaa2dcaa88f203",
+      "size_bytes": 19588128,
+      "mtime_ns": 1792139110947474745
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C22.npy",
+      "sha256": "73fdb3a76d108eb6955bb5f0db1041363e4e30ea230f19372d3979442d5f5d2c",
+      "size_bytes": 45772128,
+      "mtime_ns": 1792139110982474922
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C23.npy",
+      "sha256": "734e19e3dffed8d9aa81bf32a4e51d5aac18479afc6692aa1b8a498fa387fa80",
+      "size_bytes": 173848128,
+      "mtime_ns": 1792139111240476227
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C24.npy",
+      "sha256": "b9e7aa0e3ca3dd538800ef6ff018e3aa785b30b5c6808bdb3dea5f3d2bdce83a",
+      "size_bytes": 58024128,
+      "mtime_ns": 1792139111340476733
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C25.npy",
+      "sha256": "d73034033103b3478127e3ae58e5361627776284c6faa0865916af71dc82c7fb",
+      "size_bytes": 52588128,
+      "mtime_ns": 1792139111383476950
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C26.npy",
+      "sha256": "57319e70c5734c544d775fd28a958e504bd97e761241a07e6604124aa1ae8e9c",
+      "size_bytes": 59424128,
+      "mtime_ns": 1792139111471477395
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C27.npy",
+      "sha256": "68d2f62f97168000b62fb5ef8768b58bd9d001f65ac1bec72efed5214708a8dc",
+      "size_bytes": 96980128,
+      "mtime_ns": 1792139111622478159
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/SO2-C28.npy",
+      "sha256": "12370c8979dc8c31a14a4b5b0ace033253202f02f103999e161be5d4b63a5635",
+      "size_bytes": 52488128,
+      "mtime_ns": 1792139111667478386
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so12_pearson_integration_v1/pearson/fitted_parameters.npz",
+      "sha256": "8bfb16a75fcf165dd5bc990d68eebc782e7a3d84938e400c54ec9a327dbd3b98",
+      "size_bytes": 150898,
+      "mtime_ns": 1792139109251466166
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C01/edge_index.npy",
+      "sha256": "da91cdbcb6a03cc352576161a1804d76d9437508f09813e5aa69a9f905dec158",
+      "size_bytes": 32448448,
+      "mtime_ns": 1787571713264768473
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C01/orientation.npz",
+      "sha256": "79e547a5536539429c35d8c370f3bc184375af6fd411639737da655b5030af4a",
+      "size_bytes": 242008,
+      "mtime_ns": 1787571713280768423
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C01/relative_geometry.npy",
+      "sha256": "e0fdc06a7be14aba881753527fd9f8eb394daf447d596f9ad4482bd11baddc2e",
+      "size_bytes": 567845728,
+      "mtime_ns": 1787571732435706343
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C02/edge_index.npy",
+      "sha256": "117639f78188e9ae3c2297df63ebdb01b0c07c5606b207fd9e691b455bdaa0f7",
+      "size_bytes": 26932864,
+      "mtime_ns": 1787747926343919945
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C02/orientation.npz",
+      "sha256": "a2a15e5008994712d5432e3a412d6502a7f30ef2c6f837b4c2486b01a56cd177",
+      "size_bytes": 202048,
+      "mtime_ns": 1787747926356919985
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C02/relative_geometry.npy",
+      "sha256": "f2965074d6063c1dd6dc45c1f7ba53a1c72ff645da57f530e11fb32f4b971c37",
+      "size_bytes": 471323008,
+      "mtime_ns": 1787747964854039803
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C03/edge_index.npy",
+      "sha256": "d31fddc5b53b14b13998299b0fdcde0a221178e0bc1a6014c0060f6c48798bcf",
+      "size_bytes": 44374400,
+      "mtime_ns": 1787747998201146189
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C03/orientation.npz",
+      "sha256": "6e3692fd6602e3916b3b8a4341929cecaae2c91066dfea5e57ca9a7451f559f8",
+      "size_bytes": 329848,
+      "mtime_ns": 1787747998222146256
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C03/relative_geometry.npy",
+      "sha256": "29a87894cafa4a573564410ecd65470a1807b05aa2595ed19c72365dfdc8e422",
+      "size_bytes": 776549888,
+      "mtime_ns": 1787748056708338194
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C04/edge_index.npy",
+      "sha256": "f054a2944f4fd1534fe8538cf72629d3c3936f2ff3d368865f1aa22729014faf",
+      "size_bytes": 52323040,
+      "mtime_ns": 1787748103241495352
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C04/orientation.npz",
+      "sha256": "61eb7c36e11242cbccf227a664c402d10a62540ac7c14127acc8e771be52ab14",
+      "size_bytes": 397718,
+      "mtime_ns": 1787748103268495444
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C04/relative_geometry.npy",
+      "sha256": "df1059c33b53e00c5fc23f0f5baadd689612a75dd64d8733cb9b04555be6f3ce",
+      "size_bytes": 915651088,
+      "mtime_ns": 1787748131343592012
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C05/edge_index.npy",
+      "sha256": "a875abc8cae3bdeb86dfd1321b9021ec6cd03609003037fabf39e72d2bd88b50",
+      "size_bytes": 41912224,
+      "mtime_ns": 1787748173434739074
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C05/orientation.npz",
+      "sha256": "2f3d5752502a6bd5f761a1276de23a8c5dcbe758793083e817761a50a90929fb",
+      "size_bytes": 310512,
+      "mtime_ns": 1787748173472739208
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C05/relative_geometry.npy",
+      "sha256": "40e91802f34ee7adbc48acbc0b306e5f680cb9e76119fbf7dd7ee689c7cc3174",
+      "size_bytes": 733461808,
+      "mtime_ns": 1787748195633817674
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C06/edge_index.npy",
+      "sha256": "6024632e4b5f68d97313082cdbe4aeb8fb6a5bc678a65247af3e51d71fa4b9d6",
+      "size_bytes": 65157792,
+      "mtime_ns": 1787748254251028401
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C06/orientation.npz",
+      "sha256": "09058148d4262f8ff97ede39e8b50a56ec95276ce177cb93c677ab6d8b8801d5",
+      "size_bytes": 495493,
+      "mtime_ns": 1787748254283028517
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C06/relative_geometry.npy",
+      "sha256": "e1303e42e4e41c12473f4bc54b26da19e7da8976f49c72fc117cfa385eabc34f",
+      "size_bytes": 1140259248,
+      "mtime_ns": 1787748289217156142
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C07/edge_index.npy",
+      "sha256": "6560556d8b519479c34183ece5c9fdbd97ccaba2ef592368c7ffbf6971d820d3",
+      "size_bytes": 38696544,
+      "mtime_ns": 1787748326034292158
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C07/orientation.npz",
+      "sha256": "b7bb56d9cef0d33d8e03bc7371aff4e59ea93c50db228968c358754cf804bc90",
+      "size_bytes": 291914,
+      "mtime_ns": 1787748326053292229
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C07/relative_geometry.npy",
+      "sha256": "8b9d4963c905d6f6b441a8c97ecb7367d9921339a80e55d16767004648eb0417",
+      "size_bytes": 677187408,
+      "mtime_ns": 1787748345717365475
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C08/edge_index.npy",
+      "sha256": "c49bf1be3adb73558306b71b111b1995015ee0164ddf993b4237a4e2488d08f0",
+      "size_bytes": 18043968,
+      "mtime_ns": 1787748359567417303
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C08/orientation.npz",
+      "sha256": "bb43f92cb18324b79edcd7978a65f894930afbf76e3696b56c317fd6f05d9acd",
+      "size_bytes": 135636,
+      "mtime_ns": 1787748359576417337
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C08/relative_geometry.npy",
+      "sha256": "f5abf0482c81d604cad142284127b6c2308de394eedde524f870451d7993366f",
+      "size_bytes": 315767328,
+      "mtime_ns": 1787748369576454877
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C09/edge_index.npy",
+      "sha256": "a1627e089af2ffcef6cf00c7dfbe61b7faa3e14c1f16a575fd821435b667c8cd",
+      "size_bytes": 63840320,
+      "mtime_ns": 1787571778728541478
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C09/orientation.npz",
+      "sha256": "2066da5aa5348930cad05b84f3b7b6aff8778db181b4d479c4adebc90e927dc1",
+      "size_bytes": 466868,
+      "mtime_ns": 1787571778757541368
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C09/relative_geometry.npy",
+      "sha256": "2ede917c3f9230fe22c55cc7a6ac6049c1cb8731d396b4175c02f0f85417c564",
+      "size_bytes": 1117203488,
+      "mtime_ns": 1787571808910423369
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C10/edge_index.npy",
+      "sha256": "8ad3f87786d57f6196872797081e8ebcf04fb99625d2cace5a068827383e6e73",
+      "size_bytes": 53157024,
+      "mtime_ns": 1787748422560655371
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C10/orientation.npz",
+      "sha256": "8b8d05e2367ed4ce92c2be3fa602bf54f13320c3272ef7ee02f00d4723f656b9",
+      "size_bytes": 401005,
+      "mtime_ns": 1787748422586655470
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C10/relative_geometry.npy",
+      "sha256": "12b7f162dd418463e834e3c0a85537af3b1cca55604df4ec648bd5fc64f417ec",
+      "size_bytes": 930245808,
+      "mtime_ns": 1787748449384757835
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C11/edge_index.npy",
+      "sha256": "aa7fdc68eac0dc05b3256cd5a617605cba49e589ad5b8a0af54930e13e6901d0",
+      "size_bytes": 66599648,
+      "mtime_ns": 1787748504043968459
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C11/orientation.npz",
+      "sha256": "dcfabf0606be2521f73c60ce0b75509ce85b06102c00406ec58ad82661e2aaff",
+      "size_bytes": 492554,
+      "mtime_ns": 1787748504077968590
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C11/relative_geometry.npy",
+      "sha256": "2a5a6108a821016a9821ab2d014dc410142853d0ac7f78c835c6d36d956ff068",
+      "size_bytes": 1165491728,
+      "mtime_ns": 1787748537709099319
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C12/edge_index.npy",
+      "sha256": "53e850009d2014cc3d0767f56ca515f0eeb5343a7b93d3586bfeb3a224a65f3e",
+      "size_bytes": 28467424,
+      "mtime_ns": 1787748563176198846
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C12/orientation.npz",
+      "sha256": "bd237c5be5947734015ac079b3f2c74593722d0bbd443048207acf8949163bec",
+      "size_bytes": 212551,
+      "mtime_ns": 1787748563189198897
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C12/relative_geometry.npy",
+      "sha256": "140fad57a6242698e8ca7db167ab00258f11b2a337f61ef56146858028eafff7",
+      "size_bytes": 498177808,
+      "mtime_ns": 1787748576332250433
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C13/edge_index.npy",
+      "sha256": "b419b0d32fe944fcc5975909a901511b20fbbb2ec011f6a40d6ea6e31a9bab08",
+      "size_bytes": 19606784,
+      "mtime_ns": 1787571823224364593
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C13/orientation.npz",
+      "sha256": "3d9e46e882e149f69a9149097df8385a9a671acfab5b976c0e8d4472ee794167",
+      "size_bytes": 144599,
+      "mtime_ns": 1787571823234364551
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C13/relative_geometry.npy",
+      "sha256": "3af10fa1a26dcbac283090530026c6c4330831f5877b2c2d9561c896c19624ea",
+      "size_bytes": 343116608,
+      "mtime_ns": 1787571833699320494
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C14/edge_index.npy",
+      "sha256": "d57e2d8d7048e6dfda238548481657279477cd6c60bfe101e61569f344188a94",
+      "size_bytes": 35426528,
+      "mtime_ns": 1787748603802358508
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C14/orientation.npz",
+      "sha256": "0f5731d8fd598c990efcb43713ae094fdf4cb571f8ef1bb5f36d6f7dc4a18574",
+      "size_bytes": 265843,
+      "mtime_ns": 1787748603820358579
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/cores/SO1-C14/relative_geometry.npy",
+      "sha256": "0e32605a94fe7aaeeca153450de28ce784d0678c794e24eba4b8311304fcc243",
+      "size_bytes": 619962128,
+      "mtime_ns": 1787748620982426338
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_graphs_v1/manifest.json",
+      "sha256": "754e98fa1b2d8b488892c4effbf095cf26da6d99c927ee45e9ee01c2d64b978f",
+      "size_bytes": 127467,
+      "mtime_ns": 1787748624271439344
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C01.npz",
+      "sha256": "02999d0eebcb358485030b96d5cc7296fb2aa0ef7dd76de4364823f3b8a4e1d8",
+      "size_bytes": 6084468,
+      "mtime_ns": 1787747815347594780
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C02.npz",
+      "sha256": "13980d7cdb401bd450af7daefbfaafe7b2bc4f11c97689619020ee5b2ae68b75",
+      "size_bytes": 5320906,
+      "mtime_ns": 1787747817229600017
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C03.npz",
+      "sha256": "45303035fad000a8693e53a085d80ed01929ba7205bf53eb4f071d04d501e0a8",
+      "size_bytes": 11304264,
+      "mtime_ns": 1787747820338608691
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C04.npz",
+      "sha256": "94bed90ba5d6c4fe9534490c6f2d53e2fe15a07f9c8d2dd7c8350780afda9532",
+      "size_bytes": 11697562,
+      "mtime_ns": 1787747823944618786
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C05.npz",
+      "sha256": "0dd7cfb3b7a225509eaac84e5b5ef3d19d1d954070e5dd1646d4237c3c40aac3",
+      "size_bytes": 10668447,
+      "mtime_ns": 1787747828907632740
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C06.npz",
+      "sha256": "f080ac63c37002b0f50fcfbc90c36ffb181e6155150def42677fea9c9a1e85bc",
+      "size_bytes": 14072140,
+      "mtime_ns": 1787747835548651521
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C07.npz",
+      "sha256": "5d6f24617fce4f2f35b373a9c2730aca992f3718e40d2590d9b7e7e8fcedda95",
+      "size_bytes": 8723674,
+      "mtime_ns": 1787747840314665075
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C08.npz",
+      "sha256": "0fe4277b28cf439d18629ceb7855b0349fc3a6050e8efe3e23da804c9f731c4f",
+      "size_bytes": 3838720,
+      "mtime_ns": 1787747842480671256
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C09.npz",
+      "sha256": "e9ff5212ce862ac24a2cb26c22f950d1da2a3b30082785477f94c77549d9fa7e",
+      "size_bytes": 12133625,
+      "mtime_ns": 1787747848090687322
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C10.npz",
+      "sha256": "ade2b6cea3511bec08bc634e6c874e62a3a450d093ce25d8cbda91b84c78376b",
+      "size_bytes": 11111338,
+      "mtime_ns": 1787747852979701394
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C11.npz",
+      "sha256": "3629533bcd809c26569a52b7b18118ae02220186c0df381938ee6e1056cd36d1",
+      "size_bytes": 11921268,
+      "mtime_ns": 1787747857549714607
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C12.npz",
+      "sha256": "654e7bd3e6a888135fa9150220888056c8ce205f5f52dea57f7fc30c709c8902",
+      "size_bytes": 5215339,
+      "mtime_ns": 1787747859909721451
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C13.npz",
+      "sha256": "8ff4856e383edb96fc1199373e311c109bb48f7c3347fc96bb320d6162adfea3",
+      "size_bytes": 3941593,
+      "mtime_ns": 1787747861301725496
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/cores/SO1-C14.npz",
+      "sha256": "6cb94458651670e40cdc6dd3b92d5c0cb4f4fc81a0911fc4092d98a28f145699",
+      "size_bytes": 6519704,
+      "mtime_ns": 1787747863339731426
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so1_14core_relative_qkv_v1/manifest.json",
+      "sha256": "15f9da492959c35d89020b3956047ec163a5f3537eaaefd5b8a011cb9279b440",
+      "size_bytes": 40097,
+      "mtime_ns": 1787747863748732617
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C15/edge_index.npy",
+      "sha256": "687ac4de2e8c1f8c9872d8b89f88d3e961f15122c80b586f9a85df41040b5242",
+      "size_bytes": 137719520,
+      "mtime_ns": 1787571955509746333
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C15/orientation.npz",
+      "sha256": "6e32dc8214bfc5472d21cc4922af26f3bd8c0be2f1236378e279269c4695279f",
+      "size_bytes": 1037034,
+      "mtime_ns": 1787571955576745989
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C15/relative_geometry.npy",
+      "sha256": "c1d9bbb1a3cb887e97214f9bc3e48d671755bb8b99c32248bfeeda1a836a2cd7",
+      "size_bytes": 2410089488,
+      "mtime_ns": 1787572017917413568
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C16/edge_index.npy",
+      "sha256": "9297b0202d976385f345cbb85f7923dd03581f0de1ee4216632751db9b47dc8c",
+      "size_bytes": 58736896,
+      "mtime_ns": 1787671724911408887
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C16/orientation.npz",
+      "sha256": "1119176a44b8b6738b8ceb063088a6f35abecc6292b1d34e90fedb5b73548350",
+      "size_bytes": 440580,
+      "mtime_ns": 1787671724939408675
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C16/relative_geometry.npy",
+      "sha256": "882f0f2cc87f0c577d0d4d8df0929455f463c14461adccf575ac000e02a2be71",
+      "size_bytes": 1027893568,
+      "mtime_ns": 1787671752295203728
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C17/edge_index.npy",
+      "sha256": "73efbf5ed58c2938e7e6194cbfa1795b5f1e01aae778c1b85fd574fb561becd7",
+      "size_bytes": 33130208,
+      "mtime_ns": 1787671779768001930
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C17/orientation.npz",
+      "sha256": "c5fce3bdc0d903f372b0f7ba16705ddaa7be176a6d259a187b5f8491dacd0370",
+      "size_bytes": 246238,
+      "mtime_ns": 1787671779784001814
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C17/relative_geometry.npy",
+      "sha256": "4ca4a1c7ce053538d804014e394a34e4b0142ac82bbbe49c7a6723b911cca8d4",
+      "size_bytes": 579776528,
+      "mtime_ns": 1787671795882885354
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C18/edge_index.npy",
+      "sha256": "609ce98f2a0aef0341a229831f2c1fb7b8a8ba98a999b66142c7c5f225e25ff3",
+      "size_bytes": 42794304,
+      "mtime_ns": 1787671827764658436
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C18/orientation.npz",
+      "sha256": "02f93832c266a45101489b9efa05bd0cd6c85e5e771cd2816f89ba08b897dc44",
+      "size_bytes": 317824,
+      "mtime_ns": 1787671827784658296
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C18/relative_geometry.npy",
+      "sha256": "9ea3dcd518046d693a468928860d2056c5016c0698eb8b0a94d98528cc2da633",
+      "size_bytes": 748898208,
+      "mtime_ns": 1787671848043516561
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C19/edge_index.npy",
+      "sha256": "ef189be65b6c79b774dec74b53770e00ca9f064dac4b6964d1b8baffbb387232",
+      "size_bytes": 70457120,
+      "mtime_ns": 1787671900014161120
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C19/orientation.npz",
+      "sha256": "e6ce6571f405f6054b571fc7dcd83f019ecd241760339df603f87ff0efc554d5",
+      "size_bytes": 518771,
+      "mtime_ns": 1787671900047160898
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C19/relative_geometry.npy",
+      "sha256": "552c4575902385656c8306291030bca955053457e408a1f9100d2e4e9e3a88ec",
+      "size_bytes": 1232997488,
+      "mtime_ns": 1787671933018941081
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C20/edge_index.npy",
+      "sha256": "1a7c3ce62003a50387c4feeb52ba07b9e08b97458afceee4e6b306cff91a0788",
+      "size_bytes": 43939008,
+      "mtime_ns": 1787671968387709817
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C20/orientation.npz",
+      "sha256": "ad3b52203ba0a25bcda46d9e1e294c81a206b2265d50134a6f916107580a92d5",
+      "size_bytes": 330246,
+      "mtime_ns": 1787671968408709681
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C20/relative_geometry.npy",
+      "sha256": "72e47ee45b732a96bafdc70615ca8fe3dcf30de6cbd91587a6c79f023c90ce24",
+      "size_bytes": 768930528,
+      "mtime_ns": 1787671988326581395
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C21/edge_index.npy",
+      "sha256": "837d441f8d51355b383ccdd608705942b806d1fa0830157f2307f521d265e83d",
+      "size_bytes": 18207200,
+      "mtime_ns": 1787572037881302294
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C21/orientation.npz",
+      "sha256": "09b26904bd7ac833c6455eefc0b6b3969b635703aa687eb3282d9714f4b26d97",
+      "size_bytes": 133318,
+      "mtime_ns": 1787572037920302075
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C21/relative_geometry.npy",
+      "sha256": "fee71d8789cb02ff1b10317eb6185aac80ef8de9e3f885a9967eb06ce2fdd41d",
+      "size_bytes": 318623888,
+      "mtime_ns": 1787572047226249452
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C22/edge_index.npy",
+      "sha256": "4edbd1c7f14201eb37c882842cee5ce8bae5813e596ff9aea5d0b7d07bacb6ce",
+      "size_bytes": 41580000,
+      "mtime_ns": 1787672017920393244
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C22/orientation.npz",
+      "sha256": "44defce2f6534b18f344470e37d2765a73cd8038e7eaf6f791dded9e7a5951d6",
+      "size_bytes": 310300,
+      "mtime_ns": 1787672017940393117
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C22/relative_geometry.npy",
+      "sha256": "83f9acf3cff5dde555e18e90801bd9ac3271e69e06e401e117d6ba0ca4e0aa82",
+      "size_bytes": 727647888,
+      "mtime_ns": 1787672039393258477
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C23/edge_index.npy",
+      "sha256": "e60ef66b9673bb0227eda10cff63e19bacae72577ca83f7b98724ed15f0674f3",
+      "size_bytes": 159556928,
+      "mtime_ns": 1787572198738332738
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C23/orientation.npz",
+      "sha256": "aeb28b12203b8c56c5130cd19ce0d98f7e9e497a859fdb2158a27f2bf6b76bf3",
+      "size_bytes": 1187841,
+      "mtime_ns": 1787572198814332252
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C23/relative_geometry.npy",
+      "sha256": "147ad19008ada2d3875e5915cbe3e80cfdeb92da9954a8c06dd9b9cac109f211",
+      "size_bytes": 2792244128,
+      "mtime_ns": 1787572275451703336
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C24/edge_index.npy",
+      "sha256": "607531a001f75ece1bb1a8ef3a1bdcf457784e950dc7e692982e7b0bbd1c7762",
+      "size_bytes": 52503264,
+      "mtime_ns": 1787672082164994169
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C24/orientation.npz",
+      "sha256": "1d08d03c9db90594778e07a334b788cf91f59c625c32dc0373b20078cf5ac1fa",
+      "size_bytes": 395417,
+      "mtime_ns": 1787672082189994016
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C24/relative_geometry.npy",
+      "sha256": "24ce65ec7188751213dad33c757db634fae5c19812c5916a4f22232ea55b1399",
+      "size_bytes": 918805008,
+      "mtime_ns": 1787672108175835973
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C25/edge_index.npy",
+      "sha256": "c3be3303cd04f27d5d32f2c9cd07143b1c73d5a55dbb078408e677bb8adc252d",
+      "size_bytes": 48790336,
+      "mtime_ns": 1787672139823645918
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C25/orientation.npz",
+      "sha256": "4ed6e61fd7496dcfcaef8450d6af3552f1d295fdc8ba86715c4d328b854320a4",
+      "size_bytes": 355960,
+      "mtime_ns": 1787672139846645781
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C25/relative_geometry.npy",
+      "sha256": "e189200e29beb916403b83bd086e3deba73dab1e68385b6f67049e347a4aee8f",
+      "size_bytes": 853828768,
+      "mtime_ns": 1787672165842491554
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C26/edge_index.npy",
+      "sha256": "5f3ac7a1bd59481dfa7cec36099c7d74933c996ce998afb2e9435e63a15cd938",
+      "size_bytes": 52654080,
+      "mtime_ns": 1787672206323254567
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C26/orientation.npz",
+      "sha256": "a532817c9c7dd654fa72ebf083fba0ffac87f6d20a40c5f144bb2916f722ed65",
+      "size_bytes": 404031,
+      "mtime_ns": 1787672206348254422
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C26/relative_geometry.npy",
+      "sha256": "8ae9eb0fac4dd103b2e923749926ffa36c50fe3c2a2bbc7b5357920bea4998f0",
+      "size_bytes": 921444288,
+      "mtime_ns": 1787672232053105830
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C27/edge_index.npy",
+      "sha256": "1a02681a569f644a325f85e38741e1c400bf200a34e25251a6836af1399a588e",
+      "size_bytes": 88938464,
+      "mtime_ns": 1787672305661687741
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C27/orientation.npz",
+      "sha256": "ca75a9ac72e662968fd2dad53606b8a431096dea055cb8782e4728a173500dd0",
+      "size_bytes": 658370,
+      "mtime_ns": 1787672305702687511
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C27/relative_geometry.npy",
+      "sha256": "b75057509143153fc75dc1930c9f47c7b61e41aecfc41b59a40e075f3cc1c387",
+      "size_bytes": 1556421008,
+      "mtime_ns": 1787672349584443039
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C28/edge_index.npy",
+      "sha256": "63b63367150d7146513dd4755f306664eeb7ab92049d6a880deac32fcb307448",
+      "size_bytes": 46683040,
+      "mtime_ns": 1787672387223235911
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C28/orientation.npz",
+      "sha256": "a206e593b128f04cf2796ff96027aad7fbeb9acedffc28576d849c3efd21e110",
+      "size_bytes": 356227,
+      "mtime_ns": 1787672387245235790
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C28/relative_geometry.npy",
+      "sha256": "44b24de7f0063f9b0af82ffa86ce1cd37c8fec3df25909c9039347cf6f68e6dc",
+      "size_bytes": 816951088,
+      "mtime_ns": 1787672409874112327
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/manifest.json",
+      "sha256": "c4a632473e458ae6e6eeab92c026ebf6e4d18ae49b568723f0e66a67db4fc90f",
+      "size_bytes": 127485,
+      "mtime_ns": 1787672413977090024
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C15.npz",
+      "sha256": "29d7840a6786a4a685f35ca55b9d3a7e65a559d161eb83d6fbfa6dbb6b0b4ebd",
+      "size_bytes": 37354157,
+      "mtime_ns": 1787671588575498064
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C16.npz",
+      "sha256": "eba070ae48d7bd0d56b643e7f2153168369d8b86c3bbacc26a3f67d87b4150eb",
+      "size_bytes": 14834965,
+      "mtime_ns": 1787671594053451890
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C17.npz",
+      "sha256": "a5e3ecca416d33e40026581912a7bd08df3337d01ec442e425061eaf904b4698",
+      "size_bytes": 6718847,
+      "mtime_ns": 1787671596505431294
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C18.npz",
+      "sha256": "8ceaff86bc4f1a4bdde71aebbd5eed9488b6e167d941e81864417fe47049a99e",
+      "size_bytes": 8461739,
+      "mtime_ns": 1787671599120409376
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C19.npz",
+      "sha256": "60907223f98b8e75efa857211a757a2e72309ec915fcd347303086739b529da2",
+      "size_bytes": 14312759,
+      "mtime_ns": 1787671603425373401
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C20.npz",
+      "sha256": "03228c8838f17acfdc491418252c9044bce73d83acc68b103dcaf0f7102abce9",
+      "size_bytes": 9574985,
+      "mtime_ns": 1787671606805345248
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C21.npz",
+      "sha256": "02a4a2ffbc9a5fb08607c95b00fe875f0a6fb4b40cc8e1da56c554f0b0df6df9",
+      "size_bytes": 3608239,
+      "mtime_ns": 1787671608228333420
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C22.npz",
+      "sha256": "e71c4c73d0424037860cab1a38fdf2a12ba1065df6e2073784aeefa11806693c",
+      "size_bytes": 8486996,
+      "mtime_ns": 1787671610600313736
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C23.npz",
+      "sha256": "fdb4a6f6c607ddb650afef9f1f93fb8eecb0be4c1ae593f6f59c4dbf4402c837",
+      "size_bytes": 42678236,
+      "mtime_ns": 1787671621133226802
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C24.npz",
+      "sha256": "885b526394f2a55af898ede297a089fd2b2d7e711a0b7275b1fdd820334e7706",
+      "size_bytes": 11601968,
+      "mtime_ns": 1787671626222185077
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C25.npz",
+      "sha256": "35f66ab45a154acbfb0ef61c0b62d181fc9fefab08290cf8494ed440bc40b833",
+      "size_bytes": 8083435,
+      "mtime_ns": 1787671629241160407
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C26.npz",
+      "sha256": "1c719c24035a747326ccb4dfd3f43063b9ea0896849b0e00c5a9ea8b164dba31",
+      "size_bytes": 10381687,
+      "mtime_ns": 1787671632716132088
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C27.npz",
+      "sha256": "d1b1b963d05583a58dafc70e7b8f32f4bdec971713839c9a8a9d58f50474e653",
+      "size_bytes": 15902831,
+      "mtime_ns": 1787671637922089815
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C28.npz",
+      "sha256": "7e8aebef10d0c0f35fb8de25507030e22dcae81c1783bf85f53416948145c998",
+      "size_bytes": 8457675,
+      "mtime_ns": 1787671641556060414
+    },
+    {
+      "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/manifest.json",
+      "sha256": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+      "size_bytes": 40073,
+      "mtime_ns": 1787671642156055568
+    },
+    {
+      "path": "/workspace/BAGM/data/raw/26040302SO_1_metadata_file.csv/26040302SO_1_metadata_file.csv",
+      "sha256": "9c90e5a074a098781924fca1219f8d7e00df7abf397176a8f434a5e3a64450c3",
+      "size_bytes": 121363693,
+      "mtime_ns": 1780993355000000000
+    },
+    {
+      "path": "/workspace/BAGM/data/raw/26040302SO_2_metadata_file.csv/26040302SO_2_metadata_file.csv",
+      "sha256": "2c970dfbd935faf4e6dc0e1068aef0a5fa4ae783c204244ec5f203b89c82d798",
+      "size_bytes": 185403684,
+      "mtime_ns": 1780993363000000000
+    },
+    {
+      "path": "/workspace/BAGM/data/raw/Gastric Study_2.xlsx",
+      "sha256": "30a1c3de1fee0d0045ac6bbfa849f9bb47de437c1b11428e6e16ac48d06fd5e0",
+      "size_bytes": 24709,
+      "mtime_ns": 1780993940000000000
+    }
+  ],
+  "source_files_checksums_verified": true,
+  "cells_sha256": "d485d5e202488e40814a5b979dfa425bfca5da12287f32d4c6002536a55acac1",
+  "cell_rows_sha256": "4396fdfb82bd099fec10fa74fcb8a44437386f50916a3d86d80044d9b6bba6f5",
+  "n_cells": 407659,
+  "dimensions": 256,
+  "cores": [
+    {
+      "core_number": 1,
+      "alias": "SO1-C01",
+      "n_cells": 8924,
+      "row_start": 0,
+      "row_stop": 8924,
+      "cell_rows_sha256": "34dad3935624945c621a57bc09b380d74392cdbb5abba3c3bc080c41640f2bc9",
+      "edges": 2028020,
+      "split": "train"
+    },
+    {
+      "core_number": 2,
+      "alias": "SO1-C02",
+      "n_cells": 7450,
+      "row_start": 8924,
+      "row_stop": 16374,
+      "cell_rows_sha256": "992389e1761572cd7cf43a1da02f82dd9458e58fe3e6dddbb8a351b22c9f8835",
+      "edges": 1683296,
+      "split": "train"
+    },
+    {
+      "core_number": 3,
+      "alias": "SO1-C03",
+      "n_cells": 12190,
+      "row_start": 16374,
+      "row_stop": 28564,
+      "cell_rows_sha256": "92a09300536416c9808e4b2b0b7f19d0cb11746a18639e7430cf5a75c923c878",
+      "edges": 2773392,
+      "split": "train"
+    },
+    {
+      "core_number": 4,
+      "alias": "SO1-C04",
+      "n_cells": 14657,
+      "row_start": 28564,
+      "row_stop": 43221,
+      "cell_rows_sha256": "86950fde453b96676e6d7c8dc5a285354ca0b9765dd46c796127b6380640e5e3",
+      "edges": 3270182,
+      "split": "train"
+    },
+    {
+      "core_number": 5,
+      "alias": "SO1-C05",
+      "n_cells": 11399,
+      "row_start": 43221,
+      "row_stop": 54620,
+      "cell_rows_sha256": "bf6da83df9ccb15fc1f5dbf267e6ca9b84d6ec6a508be783e51dac0d7af7f5c6",
+      "edges": 2619506,
+      "split": "train"
+    },
+    {
+      "core_number": 6,
+      "alias": "SO1-C06",
+      "n_cells": 18212,
+      "row_start": 54620,
+      "row_stop": 72832,
+      "cell_rows_sha256": "fc2d78177dcfc889b349ad5a2662e8d9195c65b1139a4846fa6411cb4cdfa57f",
+      "edges": 4072354,
+      "split": "train"
+    },
+    {
+      "core_number": 7,
+      "alias": "SO1-C07",
+      "n_cells": 10722,
+      "row_start": 72832,
+      "row_stop": 83554,
+      "cell_rows_sha256": "7587c2a78f11ae09d063d7c01d888c8269e248b8d3b4491892f2d8b04b7532dc",
+      "edges": 2418526,
+      "split": "train"
+    },
+    {
+      "core_number": 8,
+      "alias": "SO1-C08",
+      "n_cells": 4972,
+      "row_start": 83554,
+      "row_stop": 88526,
+      "cell_rows_sha256": "294332e949e404f9c710fcd28dec0e7775589d11f868f1d564166d12f2ee84fa",
+      "edges": 1127740,
+      "split": "train"
+    },
+    {
+      "core_number": 9,
+      "alias": "SO1-C09",
+      "n_cells": 17223,
+      "row_start": 88526,
+      "row_stop": 105749,
+      "cell_rows_sha256": "08eabd0308598122f81063d18e717fc40a720be6011393b81584cbd45151c38d",
+      "edges": 3990012,
+      "split": "train"
+    },
+    {
+      "core_number": 10,
+      "alias": "SO1-C10",
+      "n_cells": 14756,
+      "row_start": 105749,
+      "row_stop": 120505,
+      "cell_rows_sha256": "b8d232bc16aa9dd0e5bcc13b22eb4c50f0b239e236305611d97f7d92484ce6f1",
+      "edges": 3322306,
+      "split": "train"
+    },
+    {
+      "core_number": 11,
+      "alias": "SO1-C11",
+      "n_cells": 18145,
+      "row_start": 120505,
+      "row_stop": 138650,
+      "cell_rows_sha256": "b10e729ff9f4f36d8e4097e3d58c8280d1a54ffac378f925f41fa55f89888c53",
+      "edges": 4162470,
+      "split": "validation"
+    },
+    {
+      "core_number": 12,
+      "alias": "SO1-C12",
+      "n_cells": 7816,
+      "row_start": 138650,
+      "row_stop": 146466,
+      "cell_rows_sha256": "20de87c54372475c9026d2cd9bc72ff3bd75b6302f2cba1ccf4b2eeb2584259b",
+      "edges": 1779206,
+      "split": "validation"
+    },
+    {
+      "core_number": 13,
+      "alias": "SO1-C13",
+      "n_cells": 5345,
+      "row_start": 146466,
+      "row_stop": 151811,
+      "cell_rows_sha256": "419ff6f381259118933b055b391e5ca8a12f57e0290fa59a2f39d8fb88eeea54",
+      "edges": 1225416,
+      "split": "validation"
+    },
+    {
+      "core_number": 14,
+      "alias": "SO1-C14",
+      "n_cells": 9785,
+      "row_start": 151811,
+      "row_stop": 161596,
+      "cell_rows_sha256": "2a392ce95d4714c84724c7ffe435534370b55141f79eaa8906464209cd889ebf",
+      "edges": 2214150,
+      "split": "validation"
+    },
+    {
+      "core_number": 15,
+      "alias": "SO2-C15",
+      "n_cells": 38145,
+      "row_start": 161596,
+      "row_stop": 199741,
+      "cell_rows_sha256": "153a078d1957da24176eff29f53e67c64a01f37755d5610361c8e269f2502eca",
+      "edges": 8607462,
+      "split": "train"
+    },
+    {
+      "core_number": 16,
+      "alias": "SO2-C16",
+      "n_cells": 16229,
+      "row_start": 199741,
+      "row_stop": 215970,
+      "cell_rows_sha256": "187314f1a743b0b90e0176657c70271e30d1eddb270cc37b0ceb7fbe423bd21c",
+      "edges": 3671048,
+      "split": "train"
+    },
+    {
+      "core_number": 17,
+      "alias": "SO2-C17",
+      "n_cells": 9041,
+      "row_start": 215970,
+      "row_stop": 225011,
+      "cell_rows_sha256": "b6f69d4a53567a47fd8b447177202f22b7f4839f362e83d19b2786889863cfdc",
+      "edges": 2070630,
+      "split": "train"
+    },
+    {
+      "core_number": 18,
+      "alias": "SO2-C18",
+      "n_cells": 11696,
+      "row_start": 225011,
+      "row_stop": 236707,
+      "cell_rows_sha256": "a03786ef6cec397d707ba5eba97986e18752041ed861a8df26b3f2581dbb2638",
+      "edges": 2674636,
+      "split": "train"
+    },
+    {
+      "core_number": 19,
+      "alias": "SO2-C19",
+      "n_cells": 19119,
+      "row_start": 236707,
+      "row_stop": 255826,
+      "cell_rows_sha256": "3dc4a2efd6c3e249e6169ba1ee877ea56fd471da3415a3edb4030be6d7705c8e",
+      "edges": 4403562,
+      "split": "train"
+    },
+    {
+      "core_number": 20,
+      "alias": "SO2-C20",
+      "n_cells": 12155,
+      "row_start": 255826,
+      "row_stop": 267981,
+      "cell_rows_sha256": "5a56d1d178102796d8ca9df23f1909622c2eef071e646282a60ed2299b52c9a7",
+      "edges": 2746180,
+      "split": "train"
+    },
+    {
+      "core_number": 21,
+      "alias": "SO2-C21",
+      "n_cells": 4897,
+      "row_start": 267981,
+      "row_stop": 272878,
+      "cell_rows_sha256": "e13d198556d3b64e5e43b75f0e72330840a5a61a3c73a5e19665858108d32f81",
+      "edges": 1137942,
+      "split": "train"
+    },
+    {
+      "core_number": 22,
+      "alias": "SO2-C22",
+      "n_cells": 11443,
+      "row_start": 272878,
+      "row_stop": 284321,
+      "cell_rows_sha256": "e8df83c1ec2075f84e2c6f761995f5ce2462b578b84141530e2ee2081575a8f3",
+      "edges": 2598742,
+      "split": "train"
+    },
+    {
+      "core_number": 23,
+      "alias": "SO2-C23",
+      "n_cells": 43462,
+      "row_start": 284321,
+      "row_stop": 327783,
+      "cell_rows_sha256": "20cac1b4563b0c7b260789361d04a2423594e3ad9f399dc55fc8b386e0c806f0",
+      "edges": 9972300,
+      "split": "train"
+    },
+    {
+      "core_number": 24,
+      "alias": "SO2-C24",
+      "n_cells": 14506,
+      "row_start": 327783,
+      "row_stop": 342289,
+      "cell_rows_sha256": "952e10420881e6617a89998b0e33740c93dc81f57b838dde4883de668747a4bc",
+      "edges": 3281446,
+      "split": "train"
+    },
+    {
+      "core_number": 25,
+      "alias": "SO2-C25",
+      "n_cells": 13147,
+      "row_start": 342289,
+      "row_stop": 355436,
+      "cell_rows_sha256": "bf6646bb7199cc7e0e0b45b5909e9e46128a8d9831272dfb36a530f58f694243",
+      "edges": 3049388,
+      "split": "validation"
+    },
+    {
+      "core_number": 26,
+      "alias": "SO2-C26",
+      "n_cells": 14856,
+      "row_start": 355436,
+      "row_stop": 370292,
+      "cell_rows_sha256": "91ed0e3f600fa194abcfa4327fb24b93ddc2f8121584b4beed41f2aece5f8fae",
+      "edges": 3290872,
+      "split": "validation"
+    },
+    {
+      "core_number": 27,
+      "alias": "SO2-C27",
+      "n_cells": 24245,
+      "row_start": 370292,
+      "row_stop": 394537,
+      "cell_rows_sha256": "0e776478b6a2c48cf4ce2d1d6789f3cd7a529b1ccbf507044425e449ec40a4f6",
+      "edges": 5558646,
+      "split": "validation"
+    },
+    {
+      "core_number": 28,
+      "alias": "SO2-C28",
+      "n_cells": 13122,
+      "row_start": 394537,
+      "row_stop": 407659,
+      "cell_rows_sha256": "00b61afc63feb772268b6b79d216636299985d9a77197b1e90b9150234994eeb",
+      "edges": 2917682,
+      "split": "validation"
+    }
+  ],
+  "all_observed": true,
+  "inference_dtype": "float32",
+  "tf32": false,
+  "deterministic_algorithms": true,
+  "cudnn_deterministic": true,
+  "analysis_source_sha256": "18496f99196a1c93367af5b4d70f4426a1706f80860a20f372d83f59d58ab2e9",
+  "representation_definitions": {
+    "h0": "trained_node_encoder_output_before_graph_blocks",
+    "hL": "output_after_four_graph_blocks_before_expression_decoder"
+  },
+  "inputs_sha256": "8594f76bc669ef19c1c27da2bb4f2d044e6b5c4c423b5c66861bc34f8984e878"
+}

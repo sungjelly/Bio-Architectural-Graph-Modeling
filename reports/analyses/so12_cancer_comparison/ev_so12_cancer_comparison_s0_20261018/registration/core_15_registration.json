@@ -1,0 +1,270 @@
+{
+  "annotation": {
+    "exhaustiveness_verified": false,
+    "loops": [
+      {
+        "bounds_xyxy": [
+          971,
+          646,
+          1582,
+          1236
+        ],
+        "interior_pixels": 179558,
+        "stroke_pixels": 6240
+      }
+    ],
+    "meaning": "user-designated cancer-region outlines",
+    "roi_pixels": 185819,
+    "same_histological_section_verified": false,
+    "stroke_pixels": 6240
+  },
+  "best": {
+    "angle_degrees": -89.66882738311571,
+    "matrix_um_to_pixel": [
+      [
+        0.0017548606556231751,
+        0.3036029682314079
+      ],
+      [
+        -0.3036029682314079,
+        0.0017548606556231751
+      ]
+    ],
+    "optimizer_success": true,
+    "reflected": false,
+    "relative_scale": 0.9793807736739923,
+    "silhouette_dice_soft": 0.9759385111120468,
+    "translation_pixel": [
+      240.51333807960373,
+      3473.2032172351355
+    ]
+  },
+  "boundary_sensitivity_um": 50,
+  "candidates": [
+    {
+      "angle_degrees": -89.66882738311571,
+      "matrix_um_to_pixel": [
+        [
+          0.0017548606556231751,
+          0.3036029682314079
+        ],
+        [
+          -0.3036029682314079,
+          0.0017548606556231751
+        ]
+      ],
+      "optimizer_success": true,
+      "reflected": false,
+      "relative_scale": 0.9793807736739923,
+      "silhouette_dice_soft": 0.9759385111120468,
+      "translation_pixel": [
+        240.51333807960373,
+        3473.2032172351355
+      ]
+    },
+    {
+      "angle_degrees": -37.120009111972365,
+      "matrix_um_to_pixel": [
+        [
+          -0.24047184744019545,
+          0.18199947768421418
+        ],
+        [
+          0.18199947768421418,
+          0.24047184744019545
+        ]
+      ],
+      "optimizer_success": true,
+      "reflected": true,
+      "relative_scale": 0.9728388320898428,
+      "silhouette_dice_soft": 0.8356028165385673,
+      "translation_pixel": [
+        2894.6075043057654,
+        -1814.9936599364414
+      ]
+    },
+    {
+      "angle_degrees": 88.14455798133542,
+      "matrix_um_to_pixel": [
+        [
+          0.010784262462798887,
+          -0.3329000362923109
+        ],
+        [
+          0.3329000362923109,
+          0.010784262462798887
+        ]
+      ],
+      "optimizer_success": true,
+      "reflected": false,
+      "relative_scale": 1.0744344129854424,
+      "silhouette_dice_soft": 0.7994257462633807,
+      "translation_pixel": [
+        2349.2424324638678,
+        -2115.2910886265345
+      ]
+    },
+    {
+      "angle_degrees": 142.7069460231697,
+      "matrix_um_to_pixel": [
+        [
+          0.28154227588119934,
+          -0.21442380431789917
+        ],
+        [
+          -0.21442380431789917,
+          -0.28154227588119934
+        ]
+      ],
+      "optimizer_success": true,
+      "reflected": true,
+      "relative_scale": 1.1416056611649266,
+      "silhouette_dice_soft": 0.7932802834468125,
+      "translation_pixel": [
+        -382.838874357878,
+        3553.2823430809967
+      ]
+    },
+    {
+      "angle_degrees": 64.9718441492504,
+      "matrix_um_to_pixel": [
+        [
+          0.15545613863903535,
+          -0.3329494975290439
+        ],
+        [
+          0.3329494975290439,
+          0.15545613863903535
+        ]
+      ],
+      "optimizer_success": true,
+      "reflected": false,
+      "relative_scale": 1.185333450827396,
+      "silhouette_dice_soft": 0.6546818433803713,
+      "translation_pixel": [
+        1111.3299520936469,
+        -2630.391901996932
+      ]
+    },
+    {
+      "angle_degrees": -19.997435587168685,
+      "matrix_um_to_pixel": [
+        [
+          -0.2444086837219722,
+          0.0889450978128783
+        ],
+        [
+          0.0889450978128783,
+          0.2444086837219722
+        ]
+      ],
+      "optimizer_success": true,
+      "reflected": true,
+      "relative_scale": 0.8390001674584532,
+      "silhouette_dice_soft": 0.6484449255266672,
+      "translation_pixel": [
+        3245.12838434775,
+        -916.6218590742764
+      ]
+    }
+  ],
+  "core_number": 15,
+  "geometry_audit": {
+    "regional_landmarks": {
+      "interpretation": "Post-fit anatomy correspondence audit; not independent landmark validation or a pixel-error bound.",
+      "regions": [
+        {
+          "histology_centroid_xy_pixel": [
+            1666.899452539012,
+            204.1515216829037
+          ],
+          "name": "upper_hook",
+          "regional_centroid_residual_um": 1.9231987788456668,
+          "transformed_cell_envelope_centroid_xy_pixel": [
+            1667.4489594507615,
+            204.38279339197598
+          ],
+          "window_xyxy": [
+            1500,
+            70,
+            1900,
+            315
+          ]
+        },
+        {
+          "histology_centroid_xy_pixel": [
+            1165.9740984806883,
+            1298.046342058698
+          ],
+          "name": "lower_pole",
+          "regional_centroid_residual_um": 4.338535076223944,
+          "transformed_cell_envelope_centroid_xy_pixel": [
+            1164.7477941397897,
+            1297.4940223446863
+          ],
+          "window_xyxy": [
+            950,
+            1230,
+            1350,
+            1440
+          ]
+        }
+      ]
+    },
+    "silhouette_dice": 0.9762004871793981,
+    "symmetric_boundary_distance_um": {
+      "median": 9.123958466923193,
+      "p90": 31.933854634231178,
+      "p95": 54.9335044062142
+    }
+  },
+  "geometry_review": {
+    "anatomical_correspondence_confirmed": true,
+    "evidence": "Main elongated tissue, broad lower pole, narrow upper shaft, and upper-right hook match after rotation. Root and subagent independently inspected tissue-only overlays. This supports approximate section alignment, not pixel-exact histology.",
+    "reviewed_at": "2026-10-18T05:20:16.292131+00:00",
+    "reviewers": [
+      "slide_data_audit",
+      "root"
+    ]
+  },
+  "image": {
+    "path": "/workspace/BAGM/data/clinical/Core_15.png",
+    "scale_bar_pixel_length": 155,
+    "scale_bar_um": 500,
+    "scale_endpoint_uncertainty_px": 1,
+    "sha256": "5fc5f50580bc0383a7e770122350a0361dcb23b4769f6571db0389c99743b215",
+    "shape": [
+      1494,
+      2560,
+      3
+    ]
+  },
+  "n_cells": 38145,
+  "opposite_reflection_dice_gap": 0.1403356945734795,
+  "overlapping_polygon_pixel_events": 15467,
+  "owned_pixels": 271689,
+  "owned_pixels_outside_valid_window_or_on_stroke": 3269,
+  "owned_valid_pixels": 268420,
+  "owner_convention": "canonical_global_row_index; -1 uncovered; smallest row wins overlaps",
+  "passed": true,
+  "primary_valid_support": "core selection window excluding actual annotation strokes; pixel-center cell footprint",
+  "raster_path": "registration/core_15_raster.npz",
+  "raster_sha256": "00f3b79e9831a150be2c8cbe0ad3d3fca024d60c2389b98d31488f5861454731",
+  "raster_shape": [
+    1494,
+    2560
+  ],
+  "registration_caveat": "Approximate section alignment; no claim of pixel-exact same-section histological truth.",
+  "registration_features": "pink-purple tissue silhouette and cell-location envelope only; no cancer or cluster overlap",
+  "represented_cells_with_valid_owned_pixel": 37820,
+  "roi_covered_pixels": 124797,
+  "roi_pixels": 179579,
+  "status": "verified_approximate_section",
+  "window_xyxy": [
+    850,
+    50,
+    1900,
+    1440
+  ],
+  "zero_valid_pixel_cells": 325
+}

@@ -1,0 +1,51 @@
+{
+  "cells": 407659,
+  "embedded_report_images": 5,
+  "methods": {
+    "kernel_pca": {
+      "all_finite": true,
+      "embedding_shape": [
+        407659,
+        32
+      ],
+      "label_columns": [
+        "leiden_r0.5_s0",
+        "leiden_r1.0_s0",
+        "leiden_r1.0_s1",
+        "leiden_r1.5_s0"
+      ],
+      "labels_aligned": true
+    },
+    "pca": {
+      "all_finite": true,
+      "embedding_shape": [
+        407659,
+        32
+      ],
+      "label_columns": [
+        "leiden_r0.5_s0",
+        "leiden_r1.0_s0",
+        "leiden_r1.0_s1",
+        "leiden_r1.5_s0"
+      ],
+      "labels_aligned": true
+    },
+    "spatial_pca": {
+      "all_finite": true,
+      "embedding_shape": [
+        407659,
+        32
+      ],
+      "label_columns": [
+        "leiden_r0.5_s0",
+        "leiden_r1.0_s0",
+        "leiden_r1.0_s1",
+        "leiden_r1.5_s0"
+      ],
+      "labels_aligned": true
+    }
+  },
+  "portable_report": "report/index.html",
+  "slide_qualified_keys_unique": true,
+  "status": "passed"
+}

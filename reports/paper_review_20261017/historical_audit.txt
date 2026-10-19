@@ -1,0 +1,46 @@
+Historical claims audit, 2026-10-17. Read-only audit of aggregate reports; no experiments or raw/clinical rows accessed.
+
+OVERALL
+The supplied paper combines historical 14-core SO2 standardized-log1p results with the newer 28-core Pearson-residual model. Those scopes must be separated. Representation partition changes are verified; independent cancer-region agreement or superiority over PCA is not verified by the reviewed records.
+
+1. CLINICIAN-IDENTIFIED CANCER REGIONS / PCA
+Manuscript abstract/results state that BAGM showed clearer correspondence with clinician-identified cancer regions than PCA and that h4 improved delineation. The current h0/hL campaign is explicitly exploratory, fully observed and transductive; it supports descriptive partition differences, not cancer-region accuracy or biological integration. It states no clinical-label analysis was planned. The current reserved-test clustering campaign states manual cancer ROI inputs have not yet been located.
+Source: experiments/campaigns/cmp_20261017_so12_h0_hl_leiden_segmentation/README.md:21-38; experiments/campaigns/cmp_20261017_so12_paper_test_leiden/README.md:18-26,47-55.
+Recommended replacement: "Exploratory Leiden maps showed different spatial partitions before and after graph processing. Preliminary author-reported visual impressions suggested correspondence with suspected cancer regions, but independent region annotations and quantitative comparisons are required to establish cancer-region delineation or superiority over PCA."
+Stricter alternative, if no author confirmation is available: omit the visual-superiority assertion and state only the verified partition differences. Do not present the author's observation as an independently audited result.
+
+2. h0 VS h4, AND PCA FAIRNESS
+Current completed analysis uses the best epoch-151 checkpoint r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b, all observed genes, all 407,659 mapped cells across 28 cores. h0 is trained node-encoder output; hL/h4 is fourth block output before decoding. Seed-0 h0/hL cluster counts are 16/22; h0-to-hL ARI is 0.370156. Leiden seed0/seed1 ARI is 0.806953 for h0 and 0.883709 for hL. These are algorithmic partition agreement measures, not cancer accuracy, training-seed stability or independent-donor replication.
+Source: experiments/campaigns/cmp_20261017_so12_h0_hl_leiden_segmentation/README.md:10-16,42-58,218-230.
+h0/hL uses all256 dimensions, cosine exact kNN30, unweighted union graph, Leiden to convergence. Prior PCA-family methods use32 dimensions, Euclidean HNSW, weighted graphs, two Leiden iterations. Therefore encoder superiority is confounded with analysis-pipeline differences.
+Source: same README:68-87.
+hL-h0 includes feedforward/residual transformations, not isolated neighbor contribution. Five hL clusters are >90% single-core, whereas h0 has none; batch removal is not established.
+Source: same README:30-31,280-288.
+Recommended replacement: "The h0 and h4 partitions differed (ARI=0.370); the comparison is descriptive and does not isolate spatial geometry, neighborhood information, or biological accuracy. Comparisons with PCA also differ in representation dimension, distance metric and clustering graph."
+
+3. HISTORICAL LAYER ANALYSIS
+If manuscript instead intends the original SO2 layer result, label it historical: 246,063 cells,14 fitted cores, standardized-log1p input, one seed, no held-out patient test. All genes observed at extraction. PCA50/cosine-kNN30/Leiden-resolution1 settings matched across h0-h4. Counts16/20/19/19/19; adjacent ARIs0.515866,0.656866,0.577895,0.670017. This supports descriptive progression only.
+Source: experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/HIDDEN_LAYER_PROGRESSION_CLUSTERING.md:32-57,65-89,121-168.
+Historical raw-expression PCA baseline used library-normalized/log1p/scaled expression,50 PCs, matching cosine kNN30/Leiden settings. It yielded12 clusters and was explicitly biologically inconclusive pending marker/pathology validation.
+Source: experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/RAW_EXPRESSION_CLUSTERING_BASELINE.md:5-22,45-77,134-149.
+
+4. PRECISION/RECALL/AUPRC UNDER HUBER
+The recorded Sep5 four Huber endpoint comparison is for fitted-cohort SO2 standardized-log1p models, all14 cores,246,063 cells,seed0. Original e175 and continued e300 are one lineage, recurrent e175 has failed artifact finalization, geometry e200 is a distinct model. Epoch durations differ. It is not evidence about the current Pearson-residual model.
+Source: experiments/campaigns/cmp_20260905_so2_nonzero_accuracy/README.md:25-59; reports/analyses/so2_nonzero_metrics/comparison/v1/report.md:3,56-64.
+At a fixed decoded continuous-count threshold>=0.5, equal-core detection recall is12.85-13.50%, precision66.27-67.01%, specificity99.21-99.24%. Exact positive count accuracy3.51-3.75%. Low recall is well supported; blanket "low precision" is misleading without threshold and baseline. AUPRC was not found in this Huber nonzero report/summary.
+Source recall/specificity: reports/analyses/so2_nonzero_metrics/comparison/v1/report.md:9-20. Precision source: same directory summary.json predictors.original.metrics.detection/positive_precision (line5348), continued(line4346), recurrent(line5682), geometry(line5014).
+Recommended short historical statement: "Earlier fitted-cohort SO2 models trained with Huber loss on standardized log1p counts showed low observed-nonzero recall (12.85-13.50%) at a fixed decoded-count threshold of0.5, despite precision of66.27-67.01%. These exploratory results do not quantify the current Pearson-residual model's occurrence-prediction performance."
+For a concise current-model paper, remove the generic precision/recall/AUPRC claim from abstract/results and use the actual current-model validation regression metrics instead (parent current-model audit).
+
+5. BCE/HURDLE ALREADY STUDIED
+Statement that binary BCE/hurdle comparisons are merely future work ignores completed historical studies, although a controlled same-architecture/same-split loss ablation remains needed. Sep30 binary BCE endpoint: precision68.6825%,recall7.9058%,AP0.298425 (4096-bin descending-threshold average precision, not trapezoidal PR area); observed prevalence0.081178. Hurdle comparison has precision68.8231%,recall8.0431%, but no saved hurdle AUPRC. Different selected objectives remain an asymmetry. This is a different target-isolated architecture/task, allowing fully observed neighbor expression, single-seed validation selection on two cores/one donor.
+Source: reports/analyses/so2_binary_expression_bce/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/v1/report.md:5-7,16-25,27-53,61-63.
+Recommended discussion: "Separate occurrence and hurdle-model studies have been explored, but a matched comparison holding architecture, preprocessing, masking and split fixed is still needed to attribute performance differences to the loss."
+The current sentence that Huber itself has not been shown to cause poor performance is appropriate. Sep6 constant-predictor analysis found Huber optimum below MSE gene mean for999/1000 genes but explicitly did not identify a neural causal effect.
+Source: experiments/campaigns/cmp_20260906_so2_failure_diagnosis/README.md:13-28,104-124,136-143.
+
+6. PEARSON NOT DETECTION OR MATCHED RANKING
+Oct15 historical continued e300 replay had log1p mean-cell Pearson0.421892; standardized mean-cell Pearson0.195858. Local hurdle model mean log1p cell Pearson0.315556 on reused validation. These involve distinct populations/masks/neighbor access, so do not imply architecture superiority or performance of new Pearson-residual models. No correlation substitutes for occurrence precision/recall/AP.
+Source: experiments/campaigns/cmp_20261015_so2_prediction_pearson/README.md:19-33,109-142.
+
+All instructions read; pre-existing extensive modified/deleted/untracked files observed and left unchanged. Only this new audit note was written.

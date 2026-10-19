@@ -1,0 +1,46 @@
+{
+  "created_at": "2026-10-19T06:20:19.240322+00:00",
+  "files": {
+    "plot_so12_pooled_f1_monochrome.py": {
+      "sha256": "23b15a6fce655012907e01bc5a01a9fee89417d20d763b189bbbf57e9d1daf69",
+      "size_bytes": 7684
+    },
+    "pooled_f1_bar.pdf": {
+      "sha256": "33226b4be02ba4419118b194f3ed8dca5d085ad26162761cc696b9267e96a177",
+      "size_bytes": 24855
+    },
+    "pooled_f1_bar.png": {
+      "sha256": "a3ace5f75b3fb8baf622ee9e1253bbf7400f1b4b04197ccc470a23cacab8e7da",
+      "size_bytes": 193204
+    },
+    "pooled_f1_bar.svg": {
+      "sha256": "cbac429647e245f1633bd23d487ec0ae7733228dde3f56adfb86fe6b56f4894c",
+      "size_bytes": 11749
+    },
+    "provenance/experiments/campaigns/cmp_20261018_so12_cancer_pooled_union/README.md": {
+      "sha256": "6eb031915dbef92011d960be26e590a30d88168b4b8f415056df87f618fe702e",
+      "size_bytes": 10287
+    },
+    "provenance/scripts/analysis/run_so12_cancer_limited_union.py": {
+      "sha256": "84bcb0eb074dcb5173aece0052a155c609027c2f9133a282d03c9804faaf7b6e",
+      "size_bytes": 15775
+    },
+    "provenance/src/spatial_benchmark/paths.py": {
+      "sha256": "46dd8a02acdc8e5c0169f7ff72180c17b55f7fd64f155d27209717c89e9a09f7",
+      "size_bytes": 6869
+    },
+    "source_scores.csv": {
+      "sha256": "6eefcc38036d6f9c095e94555f037fee41bac9b7a50a984b631b9679ce8f9988",
+      "size_bytes": 1821
+    },
+    "validation.json": {
+      "sha256": "90e4cfefbbb2485773251171e1312123a22ea9fb94a13a6bf65c12cad201a9cd",
+      "size_bytes": 1575
+    }
+  },
+  "presentation_only": true,
+  "schema": "so12_pooled_f1_presentation_v1",
+  "source_evaluation": "ev_so12_cancer_pooled_union_s0_20261018",
+  "source_manifest_sha256": "8727217f27775252d22d16bb5f14b06b2707b904aa7b2c1117e5c0b987f1d9b2",
+  "status": "complete"
+}

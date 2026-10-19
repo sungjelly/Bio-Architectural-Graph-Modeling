@@ -1,0 +1,73 @@
+{
+  "evaluation_id": "ev_so12_zero_mean_e086_20261016T155304Z",
+  "source_run_id": "r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b",
+  "source_run_status": "running",
+  "checkpoint_epoch": 86,
+  "checkpoint_sha256": "2c894bf62fc722e29e307b9a513a62d699f2c78d8c528612aa0ebd6f58308a58",
+  "checkpoint_metric_source": "stored_validation_record_for_the_same_checkpoint_epoch",
+  "started_at": "2026-10-16T15:53:04.933686+00:00",
+  "command": [
+    "scripts/analysis/compare_so12_zero_mean.py",
+    "--run-id",
+    "r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b"
+  ],
+  "device": "cpu",
+  "threads": 2,
+  "target_scale": "train_standardized_quasipoisson_pearson_phi1p01_clip10",
+  "config_sha256": "db617a7f8ad5272a105894de850b8e91b8cb971c68ca0f501a4640e3fa02bc14",
+  "training_source_sha256": {
+    "so12_relative_qkv_training.py": "69328341b73689a3dde6c7aeb603b644d60ce37240acb3f5209462e3380d257e",
+    "so12_relative_qkv_data.py": "224a93215ebe1e7ee27756e0823d267f23c3a96e5feb29f3a853d8561c6e174c",
+    "relative_qkv_graph_transformer.py": "b6f54251da687704b9e2779ec0868142b52f516ae647dda53e97baf1c00ee511",
+    "pooled_relative_qkv_training_v2.py": "0eb75849b42aa48d0727b5fea2d3f1e381767720c0d251cdbe4d5dd0b0c7fc3b"
+  },
+  "analysis_source_sha256": "4aecedd108f1dc3765328ced0c901ece3f150375407168bf7fc8adb498e259ed",
+  "mask_sha256": "60d49f2b3a7e21b0928c79767ab0690afee98197ce26e20d3f47ede5f7f55b68",
+  "split": {
+    "training_core_numbers": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "validation_core_numbers": [
+      11,
+      12,
+      13,
+      14,
+      25,
+      26,
+      27,
+      28
+    ],
+    "training_cells": 301198,
+    "validation_cells": 106461,
+    "training_donor_groups": 10,
+    "validation_donor_groups": 4,
+    "donor_overlap": false,
+    "independent_test": false,
+    "scope": "reused_preprocessing_diagnostic_donors_as_exploratory_validation"
+  },
+  "interpretation": "exploratory_live_checkpoint_validation_comparison",
+  "baseline_definitions": {
+    "zero": "zero_standardized_Pearson_feature",
+    "mean_equal_core": "per_gene_training_mean_equal_core_weights",
+    "mean_equal_cell": "per_gene_training_mean_equal_cell_weights"
+  }
+}

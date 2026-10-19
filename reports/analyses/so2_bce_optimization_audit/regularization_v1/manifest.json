@@ -1,0 +1,14 @@
+{
+  "files": {
+    "attempts.csv": "9c32a06994b89a2772c39dc77c2da8dc3f49bedb5a7e9df791bf47a4bac5852e",
+    "history.csv": "8f274116106cb667c2c79fa7489ff79368a59dc163be9ec8f98b21e9bae657d0",
+    "per_core_endpoints.csv": "99c9193ab1e7626db422bab57a007f7d76026cc9b417c450f26c1e1f0ea720d4",
+    "report.md": "af1f81a956c0a139673aa0a9384b9b1a05398a828abbac93291b1260ea46016f",
+    "report_builder.py": "22a93e36785e1e50f4d9bc6e53a1b516bc56d4dfbb6469516804d06bdbbff35f",
+    "runs.csv": "360689cd8ad0a68c15f55a534f4acbdf157416c660562137a60765feb66e9ca8",
+    "secondary_metrics.csv": "a8c8667de60b2486ffa746924ebaf203bbb903c58e8a7f3f24b7c11c4dbe33bd",
+    "summary.json": "15fed0d3cabbbad1f60d1dcb4de389d9b5ff3242ae12126e588900723a386917",
+    "validation_curves.png": "f8d1d1a2bba5b5642097a67f14545420ab634c1267ed0d8d7dce1a4b34007135"
+  },
+  "schema": "checksummed_local_report_v1"
+}

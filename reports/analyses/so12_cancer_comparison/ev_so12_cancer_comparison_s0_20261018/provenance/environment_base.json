@@ -1,0 +1,14 @@
+{
+  "packages": {
+    "igraph": "1.0.0",
+    "leidenalg": "0.12.0",
+    "matplotlib": "3.11.1",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "shapely": "2.1.2",
+    "torch": "2.13.0"
+  },
+  "python": "3.12.13 | packaged by conda-forge | (main, Aug 11 2026, 10:27:28) [GCC 14.4.0]"
+}

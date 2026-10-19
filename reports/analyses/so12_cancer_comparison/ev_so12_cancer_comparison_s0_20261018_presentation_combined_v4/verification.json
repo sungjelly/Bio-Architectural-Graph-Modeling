@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "original_palette_identical": true,
+  "png_dimensions": [
+    6528,
+    3721
+  ],
+  "png_dpi": [
+    299.9994,
+    299.9994
+  ],
+  "source_input_checksums_verified": true,
+  "visual_reviewers": [
+    "root",
+    "figure_review"
+  ],
+  "visual_review": "All ten panels complete, enlarged method headings and scale labels readable, no clipping, no core/settings titles or footer."
+}

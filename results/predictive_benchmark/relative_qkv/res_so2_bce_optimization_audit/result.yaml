@@ -1,0 +1,578 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so2_bce_optimization_audit
+title: SO2 BCE optimization audit at matched target exposure
+status: verified
+outcome: negative
+experiment_type: predictive_benchmark
+method_family: relative_qkv
+lifecycle_stage: validation_confirmation
+study_axis: optimization
+campaign_ids:
+- cmp_20261001_so2_bce_optimization_audit
+method:
+  name: Target-isolated binary-expression BCE optimization audit
+  model_family: Geometry-modulated relative-QKV graph transformer
+  graph_context: Unchanged clean within-core neighbor expression with permitted geometry
+    and imaging/morphology
+  masking_or_perturbation: Partial-gene per-cell masking; every training cell once
+    per epoch; fixed validation masks
+  evaluation_design: Exploratory grid and regularization screen, then fresh incumbent/comparator
+    model seeds 0/1 at 32 epochs on one held-out donor group. Fold 0 denotes this
+    single fixed split, not independent cross-validation folds.
+  implementation_version: 866313cb473549e834fbd7d0809c60a27cbb3c3a
+conclusion:
+  question: Do the declared batch, learning-rate or regularization settings improve
+    fixed-mask SO2 BCE prediction?
+  estimand: Partial-gene binary-expression reconstruction from observed same-cell
+    genes, imaging/morphology and permitted clean neighborhood context
+  observed_result: "Across model seeds 0 and 1, the incumbent-minus-comparator reduction\
+    \ in mean validation BCE at epochs 29\u201332 was 0.00005516 and 0.00031137; mean\
+    \ reduction 0.00018326. The prespecified material-gain criterion was not met.\
+    \ Endpoint convergence diagnostic: still improving in at least one run. Separately,\
+    \ the eight-epoch target-window incumbent reduced BCE versus paired cores by 0.00719035,\
+    \ with F1 change +0.03931919, at equal 1,669,568 target visits and 1,672 versus\
+    \ 48 optimizer updates. This early update-regimen result is distinct from the\
+    \ tuning comparison and does not establish eventual superiority."
+  strongest_alternative_explanation: Validation selection and one-donor distribution
+    may explain apparent gains; gene prevalence and observed same-cell features may
+    explain prediction without useful spatial context.
+  controls:
+  - Complete batch/LR screen and single-factor dropout/weight-decay controls with
+    immutable failed attempts retained
+  - Fresh incumbent and comparator seeds0/1, fixed masks/order and equal target exposure;
+    terminal mean chosen independently of best checkpoint
+  - One-GPU paired-core reference, exact train-fitted gene prevalence validation reference
+    and selected-best fixed-training diagnostics
+  - Coverage, finite-gradient, resource, selected-best replay and artifact/checkpoint
+    checksum gates
+  remaining_uncertainty: Only one held-out validation donor, two optimization seeds,
+    repeated validation selection and no sealed test. Exposure is matched; optimizer
+    updates differ across batch sizes. At least one endpoint remains unconverged,
+    so eventual-performance comparison is inconclusive. Graph-specific gain, attribution
+    stability/faithfulness, biological nulls, patient replication and mechanism remain
+    untested.
+  maximum_defensible_claim: Exploratory validation-selected optimization behavior
+    at the tested32-epoch budget on this split; no claim of global optimality, graph-specific
+    information, independent patient replication or causality.
+evidence:
+  predictive_gain:
+    status: failed
+    summary: Prespecified optimization gain over the matched incumbent did not pass.
+      This does not test graph-specific gain.
+  stability:
+    status: supported
+    summary: Direction of optimization effect across two model seeds only; attribution
+      and biological stability were not evaluated.
+  faithfulness:
+    status: not_tested
+    summary: Not tested by this optimization audit.
+  null_calibration:
+    status: not_tested
+    summary: Not tested by this optimization audit.
+  patient_replication:
+    status: not_tested
+    summary: Not tested by this optimization audit.
+  external_support:
+    status: not_tested
+    summary: Not tested by this optimization audit.
+  perturbation_support:
+    status: not_tested
+    summary: Not tested by this optimization audit.
+provenance:
+  created_at_utc: '2026-10-01T12:42:10Z'
+  updated_at_utc: '2026-10-01T12:42:10Z'
+  git_commit: 866313cb473549e834fbd7d0809c60a27cbb3c3a
+  run_ids:
+  - r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd
+  - r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae
+  - r_20261001T074811Z_06acf7a5_s000_f00_a01_2aa32391
+  - r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202
+  - r_20261001T074811Z_425c1faf_s000_f00_a01_65533cf1
+  - r_20261001T074811Z_97513f17_s000_f00_a01_bfa65cb7
+  - r_20261001T082016Z_95cce2a4_s000_f00_a01_df1ebd49
+  - r_20261001T082215Z_22f0027c_s000_f00_a01_54281998
+  - r_20261001T082850Z_052d767b_s000_f00_a01_35ab7f19
+  - r_20261001T082930Z_d0f806f6_s000_f00_a01_57f4d373
+  - r_20261001T085324Z_32178e25_s000_f00_a01_2dfb5a15
+  - r_20261001T085435Z_c393af7c_s000_f00_a01_459ab1fb
+  - r_20261001T092859Z_583aa3f1_s000_f00_a01_5a4a79ea
+  - r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980
+  - r_20261001T092859Z_6b2d1296_s000_f00_a01_f647ac07
+  - r_20261001T092859Z_dac08cb3_s000_f00_a01_ed817509
+  - r_20261001T101202Z_15baf65c_s001_f00_a01_6427735a
+  - r_20261001T101202Z_a32d61e8_s001_f00_a01_8332ee26
+  - r_20261001T101202Z_f8197b29_s000_f00_a01_ed00c19e
+  expected_seeds:
+  - 0
+  - 1
+  included_seeds:
+  - 0
+  - 1
+  expected_folds:
+  - 0
+  included_folds:
+  - 0
+  failed_or_excluded_runs: []
+  sources:
+  - kind: report
+    root: report
+    path: analyses/so2_bce_optimization_audit/confirmation_v1/summary.json
+    sha256: a237a37f23afbd902c45c3448c42ea38b9eee33b59f141e0f2a8cc73361fca0e
+    verification_status: verified
+    description: Completed confirmation audit report summary.json
+  - kind: report
+    root: report
+    path: analyses/so2_bce_optimization_audit/confirmation_v1/manifest.json
+    sha256: efb045ba703e5e9082ec982e8362d99d0c7a4b6ebed7eed929bc241079d0dcef
+    verification_status: verified
+    description: Completed confirmation audit report manifest.json
+  - kind: report
+    root: report
+    path: analyses/so2_bce_optimization_audit/confirmation_v1/report.md
+    sha256: ef035324c302af2a82d773d22ebf6eaa6bde169512f2bbe4537e4bc9fad10c31
+    verification_status: verified
+    description: Completed confirmation audit report report.md
+  - kind: report
+    root: report
+    path: analyses/so2_bce_optimization_audit/regularization_v1/summary.json
+    sha256: 15fed0d3cabbbad1f60d1dcb4de389d9b5ff3242ae12126e588900723a386917
+    verification_status: verified
+    description: Completed regularization audit report summary.json
+  - kind: report
+    root: report
+    path: analyses/so2_bce_optimization_audit/regularization_v1/manifest.json
+    sha256: b9c92173914d50eaf35ad5089551ff7d7ab51c47c5b48e4869e538a794cfc7dc
+    verification_status: verified
+    description: Completed regularization audit report manifest.json
+  - kind: report
+    root: report
+    path: analyses/so2_bce_optimization_audit/regularization_v1/report.md
+    sha256: af1f81a956c0a139673aa0a9384b9b1a05398a828abbac93291b1260ea46016f
+    verification_status: verified
+    description: Completed regularization audit report report.md
+  - kind: report
+    root: report
+    path: analyses/so2_bce_optimization_audit/grid_v1/summary.json
+    sha256: 58e2c9e57538ae264ceb8268a614de3d8260820416d2de6a615f2da2829f1c25
+    verification_status: verified
+    description: Completed grid audit report summary.json
+  - kind: report
+    root: report
+    path: analyses/so2_bce_optimization_audit/grid_v1/manifest.json
+    sha256: 97db1ab27427cf6a037489ee3fee155f574368a38899e2554647782f26f3d21b
+    verification_status: verified
+    description: Completed grid audit report manifest.json
+  - kind: report
+    root: report
+    path: analyses/so2_bce_optimization_audit/grid_v1/report.md
+    sha256: 50f1b22f28fd0c9b547afe19300c3624eb61fe235c1cdccbcbb0ae6be9d023a3
+    verification_status: verified
+    description: Completed grid audit report report.md
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd
+    path: runs/2026/10/r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd/_SUCCESS
+    sha256: ab824f4bf545c54f744cc788e59d6a4b570532efb1f1169792d0868a1db71724
+    verification_status: verified
+    description: smoke completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd
+    path: runs/2026/10/r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd/provenance/artifact_checksums.json
+    sha256: 8cb558d4ff359413baf47a010eeaee81c43183678348a92fbf1b790268be9c79
+    verification_status: verified
+    description: smoke completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd
+    path: runs/2026/10/r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd/config.resolved.yaml
+    sha256: 29c0044d3cc64be4d10d7ca3e38ca2e953e5fc364ef45007db95e8ee0f8d8867
+    verification_status: verified
+    description: smoke completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae
+    path: runs/2026/10/r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae/_SUCCESS
+    sha256: aaa3bc9213408277a0c3ecd8618f571709b2cead70ca93cfb1aa5ff9b190ee76
+    verification_status: verified
+    description: smoke completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae
+    path: runs/2026/10/r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae/provenance/artifact_checksums.json
+    sha256: 94132b8e369c5fdfefa035c572bf40d7b0b0b78048c83409e680ad3837e61e39
+    verification_status: verified
+    description: smoke completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae
+    path: runs/2026/10/r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae/config.resolved.yaml
+    sha256: c2aff00edb2e42ce0c8bf09c63e954a22c0902cea3ddcc8e0e0cc9c35187433a
+    verification_status: verified
+    description: smoke completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_06acf7a5_s000_f00_a01_2aa32391
+    path: runs/2026/10/r_20261001T074811Z_06acf7a5_s000_f00_a01_2aa32391/_SUCCESS
+    sha256: af791c81e47f3e3c381f78b7b28afe459a79a369d6b15f72786fd1f4707e813e
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_06acf7a5_s000_f00_a01_2aa32391
+    path: runs/2026/10/r_20261001T074811Z_06acf7a5_s000_f00_a01_2aa32391/provenance/artifact_checksums.json
+    sha256: 5abc6ea727362a79b5820b2c9ef359fbd8ac8d425406a0806dc8eec59dbad604
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_06acf7a5_s000_f00_a01_2aa32391
+    path: runs/2026/10/r_20261001T074811Z_06acf7a5_s000_f00_a01_2aa32391/config.resolved.yaml
+    sha256: 58e1a8ae37d5f5d6a7d79626007c64d2f89e6c0a2e1813c27fe85a64d73dda34
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202
+    path: runs/2026/10/r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202/_SUCCESS
+    sha256: b0fc610cf35bea67bfad904d77ebd5f5d16908ecd1d712e19f5bce4126a49155
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202
+    path: runs/2026/10/r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202/provenance/artifact_checksums.json
+    sha256: 9bcb59f68274f6f9cc4142f9ab595b3c765dfa1e130a6e2335dd78c8127a2591
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202
+    path: runs/2026/10/r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202/config.resolved.yaml
+    sha256: 2bcf426c8a661b6c466f68da298a6dccaefcb32ae38018398e9258bbf627af00
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_425c1faf_s000_f00_a01_65533cf1
+    path: runs/2026/10/r_20261001T074811Z_425c1faf_s000_f00_a01_65533cf1/_SUCCESS
+    sha256: c292e5a659173fdc3bcc2131a6296a5fbb00aa627b2039ae3097f4c912151ac6
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_425c1faf_s000_f00_a01_65533cf1
+    path: runs/2026/10/r_20261001T074811Z_425c1faf_s000_f00_a01_65533cf1/provenance/artifact_checksums.json
+    sha256: 60eeb324323ddeb97b72f8fac337ed11d1c3e8c64fae648d151a619908f457b8
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_425c1faf_s000_f00_a01_65533cf1
+    path: runs/2026/10/r_20261001T074811Z_425c1faf_s000_f00_a01_65533cf1/config.resolved.yaml
+    sha256: 222a546f7171a165d7b3ec83d88ec0621d1b142976d673af5a83238d7f686710
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_97513f17_s000_f00_a01_bfa65cb7
+    path: runs/2026/10/r_20261001T074811Z_97513f17_s000_f00_a01_bfa65cb7/_SUCCESS
+    sha256: 447471e1a33c0d24670daf0c24d6d2253c657232cb680d081e44b8cf6b3277e6
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_97513f17_s000_f00_a01_bfa65cb7
+    path: runs/2026/10/r_20261001T074811Z_97513f17_s000_f00_a01_bfa65cb7/provenance/artifact_checksums.json
+    sha256: dfb87d952f13dce98b84699abfeb8e4ca60dcd5d8419edb272b5b367e14f5f7b
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T074811Z_97513f17_s000_f00_a01_bfa65cb7
+    path: runs/2026/10/r_20261001T074811Z_97513f17_s000_f00_a01_bfa65cb7/config.resolved.yaml
+    sha256: 8f9178847a6e4cc873d9794a5361c370003fdc3c9aefc390974ff6492f78d88f
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082016Z_95cce2a4_s000_f00_a01_df1ebd49
+    path: runs/2026/10/r_20261001T082016Z_95cce2a4_s000_f00_a01_df1ebd49/_SUCCESS
+    sha256: f7dbaeb4b86e7ab77d223562a7733776809a6bfafafcef493af15eb4f2ca5947
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082016Z_95cce2a4_s000_f00_a01_df1ebd49
+    path: runs/2026/10/r_20261001T082016Z_95cce2a4_s000_f00_a01_df1ebd49/provenance/artifact_checksums.json
+    sha256: cc62de6905d72fe7f1d4b6b7141a64faf749c1600bb9c7bc3826cd46469dac9f
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082016Z_95cce2a4_s000_f00_a01_df1ebd49
+    path: runs/2026/10/r_20261001T082016Z_95cce2a4_s000_f00_a01_df1ebd49/config.resolved.yaml
+    sha256: 5c987594f1fb03ed730ac711c29c31b0b35384f4f4d31e499276a936651efc02
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082215Z_22f0027c_s000_f00_a01_54281998
+    path: runs/2026/10/r_20261001T082215Z_22f0027c_s000_f00_a01_54281998/_SUCCESS
+    sha256: ae4754406864467baefbdb2b2fecc3bbfcbf8dc92d369fb08a61d80abf859a04
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082215Z_22f0027c_s000_f00_a01_54281998
+    path: runs/2026/10/r_20261001T082215Z_22f0027c_s000_f00_a01_54281998/provenance/artifact_checksums.json
+    sha256: 9c0a9ea7a7108fc82c75e9fc198be35778caef4c075afda96214ee914a042c82
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082215Z_22f0027c_s000_f00_a01_54281998
+    path: runs/2026/10/r_20261001T082215Z_22f0027c_s000_f00_a01_54281998/config.resolved.yaml
+    sha256: 18e80cc31627f34e799672c0c4b558dc80cc806a7e0931857d1552083e03e4ec
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082850Z_052d767b_s000_f00_a01_35ab7f19
+    path: runs/2026/10/r_20261001T082850Z_052d767b_s000_f00_a01_35ab7f19/_SUCCESS
+    sha256: 641baed949a33e62a64446b4229675187b0c60c859cb74bc6cba3ace8b3f499f
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082850Z_052d767b_s000_f00_a01_35ab7f19
+    path: runs/2026/10/r_20261001T082850Z_052d767b_s000_f00_a01_35ab7f19/provenance/artifact_checksums.json
+    sha256: aadfc45bc351270041edeb73f9b9a7927b380e55c09f2e8df7f44242aef18cad
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082850Z_052d767b_s000_f00_a01_35ab7f19
+    path: runs/2026/10/r_20261001T082850Z_052d767b_s000_f00_a01_35ab7f19/config.resolved.yaml
+    sha256: 42ed6275fddfefcc7ddc4044f9fc97e99dfa3c7eefe15b212176ad4ccd29009d
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082930Z_d0f806f6_s000_f00_a01_57f4d373
+    path: runs/2026/10/r_20261001T082930Z_d0f806f6_s000_f00_a01_57f4d373/_SUCCESS
+    sha256: 135ce388ca4a4b2fad0180e5d109b4179a78f7d288668fc72fb6431f051a5a33
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082930Z_d0f806f6_s000_f00_a01_57f4d373
+    path: runs/2026/10/r_20261001T082930Z_d0f806f6_s000_f00_a01_57f4d373/provenance/artifact_checksums.json
+    sha256: 8d1d497ecd7e68a6fde82433fa164f40d48c23a77b9cf897df69f96161dc897a
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T082930Z_d0f806f6_s000_f00_a01_57f4d373
+    path: runs/2026/10/r_20261001T082930Z_d0f806f6_s000_f00_a01_57f4d373/config.resolved.yaml
+    sha256: 00a3cc88f07241f7f305cab0ff05385a7fd16873df2f251e1d5b7f8e51b9c742
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T085324Z_32178e25_s000_f00_a01_2dfb5a15
+    path: runs/2026/10/r_20261001T085324Z_32178e25_s000_f00_a01_2dfb5a15/_SUCCESS
+    sha256: 3e82955427af9590ef7b9460e96eed011bb652dd91d6d96bf54932cbe16f916b
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T085324Z_32178e25_s000_f00_a01_2dfb5a15
+    path: runs/2026/10/r_20261001T085324Z_32178e25_s000_f00_a01_2dfb5a15/provenance/artifact_checksums.json
+    sha256: 040715f54afbb144f1dcecc3e057ad64916d742061473b658903f6f03da05657
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T085324Z_32178e25_s000_f00_a01_2dfb5a15
+    path: runs/2026/10/r_20261001T085324Z_32178e25_s000_f00_a01_2dfb5a15/config.resolved.yaml
+    sha256: feb25864400b6174105cf15e1373d569d75b439e08b6421c3d6444bd2be11688
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T085435Z_c393af7c_s000_f00_a01_459ab1fb
+    path: runs/2026/10/r_20261001T085435Z_c393af7c_s000_f00_a01_459ab1fb/_SUCCESS
+    sha256: d0be7b8217c490df738ea40707866a008e336ed3057e0ec76831d6bdcadb8e6e
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T085435Z_c393af7c_s000_f00_a01_459ab1fb
+    path: runs/2026/10/r_20261001T085435Z_c393af7c_s000_f00_a01_459ab1fb/provenance/artifact_checksums.json
+    sha256: eaf36ae1606d8bee9511b647d011874dc9d00aa03d2a07e76f1135e32e852067
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T085435Z_c393af7c_s000_f00_a01_459ab1fb
+    path: runs/2026/10/r_20261001T085435Z_c393af7c_s000_f00_a01_459ab1fb/config.resolved.yaml
+    sha256: b2bf894d65df587c5dd5bae5c005d87fc3ca4c3d5c8db93a20cc1c558c36292d
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_583aa3f1_s000_f00_a01_5a4a79ea
+    path: runs/2026/10/r_20261001T092859Z_583aa3f1_s000_f00_a01_5a4a79ea/_SUCCESS
+    sha256: b0cdfc98d68e0da5c1de47e7564168e6cbae5b5871b264622a7be63c498e15fa
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_583aa3f1_s000_f00_a01_5a4a79ea
+    path: runs/2026/10/r_20261001T092859Z_583aa3f1_s000_f00_a01_5a4a79ea/provenance/artifact_checksums.json
+    sha256: 9a8e75230523284571da4d639d7d95d83b381d24e5e2fd7fbb835ea7937ca966
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_583aa3f1_s000_f00_a01_5a4a79ea
+    path: runs/2026/10/r_20261001T092859Z_583aa3f1_s000_f00_a01_5a4a79ea/config.resolved.yaml
+    sha256: 34e1abe3856a41c22ebdb97c7946269be8d49e11e79ddb305241b75db8c30e73
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980
+    path: runs/2026/10/r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980/_SUCCESS
+    sha256: 3dc2661ebc0d311cffad1d3adfdd11735f56492d33d8e468d36c63c52d01e035
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980
+    path: runs/2026/10/r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980/provenance/artifact_checksums.json
+    sha256: 518b9caeeaf30f60ce7690496321f34c189fdd09f1687e5292243abfe9e6e998
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980
+    path: runs/2026/10/r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980/config.resolved.yaml
+    sha256: 175ec0f6a979f0d2ec46d598c7df17f7810de64bdea014427205fc5b7171e956
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_6b2d1296_s000_f00_a01_f647ac07
+    path: runs/2026/10/r_20261001T092859Z_6b2d1296_s000_f00_a01_f647ac07/_SUCCESS
+    sha256: 7a6ec6bd576bc30995d76bc3921327a15d115e8d08cedc4c83a332501dd7e86d
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_6b2d1296_s000_f00_a01_f647ac07
+    path: runs/2026/10/r_20261001T092859Z_6b2d1296_s000_f00_a01_f647ac07/provenance/artifact_checksums.json
+    sha256: 84a1663569c761e750f6a281015c6683effdd1687a39f59a159b217258954712
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_6b2d1296_s000_f00_a01_f647ac07
+    path: runs/2026/10/r_20261001T092859Z_6b2d1296_s000_f00_a01_f647ac07/config.resolved.yaml
+    sha256: 040c1f5fa28338c4e7991864c5de201b84a047c113e9b0e5aa38562766a13b28
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_dac08cb3_s000_f00_a01_ed817509
+    path: runs/2026/10/r_20261001T092859Z_dac08cb3_s000_f00_a01_ed817509/_SUCCESS
+    sha256: eedcda9aa3b6bc4a909414ac109058cffb2e6f07e797ac0fa1d1fbcf8bbd16b8
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_dac08cb3_s000_f00_a01_ed817509
+    path: runs/2026/10/r_20261001T092859Z_dac08cb3_s000_f00_a01_ed817509/provenance/artifact_checksums.json
+    sha256: c9a1513c7d98637de5df6617e6b7b4bf2b91c342ed5042e9f7bb54fb3204e6b1
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T092859Z_dac08cb3_s000_f00_a01_ed817509
+    path: runs/2026/10/r_20261001T092859Z_dac08cb3_s000_f00_a01_ed817509/config.resolved.yaml
+    sha256: 8a3be4318b079418f998c586d612b7d47f7e1f853379f942b1fd0035f3f67384
+    verification_status: verified
+    description: screen completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T101202Z_15baf65c_s001_f00_a01_6427735a
+    path: runs/2026/10/r_20261001T101202Z_15baf65c_s001_f00_a01_6427735a/_SUCCESS
+    sha256: d4b9ad9fa899d92f35605fda71c9b106c63aae1b8fc8ce10bc6f4830d3738609
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T101202Z_15baf65c_s001_f00_a01_6427735a
+    path: runs/2026/10/r_20261001T101202Z_15baf65c_s001_f00_a01_6427735a/provenance/artifact_checksums.json
+    sha256: 8ccf2a11668fdefa1289dcf98a2f519af8cce235150ca598d8322c995c24b7ef
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T101202Z_15baf65c_s001_f00_a01_6427735a
+    path: runs/2026/10/r_20261001T101202Z_15baf65c_s001_f00_a01_6427735a/config.resolved.yaml
+    sha256: 5e350f9889126aee859b99e267c142f3191b8cfe89a22f06a08025984f596dc9
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T101202Z_a32d61e8_s001_f00_a01_8332ee26
+    path: runs/2026/10/r_20261001T101202Z_a32d61e8_s001_f00_a01_8332ee26/_SUCCESS
+    sha256: 3289470ceb4ea39205ba320640858b730a467cc25510388de339fbb0aa55ecdf
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T101202Z_a32d61e8_s001_f00_a01_8332ee26
+    path: runs/2026/10/r_20261001T101202Z_a32d61e8_s001_f00_a01_8332ee26/provenance/artifact_checksums.json
+    sha256: 3f415b5a957e6eb776d907c09b7f1dfd84b73a41a95fb93e94f6ccc7254a9ac5
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T101202Z_a32d61e8_s001_f00_a01_8332ee26
+    path: runs/2026/10/r_20261001T101202Z_a32d61e8_s001_f00_a01_8332ee26/config.resolved.yaml
+    sha256: 87b4c1240601ffb575bcdd9ac51ef7ebdec40021939ef8744c4bf7d544012c12
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T101202Z_f8197b29_s000_f00_a01_ed00c19e
+    path: runs/2026/10/r_20261001T101202Z_f8197b29_s000_f00_a01_ed00c19e/_SUCCESS
+    sha256: 02e791c51641f4e08e109bc32218011d001412ee785ea93fc638d0684bc432e8
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T101202Z_f8197b29_s000_f00_a01_ed00c19e
+    path: runs/2026/10/r_20261001T101202Z_f8197b29_s000_f00_a01_ed00c19e/provenance/artifact_checksums.json
+    sha256: 76fa91d9e64c3c8c71bfb48f6db3168b9753f4e0dd4696fc94de88590a58f422
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+  - kind: run_artifact
+    root: artifact
+    run_id: r_20261001T101202Z_f8197b29_s000_f00_a01_ed00c19e
+    path: runs/2026/10/r_20261001T101202Z_f8197b29_s000_f00_a01_ed00c19e/config.resolved.yaml
+    sha256: 9f6a0012f4ecbd662c5f922622d1d8b9d35160c5753d36adf4730c1836fb33e5
+    verification_status: verified
+    description: confirmation completed audit run; smoke is readiness evidence only
+files:
+- path: tables/confirmation.json
+  role: numeric_source
+  sha256: 1588beb08b327324ca02c92adbf2c5a24bdabd698d40edb93971ea89fe346c63
+  size_bytes: 4079
+  description: Four run-level endpoint means and independently recomputed paired-seed
+    criterion

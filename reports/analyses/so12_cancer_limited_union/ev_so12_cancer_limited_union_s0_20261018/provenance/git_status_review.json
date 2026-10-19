@@ -1,0 +1,19 @@
+{
+  "added_or_new_status_lines": [
+    "?? experiments/campaigns/cmp_20261018_so12_cancer_limited_union/",
+    "?? ops/supervisor/bagm-so12-cancer-limited-union.conf",
+    "?? ops/supervisor/bagm-so12-cancer-limited-union.sh",
+    "?? scripts/analysis/audit_so12_cancer_limited_union.py",
+    "?? scripts/analysis/promote_so12_cancer_limited_union_result.py",
+    "?? scripts/analysis/run_so12_cancer_limited_union.py",
+    "?? scripts/analysis/so12_cancer_limited_figures.py",
+    "?? scripts/analysis/so12_cancer_limited_metrics.py",
+    "?? scripts/analysis/so12_cancer_limited_report.py",
+    "?? tests/unit/spatial_benchmark/test_so12_cancer_limited_metrics.py",
+    "?? tests/unit/test_so12_cancer_limited_figures.py",
+    "?? tests/unit/test_so12_cancer_limited_publication.py"
+  ],
+  "existing_changes_preserved": true,
+  "passed": true,
+  "preexisting_status_lines_removed": []
+}

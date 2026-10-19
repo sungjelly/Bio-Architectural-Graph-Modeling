@@ -1,0 +1,75 @@
+{
+  "campaign_id": "cmp_20261018_so12_cancer_comparison",
+  "checkpoint_epoch": 194,
+  "classification": {
+    "lifecycle_stage": "exploratory_screen",
+    "scientific_variant": "train21_pca_scvi_test15_23",
+    "study_axis": "annotated_region_representation_comparison"
+  },
+  "clinical_sources": {
+    "Core_15.png": {
+      "sha256": "5fc5f50580bc0383a7e770122350a0361dcb23b4769f6571db0389c99743b215",
+      "size_bytes": 2062212
+    },
+    "Core_23.png": {
+      "sha256": "83f51dfcdd07426dc447a8a88594d716decf54505ad3f613fa198d2927e78e00",
+      "size_bytes": 2654949
+    }
+  },
+  "contract_sha256_at_start": "ee96836740fee37fdc7484cbf41b6dee06406d05f27a3517eb2635892b4950c3",
+  "dataset_id": "so12_paper_core_split",
+  "distance": "cosine",
+  "evaluation_id": "ev_so12_cancer_comparison_s0_20261018",
+  "exploratory": true,
+  "fit_policy": "same_21_training_cores_validation_only_scvi_stopping_test_frozen",
+  "knn": 30,
+  "leiden_iterations": -1,
+  "leiden_seeds": [
+    0,
+    1
+  ],
+  "methods": [
+    "h4",
+    "h3",
+    "h2",
+    "h1",
+    "h0",
+    "pca",
+    "scvi"
+  ],
+  "minimum_free_gib": 5,
+  "n_cells": 81607,
+  "pca": {
+    "components": 50,
+    "features": "frozen_train_Pearson",
+    "whiten": false
+  },
+  "primary_resolution": 1.0,
+  "primary_seed": 0,
+  "resolutions": [
+    0.25,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "schema": "so12_cancer_comparison_v1",
+  "scvi": {
+    "batch": "slide",
+    "batch_size": 1024,
+    "hidden": 128,
+    "latent": 50,
+    "layers": 2,
+    "likelihood": "nb",
+    "max_epochs": 100,
+    "patience": 15,
+    "seed": 0
+  },
+  "seed": 0,
+  "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+  "split_id": "so12_paper_21train_5val_2test_v1",
+  "symmetrization": "unweighted_undirected_union",
+  "test_cores": [
+    15,
+    23
+  ]
+}

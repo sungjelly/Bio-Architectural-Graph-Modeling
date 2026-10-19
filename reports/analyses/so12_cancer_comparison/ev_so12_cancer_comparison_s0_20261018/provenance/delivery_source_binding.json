@@ -1,0 +1,8 @@
+{
+  "scripts/analysis/run_so12_cancer_delivery.py": "42f9618ac8494dd92172689f4e7b6fc8d3ff22e3b9078664434ec382ef610e00",
+  "scripts/analysis/so12_cancer_core_mixing.py": "a524a1395b4531242517a6c4213c0e95bc34a4e31260cf416d233de2851c97a7",
+  "scripts/analysis/so12_cancer_figures.py": "717224f3c0800861a1db3a96efd8f32533023b651203b4fc8c0f0d5632dfc491",
+  "scripts/analysis/so12_cancer_metrics.py": "099d256bd6118c3117aa5f050e5b409c20ca499e3f8e8249283ade19e36f49b1",
+  "scripts/analysis/so12_cancer_registration.py": "65774f403e62852f5947abec7bc8ae2c7b0d45bc57f103d77fbb7091487029b3",
+  "scripts/analysis/so12_cancer_report.py": "c4a20a070243d5fb984ae7f87208246bed2eb57dd23701d142663a64234d395f"
+}

@@ -1,0 +1,986 @@
+{
+  "schema": "so2_prediction_pearson_v1",
+  "campaign_id": "cmp_20261015_so2_prediction_pearson",
+  "evaluation_id": "ev_so2_prediction_pearson_v1_r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+  "model_key": "local_s0",
+  "source_run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+  "source_status": "completed",
+  "checkpoint_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5/checkpoints/best.ckpt",
+  "checkpoint_sha256": "88abdfc6f259fd7c9da40607a863341fefad6e4863fce26fe1b56ae1967e3edc",
+  "checkpoint_role": "best",
+  "source_files": {
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/__init__.py": {
+      "sha256": "df9a09be4fe88d7ee97bcd89dc8e539f97235f5cf1b3ed02bb7f743896ec4f69",
+      "snapshot": "source/import_package/__init__.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/__main__.py": {
+      "sha256": "4fb7c7a267600993d61b84afbe8d5b368cd9bca2168ea7ace46fd23ab2c02c95",
+      "snapshot": "source/import_package/__main__.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/adjacency_ablation.py": {
+      "sha256": "f1e2d0aa76613dd5a71e6a94d79f12b691dd4541d1eef3843d153bb662457b67",
+      "snapshot": "source/import_package/adjacency_ablation.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/adjacent_normal_selection.py": {
+      "sha256": "44672cd283c5351658c3d35a302b7a4dc579cbf870ac21cbdb202636b66a5be0",
+      "snapshot": "source/import_package/adjacent_normal_selection.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/analysis.py": {
+      "sha256": "221671730d7c4cba8541b941ad6c4d9112d255279c605ffc0677c529a1c2b0f1",
+      "snapshot": "source/import_package/analysis.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/artifact_retention.py": {
+      "sha256": "d50eabf054e5c2251b3716a7bc32f3f37fb0c0dd26a1c8c3d0d9657b34f8ac2b",
+      "snapshot": "source/import_package/artifact_retention.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/artifacts.py": {
+      "sha256": "e1bf6b61665a46002cd47420209c313563602951dbcb7a2c55af31691b8240e6",
+      "snapshot": "source/import_package/artifacts.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/attention_niche_geometry.py": {
+      "sha256": "7a0e8f0805ef73b3aaf4c62f39b97065387fd95d0be283690954407245e6a835",
+      "snapshot": "source/import_package/attention_niche_geometry.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/attention_niche_pipeline.py": {
+      "sha256": "588eb059a2f54504944c7c07c421045bce8dc13e7df9daa7e4f8db36d25c2263",
+      "snapshot": "source/import_package/attention_niche_pipeline.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/attention_niche_visualization.py": {
+      "sha256": "d08e6ee4d18c0aab89a437baf3e1c1b40eb29bd986697179b8a6c93bd2d18d02",
+      "snapshot": "source/import_package/attention_niche_visualization.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/attention_routing_niches.py": {
+      "sha256": "d4966cf817c53ff12ed3070c518122f22dc291fe50f26ec172823721108851f2",
+      "snapshot": "source/import_package/attention_routing_niches.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/binary_expression.py": {
+      "sha256": "d05f09cee78714ee10b1145de3c377e2c882f4442a89c66bf42888cfadda8e31",
+      "snapshot": "source/import_package/binary_expression.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/cancer_pooled_full_core.py": {
+      "sha256": "b73f88e131e053270dbb792dbfa406e1b3049a90b18ec394bba66531322a38a4",
+      "snapshot": "source/import_package/cancer_pooled_full_core.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/cancer_relative_graphs.py": {
+      "sha256": "18dcaeefc293449649cf3261f6206a934afec10e1cfd0d264654ab917961f103",
+      "snapshot": "source/import_package/cancer_relative_graphs.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/categorical_sensitivity.py": {
+      "sha256": "8d351ec32ae5a0d21e9c8eb987a5e9ace3fbe5d228ccc01777fb375cade62fca",
+      "snapshot": "source/import_package/categorical_sensitivity.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/checkpoint_catalog.py": {
+      "sha256": "6c0777ceb2bc2f19a7781687aaf084d9ce609dd747bc8c650c1c7aa631132c1b",
+      "snapshot": "source/import_package/checkpoint_catalog.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/cli.py": {
+      "sha256": "05cca68e6908ce6d8f5c3cd2b2069a8ffa3625b4d05610ca8858ddff8956cc96",
+      "snapshot": "source/import_package/cli.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/configuration.py": {
+      "sha256": "0a96f27f1e01830c6037f659c8a05bbbf024c479274ebb3b526ef94bec7171e6",
+      "snapshot": "source/import_package/configuration.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/data.py": {
+      "sha256": "85f4ac46e89fbb5823d9d30c758aa8fd831d56a160fa6b9e15ace29a68f2fd74",
+      "snapshot": "source/import_package/data.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/dense_gat.py": {
+      "sha256": "346ecddbecb8abf3a4a55eb1e74ba20ddde84556d29c519e6f1ca66367570502",
+      "snapshot": "source/import_package/dense_gat.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/diagnostic_artifacts.py": {
+      "sha256": "38f247fc78eba21a6533538633c38882a9819310528f8f765053a5707a029847",
+      "snapshot": "source/import_package/diagnostic_artifacts.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/diagnostics.py": {
+      "sha256": "4d3614611252a00e4f37615f36ebfd7790fe6349ab2fae3ad6a7b5a2c2f02cb7",
+      "snapshot": "source/import_package/diagnostics.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/experiment.py": {
+      "sha256": "b2e5c4973d5ca2972193e4ea1266363200dd80150921a0287b2a8c5a6cd29a41",
+      "snapshot": "source/import_package/experiment.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/expression_tokens.py": {
+      "sha256": "7efad5bda953d20f92564e69d2756518510cf608934aea6b45d57cfff0d41d60",
+      "snapshot": "source/import_package/expression_tokens.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/fingerprints.py": {
+      "sha256": "361ecd492c46b705b8bbaf488c5d5f23167ced07b8353172a1d914ef6acf2df8",
+      "snapshot": "source/import_package/fingerprints.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/full_core.py": {
+      "sha256": "80e2a554f30e369a0067311d3fc01518661d15f0cbff5e3b5514ce192506c686",
+      "snapshot": "source/import_package/full_core.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/full_core_training.py": {
+      "sha256": "44cf751fc3170bc5720eacceb52b8803b78fd11fa1bb93862349fa2c41499e5f",
+      "snapshot": "source/import_package/full_core_training.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/full_panel_jacobian.py": {
+      "sha256": "79722cb6b4016a12b79160ea5830bac6927090245cc75b40ff2ccf8be447f16f",
+      "snapshot": "source/import_package/full_panel_jacobian.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/geometry_modulated_relative_qkv_graph_transformer.py": {
+      "sha256": "ce50d414890539c6fbb61bd7c6daf212bc42a1551978d2baf84139840a4fbaad",
+      "snapshot": "source/import_package/geometry_modulated_relative_qkv_graph_transformer.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/geometry_viz.py": {
+      "sha256": "9e202e30bf02342c64f34b6e5983e58072ebbd0d98665d939cf41b69d1f3c8cb",
+      "snapshot": "source/import_package/geometry_viz.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/gradient_direction_observability.py": {
+      "sha256": "3159589fa2b46beb329e691e54b4487c31664171fd053edd789fd920b9c73e14",
+      "snapshot": "source/import_package/gradient_direction_observability.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/graphs.py": {
+      "sha256": "18f918878e91155c40a2a068aa1ac2b354d2107a2b2a7bb140dd144fb597ee3b",
+      "snapshot": "source/import_package/graphs.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/hurdle_continuous.py": {
+      "sha256": "a3304159c25f8577fb16ca8af19a228ab3537bf4ca8a9d0747c3dd06659c9efc",
+      "snapshot": "source/import_package/hurdle_continuous.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/hurdle_negative_binomial.py": {
+      "sha256": "1bf51e2654153ee13ab071cdb920c7f097f73bbbc39eb37bac22ee55bfec60a1",
+      "snapshot": "source/import_package/hurdle_negative_binomial.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/hybrid_count.py": {
+      "sha256": "0b54d2569bd247f2186cc179a4b56eaf6a9b178db22130c013b711ae319749c2",
+      "snapshot": "source/import_package/hybrid_count.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/hybrid_count_metrics.py": {
+      "sha256": "39c47202d4747fb7b454cd7c43869b0346a8590153d5d1544e56321edeb3ea8f",
+      "snapshot": "source/import_package/hybrid_count_metrics.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/hybrid_count_training.py": {
+      "sha256": "045594688e851c01337286d7a784fa22f1dad5b345cd21545cf90bbe437a60bf",
+      "snapshot": "source/import_package/hybrid_count_training.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/identifiers.py": {
+      "sha256": "224e39656611414135fabd2da60e977c87fa892322bedeec6c79b995fb7367b6",
+      "snapshot": "source/import_package/identifiers.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/interaction_summary.py": {
+      "sha256": "77682ea14cd8af4a1646e6aa6f7323a4bbc260dcdf1eb7f92f1453269c835ec8",
+      "snapshot": "source/import_package/interaction_summary.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/jacobian_pair_analysis.py": {
+      "sha256": "ec7c72e45a88613e7061aa3c2231a483f7c1208463e849964fc4e0740521b760",
+      "snapshot": "source/import_package/jacobian_pair_analysis.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/local_gene_data.py": {
+      "sha256": "6fdc17b80f2f44a1ace34b47859207c445e7cf0a9fdbbab188d8e24b3c28222c",
+      "snapshot": "source/import_package/local_gene_data.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/local_gene_metrics.py": {
+      "sha256": "25685edb262543d1b24c6047c8f989077c667ac0d6b0066905711591c24b2271",
+      "snapshot": "source/import_package/local_gene_metrics.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/local_gene_residual.py": {
+      "sha256": "ff2016b76cc62b56c7ff6df99f1af5b43d7b723584171dd05ab0402a091d9361",
+      "snapshot": "source/import_package/local_gene_residual.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/local_gene_stopping.py": {
+      "sha256": "d30ae0b093b51e9715a18d9efaf230049f76418f5fcf2de477cc8bad8e2f3091",
+      "snapshot": "source/import_package/local_gene_stopping.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/local_source_permutation.py": {
+      "sha256": "72f24682087663377c588183bfbe11de4315fd42248d8230c5e29ebe08751ab2",
+      "snapshot": "source/import_package/local_source_permutation.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/masking.py": {
+      "sha256": "a86d7f16397a84da6fe3db71bfed0337e94d15c57169d8cae6f5ce8cdedb52da",
+      "snapshot": "source/import_package/masking.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/metrics.py": {
+      "sha256": "fdc884e7e75d9c3a86f61be8d4d3259345ea4d76eec2601ed3829de3f919e6ae",
+      "snapshot": "source/import_package/metrics.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/models.py": {
+      "sha256": "60f70bf9e91e7ba72289e539cfa607ae05901e5785f361de77b77c916869f969",
+      "snapshot": "source/import_package/models.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/multiscale_graphs.py": {
+      "sha256": "5fb2a7a07d69684ac9fb97049da768d95b54146319667efb3fd98735123acdff",
+      "snapshot": "source/import_package/multiscale_graphs.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/multiscale_hurdle_contract.py": {
+      "sha256": "9864fc627fb802a2f8284a305d3a92eae5cc094065d31a1565b3d1082c9a12c1",
+      "snapshot": "source/import_package/multiscale_hurdle_contract.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/multiscale_hurdle_training.py": {
+      "sha256": "4fed3867c5e15948db2e03aaecb8e5c37d51c86f1cef6d51407a76b9afe1798c",
+      "snapshot": "source/import_package/multiscale_hurdle_training.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/multiscale_hybrid.py": {
+      "sha256": "b31a0d4011587dbdd126ea45e6c41ca1a001e16cb1b525e1ea58297acc4f2900",
+      "snapshot": "source/import_package/multiscale_hybrid.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/multiscale_synthetic.py": {
+      "sha256": "abf79f53b7e1cb065cf4e4a580edc4b467e1fdb5afb0fbeafa6b661ceb1276f7",
+      "snapshot": "source/import_package/multiscale_synthetic.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/myjju_genemae.py": {
+      "sha256": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+      "snapshot": "source/import_package/myjju_genemae.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/myjju_genemae_comparison.py": {
+      "sha256": "cd0c0a060b3de3c8fe2314ec502927cefb1e295c4868bf70ca20d72d3b6fa65d",
+      "snapshot": "source/import_package/myjju_genemae_comparison.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/myjju_genemae_provider.py": {
+      "sha256": "13277e85112a8f9b1e51399aba844977415af5d87b3985598ef43bf66a45416a",
+      "snapshot": "source/import_package/myjju_genemae_provider.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/myjju_gradient_audit.py": {
+      "sha256": "3e429f731e0dc89fdacea2c80d20ebc5acbb7920c3a68fe9948cabcdda570d3f",
+      "snapshot": "source/import_package/myjju_gradient_audit.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/myjju_gradient_reduction.py": {
+      "sha256": "3753196ffcaebc46e0510674ae955aa9636a504b02cfcf7ed0123f02819125ee",
+      "snapshot": "source/import_package/myjju_gradient_reduction.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/negative_binomial.py": {
+      "sha256": "9facdc00cc1bb402fe10ac6bd04fcbc1bb662b6cf2896f8162ba7e7b27f09905",
+      "snapshot": "source/import_package/negative_binomial.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/paired_inference.py": {
+      "sha256": "682392629de001a395b4b1362425d620649236b2f0803ea969e101e1c622170f",
+      "snapshot": "source/import_package/paired_inference.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/paths.py": {
+      "sha256": "46dd8a02acdc8e5c0169f7ff72180c17b55f7fd64f155d27209717c89e9a09f7",
+      "snapshot": "source/import_package/paths.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/pooled_campaign_gates.py": {
+      "sha256": "339ce08c39791ed49f7f48e6f1f80085f71c5f0a3c5fb7377aec5b2b1030477e",
+      "snapshot": "source/import_package/pooled_campaign_gates.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/pooled_ensemble.py": {
+      "sha256": "1040fe8937effb13ef389e4715d0f51da0d666d69aea1d6f34ce27c02f866b68",
+      "snapshot": "source/import_package/pooled_ensemble.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/pooled_full_core.py": {
+      "sha256": "adcb5b5884a23aa154d5ca663ecc7b38e9ff14a5affcd301ffbd92ae02bc4bc9",
+      "snapshot": "source/import_package/pooled_full_core.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/pooled_hybrid_count_training.py": {
+      "sha256": "32bbe462d3d737a8af9e4fc870cf20254269ba080e8c7e1e45b4425071c46c64",
+      "snapshot": "source/import_package/pooled_hybrid_count_training.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/pooled_references.py": {
+      "sha256": "80c3739cae8ddd458f16bf78a0a642e77bd9c6c0b12de0218f7f2f897984424f",
+      "snapshot": "source/import_package/pooled_references.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/pooled_relative_qkv_training.py": {
+      "sha256": "fc4c58f9ee4fc21529e089094cc2dbfd82e3e6c1c04e58bf9b901c93252eba7b",
+      "snapshot": "source/import_package/pooled_relative_qkv_training.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/pooled_relative_qkv_training_v2.py": {
+      "sha256": "ad575192b8c9ca756514d4085d9af3cdd5dd53111e7b0d25b78122a42dddfdfc",
+      "snapshot": "source/import_package/pooled_relative_qkv_training_v2.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/qkv_graph_transformer.py": {
+      "sha256": "97b896263df7cb191681b1b993e14b70b52caf2e52d5af0f62861c0597e6b305",
+      "snapshot": "source/import_package/qkv_graph_transformer.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/qkv_self_control.py": {
+      "sha256": "0522c55e1364ec0959409cedc26a4eeea8360cef98ab2ce0ac2057c346b93ea1",
+      "snapshot": "source/import_package/qkv_self_control.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/queueing.py": {
+      "sha256": "e6b4f067342eb62f89779caad503dc5a36f2daba469bb6602db8f6581a4f5718",
+      "snapshot": "source/import_package/queueing.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/registry.py": {
+      "sha256": "982ddb4da513588d8598b586802bb40003722506f838bcc8f702a239cc40443b",
+      "snapshot": "source/import_package/registry.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/relative_geometry.py": {
+      "sha256": "4c40003056eb1c5dcd41494658321cfdca3addea46b11964c7c5dd4d22b9a798",
+      "snapshot": "source/import_package/relative_geometry.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/relative_qkv_campaign_watchdog.py": {
+      "sha256": "5e23889c8687d171f136a88d59419fe16ea928c35f800fb6756576b0aab8ba58",
+      "snapshot": "source/import_package/relative_qkv_campaign_watchdog.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/relative_qkv_checkpoint_verification.py": {
+      "sha256": "03a1a36aedda5ff9892abe9e3db64e571b140d5f978fbb3570b0622f69f4c127",
+      "snapshot": "source/import_package/relative_qkv_checkpoint_verification.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/relative_qkv_contextual_resolution_sweep.py": {
+      "sha256": "f4de0f29c3f2230079145000340d89ed48bb76444c84b4aecc0881a91d98d2c3",
+      "snapshot": "source/import_package/relative_qkv_contextual_resolution_sweep.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/relative_qkv_embedding_clustering.py": {
+      "sha256": "ce91615830cbb7ae96aecb7adfb21d33e0f6639f08e239e7ede788955f434c13",
+      "snapshot": "source/import_package/relative_qkv_embedding_clustering.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/relative_qkv_four_seed_stability.py": {
+      "sha256": "0f7e4f79a884b6f02c010c363fb6f93a2789c90a65f53f247c9d2773e961e2a4",
+      "snapshot": "source/import_package/relative_qkv_four_seed_stability.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/relative_qkv_gradient_requests.py": {
+      "sha256": "6c518d4284ecd564b1395adc9f6baf545b36aedd6023ec8088f34e3d1a32796a",
+      "snapshot": "source/import_package/relative_qkv_gradient_requests.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/relative_qkv_graph_transformer.py": {
+      "sha256": "477af34745c95999994956f89a4e1e5f61fa4e5e75543d5ae4d356503b4b07a3",
+      "snapshot": "source/import_package/relative_qkv_graph_transformer.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/relative_qkv_post_training.py": {
+      "sha256": "273fc377e28844a7408f2bf257a1d0d8a7bdfb8f27f4e13b06807e47662147ca",
+      "snapshot": "source/import_package/relative_qkv_post_training.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/relative_qkv_stability.py": {
+      "sha256": "ecb6751eec050cb8d97ba1735cf8e73c38ddfa7e4d3bef492060cbc6058ec10e",
+      "snapshot": "source/import_package/relative_qkv_stability.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/result_catalog.py": {
+      "sha256": "8e9094b4b9f27b2e306f18df8ad7ca903e89ce4ec2c0cb6987c6cf828f65912f",
+      "snapshot": "source/import_package/result_catalog.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/run_archive.py": {
+      "sha256": "1eb99a69031df56f587602b537c533cbf303bf6d955aa0303c6fc1226230e99b",
+      "snapshot": "source/import_package/run_archive.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/self_hurdle.py": {
+      "sha256": "33f6c51906c443912c4847fc3ec6d8828c79c1f473a715f9d2db0ce8e4700ed6",
+      "snapshot": "source/import_package/self_hurdle.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/signed_program_synthetic.py": {
+      "sha256": "642bf9cb1ec15e3c93344f4084cee5c7d656869dc9e7f5fb35e622c768b001ca",
+      "snapshot": "source/import_package/signed_program_synthetic.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so1_hl_direct_interactive.py": {
+      "sha256": "d54bbb0db969789439f74f21ea0f9d3fa8c25a1268f35466a1a6335929d5b733",
+      "snapshot": "source/import_package/so1_hl_direct_interactive.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so1_model_embedding_clustering.py": {
+      "sha256": "f38a78fc7f57ab207c0c69c1dc0e528e6aad5c7a2a7514c49fffa1e02f1f9155",
+      "snapshot": "source/import_package/so1_model_embedding_clustering.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so1_pooled_full_core.py": {
+      "sha256": "7238e0b8d51769a21e93c6988a069bce883e7d9f0e88ee621b89115a1af41acf",
+      "snapshot": "source/import_package/so1_pooled_full_core.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so1_raw_expression_clustering.py": {
+      "sha256": "094cd12cc6a9ed99f7c5534acf09d45b746528285c982fa6ab6e267859ec1595",
+      "snapshot": "source/import_package/so1_raw_expression_clustering.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so1_raw_expression_interactive.py": {
+      "sha256": "58c1fc42c62011a92ff96eccb14d3b500d9c77baedab14d74968a9b668e9bf0d",
+      "snapshot": "source/import_package/so1_raw_expression_interactive.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so1_relative_graphs.py": {
+      "sha256": "adb2d5910b9abe9693d859753c29ebf946b1b62ebd94cb22804d210e937cba4e",
+      "snapshot": "source/import_package/so1_relative_graphs.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so1_training_observability.py": {
+      "sha256": "493506a7b47045df0423c2d7048fe0d84e0a1ce53a72b7f04aa7ef08756ac74e",
+      "snapshot": "source/import_package/so1_training_observability.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_bce_optimization_audit.py": {
+      "sha256": "1b72c996bf9d1c5cbcbb9eff34bcac7f510b0cbf6f6bf716a3012c7f3b98735a",
+      "snapshot": "source/import_package/so2_bce_optimization_audit.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_binary_target_minibatch.py": {
+      "sha256": "9eba6725c57441d97cb808e9a4cbb3dbbe3c06e046687da2067976348775ec7a",
+      "snapshot": "source/import_package/so2_binary_target_minibatch.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_diagnostic_baselines.py": {
+      "sha256": "84d43084f96cd6b5052161912277ab5bdb6bead2cd24ffaca2912af3bd44cc86",
+      "snapshot": "source/import_package/so2_diagnostic_baselines.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_geometry_hl_figures.py": {
+      "sha256": "f373445ec242d72d77a849ac03e44818a8878764ec2ad27023d2d3de3caf4e61",
+      "snapshot": "source/import_package/so2_geometry_hl_figures.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_hidden_layer_progression.py": {
+      "sha256": "63b6feb631b1222ceb2328563e3870bcb788adb80bfabb84bc9301152775caa0",
+      "snapshot": "source/import_package/so2_hidden_layer_progression.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_hidden_layer_progression_extraction.py": {
+      "sha256": "efb21db2f348d506b6777480b094c77830c9b97d3d2c100c6d081da24466b4c1",
+      "snapshot": "source/import_package/so2_hidden_layer_progression_extraction.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_hidden_layer_progression_figures.py": {
+      "sha256": "8c06ca997d401a7520053cfa2d72257cdcaa7191e7938b286ef9c9bb039680cf",
+      "snapshot": "source/import_package/so2_hidden_layer_progression_figures.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_hl_clustering.py": {
+      "sha256": "4020c1f5d82e34b4e56dc5317c36cdbc659fd498762a684b14d6082297d7a9b9",
+      "snapshot": "source/import_package/so2_hl_clustering.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_hl_direct_clustering.py": {
+      "sha256": "96621f251e642c5d4138694d6cc9c0cf6c31ecacda7dec6aabee393012b092cd",
+      "snapshot": "source/import_package/so2_hl_direct_clustering.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_hl_direct_interactive.py": {
+      "sha256": "91555402c9c0c83169120e2766d7c8fccc5b8e92ffe9292f4965527f4dd73a02",
+      "snapshot": "source/import_package/so2_hl_direct_interactive.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_hl_interactive.py": {
+      "sha256": "d8325f57845fe64be5bd46b5c3c37bb397ac28e3adbc932fc577b51d3c3ef964",
+      "snapshot": "source/import_package/so2_hl_interactive.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_hl_umap.py": {
+      "sha256": "d5d616b1d715ba8570847f8991b354f5f4f54728ad3c64b9cc8db336fa56b20a",
+      "snapshot": "source/import_package/so2_hl_umap.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_hurdle_runtime_trial.py": {
+      "sha256": "39a638ab5a44b55f19dc6da7e72aee8a8f70e6541836f5de32289d27a8a8ead6",
+      "snapshot": "source/import_package/so2_hurdle_runtime_trial.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_nb_data.py": {
+      "sha256": "bbd2e18e423cac49a4021db11b7906ac36dc14b6e0acad9a06d70ee430bd21ac",
+      "snapshot": "source/import_package/so2_nb_data.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_nb_training.py": {
+      "sha256": "5a68e992f799124acba1a6f4a8dced08687ba022476fd552b79fef194dffdabc",
+      "snapshot": "source/import_package/so2_nb_training.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_nonzero_metrics.py": {
+      "sha256": "305ca210cfd51dda7f86468ebdae2872254fa66abc3c0ca64de5d7e99d23d5b1",
+      "snapshot": "source/import_package/so2_nonzero_metrics.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_pooled_full_core.py": {
+      "sha256": "52c8a2d8cbeec8eedec46e7badfa8d305e764722627aff1546579e7f073d47e8",
+      "snapshot": "source/import_package/so2_pooled_full_core.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_raw_expression_clustering.py": {
+      "sha256": "6e1bfe373154ea199bae21b3916c8e5a6ee9156a78e553798d2f7c892aa0bc7f",
+      "snapshot": "source/import_package/so2_raw_expression_clustering.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_raw_expression_interactive.py": {
+      "sha256": "49d0c9b22fa2c21c521fca00505ae8627ce823d6b628602829aaff4f6211d315",
+      "snapshot": "source/import_package/so2_raw_expression_interactive.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_recurrent_hl_clustering.py": {
+      "sha256": "d847a163580e4accafe8c47c468781cd19d916ba7362e54349c479dd924ae1a4",
+      "snapshot": "source/import_package/so2_recurrent_hl_clustering.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_relative_graphs.py": {
+      "sha256": "618c7c57e0370c2ef85e93d1b1c1164d1bb58d37b04b8ef68cc6b31752a4da77",
+      "snapshot": "source/import_package/so2_relative_graphs.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_training_observability.py": {
+      "sha256": "fb2ba9be0b904c145d284d8fbf983251239d8d5f38aae3f3666770c666ea4fd9",
+      "snapshot": "source/import_package/so2_training_observability.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/so2_training_plots.py": {
+      "sha256": "2c3a151c23d5d5214300fdd0665ee43aea9ec026a70fc79051827fca376404c7",
+      "snapshot": "source/import_package/so2_training_plots.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/spatial_field.py": {
+      "sha256": "9566680f4123d01c70e1477e7a886e4adbf959baf9f431ababc28926721efb6c",
+      "snapshot": "source/import_package/spatial_field.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/splits.py": {
+      "sha256": "a4dfe8cfa712261b72ca53cf11b4570528f50456a0f21dfb36626a3177dbc696",
+      "snapshot": "source/import_package/splits.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/standards_lock.py": {
+      "sha256": "55a26d32c2ca84c37dec6e70a42b2aa06c0ed4dedb9b6ef407291972f24db594",
+      "snapshot": "source/import_package/standards_lock.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/target_cell_masking.py": {
+      "sha256": "81d090223dd6e9a08390202e527f1abee4f18a7db91494ed1407f981a652be02",
+      "snapshot": "source/import_package/target_cell_masking.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/target_cell_training.py": {
+      "sha256": "6877cc12d6ed0582c428bad81b321740e6086df787f325735edccf49a679cf88",
+      "snapshot": "source/import_package/target_cell_training.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/target_isolated_negative_binomial.py": {
+      "sha256": "262a1b018acf646e9d461eb5b4d88eb5cb50a864940a0656c2a70fed043b6941",
+      "snapshot": "source/import_package/target_isolated_negative_binomial.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/target_minibatch.py": {
+      "sha256": "ffb8a89ada057f821ffcd553a8525e27c86419f53543b7e97b40f45bdd3bdb1f",
+      "snapshot": "source/import_package/target_minibatch.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/tokenized_g2.py": {
+      "sha256": "dcefe3f87f627a869669517217a75455f60c8b43c6c851e4b909190912882c73",
+      "snapshot": "source/import_package/tokenized_g2.py"
+    },
+    "/workspace/BAGM-relative-qkv-analysis/src/spatial_benchmark/training.py": {
+      "sha256": "c781e145a434f633c488997cf1d875a3ef933e02c495d1e0bf4af8ecf3a87bfc",
+      "snapshot": "source/import_package/training.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/__init__.py": {
+      "sha256": "df9a09be4fe88d7ee97bcd89dc8e539f97235f5cf1b3ed02bb7f743896ec4f69",
+      "snapshot": "source/main_package/__init__.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/__main__.py": {
+      "sha256": "4fb7c7a267600993d61b84afbe8d5b368cd9bca2168ea7ace46fd23ab2c02c95",
+      "snapshot": "source/main_package/__main__.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/adjacency_ablation.py": {
+      "sha256": "f1e2d0aa76613dd5a71e6a94d79f12b691dd4541d1eef3843d153bb662457b67",
+      "snapshot": "source/main_package/adjacency_ablation.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/adjacent_normal_selection.py": {
+      "sha256": "44672cd283c5351658c3d35a302b7a4dc579cbf870ac21cbdb202636b66a5be0",
+      "snapshot": "source/main_package/adjacent_normal_selection.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/analysis.py": {
+      "sha256": "221671730d7c4cba8541b941ad6c4d9112d255279c605ffc0677c529a1c2b0f1",
+      "snapshot": "source/main_package/analysis.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/artifact_retention.py": {
+      "sha256": "d50eabf054e5c2251b3716a7bc32f3f37fb0c0dd26a1c8c3d0d9657b34f8ac2b",
+      "snapshot": "source/main_package/artifact_retention.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/artifacts.py": {
+      "sha256": "e1bf6b61665a46002cd47420209c313563602951dbcb7a2c55af31691b8240e6",
+      "snapshot": "source/main_package/artifacts.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/attention_niche_geometry.py": {
+      "sha256": "7a0e8f0805ef73b3aaf4c62f39b97065387fd95d0be283690954407245e6a835",
+      "snapshot": "source/main_package/attention_niche_geometry.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/attention_niche_pipeline.py": {
+      "sha256": "588eb059a2f54504944c7c07c421045bce8dc13e7df9daa7e4f8db36d25c2263",
+      "snapshot": "source/main_package/attention_niche_pipeline.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/attention_niche_visualization.py": {
+      "sha256": "d08e6ee4d18c0aab89a437baf3e1c1b40eb29bd986697179b8a6c93bd2d18d02",
+      "snapshot": "source/main_package/attention_niche_visualization.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/attention_routing_niches.py": {
+      "sha256": "d4966cf817c53ff12ed3070c518122f22dc291fe50f26ec172823721108851f2",
+      "snapshot": "source/main_package/attention_routing_niches.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/cancer_pooled_full_core.py": {
+      "sha256": "b73f88e131e053270dbb792dbfa406e1b3049a90b18ec394bba66531322a38a4",
+      "snapshot": "source/main_package/cancer_pooled_full_core.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/cancer_relative_graphs.py": {
+      "sha256": "18dcaeefc293449649cf3261f6206a934afec10e1cfd0d264654ab917961f103",
+      "snapshot": "source/main_package/cancer_relative_graphs.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/categorical_sensitivity.py": {
+      "sha256": "8d351ec32ae5a0d21e9c8eb987a5e9ace3fbe5d228ccc01777fb375cade62fca",
+      "snapshot": "source/main_package/categorical_sensitivity.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/checkpoint_catalog.py": {
+      "sha256": "c7828e1706271cd1e0efb6487bed0310f15a15f705b0a5f1959950bb9a6159af",
+      "snapshot": "source/main_package/checkpoint_catalog.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/cli.py": {
+      "sha256": "05cca68e6908ce6d8f5c3cd2b2069a8ffa3625b4d05610ca8858ddff8956cc96",
+      "snapshot": "source/main_package/cli.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/configuration.py": {
+      "sha256": "ec4fa4f54a580e1621086084e158654c8a261bdc9a920225928ba46ea48de10f",
+      "snapshot": "source/main_package/configuration.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/data.py": {
+      "sha256": "85f4ac46e89fbb5823d9d30c758aa8fd831d56a160fa6b9e15ace29a68f2fd74",
+      "snapshot": "source/main_package/data.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/dense_gat.py": {
+      "sha256": "346ecddbecb8abf3a4a55eb1e74ba20ddde84556d29c519e6f1ca66367570502",
+      "snapshot": "source/main_package/dense_gat.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/diagnostic_artifacts.py": {
+      "sha256": "38f247fc78eba21a6533538633c38882a9819310528f8f765053a5707a029847",
+      "snapshot": "source/main_package/diagnostic_artifacts.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/diagnostics.py": {
+      "sha256": "4d3614611252a00e4f37615f36ebfd7790fe6349ab2fae3ad6a7b5a2c2f02cb7",
+      "snapshot": "source/main_package/diagnostics.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/experiment.py": {
+      "sha256": "b2e5c4973d5ca2972193e4ea1266363200dd80150921a0287b2a8c5a6cd29a41",
+      "snapshot": "source/main_package/experiment.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/expression_tokens.py": {
+      "sha256": "7efad5bda953d20f92564e69d2756518510cf608934aea6b45d57cfff0d41d60",
+      "snapshot": "source/main_package/expression_tokens.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/fingerprints.py": {
+      "sha256": "361ecd492c46b705b8bbaf488c5d5f23167ced07b8353172a1d914ef6acf2df8",
+      "snapshot": "source/main_package/fingerprints.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/full_core.py": {
+      "sha256": "80e2a554f30e369a0067311d3fc01518661d15f0cbff5e3b5514ce192506c686",
+      "snapshot": "source/main_package/full_core.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/full_core_training.py": {
+      "sha256": "44cf751fc3170bc5720eacceb52b8803b78fd11fa1bb93862349fa2c41499e5f",
+      "snapshot": "source/main_package/full_core_training.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/full_panel_jacobian.py": {
+      "sha256": "79722cb6b4016a12b79160ea5830bac6927090245cc75b40ff2ccf8be447f16f",
+      "snapshot": "source/main_package/full_panel_jacobian.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/geometry_modulated_relative_qkv_graph_transformer.py": {
+      "sha256": "ce50d414890539c6fbb61bd7c6daf212bc42a1551978d2baf84139840a4fbaad",
+      "snapshot": "source/main_package/geometry_modulated_relative_qkv_graph_transformer.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/geometry_viz.py": {
+      "sha256": "9e202e30bf02342c64f34b6e5983e58072ebbd0d98665d939cf41b69d1f3c8cb",
+      "snapshot": "source/main_package/geometry_viz.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/graphs.py": {
+      "sha256": "18f918878e91155c40a2a068aa1ac2b354d2107a2b2a7bb140dd144fb597ee3b",
+      "snapshot": "source/main_package/graphs.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/hurdle_continuous.py": {
+      "sha256": "a3304159c25f8577fb16ca8af19a228ab3537bf4ca8a9d0747c3dd06659c9efc",
+      "snapshot": "source/main_package/hurdle_continuous.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/hybrid_count.py": {
+      "sha256": "0b54d2569bd247f2186cc179a4b56eaf6a9b178db22130c013b711ae319749c2",
+      "snapshot": "source/main_package/hybrid_count.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/hybrid_count_metrics.py": {
+      "sha256": "39c47202d4747fb7b454cd7c43869b0346a8590153d5d1544e56321edeb3ea8f",
+      "snapshot": "source/main_package/hybrid_count_metrics.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/hybrid_count_training.py": {
+      "sha256": "045594688e851c01337286d7a784fa22f1dad5b345cd21545cf90bbe437a60bf",
+      "snapshot": "source/main_package/hybrid_count_training.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/identifiers.py": {
+      "sha256": "224e39656611414135fabd2da60e977c87fa892322bedeec6c79b995fb7367b6",
+      "snapshot": "source/main_package/identifiers.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/interaction_summary.py": {
+      "sha256": "77682ea14cd8af4a1646e6aa6f7323a4bbc260dcdf1eb7f92f1453269c835ec8",
+      "snapshot": "source/main_package/interaction_summary.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/jacobian_pair_analysis.py": {
+      "sha256": "ec7c72e45a88613e7061aa3c2231a483f7c1208463e849964fc4e0740521b760",
+      "snapshot": "source/main_package/jacobian_pair_analysis.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/local_source_permutation.py": {
+      "sha256": "72f24682087663377c588183bfbe11de4315fd42248d8230c5e29ebe08751ab2",
+      "snapshot": "source/main_package/local_source_permutation.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/masking.py": {
+      "sha256": "a86d7f16397a84da6fe3db71bfed0337e94d15c57169d8cae6f5ce8cdedb52da",
+      "snapshot": "source/main_package/masking.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/metrics.py": {
+      "sha256": "fdc884e7e75d9c3a86f61be8d4d3259345ea4d76eec2601ed3829de3f919e6ae",
+      "snapshot": "source/main_package/metrics.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/models.py": {
+      "sha256": "60f70bf9e91e7ba72289e539cfa607ae05901e5785f361de77b77c916869f969",
+      "snapshot": "source/main_package/models.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/multiscale_graphs.py": {
+      "sha256": "5fb2a7a07d69684ac9fb97049da768d95b54146319667efb3fd98735123acdff",
+      "snapshot": "source/main_package/multiscale_graphs.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/multiscale_hurdle_contract.py": {
+      "sha256": "9864fc627fb802a2f8284a305d3a92eae5cc094065d31a1565b3d1082c9a12c1",
+      "snapshot": "source/main_package/multiscale_hurdle_contract.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/multiscale_hurdle_training.py": {
+      "sha256": "4fed3867c5e15948db2e03aaecb8e5c37d51c86f1cef6d51407a76b9afe1798c",
+      "snapshot": "source/main_package/multiscale_hurdle_training.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/multiscale_hybrid.py": {
+      "sha256": "b31a0d4011587dbdd126ea45e6c41ca1a001e16cb1b525e1ea58297acc4f2900",
+      "snapshot": "source/main_package/multiscale_hybrid.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/multiscale_synthetic.py": {
+      "sha256": "abf79f53b7e1cb065cf4e4a580edc4b467e1fdb5afb0fbeafa6b661ceb1276f7",
+      "snapshot": "source/main_package/multiscale_synthetic.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/myjju_genemae.py": {
+      "sha256": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+      "snapshot": "source/main_package/myjju_genemae.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/myjju_genemae_comparison.py": {
+      "sha256": "cd0c0a060b3de3c8fe2314ec502927cefb1e295c4868bf70ca20d72d3b6fa65d",
+      "snapshot": "source/main_package/myjju_genemae_comparison.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/myjju_genemae_provider.py": {
+      "sha256": "13277e85112a8f9b1e51399aba844977415af5d87b3985598ef43bf66a45416a",
+      "snapshot": "source/main_package/myjju_genemae_provider.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/myjju_gradient_audit.py": {
+      "sha256": "3e429f731e0dc89fdacea2c80d20ebc5acbb7920c3a68fe9948cabcdda570d3f",
+      "snapshot": "source/main_package/myjju_gradient_audit.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/myjju_gradient_reduction.py": {
+      "sha256": "3753196ffcaebc46e0510674ae955aa9636a504b02cfcf7ed0123f02819125ee",
+      "snapshot": "source/main_package/myjju_gradient_reduction.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/paired_inference.py": {
+      "sha256": "682392629de001a395b4b1362425d620649236b2f0803ea969e101e1c622170f",
+      "snapshot": "source/main_package/paired_inference.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/paths.py": {
+      "sha256": "46dd8a02acdc8e5c0169f7ff72180c17b55f7fd64f155d27209717c89e9a09f7",
+      "snapshot": "source/main_package/paths.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/pooled_campaign_gates.py": {
+      "sha256": "339ce08c39791ed49f7f48e6f1f80085f71c5f0a3c5fb7377aec5b2b1030477e",
+      "snapshot": "source/main_package/pooled_campaign_gates.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/pooled_ensemble.py": {
+      "sha256": "1040fe8937effb13ef389e4715d0f51da0d666d69aea1d6f34ce27c02f866b68",
+      "snapshot": "source/main_package/pooled_ensemble.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/pooled_full_core.py": {
+      "sha256": "adcb5b5884a23aa154d5ca663ecc7b38e9ff14a5affcd301ffbd92ae02bc4bc9",
+      "snapshot": "source/main_package/pooled_full_core.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/pooled_hybrid_count_training.py": {
+      "sha256": "32bbe462d3d737a8af9e4fc870cf20254269ba080e8c7e1e45b4425071c46c64",
+      "snapshot": "source/main_package/pooled_hybrid_count_training.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/pooled_references.py": {
+      "sha256": "80c3739cae8ddd458f16bf78a0a642e77bd9c6c0b12de0218f7f2f897984424f",
+      "snapshot": "source/main_package/pooled_references.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/pooled_relative_qkv_training.py": {
+      "sha256": "fc4c58f9ee4fc21529e089094cc2dbfd82e3e6c1c04e58bf9b901c93252eba7b",
+      "snapshot": "source/main_package/pooled_relative_qkv_training.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/pooled_relative_qkv_training_v2.py": {
+      "sha256": "0eb75849b42aa48d0727b5fea2d3f1e381767720c0d251cdbe4d5dd0b0c7fc3b",
+      "snapshot": "source/main_package/pooled_relative_qkv_training_v2.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/qkv_graph_transformer.py": {
+      "sha256": "97b896263df7cb191681b1b993e14b70b52caf2e52d5af0f62861c0597e6b305",
+      "snapshot": "source/main_package/qkv_graph_transformer.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/qkv_self_control.py": {
+      "sha256": "0522c55e1364ec0959409cedc26a4eeea8360cef98ab2ce0ac2057c346b93ea1",
+      "snapshot": "source/main_package/qkv_self_control.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/queueing.py": {
+      "sha256": "1e0a7a98f43f06b34101b3b2774bd76539d69ee830b19495989394c34a1f3a07",
+      "snapshot": "source/main_package/queueing.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/registry.py": {
+      "sha256": "1a88950fe6a0b8612d72d5016332859230e0f27800bd3774828109135cea5a2b",
+      "snapshot": "source/main_package/registry.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/relative_geometry.py": {
+      "sha256": "4c40003056eb1c5dcd41494658321cfdca3addea46b11964c7c5dd4d22b9a798",
+      "snapshot": "source/main_package/relative_geometry.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/relative_qkv_campaign_watchdog.py": {
+      "sha256": "5e23889c8687d171f136a88d59419fe16ea928c35f800fb6756576b0aab8ba58",
+      "snapshot": "source/main_package/relative_qkv_campaign_watchdog.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/relative_qkv_checkpoint_verification.py": {
+      "sha256": "03a1a36aedda5ff9892abe9e3db64e571b140d5f978fbb3570b0622f69f4c127",
+      "snapshot": "source/main_package/relative_qkv_checkpoint_verification.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/relative_qkv_contextual_resolution_sweep.py": {
+      "sha256": "f4de0f29c3f2230079145000340d89ed48bb76444c84b4aecc0881a91d98d2c3",
+      "snapshot": "source/main_package/relative_qkv_contextual_resolution_sweep.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/relative_qkv_embedding_clustering.py": {
+      "sha256": "ce91615830cbb7ae96aecb7adfb21d33e0f6639f08e239e7ede788955f434c13",
+      "snapshot": "source/main_package/relative_qkv_embedding_clustering.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/relative_qkv_four_seed_stability.py": {
+      "sha256": "0f7e4f79a884b6f02c010c363fb6f93a2789c90a65f53f247c9d2773e961e2a4",
+      "snapshot": "source/main_package/relative_qkv_four_seed_stability.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/relative_qkv_gradient_requests.py": {
+      "sha256": "6c518d4284ecd564b1395adc9f6baf545b36aedd6023ec8088f34e3d1a32796a",
+      "snapshot": "source/main_package/relative_qkv_gradient_requests.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/relative_qkv_graph_transformer.py": {
+      "sha256": "b6f54251da687704b9e2779ec0868142b52f516ae647dda53e97baf1c00ee511",
+      "snapshot": "source/main_package/relative_qkv_graph_transformer.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/relative_qkv_post_training.py": {
+      "sha256": "273fc377e28844a7408f2bf257a1d0d8a7bdfb8f27f4e13b06807e47662147ca",
+      "snapshot": "source/main_package/relative_qkv_post_training.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/relative_qkv_stability.py": {
+      "sha256": "ecb6751eec050cb8d97ba1735cf8e73c38ddfa7e4d3bef492060cbc6058ec10e",
+      "snapshot": "source/main_package/relative_qkv_stability.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/result_catalog.py": {
+      "sha256": "8e9094b4b9f27b2e306f18df8ad7ca903e89ce4ec2c0cb6987c6cf828f65912f",
+      "snapshot": "source/main_package/result_catalog.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/run_archive.py": {
+      "sha256": "8ee0bc4e8ea407e7ce06fce61e6d4120c879671d2d6dd7f144160d8c3686c396",
+      "snapshot": "source/main_package/run_archive.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/self_hurdle.py": {
+      "sha256": "33f6c51906c443912c4847fc3ec6d8828c79c1f473a715f9d2db0ce8e4700ed6",
+      "snapshot": "source/main_package/self_hurdle.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/signed_program_synthetic.py": {
+      "sha256": "642bf9cb1ec15e3c93344f4084cee5c7d656869dc9e7f5fb35e622c768b001ca",
+      "snapshot": "source/main_package/signed_program_synthetic.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so1_hl_direct_interactive.py": {
+      "sha256": "d54bbb0db969789439f74f21ea0f9d3fa8c25a1268f35466a1a6335929d5b733",
+      "snapshot": "source/main_package/so1_hl_direct_interactive.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so1_model_embedding_clustering.py": {
+      "sha256": "f38a78fc7f57ab207c0c69c1dc0e528e6aad5c7a2a7514c49fffa1e02f1f9155",
+      "snapshot": "source/main_package/so1_model_embedding_clustering.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so1_raw_expression_clustering.py": {
+      "sha256": "094cd12cc6a9ed99f7c5534acf09d45b746528285c982fa6ab6e267859ec1595",
+      "snapshot": "source/main_package/so1_raw_expression_clustering.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so1_raw_expression_interactive.py": {
+      "sha256": "58c1fc42c62011a92ff96eccb14d3b500d9c77baedab14d74968a9b668e9bf0d",
+      "snapshot": "source/main_package/so1_raw_expression_interactive.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_diagnostic_baselines.py": {
+      "sha256": "84d43084f96cd6b5052161912277ab5bdb6bead2cd24ffaca2912af3bd44cc86",
+      "snapshot": "source/main_package/so2_diagnostic_baselines.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_genemae_masking.py": {
+      "sha256": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1",
+      "snapshot": "source/main_package/so2_genemae_masking.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_geometry_hl_figures.py": {
+      "sha256": "f373445ec242d72d77a849ac03e44818a8878764ec2ad27023d2d3de3caf4e61",
+      "snapshot": "source/main_package/so2_geometry_hl_figures.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_hidden_layer_progression.py": {
+      "sha256": "63b6feb631b1222ceb2328563e3870bcb788adb80bfabb84bc9301152775caa0",
+      "snapshot": "source/main_package/so2_hidden_layer_progression.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_hidden_layer_progression_extraction.py": {
+      "sha256": "efb21db2f348d506b6777480b094c77830c9b97d3d2c100c6d081da24466b4c1",
+      "snapshot": "source/main_package/so2_hidden_layer_progression_extraction.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_hidden_layer_progression_figures.py": {
+      "sha256": "8c06ca997d401a7520053cfa2d72257cdcaa7191e7938b286ef9c9bb039680cf",
+      "snapshot": "source/main_package/so2_hidden_layer_progression_figures.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_hl_clustering.py": {
+      "sha256": "4020c1f5d82e34b4e56dc5317c36cdbc659fd498762a684b14d6082297d7a9b9",
+      "snapshot": "source/main_package/so2_hl_clustering.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_hl_direct_clustering.py": {
+      "sha256": "96621f251e642c5d4138694d6cc9c0cf6c31ecacda7dec6aabee393012b092cd",
+      "snapshot": "source/main_package/so2_hl_direct_clustering.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_hl_direct_interactive.py": {
+      "sha256": "91555402c9c0c83169120e2766d7c8fccc5b8e92ffe9292f4965527f4dd73a02",
+      "snapshot": "source/main_package/so2_hl_direct_interactive.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_hl_interactive.py": {
+      "sha256": "d8325f57845fe64be5bd46b5c3c37bb397ac28e3adbc932fc577b51d3c3ef964",
+      "snapshot": "source/main_package/so2_hl_interactive.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_hl_umap.py": {
+      "sha256": "d5d616b1d715ba8570847f8991b354f5f4f54728ad3c64b9cc8db336fa56b20a",
+      "snapshot": "source/main_package/so2_hl_umap.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_nonzero_metrics.py": {
+      "sha256": "305ca210cfd51dda7f86468ebdae2872254fa66abc3c0ca64de5d7e99d23d5b1",
+      "snapshot": "source/main_package/so2_nonzero_metrics.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_pooled_full_core.py": {
+      "sha256": "52c8a2d8cbeec8eedec46e7badfa8d305e764722627aff1546579e7f073d47e8",
+      "snapshot": "source/main_package/so2_pooled_full_core.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_raw_expression_clustering.py": {
+      "sha256": "6e1bfe373154ea199bae21b3916c8e5a6ee9156a78e553798d2f7c892aa0bc7f",
+      "snapshot": "source/main_package/so2_raw_expression_clustering.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_raw_expression_interactive.py": {
+      "sha256": "49d0c9b22fa2c21c521fca00505ae8627ce823d6b628602829aaff4f6211d315",
+      "snapshot": "source/main_package/so2_raw_expression_interactive.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_recurrent_hl_clustering.py": {
+      "sha256": "d847a163580e4accafe8c47c468781cd19d916ba7362e54349c479dd924ae1a4",
+      "snapshot": "source/main_package/so2_recurrent_hl_clustering.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_relative_graphs.py": {
+      "sha256": "618c7c57e0370c2ef85e93d1b1c1164d1bb58d37b04b8ef68cc6b31752a4da77",
+      "snapshot": "source/main_package/so2_relative_graphs.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/so2_training_observability.py": {
+      "sha256": "f01e74a9851a06459e25cf5670a775c42eaa8a7bc00cee67c65bc226e8b4e757",
+      "snapshot": "source/main_package/so2_training_observability.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/spatial_field.py": {
+      "sha256": "9566680f4123d01c70e1477e7a886e4adbf959baf9f431ababc28926721efb6c",
+      "snapshot": "source/main_package/spatial_field.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/splits.py": {
+      "sha256": "a4dfe8cfa712261b72ca53cf11b4570528f50456a0f21dfb36626a3177dbc696",
+      "snapshot": "source/main_package/splits.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/standards_lock.py": {
+      "sha256": "55a26d32c2ca84c37dec6e70a42b2aa06c0ed4dedb9b6ef407291972f24db594",
+      "snapshot": "source/main_package/standards_lock.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/tokenized_g2.py": {
+      "sha256": "dcefe3f87f627a869669517217a75455f60c8b43c6c851e4b909190912882c73",
+      "snapshot": "source/main_package/tokenized_g2.py"
+    },
+    "/workspace/BAGM/src/spatial_benchmark/training.py": {
+      "sha256": "c781e145a434f633c488997cf1d875a3ef933e02c495d1e0bf4af8ecf3a87bfc",
+      "snapshot": "source/main_package/training.py"
+    },
+    "/workspace/BAGM/scripts/analysis/run_so2_prediction_pearson.py": {
+      "sha256": "68a7adbd40ffab23049ca7787229f4cf94ca546a76d8b653f37424aa653141fc",
+      "snapshot": "source/analysis/run_so2_prediction_pearson.py"
+    },
+    "/workspace/BAGM/scripts/analysis/pearson_local_replay.py": {
+      "sha256": "3fe0d3619453dda08e40d904d7fd85bf72575e41dcfed331f8143285ec17a072",
+      "snapshot": "source/analysis/pearson_local_replay.py"
+    },
+    "/workspace/BAGM/scripts/analysis/pearson_historical_replay.py": {
+      "sha256": "2a63858a48eb6b2a35a7f40322e5ad729336d78ee42ffe9aa1889ce456200118",
+      "snapshot": "source/analysis/pearson_historical_replay.py"
+    },
+    "/workspace/BAGM/ops/supervisor/bagm-prediction-pearson.sh": {
+      "sha256": "9983d9f0719dad5db903c89fe6577dd8234a585a9d44eab0ba1f7e7aa4effc22",
+      "snapshot": "source/supervisor/bagm-prediction-pearson.sh"
+    },
+    "/workspace/BAGM/ops/supervisor/bagm-prediction-pearson.conf": {
+      "sha256": "94cbaaf756907ac643a6a1f6fd7a9a5c788cb051c29360867d58648a674c69ff",
+      "snapshot": "source/supervisor/bagm-prediction-pearson.conf"
+    }
+  },
+  "upstream_files": [
+    {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5/checkpoints/best.ckpt",
+      "sha256": "88abdfc6f259fd7c9da40607a863341fefad6e4863fce26fe1b56ae1967e3edc"
+    },
+    {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5/config.resolved.yaml",
+      "sha256": "a464986cd3a6387bbd03fc2d84494b60e313f7863f3407e11746679f9ef314ea",
+      "snapshot": "provenance/source_config.resolved.yaml"
+    },
+    {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5/provenance/artifact_checksums.json",
+      "sha256": "618689af937aa1c0e1cf0640024ae878ba7a8629f62929eaeb6b91d19b4893fa",
+      "snapshot": "provenance/source_artifact_checksums.json"
+    }
+  ],
+  "contract_path": "/workspace/BAGM/experiments/campaigns/cmp_20261015_so2_prediction_pearson/frozen_task_contract.md",
+  "contract_sha256": "49e93ebdd24b092bdf7f9085ffcd65719050043c115a6e991dd73222c1546975",
+  "dataset_id": "cosmx_so2_nb_train12_val2_v1",
+  "split_id": "so2_donor_grouped_train12_val2_no_test_seed0_v1",
+  "seed": 0,
+  "new_training": false,
+  "prepared_at": "2026-10-15T07:13:13.501840+00:00",
+  "helper": "pearson_local_replay",
+  "helper_function": "evaluate_local",
+  "analysis_design": "exploratory_posthoc",
+  "evaluated_population": "reused_validation_donor",
+  "command": [
+    "/venv/main/bin/python",
+    "/workspace/BAGM/scripts/analysis/run_so2_prediction_pearson.py",
+    "--model",
+    "local_s0"
+  ]
+}

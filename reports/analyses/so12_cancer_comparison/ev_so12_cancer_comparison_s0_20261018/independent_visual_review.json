@@ -1,0 +1,125 @@
+{
+  "blocking_issues": [],
+  "evaluation_id": "ev_so12_cancer_comparison_s0_20261018",
+  "figure_manifest_sha256": "dcada25fa66eeb8e231777dbb729eea304c89bf63a70d167dab4d9044a842d34",
+  "files": {
+    "figures/all_representations_2x7.pdf": {
+      "page_dictionary_count": 1,
+      "review_scope": "PDF header/footer, page dictionary and checksum checked; corresponding PNG visually inspected. PDF was not independently rendered.",
+      "sha256": "480de0b0ef1f63d0bde6f0855df2b41b75c51a3c1202fc9129a60ca25e49f38d",
+      "size_bytes": 1307739,
+      "visually_inspected": false
+    },
+    "figures/all_representations_2x7.png": {
+      "dimensions_px": [
+        4477,
+        2525
+      ],
+      "sha256": "85a6ba4ebfbab5fb4f6d7764636af5333e5290a1c4c3eb369252ea693b8c2e7a",
+      "size_bytes": 2731073,
+      "visually_inspected": true
+    },
+    "figures/combined_five_panel.pdf": {
+      "page_dictionary_count": 1,
+      "review_scope": "PDF header/footer, page dictionary and checksum checked; corresponding PNG visually inspected. PDF was not independently rendered.",
+      "sha256": "af24f6ff41933ce6f1d7a090ea28bf32585e835cb9e7c0d36da3add2883aa4f1",
+      "size_bytes": 1942289,
+      "visually_inspected": false
+    },
+    "figures/combined_five_panel.png": {
+      "dimensions_px": [
+        3454,
+        2606
+      ],
+      "sha256": "334c2ba143da2f62d122da814e6dabba4fd9392136f0cef8f680f30b8ca61493",
+      "size_bytes": 3149831,
+      "visually_inspected": true
+    },
+    "figures/core_15_five_panel.pdf": {
+      "page_dictionary_count": 1,
+      "review_scope": "PDF header/footer, page dictionary and checksum checked; corresponding PNG visually inspected. PDF was not independently rendered.",
+      "sha256": "92a8b5000ff9df1d5368911a04cbddce58ccd5360b63425872d564fea3efc59f",
+      "size_bytes": 691053,
+      "visually_inspected": false
+    },
+    "figures/core_15_five_panel.png": {
+      "dimensions_px": [
+        3113,
+        1430
+      ],
+      "sha256": "beba63ef2291facd271cd2a51abef70b66640d418df977bbd2c3faf8e33daba5",
+      "size_bytes": 1195460,
+      "visually_inspected": true
+    },
+    "figures/core_23_five_panel.pdf": {
+      "page_dictionary_count": 1,
+      "review_scope": "PDF header/footer, page dictionary and checksum checked; corresponding PNG visually inspected. PDF was not independently rendered.",
+      "sha256": "5c014a786ac97454478b355f634396faf0e932af18e98591aaa834bb288cfb6f",
+      "size_bytes": 1020797,
+      "visually_inspected": false
+    },
+    "figures/core_23_five_panel.png": {
+      "dimensions_px": [
+        3113,
+        1430
+      ],
+      "sha256": "ca353bc486624fc8c5bd346cd1075cd65d866a22b488b27948c688a37293bf2c",
+      "size_bytes": 1612218,
+      "visually_inspected": true
+    },
+    "figures/oracle_union_errors.pdf": {
+      "page_dictionary_count": 1,
+      "review_scope": "PDF header/footer, page dictionary and checksum checked; corresponding PNG visually inspected. PDF was not independently rendered.",
+      "sha256": "8e367826fdfeddd940f4f5cc1c7dadc2ba9729ec7a3bf96b1bab03b07b5718b8",
+      "size_bytes": 333729,
+      "visually_inspected": false
+    },
+    "figures/oracle_union_errors.png": {
+      "dimensions_px": [
+        3244,
+        2139
+      ],
+      "sha256": "1d798a39515477ccb4fa2de1ad6e017346b788955eb2413098732e14ac3f9dc6",
+      "size_bytes": 512035,
+      "visually_inspected": true
+    },
+    "figures/resolution_agreement.pdf": {
+      "page_dictionary_count": 1,
+      "review_scope": "PDF header/footer, page dictionary and checksum checked; corresponding PNG visually inspected. PDF was not independently rendered.",
+      "sha256": "a9d05b172d04ad676e711f50d245d857965e6732c9e88fd92aa903e6ea8d1503",
+      "size_bytes": 30887,
+      "visually_inspected": false
+    },
+    "figures/resolution_agreement.png": {
+      "dimensions_px": [
+        2160,
+        1440
+      ],
+      "sha256": "e6dccf0992e0ef49017caf97ed17cc795e3a096faf2112ae2fba29b245f5ee61",
+      "size_bytes": 257663,
+      "visually_inspected": true
+    }
+  },
+  "findings": [
+    "Both per-core five-panel figures preserve matched tissue orientation, anatomy, crop and source blue region boundaries across histology, h4, h0, PCA and scVI.",
+    "The combined two-by-five panel and all-representation two-by-seven panel have correct core/method labels, visible 500 micrometre scale bars and no material clipping or title/legend overlap.",
+    "Resolution panels show all four prespecified resolutions, both seeds, correct transfer source/target labels, full zero-to-one score axes and the all-positive baseline; the method legend is readable.",
+    "Oracle error maps visibly distinguish green overlap, red outside-outline spill, blue missed annotated footprint and gray true negatives. Titles identify the oracle as descriptive rather than unbiased accuracy.",
+    "Independent method colors are stated on the comparison panels; cluster-to-color lookup is retained in figures/cluster_color_keys.csv.",
+    "Some wide white margins remain, but they do not obscure tissue or labels and are not a blocking presentation issue."
+  ],
+  "passed": true,
+  "portable_embedded_images_match_outputs": true,
+  "portable_report_sha256": "4f2f1115ff67e15e63c07498f7db220c0dab18b7c01ebb3ce0d28edc749c2a92",
+  "report_manifest_sha256": "b53a2ff04fc851537c9a73a77f5a2d7d4ddf1b9ccdfcbfd43a02508f351be9cc",
+  "reviewed_at": "2026-10-18T06:48:52.233149+00:00",
+  "reviewer": "slide_data_audit",
+  "schema": "so12_cancer_independent_visual_review_v1",
+  "scientific_presentation_limits": [
+    "Registration is approximate section correspondence, with a visible internal coverage difference in core 23; reviewed figures do not establish pixel-exact histology.",
+    "Scores are annotation agreement on the segmented-cell footprint; white intercellular/background pixels and complete-region coverage are handled separately in the report.",
+    "The inspected plots retain unfavorable comparisons and seed variation; no universal h4 superiority or cancer-free status outside outlines is implied."
+  ],
+  "status": "complete",
+  "visually_inspected_png_count": 6
+}

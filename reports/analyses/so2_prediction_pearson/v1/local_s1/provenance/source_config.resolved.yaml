@@ -1,0 +1,109 @@
+attempt: 1
+campaign:
+  campaign_id: cmp_20261004_local_gene_residual
+classification:
+  lifecycle_stage: validation_confirmation
+  retention_class: validation_confirmation
+  study_axis: simple_count_reconstruction
+  variant_label: local
+dataset:
+  biological_target_count: 1000
+  dataset_fingerprint: 206148ffc8976526118932c7fbed82674f79ff8f2326bbd2a7c54dba8540260c
+  dataset_fingerprint_role: immutable_overlay_manifest_content_sha256
+  dataset_id: cosmx_so2_nb_train12_val2_v1
+  donor_identifier_values_persisted: false
+  experimental_unit: donor_group
+  generalization_claim_supported: false
+  input_scale: train_only_equal_core_standardized_log1p_raw_biological_counts
+  node_covariate_count: 22
+  overlay_manifest_file_sha256: 3aea6cfbf7191df221cf226316dbbc2aded6edfaeb193498c7a7a740bc73cabe
+  paired_comparator_campaign_id: cmp_20260926_so2_target_isolated_geometry_modulated_nb_once_per_cell_seed0
+  paired_comparator_split_and_preprocessing_reused_exactly: true
+  prepared_artifact_observation_model_agnostic: true
+  prepared_artifact_reference: data/processed/so2_nb_train12_val2_v1
+  preprocessing_fingerprint: 2fdebc1be6600c9ea86846c972ee2b6149c2827ade3ff5b0784ceae45001910c
+  preprocessing_version: so2_train12_equal_core_log1p_metadata_nb_raw_targets_v1
+  protected_grouping_source_sha256: 30a1c3de1fee0d0045ac6bbfa849f9bb47de437c1b11428e6e16ac48d06fd5e0
+  source_cohort_artifact: data/processed/so2_14core_relative_qkv_v1
+  source_graph_artifact: data/processed/so2_14core_relative_qkv_graphs_v1
+  source_graph_artifact_role: historical_reference_only_not_loaded
+  source_graph_cache_reused_without_copy: false
+  source_slide: SO_2
+  split_fingerprint: d3d5f637433a98bf48db1d079fbecfe249308638462416e6dae57ece5fffc435
+  split_id: so2_donor_grouped_train12_val2_no_test_seed0_v1
+  target_distribution: bernoulli_hurdle_zero_truncated_negative_binomial_nb2
+  target_scale: raw_nonnegative_integer_biological_probe_counts
+  task: target_isolated_local_gene_count_reconstruction
+  test_cells: 0
+  test_core_aliases: []
+  test_partition_present: false
+  total_cells: 246063
+  training_cells: 208696
+  training_core_aliases:
+  - SO2-C15
+  - SO2-C16
+  - SO2-C17
+  - SO2-C18
+  - SO2-C19
+  - SO2-C20
+  - SO2-C21
+  - SO2-C22
+  - SO2-C23
+  - SO2-C24
+  - SO2-C25
+  - SO2-C26
+  validation_cells: 37367
+  validation_core_aliases:
+  - SO2-C27
+  - SO2-C28
+  validation_pair_selection_digest: 0b8d6d58e4c87953425c4132b0fd8334b368e4d96dc920cdf66a0b6a2360f05d
+  validation_pair_selection_namespace: bagm.so2.nb.train_validation.seed0.v1
+  validation_selected_without_expression_pathology_or_model_outcomes: true
+  validation_used_for_model_selection: true
+  version: so2_nb_train12_val2_v1
+evaluation:
+  artifact_contract: predictive
+  canonical_prediction_split: validation
+  primary_metric: val/count_nll
+  primary_mode: min
+  protocol: local_gene_residual_counts_v1
+fold: 0
+graph:
+  kind: fixed_local_summary
+  neighbor_k: 16
+  radius_um: 75.0
+  self_loops: false
+launcher:
+  pilot_receipt:
+    preflight_sha256: 634a660bb1f1b6da1ddb8eb0d46b6e2d69f19fdfc678d59b2e2d2f02562eeaaf
+    run_id: r_20261004T071603Z_178fc589_s000_f00_a01_254a98de
+  requested_gpu: '1'
+  smoke_run: r_20261004T071603Z_178fc589_s000_f00_a01_254a98de
+masking:
+  kind: target_isolated_uniform_1_1000
+  training_base_seed: 2026092601
+  validation_namespace: bagm.so2.target_isolated_nb.fixed_validation_masks.v1
+metadata:
+  frozen_contract_sha256: 500863ee987c2da541ebacd6fb1dfc51c8f0dd6aa9e8660485eacdff5d78e121
+  profile: full
+model:
+  dropout: 0.1
+  family: local_gene_residual
+  hidden_dim: 512
+  hidden_layers: 2
+  output_distribution: bernoulli_hurdle_zero_truncated_nb2
+  use_local: true
+  variant: local
+seed: 1
+trainer:
+  batch_size: 1024
+  epochs: 32
+  gradient_clip: 1.0
+  learning_rate: 0.001
+  minimum_learning_rate: 0.0001
+  ordering_seed: 2026100401
+  precision: bfloat16_autocast_fp32_likelihood
+  primary_checkpoint_role: best
+  restore_best: true
+  scheduler: fixed_cosine
+  weight_decay: 1.0e-05

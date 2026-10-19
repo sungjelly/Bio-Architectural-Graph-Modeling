@@ -1,0 +1,16 @@
+{
+  "compute": "CPU-only integer subset enumeration and raster rendering; no GPU training or kernels",
+  "free_bytes_at_start": 6501769216,
+  "git_commit": "f2776df3769620e7c2b1728116a71ca086c7e3b4",
+  "packages": {
+    "Pillow": "12.3.0",
+    "matplotlib": "3.11.1",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1"
+  },
+  "platform": "Linux-6.8.0-117-generic-x86_64-with-glibc2.39",
+  "python": "3.12.13 | packaged by conda-forge | (main, Aug 11 2026, 10:27:28) [GCC 14.4.0]",
+  "thread_limit": 4
+}

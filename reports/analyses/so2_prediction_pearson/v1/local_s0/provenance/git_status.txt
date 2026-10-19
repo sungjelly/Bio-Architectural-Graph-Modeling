@@ -1,0 +1,36 @@
+ M results/CATALOG.md
+ M results/catalog.json
+ M src/spatial_benchmark/configuration.py
+ M src/spatial_benchmark/queueing.py
+ M src/spatial_benchmark/run_archive.py
+?? experiments/campaigns/cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2/campaign.yaml
+?? experiments/campaigns/cmp_20261005_so2_genemae_masking/
+?? experiments/campaigns/cmp_20261015_so2_prediction_pearson/
+?? ops/supervisor/bagm-prediction-pearson.conf
+?? ops/supervisor/bagm-prediction-pearson.sh
+?? reports/analyses/so2_bce_optimization_audit/
+?? reports/analyses/so2_bce_threshold_sensitivity/
+?? reports/analyses/so2_binary_expression_bce/
+?? reports/analyses/so2_genemae_masking/
+?? reports/local_gene_early_stopping/
+?? reports/local_gene_residual/
+?? reports/runtime/
+?? results/descriptive_analysis/genemae/
+?? results/descriptive_analysis/relative_qkv/res_so2_binary_occurrence_hurdle_comparison/
+?? results/predictive_benchmark/
+?? scripts/analysis/pearson_historical_replay.py
+?? scripts/analysis/pearson_local_replay.py
+?? scripts/analysis/report_so2_binary_expression_bce.py
+?? scripts/analysis/report_so2_genemae_masking.py
+?? scripts/analysis/run_so2_prediction_pearson.py
+?? scripts/train/execute_so2_genemae_masking.py
+?? scripts/train/prepare_so2_genemae_masking.py
+?? scripts/train/prepare_so2_genemae_recovery.py
+?? scripts/train/recover_so2_genemae_masking.py
+?? scripts/train/run_so2_genemae_masking.py
+?? src/spatial_benchmark/geometry_modulated_relative_qkv_graph_transformer.py
+?? src/spatial_benchmark/so2_genemae_masking.py
+?? state/
+?? tests/unit/spatial_benchmark/test_geometry_modulated_relative_qkv_graph_transformer.py
+?? tests/unit/spatial_benchmark/test_report_so2_binary_expression_bce.py
+?? tests/unit/spatial_benchmark/test_so2_genemae_masking.py

@@ -1,0 +1,20 @@
+{
+  "direct_visual_review_message": "Visual review passed for all three PNGs. No clipping, incorrect labels, or readability issues found. The truncated bar axis and retention denominators are clearly labeled.",
+  "passed": true,
+  "recorded_by": "root",
+  "reviewed_files": {
+    "figures/pooled_f1_bar.png": {
+      "sha256": "202edfaa1163730d23396ba6a2c9a5209b5fd79267482deb3a2ef6debf2daf78",
+      "size_bytes": 261264
+    },
+    "figures/pooled_f1_retention_paths.png": {
+      "sha256": "7ec13045bbc516dc73bac752d96209ea0a19a3fa673abe5e3042071bcfad2789",
+      "size_bytes": 612767
+    },
+    "figures/pooled_f1_retention_table.png": {
+      "sha256": "52a21dfffb0c663fbed9f7378a9278f92a5342ca11789b23475705484a361e7f",
+      "size_bytes": 318398
+    }
+  },
+  "reviewer": "/root/atomx_method"
+}

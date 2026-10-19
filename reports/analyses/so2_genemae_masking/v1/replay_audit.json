@@ -1,0 +1,182 @@
+[
+  {
+    "training_run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+    "replay_run_id": "r_20261005T084829Z_b35cac84_s001_f00_a03_8bd59a60",
+    "original_run_status": "failed",
+    "strict_replay_gate_passed": false,
+    "rtol": 1e-05,
+    "atol": 1e-07,
+    "identical_masks_and_counts": true,
+    "independent_exact_cpu_checks_passed": true,
+    "fields": {
+      "n_masked": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 0.0
+      },
+      "masked_huber": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 6.7894349864428e-11
+      },
+      "masked_mse": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 1.7164834831273623e-10
+      },
+      "masked_mae": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 2.0432266989445225e-10
+      },
+      "pooled_pearson": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 4.433026334904611e-09
+      },
+      "masked_r2": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 1.8017396463676505e-09
+      },
+      "gene_pearson_mean": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 3.020024060343407e-08
+      },
+      "gene_pearson_median": {
+        "mismatch_count": 43,
+        "max_absolute_difference": 6.237103058253854e-07
+      },
+      "cell_pearson_mean": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 4.227224487118875e-09
+      },
+      "n_valid_genes": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 0.0
+      },
+      "n_valid_cells": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 0.0
+      },
+      "positive_count": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 0.0
+      },
+      "positive_huber": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 6.443219291440982e-10
+      },
+      "positive_mse": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 2.0194550476304585e-09
+      },
+      "positive_mae": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 8.001670437352004e-10
+      },
+      "zero_count": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 0.0
+      },
+      "zero_huber": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 1.300991432640064e-11
+      },
+      "zero_mse": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 3.1370340353165105e-11
+      },
+      "zero_mae": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 1.592670682837305e-10
+      }
+    },
+    "checkpoint_sha256": "7d389835911827299f3e31e9012e291b02bb832075cd1814a405a38aa431223c",
+    "replay_failed_marker_sha256": "9577afc2974f49881abd7d051e8c3d7f485b33fed9094e1215a289e5efcb7c65"
+  },
+  {
+    "training_run_id": "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+    "replay_run_id": "r_20261005T085114Z_b35cac84_s002_f00_a02_fbab1145",
+    "original_run_status": "failed",
+    "strict_replay_gate_passed": false,
+    "rtol": 1e-05,
+    "atol": 1e-07,
+    "identical_masks_and_counts": true,
+    "independent_exact_cpu_checks_passed": true,
+    "fields": {
+      "n_masked": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 0.0
+      },
+      "masked_huber": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 4.5132592108032554e-11
+      },
+      "masked_mse": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 1.447073710858504e-10
+      },
+      "masked_mae": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 1.6189778684339018e-10
+      },
+      "pooled_pearson": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 3.6515626911093335e-09
+      },
+      "masked_r2": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 1.486773815173592e-09
+      },
+      "gene_pearson_mean": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 3.639996601269985e-08
+      },
+      "gene_pearson_median": {
+        "mismatch_count": 33,
+        "max_absolute_difference": 7.361410769295314e-07
+      },
+      "cell_pearson_mean": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 3.6328217101200266e-09
+      },
+      "n_valid_genes": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 0.0
+      },
+      "n_valid_cells": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 0.0
+      },
+      "positive_count": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 0.0
+      },
+      "positive_huber": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 5.679940962011187e-10
+      },
+      "positive_mse": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 1.7405723529151373e-09
+      },
+      "positive_mae": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 6.967136867430668e-10
+      },
+      "zero_count": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 0.0
+      },
+      "zero_huber": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 1.514588975071174e-11
+      },
+      "zero_mse": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 3.521262101346956e-11
+      },
+      "zero_mae": {
+        "mismatch_count": 0,
+        "max_absolute_difference": 1.6375749714581112e-10
+      }
+    },
+    "checkpoint_sha256": "78158bd0473faf7380eb9d2abf38ce554d6b928cf726e904f28af438828883c2",
+    "replay_failed_marker_sha256": "a15280aa8d001bc5d7c2d7aa18079ffc53bd2ee8132a9ed610761792219c0c58"
+  }
+]

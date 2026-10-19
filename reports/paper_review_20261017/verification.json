@@ -1,0 +1,58 @@
+{
+  "pages": 7,
+  "expected_pages": 7,
+  "bytes": 119296,
+  "page_checks": [
+    {
+      "page": 1,
+      "characters": 3279,
+      "outside_safe_bounds": [],
+      "replacement_glyphs": 0
+    },
+    {
+      "page": 2,
+      "characters": 3162,
+      "outside_safe_bounds": [],
+      "replacement_glyphs": 0
+    },
+    {
+      "page": 3,
+      "characters": 3573,
+      "outside_safe_bounds": [],
+      "replacement_glyphs": 0
+    },
+    {
+      "page": 4,
+      "characters": 3946,
+      "outside_safe_bounds": [],
+      "replacement_glyphs": 0
+    },
+    {
+      "page": 5,
+      "characters": 2367,
+      "outside_safe_bounds": [],
+      "replacement_glyphs": 0
+    },
+    {
+      "page": 6,
+      "characters": 3108,
+      "outside_safe_bounds": [],
+      "replacement_glyphs": 0
+    },
+    {
+      "page": 7,
+      "characters": 3462,
+      "outside_safe_bounds": [],
+      "replacement_glyphs": 0
+    }
+  ],
+  "links": 11,
+  "sha256": "3a50cf38f99a2ae53d88e31559cd58ca2d996a7a20ea10b9f9636f158bf35e37",
+  "page_count_ok": true,
+  "layout_ok": true,
+  "visual_review": "All seven rendered pages inspected; schematic overlap corrected before upload. Final text revision does not change pagination.",
+  "factual_review": "Independent implementation and scientific-language reviews completed; corrections incorporated.",
+  "original_pdf_sha256": "344860761368db08e7ee9e2c518692dd405f67085b2649a6bddf37b78465ec1e",
+  "drive_file_id": "1LtWXKGapNsK2s44_6BjGVdioiNmwqO91",
+  "drive_url": "https://drive.google.com/file/d/1LtWXKGapNsK2s44_6BjGVdioiNmwqO91/view?usp=drivesdk"
+}

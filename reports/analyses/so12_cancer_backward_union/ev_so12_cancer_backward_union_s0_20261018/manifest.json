@@ -1,0 +1,623 @@
+{
+  "campaign_id": "cmp_20261018_so12_cancer_backward_union",
+  "evaluation_id": "ev_so12_cancer_backward_union_s0_20261018",
+  "files": {
+    "backward_metrics_summary.json": {
+      "sha256": "1c654feb8b088cf68934bf2392644cffedb89b78ab07e5df795f9cfe717142bf",
+      "size_bytes": 8847
+    },
+    "config.resolved.json": {
+      "sha256": "3b61a8655586d713b7de2760119b48cf468946f1dc7566081d336a0180e53591",
+      "size_bytes": 1585
+    },
+    "execution.json": {
+      "sha256": "b892d5a0f118224f24f1451a6cd16e7c4fa7a19d0af87e74d9fda1ea55298912",
+      "size_bytes": 164
+    },
+    "figures/all_settings_best_points.pdf": {
+      "sha256": "da10728c8c25eec6180a11ea042d46bb9370e919f151f68f3a88e477e49e0a08",
+      "size_bytes": 36226
+    },
+    "figures/all_settings_best_points.png": {
+      "sha256": "2ccc98f2c169d97414f8f5b703d185f1f3723517890ec6a23ea6f35fc9b467ed",
+      "size_bytes": 216709
+    },
+    "figures/f1_vs_cell_retention.pdf": {
+      "sha256": "f3775d7a590b98b0ed595ef539dc143ffb258148103b1a764effdad70bfc7684",
+      "size_bytes": 44086
+    },
+    "figures/f1_vs_cell_retention.png": {
+      "sha256": "5282c83240c93c7d8daf151eb8bd87d63651caf16f70d36158f84289f8501417",
+      "size_bytes": 471019
+    },
+    "focused_tests.json": {
+      "sha256": "2a09146eef5cb9b32b9c349c6b6c36683a92bea2b45e1aca8d8b5fae14cc676e",
+      "size_bytes": 683
+    },
+    "independent_metrics_review.json": {
+      "sha256": "ce71cad71e67a62372f1c19deed131779443e4999c79dfe2d88d6cbbb7e83d42",
+      "size_bytes": 5640
+    },
+    "independent_visual_review.json": {
+      "sha256": "08869ed6482064c136ae1e93f1c587f71b9153104be8ca308de815395e3065d3",
+      "size_bytes": 3569
+    },
+    "logs/0_so12_cancer_backward_metrics.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "logs/1_audit_so12_cancer_backward_union.log": {
+      "sha256": "a6a1ef69324de973b6b4a2a659fb44ba4f6cf91fcc4b5985dccc4451a84a6cd5",
+      "size_bytes": 105
+    },
+    "logs/2_so12_cancer_backward_report.log": {
+      "sha256": "b9203edfed3578c8b3a2ec5f12816c216365adf13e6f7b8bd2661d4980f76207",
+      "size_bytes": 113
+    },
+    "logs/focused_tests.log": {
+      "sha256": "df68f33f6874f7db27c600431c4384efc5af351e6048e7b05c8f2a56704848a0",
+      "size_bytes": 98
+    },
+    "manual_visual_review.json": {
+      "sha256": "0e5b3d7c2e70d2e3c56a42a2ac00bafcbce87ff96256839d71ddabf24f8903a6",
+      "size_bytes": 869
+    },
+    "metrics/backward_best_summary.csv": {
+      "sha256": "50a819d9b483b32678b2de7044561b3c256b07c8734528410657c984e3d67b98",
+      "size_bytes": 152657
+    },
+    "metrics/backward_primary_summary.csv": {
+      "sha256": "e81954b80bf8d488f36866fec3e3272cf3fc2493a68b9033ba78372b21b226ce",
+      "size_bytes": 20421
+    },
+    "metrics/backward_steps.csv": {
+      "sha256": "24020431b172fd459f423cb67ce47124462eccbd52d25a586ef70a000b68a6de",
+      "size_bytes": 625035
+    },
+    "metrics/backward_union.json": {
+      "sha256": "9c25c0c38c4a0f081deddfde9e53e05fcc796b23a63caa0b6258bfd0afbc80db",
+      "size_bytes": 3266247
+    },
+    "metrics/primary_report_table.csv": {
+      "sha256": "de7ea1122c4801b8693c2d992cb6b4765c4b5174a2aa826207cc99b43f62142d",
+      "size_bytes": 3179
+    },
+    "provenance/commands.json": {
+      "sha256": "68dd7c567f83945e11d4a0411b3b4a3a8fa6fe7bb404cf75d4faa726827b8c7d",
+      "size_bytes": 1071
+    },
+    "provenance/environment.json": {
+      "sha256": "a975e214ec82cb80ba9d17a73068ef7ca64d626326c9dbc1930e3264f2fa6a5a",
+      "size_bytes": 444
+    },
+    "provenance/execution_sources/ops/supervisor/bagm-so12-cancer-backward-union.conf": {
+      "sha256": "010da72f465d37f5a42899b72a7b1ecdac68f22d51bd1abfce89d055784802c0",
+      "size_bytes": 378
+    },
+    "provenance/execution_sources/ops/supervisor/bagm-so12-cancer-backward-union.sh": {
+      "sha256": "2a7c4f52359746df744ffaab58f5a7e44f5572fb04c69ab285e605e1a0112ca0",
+      "size_bytes": 504
+    },
+    "provenance/execution_sources/scripts/analysis/audit_so12_cancer_backward_union.py": {
+      "sha256": "01ab5adbdd234f3a7e644b4a85bfbbb3b6ac7fa95ab67dc56f5707744bd0d121",
+      "size_bytes": 17374
+    },
+    "provenance/execution_sources/scripts/analysis/promote_so12_cancer_backward_union_result.py": {
+      "sha256": "2b2a51db46819e553016d147df69a5254e03b8b11e786f026238521bd5da24f3",
+      "size_bytes": 13074
+    },
+    "provenance/execution_sources/scripts/analysis/run_so12_cancer_backward_union.py": {
+      "sha256": "8ac41d76742887f29cba20401e7e2d403b45fba90c4bb6e2efbd288d0808a6c2",
+      "size_bytes": 10970
+    },
+    "provenance/execution_sources/scripts/analysis/run_so12_cancer_limited_union.py": {
+      "sha256": "84bcb0eb074dcb5173aece0052a155c609027c2f9133a282d03c9804faaf7b6e",
+      "size_bytes": 15775
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_backward_metrics.py": {
+      "sha256": "4335a474926f308b5fa416dbf71693aa39609dae02daedec0cf1b9fcfec8f00c",
+      "size_bytes": 13328
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_backward_report.py": {
+      "sha256": "f11ab108cf5e186de5ee62f4a88360fe9c4b2b8c1876876c442f624668d81fcd",
+      "size_bytes": 12306
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_limited_metrics.py": {
+      "sha256": "6d90d50cce29f09d00ce9c81690cf927780ccec3079ae4e20b00831b375e33a8",
+      "size_bytes": 18602
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_metrics.py": {
+      "sha256": "099d256bd6118c3117aa5f050e5b409c20ca499e3f8e8249283ade19e36f49b1",
+      "size_bytes": 22345
+    },
+    "provenance/execution_sources/tests/unit/spatial_benchmark/test_so12_cancer_backward_metrics.py": {
+      "sha256": "f442fc5a066c8a51fcdaef4111d40e254ebeae8e50bc7ddd8ab3cd71f95141ce",
+      "size_bytes": 6658
+    },
+    "provenance/git_status_at_start.txt": {
+      "sha256": "30cafd883e9f791a44a0a60bd5103272fda8d0e83be8a50ffbaae8a7e4d75413",
+      "size_bytes": 22902
+    },
+    "provenance/git_status_review.json": {
+      "sha256": "8d621343f11beb3825ec988baae83cc8a21021918e9251a804dd6cbfdb191311",
+      "size_bytes": 728
+    },
+    "provenance/parent_before.json": {
+      "sha256": "f04984767549a93a9a42028564215e5add32e96d6cf46a8bd83b06567a04d5ad",
+      "size_bytes": 135
+    },
+    "provenance/source_binding.json": {
+      "sha256": "6c5964189ac313ca35809cd29ca9131142a979ef4c49dfbc1386181e01cc2761",
+      "size_bytes": 1865
+    },
+    "report/index.html": {
+      "sha256": "d8baa9deb9d937bd2493fdb98cf9784ca23250e674d54783b6996aeba7d9dfcf",
+      "size_bytes": 923557
+    },
+    "report_manifest.json": {
+      "sha256": "bb11fef67e14607ec4672fd4904f8c5dcc9378368251ee0ddf0764d5e7e365a5",
+      "size_bytes": 1191
+    },
+    "stages/audit_so12_cancer_backward_union.json": {
+      "sha256": "b43af55a48d1b969854681bdf72cf6d21438c7ffa81ebcbdffd976ba123546b3",
+      "size_bytes": 61
+    },
+    "stages/so12_cancer_backward_metrics.json": {
+      "sha256": "8669b411d34675b5038b178361294edc7de2c71bd83544ea4596033c15c7b5bb",
+      "size_bytes": 61
+    },
+    "stages/so12_cancer_backward_report.json": {
+      "sha256": "702757aa1d862552e4fa56f767788314a679e2b7d485bfad0b1025e97ce48066",
+      "size_bytes": 61
+    },
+    "summary.json": {
+      "sha256": "c7cb38c19ba849f66eb71c1c74394be04bc3268aa6b947c00aafc2d737b9267c",
+      "size_bytes": 11485
+    },
+    "task_contract_at_publication.md": {
+      "sha256": "2d04791009a2a20d0f78bf1709b3913ab1a8f9778f55c8c82347a589e03b300c",
+      "size_bytes": 8615
+    },
+    "task_contract_at_start.md": {
+      "sha256": "b14509868edbcf0227be4b635019834c3838f5d2929376444efd764ce7ff3434",
+      "size_bytes": 4702
+    }
+  },
+  "parent_manifest_sha256": "e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0",
+  "passed": true,
+  "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+  "status": "complete",
+  "summary": {
+    "campaign_id": "cmp_20261018_so12_cancer_backward_union",
+    "cell_retention_definition": "Fixed denominator of cells with at least one valid owned pixel inside annotation; unweighted count.",
+    "cluster_retention_definition": "Fixed denominator of clusters with at least one valid owned pixel inside annotation at step zero.",
+    "evaluation_id": "ev_so12_cancer_backward_union_s0_20261018",
+    "limitations": "All group choices use the scored annotation and are descriptive, not independent cancer-classifier accuracy. Greedy removal chooses the best next deletion, not necessarily the globally best subset at every cluster count. The path maximum is checked against the parent exact unrestricted optimum. Registration is approximate; annotation exhaustiveness and section identity are unverified. Pixels/cells are observations from only two cores, not independent patients.",
+    "maximum_defensible_claim": "Exploratory F1/cluster-count/cell-retention tradeoffs on two approximately aligned annotated test cores; no independent diagnostic accuracy or population superiority.",
+    "maximum_greedy_gap_to_exact_unrestricted": 0.0,
+    "n_cells": 81607,
+    "partitions": 56,
+    "passed": true,
+    "paths": 112,
+    "primary_resolution": 1.0,
+    "primary_scores": [
+      {
+        "best_f1": 0.7835877356224161,
+        "cluster_retained_pct": 66.66666666666667,
+        "core": 15,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 15,
+        "k": 10,
+        "majority_cells_retained_pct": 87.76150089951169,
+        "method": "h4",
+        "precision": 0.7091023544376087,
+        "recall": 0.875557906039408,
+        "retention90_f1": 0.7654003410914295,
+        "retention95_f1": 0.7654003410914295,
+        "roi_cells_retained": 17083,
+        "roi_cells_retained_pct": 87.74011299435028,
+        "roi_cells_total": 19470,
+        "selected_clusters": [
+          0,
+          1,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          11,
+          15
+        ]
+      },
+      {
+        "best_f1": 0.9170742259678218,
+        "cluster_retained_pct": 81.25,
+        "core": 23,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 16,
+        "k": 13,
+        "majority_cells_retained_pct": 97.81414202071761,
+        "method": "h4",
+        "precision": 0.8699586844697385,
+        "recall": 0.9695853869581956,
+        "retention90_f1": 0.9170742259678218,
+        "retention95_f1": 0.9170742259678218,
+        "roi_cells_retained": 32604,
+        "roi_cells_retained_pct": 97.75725593667546,
+        "roi_cells_total": 33352,
+        "selected_clusters": [
+          0,
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          11,
+          13,
+          14,
+          15
+        ]
+      },
+      {
+        "best_f1": 0.7920809184357633,
+        "cluster_retained_pct": 42.857142857142854,
+        "core": 15,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 14,
+        "k": 6,
+        "majority_cells_retained_pct": 74.1249036237471,
+        "method": "h3",
+        "precision": 0.8137889647711136,
+        "recall": 0.7715009174900037,
+        "retention90_f1": 0.7748507993867718,
+        "retention95_f1": 0.6348553100462672,
+        "roi_cells_retained": 14429,
+        "roi_cells_retained_pct": 74.10888546481767,
+        "roi_cells_total": 19470,
+        "selected_clusters": [
+          0,
+          1,
+          2,
+          4,
+          7,
+          8
+        ]
+      },
+      {
+        "best_f1": 0.9143343193663384,
+        "cluster_retained_pct": 81.25,
+        "core": 23,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 16,
+        "k": 13,
+        "majority_cells_retained_pct": 97.4448281038883,
+        "method": "h3",
+        "precision": 0.8687545685723405,
+        "recall": 0.9649616339039647,
+        "retention90_f1": 0.9143343193663384,
+        "retention95_f1": 0.9143343193663384,
+        "roi_cells_retained": 32480,
+        "roi_cells_retained_pct": 97.38546414008155,
+        "roi_cells_total": 33352,
+        "selected_clusters": [
+          0,
+          1,
+          2,
+          4,
+          5,
+          6,
+          7,
+          8,
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      },
+      {
+        "best_f1": 0.7797445680405538,
+        "cluster_retained_pct": 56.25,
+        "core": 15,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 16,
+        "k": 9,
+        "majority_cells_retained_pct": 87.45309689025957,
+        "method": "h2",
+        "precision": 0.7051212274358875,
+        "recall": 0.8720321802607435,
+        "retention90_f1": 0.7773674071815624,
+        "retention95_f1": 0.772017998241256,
+        "roi_cells_retained": 17023,
+        "roi_cells_retained_pct": 87.43194658448895,
+        "roi_cells_total": 19470,
+        "selected_clusters": [
+          0,
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          10,
+          15
+        ]
+      },
+      {
+        "best_f1": 0.9114825555215331,
+        "cluster_retained_pct": 87.5,
+        "core": 23,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 16,
+        "k": 14,
+        "majority_cells_retained_pct": 97.38777961267077,
+        "method": "h2",
+        "precision": 0.8640049991633914,
+        "recall": 0.9644813429848937,
+        "retention90_f1": 0.9114825555215331,
+        "retention95_f1": 0.9114825555215331,
+        "roi_cells_retained": 32462,
+        "roi_cells_retained_pct": 97.33149436315664,
+        "roi_cells_total": 33352,
+        "selected_clusters": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          10,
+          11,
+          13,
+          14,
+          15
+        ]
+      },
+      {
+        "best_f1": 0.7865482362211482,
+        "cluster_retained_pct": 55.55555555555556,
+        "core": 15,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 18,
+        "k": 10,
+        "majority_cells_retained_pct": 81.6242611153945,
+        "method": "h1",
+        "precision": 0.7663428501930737,
+        "recall": 0.8078479450627819,
+        "retention90_f1": 0.7782580132083953,
+        "retention95_f1": 0.6347487519613851,
+        "roi_cells_retained": 15891,
+        "roi_cells_retained_pct": 81.61787365177196,
+        "roi_cells_total": 19470,
+        "selected_clusters": [
+          0,
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          11,
+          14,
+          17
+        ]
+      },
+      {
+        "best_f1": 0.9011414458313864,
+        "cluster_retained_pct": 83.33333333333333,
+        "core": 23,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 18,
+        "k": 15,
+        "majority_cells_retained_pct": 96.00060051043387,
+        "method": "h1",
+        "precision": 0.8554371206620176,
+        "recall": 0.9520052145871214,
+        "retention90_f1": 0.9011414458313864,
+        "retention95_f1": 0.9011414458313864,
+        "roi_cells_retained": 32000,
+        "roi_cells_retained_pct": 95.9462700887503,
+        "roi_cells_total": 33352,
+        "selected_clusters": [
+          0,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          10,
+          11,
+          13,
+          14,
+          15,
+          16,
+          17
+        ]
+      },
+      {
+        "best_f1": 0.7804313680419875,
+        "cluster_retained_pct": 64.28571428571429,
+        "core": 15,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 14,
+        "k": 9,
+        "majority_cells_retained_pct": 82.87843741968645,
+        "method": "h0",
+        "precision": 0.7476749392584763,
+        "recall": 0.816189491734577,
+        "retention90_f1": 0.774441549860452,
+        "retention95_f1": 0.6347487519613851,
+        "roi_cells_retained": 16135,
+        "roi_cells_retained_pct": 82.87108371854134,
+        "roi_cells_total": 19470,
+        "selected_clusters": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          8,
+          9,
+          10,
+          12
+        ]
+      },
+      {
+        "best_f1": 0.886716850028952,
+        "cluster_retained_pct": 85.71428571428571,
+        "core": 23,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 14,
+        "k": 12,
+        "majority_cells_retained_pct": 95.62828404143522,
+        "method": "h0",
+        "precision": 0.8324446198826497,
+        "recall": 0.9485593178344216,
+        "retention90_f1": 0.886716850028952,
+        "retention95_f1": 0.886716850028952,
+        "roi_cells_retained": 31878,
+        "roi_cells_retained_pct": 95.58047493403694,
+        "roi_cells_total": 33352,
+        "selected_clusters": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          9,
+          10,
+          12,
+          13
+        ]
+      },
+      {
+        "best_f1": 0.7709676278916294,
+        "cluster_retained_pct": 50.0,
+        "core": 15,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 12,
+        "k": 6,
+        "majority_cells_retained_pct": 78.59676175790285,
+        "method": "pca",
+        "precision": 0.7561838272689445,
+        "recall": 0.7863410178129282,
+        "retention90_f1": 0.6883043171743001,
+        "retention95_f1": 0.6347487519613851,
+        "roi_cells_retained": 15301,
+        "roi_cells_retained_pct": 78.58757062146893,
+        "roi_cells_total": 19470,
+        "selected_clusters": [
+          0,
+          2,
+          3,
+          4,
+          5,
+          10
+        ]
+      },
+      {
+        "best_f1": 0.8648248362289946,
+        "cluster_retained_pct": 91.66666666666667,
+        "core": 23,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 12,
+        "k": 11,
+        "majority_cells_retained_pct": 98.6608617324726,
+        "method": "pca",
+        "precision": 0.7715145772115422,
+        "recall": 0.9838111465611551,
+        "retention90_f1": 0.8648248362289946,
+        "retention95_f1": 0.8648248362289946,
+        "roi_cells_retained": 32901,
+        "roi_cells_retained_pct": 98.64775725593668,
+        "roi_cells_total": 33352,
+        "selected_clusters": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "best_f1": 0.7292150135342494,
+        "cluster_retained_pct": 69.23076923076923,
+        "core": 15,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 13,
+        "k": 9,
+        "majority_cells_retained_pct": 83.22796196350552,
+        "method": "scvi",
+        "precision": 0.640029538521137,
+        "recall": 0.8472799826918916,
+        "retention90_f1": 0.7288101342561603,
+        "retention95_f1": 0.6347487519613851,
+        "roi_cells_retained": 16203,
+        "roi_cells_retained_pct": 83.22033898305085,
+        "roi_cells_total": 19470,
+        "selected_clusters": [
+          0,
+          2,
+          3,
+          4,
+          6,
+          8,
+          9,
+          10,
+          11
+        ]
+      },
+      {
+        "best_f1": 0.9041324015425279,
+        "cluster_retained_pct": 84.61538461538461,
+        "core": 23,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 13,
+        "k": 11,
+        "majority_cells_retained_pct": 94.55937546914878,
+        "method": "scvi",
+        "precision": 0.8730639933830551,
+        "recall": 0.9374935675323338,
+        "retention90_f1": 0.9041324015425279,
+        "retention95_f1": 0.8954699894749483,
+        "roi_cells_retained": 31520,
+        "roi_cells_retained_pct": 94.50707603741904,
+        "roi_cells_total": 33352,
+        "selected_clusters": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          6,
+          7,
+          8,
+          9,
+          11,
+          12
+        ]
+      }
+    ],
+    "primary_seed": 0,
+    "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+    "status": "complete"
+  }
+}

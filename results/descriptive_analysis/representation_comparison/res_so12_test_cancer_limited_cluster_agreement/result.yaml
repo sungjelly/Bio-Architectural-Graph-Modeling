@@ -1,0 +1,128 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so12_test_cancer_limited_cluster_agreement
+title: One or two complete Leiden clusters against outlined regions on SO12 test cores
+status: verified
+outcome: inconclusive
+experiment_type: descriptive_analysis
+method_family: representation_comparison
+lifecycle_stage: exploratory_screen
+study_axis: limited_cluster_region_agreement
+campaign_ids:
+- cmp_20261018_so12_cancer_limited_union
+method:
+  name: Exact best single, pair and at-most-two cluster unions for frozen h0-h4, PCA
+    and scVI
+  model_family: Relative-QKV graph encoder, training-fitted PCA50 and negative-binomial
+    scVI50
+  graph_context: Unchanged parent joint 81607-test-cell cosine k30 unweighted undirected
+    graph per representation; Leiden RBConfiguration resolutions .25,.5,1,2 and seeds0,1
+  masking_or_perturbation: No refitting; fixed-union 50um boundary sensitivity; 20
+    within-core label shuffles at each primary partition
+  evaluation_design: Per-core annotation-selected exhaustive singleton/pair search
+    over unchanged segmented-cell support; opposite-core selection and full-region
+    scores secondary. Resolution1 seed0 figures remain fixed. Parent fit uses train21/val5/test2.
+  implementation_version: so12_cancer_limited_union_v1 with immutable code, environment
+    and parent source binding
+conclusion:
+  question: Can one or two complete clusters delineate the supplied annotated regions
+    while penalizing spillover?
+  estimand: Maximum footprint Dice/F1 under a one/two-cluster cardinality restriction
+    per test core; annotation-selected descriptive agreement
+  observed_result: 'Fixed resolution 1, seed 0 footprint Dice/F1: h4: core 15 one=0.5000,
+    ≤2=0.6900, IDs [5,6]; core 23 one=0.4768, ≤2=0.6814, IDs [0,7] | h3: core 15 one=0.6998,
+    ≤2=0.7739, IDs [0,8]; core 23 one=0.4216, ≤2=0.6889, IDs [1,4] | h2: core 15 one=0.6379,
+    ≤2=0.7137, IDs [0,3]; core 23 one=0.4500, ≤2=0.6203, IDs [1,10] | h1: core 15
+    one=0.6361, ≤2=0.6962, IDs [0,11]; core 23 one=0.3414, ≤2=0.5596, IDs [6,8] |
+    h0: core 15 one=0.5535, ≤2=0.6798, IDs [1,10]; core 23 one=0.3214, ≤2=0.5432,
+    IDs [6,8] | pca: core 15 one=0.4528, ≤2=0.6780, IDs [3,5]; core 23 one=0.4307,
+    ≤2=0.6098, IDs [2,4] | scvi: core 15 one=0.2704, ≤2=0.4228, IDs [2,4]; core 23
+    one=0.3163, ≤2=0.4987, IDs [0,2]. All 56 partitions retained.'
+  strongest_alternative_explanation: The reference spans several cellular states,
+    so a compact subset may omit much of the region; annotation-selected grouping,
+    core-specific partitions and approximate alignment also influence scores.
+  controls:
+  - Identical canonical cells, fixed registration, unchanged parent labels and complete
+    parent checksum verification before and after.
+  - Exact integer enumeration; independent native-pixel audit; no reference-based
+    cropping of selected clusters; FP outside and FN omitted inside remain.
+  - All four resolutions and both seeds; fixed primary figures; one ≤ at-most-two
+    ≤ unrestricted oracle invariants.
+  - Separate exact pair, opposite-core transfer, full-region support, all-positive/empty
+    baselines, fixed-union boundary sensitivity and within-core shuffle controls.
+  - High-contrast prediction groups and TP/FP/FN/TN maps with native-pixel count verification
+    and independent visual review.
+  remaining_uncertainty: These are annotation-selected descriptive F1 scores, not
+    independently evaluated cancer-classifier accuracy. Region selection uses the
+    scored core. The opposite-core transfer results are separately reported and remain
+    exploratory because both cores were jointly clustered. Registration is approximate;
+    section identity and annotation exhaustiveness are unverified. Only 69.5% and
+    65.0% of annotated pixels have segmented-cell coverage on cores 15 and 23. Two
+    cores and one fitted encoder seed do not support population superiority claims.
+  maximum_defensible_claim: Exploratory approximate-section agreement of one/two annotation-selected
+    clusters on two test cores; no independent classifier accuracy or population superiority.
+evidence:
+  predictive_gain:
+    status: not_tested
+    summary: Annotation-selected region overlap is not independent predictive accuracy
+      or graph-specific expression gain.
+  stability:
+    status: mixed
+    summary: Both Leiden seeds, all four resolutions and fixed-union boundary sensitivity
+      reported without selection of a favorable primary setting.
+  faithfulness:
+    status: not_applicable
+    summary: No attribution or cell-cell mechanism inference.
+  null_calibration:
+    status: mixed
+    summary: All-positive, empty and within-core shuffled-label controls included;
+      no biological spatial null or population p-value.
+  patient_replication:
+    status: not_tested
+    summary: Only two cores, donor overlap permitted and one fitted encoder seed.
+  external_support:
+    status: mixed
+    summary: Supplied hand-outlined histology is compared using approximate-section
+      registration and uncertain annotation exhaustiveness.
+  perturbation_support:
+    status: not_tested
+    summary: No controlled biological perturbation.
+provenance:
+  created_at_utc: '2026-10-18T07:58:46.915165Z'
+  updated_at_utc: '2026-10-18T07:58:46.915165Z'
+  git_commit: f2776df3769620e7c2b1728116a71ca086c7e3b4
+  run_ids:
+  - r_20261017T044837Z_caf76350_s000_f00_a01_12df41be
+  - r_20261018T052052Z_04078a70_s000_f00_a01_14d78fb9
+  expected_seeds:
+  - 0
+  - 1
+  included_seeds:
+  - 0
+  - 1
+  expected_folds:
+  - 0
+  included_folds:
+  - 0
+  failed_or_excluded_runs: []
+  sources:
+  - kind: evaluation
+    root: report
+    path: analyses/so12_cancer_limited_union/ev_so12_cancer_limited_union_s0_20261018/manifest.json
+    sha256: 457a36fcc0dfc2cc72824bdc184b1020515969f00c670af9f392246cf7c5e228
+    verification_status: verified
+    run_id: r_20261017T044837Z_caf76350_s000_f00_a01_12df41be
+  - kind: evaluation
+    root: report
+    path: analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018/manifest.json
+    sha256: e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0
+    verification_status: verified
+    run_id: r_20261017T044837Z_caf76350_s000_f00_a01_12df41be
+  - kind: report
+    root: report
+    path: analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018/scvi_run_registration.json
+    sha256: 954b0c7224d45595f64ea22b30054f21c38505b68851c11fce369a593b138b88
+    verification_status: verified
+    run_id: r_20261018T052052Z_04078a70_s000_f00_a01_14d78fb9
+files: []

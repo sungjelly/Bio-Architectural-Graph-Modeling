@@ -1,0 +1,30 @@
+{
+  "schema": "so12_primary_delivery_review_v1",
+  "status": "passed",
+  "reviewed_at": "2026-10-17T03:37:22.833554+00:00",
+  "scope": "isolated_primary_delivery_payload_only",
+  "seven_original_png_checksums_match": true,
+  "six_html_embedded_pngs_match_original_bytes": true,
+  "html_remote_dependencies": 0,
+  "complete_legend_entries": 95,
+  "legend_count_totals_per_method": {
+    "all_cells": 407659,
+    "displayed_cells": 117996
+  },
+  "pairwise_ari_table_rows": 200,
+  "cluster_count_table_rows": 40,
+  "primary_statistics_match_prior_verified_preview_exactly": true,
+  "visual_review": {
+    "file": "figures/cluster_color_keys.png",
+    "sha256": "fa7f48f72b03af2a1617dc12f0d70ea90ce442855c7af6696afc2f944642bcc2",
+    "observations": [
+      "All five method headings and complete independently numbered cluster keys are legible.",
+      "Color swatches, selected-cell counts and method-identity disclaimer are present without clipping or text overlap."
+    ]
+  },
+  "primary_status": "primary_seed0_complete",
+  "secondary_status": "pending_as_of_creation",
+  "parent_evaluation_completed": false,
+  "registry_or_publication_performed": false,
+  "no_embeddings_or_cell_table_copied": true
+}

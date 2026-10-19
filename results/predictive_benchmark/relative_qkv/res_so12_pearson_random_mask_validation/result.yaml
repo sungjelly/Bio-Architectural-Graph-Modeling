@@ -1,0 +1,223 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so12_pearson_random_mask_validation
+title: SO1 + SO2 random-mask QKV validation against constant baselines
+status: verified
+outcome: inconclusive
+experiment_type: predictive_benchmark
+method_family: relative_qkv
+lifecycle_stage: exploratory_screen
+study_axis: so12_donor_held_out_validation
+campaign_ids:
+- cmp_20261016_so12_pearson_relative_qkv_train_validation
+method:
+  name: Four-layer Relative-Geometric QKV with integrated Pearson targets
+  model_family: relative_geometry_qkv_graph_transformer
+  graph_context: Coordinate-only within-core radial-stratified k200/r500-um graphs; four independent
+    256-wide blocks and eight heads; permitted train-normalized morphology; no cross-core or slide
+    edges.
+  masking_or_perturbation: Independent uniform integer 0–1000 masked genes per cell; ten fresh training
+    views per core/epoch and three fixed validation views; visible-count-only normalized inputs; full-observation
+    targets used only for supervision.
+  evaluation_design: 'Prespecified seed 0, fold 0 fixed donor split: 20 training cores/10 donor groups
+    and eight validation cores/four other donor groups. Strict best equal-core masked Huber selects
+    epoch 151. Mean constants fit training targets only; zero and both means use identical validation
+    masks. No sealed test.'
+  implementation_version: so12_pearson_relative_qkv_train_validation_v1; observed_only_mask_adapter_v1;
+    exact source hashes and dirty execution commit in immutable training_start.json and provenance/git.json.
+conclusion:
+  question: Does the completed joint-slide four-layer model improve masked integrated Pearson reconstruction
+    over zero and training-only per-gene means?
+  estimand: Partial-gene masked standardized Pearson-feature reconstruction on the existing donor-separated
+    exploratory validation split; primary equal-core Huber, with pooled error and correlation diagnostics.
+  observed_result: 'Completed epoch 151 is the strict best checkpoint: equal-core Huber 0.1961138961,
+    pooled MAE 0.3081599538, MSE 1.0058877300 and Pearson 0.1344985527. Huber falls 6.33%, 6.72% and
+    6.21% versus zero, equal-core training mean and equal-cell training mean, respectively, with improvements
+    in all eight validation cores against each. MAE falls 26.79–28.16%, but MSE is 0.58–0.70% worse.
+    Outcome is mixed across metrics; the schema outcome is inconclusive. All prespecified seed/fold
+    work is complete, not an interim best-seed selection.'
+  strongest_alternative_explanation: Per-gene robust locations and observed same-cell expression may
+    explain the gains without graph-specific information. Huber optimization favors different predictions
+    from squared-error-optimal means; validation selection may inflate apparent gains.
+  controls:
+  - Frozen zero-standardized-Pearson and per-gene training-only equal-core and equal-cell means; validation
+    never fits constants.
+  - Exact shared target manifest, split, source/configuration binding and 24 fixed mask receipts covering
+    159816944 entries; independently reproduced equal-core baseline to 1e-8.
+  - Donor-disjoint split, train-fitted normalization, visible-count-only masked inputs and hidden-count
+    invariance gate; morphology and graph inputs exclude target-derived labels and totals.
+  - Completed-run checkpoint reload and final validation replay, immutable bundle checksums, complete
+    seed/fold coverage and retained startup failure.
+  remaining_uncertainty: Single prespecified seed, four validation donors, no sealed independent test
+    or uncertainty interval. Validation was previously used for preprocessing diagnostics and then
+    checkpoint selection. Eight core wins do not establish independent patient replication. Pooled
+    Pearson is weak and is not gene-wise correlation. Robust constant, cell-autonomous and graph-ablation
+    controls, seed stability, faithfulness, biological null calibration, external replication and
+    perturbation support remain untested.
+  maximum_defensible_claim: On this completed exploratory split, the selected model has lower masked
+    Pearson-feature Huber and MAE than the three specified constant baselines and slightly worse MSE.
+    This does not establish graph-specific gain, biological integration or mechanism, independent-test
+    generalization, patient replication or causality.
+evidence:
+  predictive_gain:
+    status: mixed
+    summary: Lower Huber and MAE versus all three constants, Huber wins in eight of eight cores; MSE
+      worsens and pooled Pearson remains weak. Graph-specific predictive gain is untested.
+  stability:
+    status: not_tested
+    summary: Only the single prespecified seed and fixed split were run; no seed, fold or graph robustness
+      claim.
+  faithfulness:
+    status: not_tested
+    summary: No attribution or mechanism-faithfulness experiment.
+  null_calibration:
+    status: not_tested
+    summary: Constant predictors are predictive references; mechanism-breaking biological or spatial
+      nulls were not run.
+  patient_replication:
+    status: not_tested
+    summary: Four validation donors were used for preprocessing diagnostics and model selection; no
+      locked patient replication study or independent cohort.
+  external_support:
+    status: not_tested
+    summary: No independent external molecular or cohort evidence.
+  perturbation_support:
+    status: not_tested
+    summary: No controlled perturbational evidence.
+provenance:
+  created_at_utc: '2026-10-16T20:16:55.644743Z'
+  updated_at_utc: '2026-10-16T20:16:55.644743Z'
+  git_commit: f2776df3769620e7c2b1728116a71ca086c7e3b4
+  run_ids:
+  - r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  expected_seeds:
+  - 0
+  included_seeds:
+  - 0
+  expected_folds:
+  - 0
+  included_folds:
+  - 0
+  failed_or_excluded_runs:
+  - run_id: r_20261016T090140Z_00dadce7_s000_f00_a01_cdb171a3
+    reason: Initial launch failed authoritative dataset preprocessing-version validation before model
+      execution; zero optimizer steps. The contributing attempt-2 run is an explicit linked retry
+      correcting registration metadata without changing scientific settings; failure bundle retained.
+  sources:
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/_SUCCESS
+    sha256: e71260228d71623ae2ba0fabab1483d49b0101c4d890762e1c565d35092ac40e
+    verification_status: verified
+    description: Finalized successful execution marker
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/provenance/artifact_checksums.json
+    sha256: 2a9eec59f245b90d3e1ef4a65b7ef7a0e1e51c9497df468dac614ce4db8298f2
+    verification_status: verified
+    description: Immutable execution bundle checksums
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/config.resolved.yaml
+    sha256: da0c14ae042b2c2e8840ee6425e98aacfd1a67ec37b930d4e1c93289a7836bac
+    verification_status: verified
+    description: Frozen four-layer model, masking, split and selection contract
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/summary.json
+    sha256: 3701d3ac0040cdf7ba6358d325bca5e0f2f40f16c77b41e014e7f04cb7f9eea8
+    verification_status: verified
+    description: Completed training, stopping, runtime and checkpoint identity
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/metrics/final.json
+    sha256: e1493dd091b444a8e9cafab7ecf2f23d9adf5ef499d8805b42ca46b64a793424
+    verification_status: verified
+    description: Final selected-checkpoint validation metrics
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/diagnostics/validation_per_core.json
+    sha256: 581e3d499e9aa2617bdc7e194aa9f4f53ab48214c620b42e6005108a3fd49930
+    verification_status: verified
+    description: Final validation metrics and eight per-core Huber scores
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/diagnostics/training_start.json
+    sha256: bcdc81b8e9a4368e98b205726bc247ebc43240bacebcd4c871b3ef841f0d8203
+    verification_status: verified
+    description: Dataset, preprocessing, split, source bindings and train-fitted reference
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/diagnostics/latest_mask_receipts.json
+    sha256: 4813c435f306f32b0cba4b89e5c5d8e29e4e5008e2441c607bb5dda6f582c461
+    verification_status: verified
+    description: Final fixed validation masks, identical to baseline replay
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/diagnostics/final_checkpoint_reload_verification.json
+    sha256: 7a6d5601f8c96b7b4304f5ab14e16de1331e7e13859eb7cc62ff4cd6bce55207
+    verification_status: verified
+    description: Successful final checkpoint reload and validation replay
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/provenance/git.json
+    sha256: 3a8a9034ca47634f06fbcd57a876ba3f59d8c8d3d001d7885881699f927338d1
+    verification_status: verified
+    description: Execution commit and dirty-state fingerprint
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/provenance/queue.json
+    sha256: 7797c91ff634e8dfc55376babe3537f94a6d69720e91b9e80a57510f3158498a
+    verification_status: verified
+    description: Explicit attempt-2 retry linkage
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - kind: report
+    root: report
+    path: analyses/so12_zero_mean/ev_so12_zero_mean_e086_20261016T155304Z/manifest.json
+    sha256: 39bee28fff3bac19e3ecdc1fb41a17e48075edbb04e7e6633b2befcd4b1a3582
+    verification_status: verified
+    description: Immutable CPU baseline comparison report manifest
+  - kind: report
+    root: report
+    path: analyses/so12_zero_mean/ev_so12_zero_mean_e086_20261016T155304Z/metrics.json
+    sha256: 54ef3b2d3dc04e5d372b194fa41da941e31ecc9b63eef89074fb9b1368ef10bb
+    verification_status: verified
+    description: Frozen zero and training-only mean metrics; epoch-86 model entry is not the final
+      model used here
+  - kind: report
+    root: report
+    path: analyses/so12_zero_mean/ev_so12_zero_mean_e086_20261016T155304Z/provenance.json
+    sha256: 25274978f73fc4718649e7257cea001158e47e0cb80ee75308e035d1271ee6b0
+    verification_status: verified
+    description: Baseline configuration, model-source, split and mask bindings
+  - kind: report
+    root: report
+    path: analyses/so12_zero_mean/ev_so12_zero_mean_e086_20261016T155304Z/verification.json
+    sha256: b826b25666975b949fbb3129cca7a877de18a26f4d7f058d8153a0b23473d43d
+    verification_status: verified
+    description: Exact mean replay, target-file checksums and masked-entry coverage
+  - kind: report
+    root: report
+    path: analyses/so12_zero_mean/ev_so12_zero_mean_e086_20261016T155304Z/mask_receipts.json
+    sha256: cbca22427329db9b2aff4fd8bbe9b1ea7cfa0e8139d6ddb583ee61b21c7dfaf7
+    verification_status: verified
+    description: Three fixed validation masks for each of eight cores
+  - kind: other
+    root: artifact
+    path: runs/2026/10/r_20261016T090140Z_00dadce7_s000_f00_a01_cdb171a3/summary.json
+    sha256: 1c63caf6416d04d265d22f594ebb1c44f557269ef923c84cf000452a7a036798
+    verification_status: verified
+    description: 'Preserved startup failure: authoritative dataset preprocessing-version mismatch
+      before model execution; not a trained comparator'
+files: []

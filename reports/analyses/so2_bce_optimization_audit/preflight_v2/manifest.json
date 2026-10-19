@@ -1,0 +1,16 @@
+{
+  "files": {
+    "attempts.csv": "3ad3b6098ff61cb4fbbedba556eb8d7ae802d4bda0bfb9dff12bd9cb907426cf",
+    "endpoint_comparison.png": "4d1260ba50db615d1900beb2f482ed1e1f242782521cdb6366bca85bb68dae20",
+    "history.csv": "2560687cd1f004694758f2a5d5af6c95c58ed39c080faeda5fe29dcb8e51e7e7",
+    "per_core_endpoints.csv": "ada8c56d90d0df0d9e21e9cd886203c651af772de96415bc36aede9fac991412",
+    "report.md": "aa83be795e92efcf055c45bca9fbf6d07945e93e4a229da8e37025e39281d96c",
+    "report_builder.py": "22a93e36785e1e50f4d9bc6e53a1b516bc56d4dfbb6469516804d06bdbbff35f",
+    "runs.csv": "261cbd789b28bd33fe6410d341618b298f117fa39ccedd0acb0733513ab4a032",
+    "secondary_metrics.csv": "926de80a80beea5d805974bfbb8037f26f7e1331e06a81a5419c603d5a7cd014",
+    "smoke_validation_curves.png": "9245a1244dbce111a704139fbc0d2d5f379c57b35b28fd47312f0c9d0a1232aa",
+    "summary.json": "5a53c7e21c10a52e9f505cf0c4d355edb3bd6f433b94ced6c03c4011326e8e4a",
+    "validation_curves.png": "5df513bbfbeb9edfece8ab55c09670d04bf870508a452a17377523dbc1bfb5c7"
+  },
+  "schema": "checksummed_local_report_v1"
+}

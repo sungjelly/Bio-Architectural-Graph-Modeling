@@ -1,0 +1,133 @@
+{
+  "all_methods": [
+    "h0",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "pca",
+    "scvi"
+  ],
+  "annotations_shifted": false,
+  "clustering_manifest_sha256": "5f440d4183b30eb62424bc612ad8bf3301cc6288ad7f0a4f7a2e3ac5a9546619",
+  "color_keys": {
+    "path": "figures/cluster_color_keys.csv",
+    "sha256": "2cf9a3f0f1d0a4bb1e47da457fc21609838dfe53ba3e2c3bdf70ffbd6725b075"
+  },
+  "cores": [
+    15,
+    23
+  ],
+  "figures": {
+    "all_representations_2x7": {
+      "pdf": {
+        "path": "all_representations_2x7.pdf",
+        "sha256": "480de0b0ef1f63d0bde6f0855df2b41b75c51a3c1202fc9129a60ca25e49f38d",
+        "size_bytes": 1307739
+      },
+      "png": {
+        "path": "all_representations_2x7.png",
+        "sha256": "85a6ba4ebfbab5fb4f6d7764636af5333e5290a1c4c3eb369252ea693b8c2e7a",
+        "size_bytes": 2731073
+      }
+    },
+    "combined_five_panel": {
+      "pdf": {
+        "path": "combined_five_panel.pdf",
+        "sha256": "af24f6ff41933ce6f1d7a090ea28bf32585e835cb9e7c0d36da3add2883aa4f1",
+        "size_bytes": 1942289
+      },
+      "png": {
+        "path": "combined_five_panel.png",
+        "sha256": "334c2ba143da2f62d122da814e6dabba4fd9392136f0cef8f680f30b8ca61493",
+        "size_bytes": 3149831
+      }
+    },
+    "core_15_five_panel": {
+      "pdf": {
+        "path": "core_15_five_panel.pdf",
+        "sha256": "92a8b5000ff9df1d5368911a04cbddce58ccd5360b63425872d564fea3efc59f",
+        "size_bytes": 691053
+      },
+      "png": {
+        "path": "core_15_five_panel.png",
+        "sha256": "beba63ef2291facd271cd2a51abef70b66640d418df977bbd2c3faf8e33daba5",
+        "size_bytes": 1195460
+      }
+    },
+    "core_23_five_panel": {
+      "pdf": {
+        "path": "core_23_five_panel.pdf",
+        "sha256": "5c014a786ac97454478b355f634396faf0e932af18e98591aaa834bb288cfb6f",
+        "size_bytes": 1020797
+      },
+      "png": {
+        "path": "core_23_five_panel.png",
+        "sha256": "ca353bc486624fc8c5bd346cd1075cd65d866a22b488b27948c688a37293bf2c",
+        "size_bytes": 1612218
+      }
+    }
+  },
+  "interpretation": "Exploratory annotation agreement; outlines are user-designated reference regions, not exhaustive cancer labels. Cell polygons are rasterized in histology coordinates under one tissue-only similarity transform per core.",
+  "n_cells": 81607,
+  "partitions": {
+    "h0": {
+      "path": "clustering/h0/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "d3b1581922febc8e3a380a7c7422e97bbfd875c232f85ce878c4ebae9a0fcfea",
+      "size_bytes": 326556
+    },
+    "h1": {
+      "path": "clustering/h1/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "294f9a24ec216779777fcc6a5ee50eb46534c1ded2c80d2d0c87969a3a7365ed",
+      "size_bytes": 326556
+    },
+    "h2": {
+      "path": "clustering/h2/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "4f9160415f41a0235b6ab2048e191a48a954dae10f742592fe8a9d153d4771c6",
+      "size_bytes": 326556
+    },
+    "h3": {
+      "path": "clustering/h3/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "31c9f0b35197ae8bfe89bdde1b7a4849d897a0a5f262190c1ece063c0113a423",
+      "size_bytes": 326556
+    },
+    "h4": {
+      "path": "clustering/h4/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "01c228958c2e2eb0c2d8756d68490e5b68dcca49cc7d28a00388ba669bf886fe",
+      "size_bytes": 326556
+    },
+    "pca": {
+      "path": "clustering/pca/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "9a9279e899eaade414af115ba3093c6c67eb17d35ae89d5426ba655066b1016d",
+      "size_bytes": 326556
+    },
+    "scvi": {
+      "path": "clustering/scvi/labels_r1_s0.npy",
+      "relative": true,
+      "sha256": "f8bba4adb75ae1d8eb97888df93a2537aec9b05322880cdc847847b53e5db504",
+      "size_bytes": 326556
+    }
+  },
+  "passed": true,
+  "primary_methods": [
+    "gt",
+    "h4",
+    "h0",
+    "pca",
+    "scvi"
+  ],
+  "registration_manifest_sha256": "ab7a23fe309a67c2a539c937b1cf2c098ed0e92a2eb9f6df1ff3041d8e5874b2",
+  "registration_status": "verified_approximate_section",
+  "resolution": 1.0,
+  "scale_bar_um": 500,
+  "schema": "so12_cancer_comparison_figures_v1",
+  "seed": 0,
+  "shared_owner_raster": true,
+  "status": "complete"
+}

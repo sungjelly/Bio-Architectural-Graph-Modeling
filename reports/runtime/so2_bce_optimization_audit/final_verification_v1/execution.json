@@ -1,0 +1,115 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "duration_seconds": 0.02051535299688112,
+      "exit_code": 0,
+      "log": "git_status_before.txt",
+      "started_at": "2026-10-01T12:42:57.647013+00:00"
+    },
+    {
+      "argv": [
+        "nvidia-smi",
+        "--query-gpu=index,name,memory.total,memory.used,memory.free,utilization.gpu,temperature.gpu,power.draw",
+        "--format=csv"
+      ],
+      "duration_seconds": 0.09425428100803401,
+      "exit_code": 0,
+      "log": "gpu_occupancy.csv",
+      "started_at": "2026-10-01T12:42:57.668122+00:00"
+    },
+    {
+      "argv": [
+        "nvidia-smi",
+        "--query-compute-apps=gpu_uuid,pid,process_name,used_memory",
+        "--format=csv"
+      ],
+      "duration_seconds": 0.0679831259913044,
+      "exit_code": 0,
+      "log": "gpu_compute_processes.csv",
+      "started_at": "2026-10-01T12:42:57.763165+00:00"
+    },
+    {
+      "argv": [
+        "/venv/main/bin/python",
+        "-m",
+        "pytest",
+        "-q",
+        "tests/unit/infrastructure/test_so2_bce_optimization_report.py",
+        "tests/unit/spatial_benchmark/test_publish_so2_bce_optimization_audit_result.py",
+        "tests/unit/spatial_benchmark/test_so2_bce_threshold_sensitivity.py",
+        "tests/unit/spatial_benchmark/test_so2_bce_gradient_audit.py",
+        "tests/unit/infrastructure/test_so2_bce_execution_profile_report.py"
+      ],
+      "duration_seconds": 5.253163515008055,
+      "exit_code": 0,
+      "log": "reporting_tests.log",
+      "started_at": "2026-10-01T12:42:57.831990+00:00"
+    },
+    {
+      "argv": [
+        "/venv/main/bin/python",
+        "-m",
+        "spatial_benchmark",
+        "doctor"
+      ],
+      "duration_seconds": 2.0044082640088163,
+      "exit_code": 1,
+      "log": "doctor.json",
+      "started_at": "2026-10-01T12:43:03.085801+00:00"
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--short"
+      ],
+      "duration_seconds": 0.01879390400426928,
+      "exit_code": 0,
+      "log": "git_status_after.txt",
+      "started_at": "2026-10-01T12:43:05.090854+00:00"
+    }
+  ],
+  "curated_result_published": false,
+  "ended_at": "2026-10-01T12:43:05.110218+00:00",
+  "environment_overrides": {
+    "BAGM_ARTIFACT_ROOT": "/workspace/BAGM/artifacts",
+    "BAGM_CACHE_ROOT": "/workspace/BAGM/cache",
+    "BAGM_DATA_ROOT": "/workspace/BAGM/data",
+    "BAGM_EXPORT_ROOT": "/workspace/BAGM/exports",
+    "BAGM_MIN_FREE_DISK_GB": "5",
+    "BAGM_REPORT_ROOT": "/workspace/BAGM/reports",
+    "BAGM_RESULT_ROOT": "/workspace/BAGM/results",
+    "BAGM_ROOT": "/workspace/BAGM-relative-qkv-analysis",
+    "BAGM_SCRATCH_ROOT": "/workspace/BAGM/scratch",
+    "BAGM_STATE_ROOT": "/workspace/BAGM/state",
+    "MKL_NUM_THREADS": "4",
+    "NUMEXPR_NUM_THREADS": "4",
+    "OMP_NUM_THREADS": "4",
+    "OPENBLAS_NUM_THREADS": "4",
+    "PYTHONPATH": "src:."
+  },
+  "full_repository_suite_rerun": false,
+  "gpu_training_launched": false,
+  "schema": "so2_bce_final_reporting_verification_v1",
+  "source_hashes": {
+    "experiments/campaigns/cmp_20261001_so2_bce_optimization_audit/frozen_task_contract.md": "938aab47480af206e6e76e625f4f4a42117d98d064d7bca474fc90656610158d",
+    "scripts/analysis/publish_so2_bce_optimization_audit_result.py": "3adbed5b9834d51e2301f301eec87cddf095ce4ed3039ae55686828503c87ed0",
+    "scripts/analysis/report_so2_bce_execution_profile.py": "014b3e0fa307a42f87c8752f99722ed53b69d025aa32b73496f007aceb4ff997",
+    "scripts/analysis/report_so2_bce_gradient_audit.py": "23233752b94adce2cae4db787e23d8ce35c15a591312ecdbffd9efb08a416afc",
+    "scripts/analysis/report_so2_bce_optimization_audit.py": "8f11e6fa8884784bee74dc0a2fd97ae570f47c4baf4915ad8b4b8144467524f2",
+    "scripts/analysis/report_so2_bce_threshold_sensitivity.py": "d699f1b7e031d787940241b2912c1a8d655618547ea785c814573497072bbc1e",
+    "tests/unit/infrastructure/test_so2_bce_execution_profile_report.py": "4656693830881a320762d095afacbb00ae63244c3bdb9656e26f0c5fe81e56ed",
+    "tests/unit/infrastructure/test_so2_bce_optimization_report.py": "ce5691b2dca135e152efc38b1edd31b3d6ff969190219b56ddf82722d8768597",
+    "tests/unit/spatial_benchmark/test_publish_so2_bce_optimization_audit_result.py": "6a4e8bb09bb893d96f35d49ada9c94d0b18eadb0ce5a8853da5ab7979ba3d73c",
+    "tests/unit/spatial_benchmark/test_so2_bce_gradient_audit.py": "dac30a3a839ec959235c2102dd29f4a7338b618321d24629fdc6afc148212175",
+    "tests/unit/spatial_benchmark/test_so2_bce_threshold_sensitivity.py": "9f1227f407ab6a2395b2fae7595a20cfadcfeb1c0a54e7dfe1c2bbdb6e19225c"
+  },
+  "source_hashes_unchanged": true,
+  "started_at": "2026-10-01T12:42:57.645478+00:00",
+  "working_directory": "/workspace/BAGM-relative-qkv-analysis"
+}

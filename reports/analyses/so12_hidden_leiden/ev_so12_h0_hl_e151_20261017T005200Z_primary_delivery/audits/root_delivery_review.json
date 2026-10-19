@@ -1,0 +1,22 @@
+{
+  "all_28_core_scope_verified": true,
+  "copied_files_verified": 46,
+  "individual_image_review_reused_by_exact_hash": true,
+  "method_colors_independent": true,
+  "new_legend_visually_reviewed": true,
+  "parent_evaluation_completed": false,
+  "png_decoding_passed": true,
+  "reviewed_at": "2026-10-17T03:38:23.467597+00:00",
+  "scope": "primary_seed0_delivery_only",
+  "secondary_seed1_status_at_review": "pending",
+  "six_html_images_exact": true,
+  "status": "passed",
+  "visually_reviewed_cores": [
+    1,
+    9,
+    13,
+    15,
+    21,
+    23
+  ]
+}

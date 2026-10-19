@@ -1,0 +1,220 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 2
+result_id: res_so12_normalized_embeddings_leiden
+title: Three SO1/SO2 normalized representations yield different exploratory Leiden
+  partitions
+status: verified
+outcome: inconclusive
+experiment_type: descriptive_analysis
+method_family: classical_encoders
+lifecycle_stage: exploratory_screen
+study_axis: representation
+campaign_ids:
+- cmp_20261016_so12_embeddings_leiden
+method:
+  name: Pearson PCA32, training-landmark RBF kernel PCA32 and spatial context PCA32
+    with Leiden
+  model_family: Classical linear, nonlinear kernel and neighborhood-context encoders;
+    no neural training or checkpoint
+  graph_context: Euclidean HNSW 30-neighbor representation graphs, locally scaled
+    exponential weights and arithmetic-mean symmetrization; spatial context uses Gaussian-weighted
+    up-to-15 neighbors within 50 micrometers in each core, weight 0.3, self fallback
+    for isolated cells
+  masking_or_perturbation: Fully observed Pearson-normalized expression; no expression
+    masking. Twenty within-core cluster-label permutations provide descriptive spatial
+    nulls.
+  evaluation_design: 407659 mapped cells, 1000 genes, 28 cores, two slides; encoder
+    fitting on ten training donor groups (301198 cells), frozen transformation of
+    four diagnostic donor groups (106461 cells), then transductive all-cell clustering.
+    Encoder seed 0; Leiden seed 0 at resolutions 0.5/1.0/1.5 and seed 1 at resolution
+    1.0. Provenance seeds [0,1] refer to Leiden; fold 0 denotes the fixed preprocessing
+    partition, not a sealed evaluation fold.
+  implementation_version: so12_fully_observed_embeddings_v1; upstream so12_quasipoisson_v1;
+    immutable source/environment/configuration snapshots; scheduling-only retry with
+    four concurrent single-thread Leiden workers
+conclusion:
+  question: How do linear expression, nonlinear expression and local spatial-context
+    representations change descriptive cell partitions in the normalized SO1/SO2 cohort?
+  estimand: Exploratory all-cell transductive clustering and fixed-graph algorithmic
+    agreement across Leiden seeds and representations
+  observed_result: All three 407659-by-32 representations and four Leiden label sets
+    per representation passed finite-value, row/key alignment and source checks. At
+    resolution 1.0, seed 0, Pearson PCA, RBF kernel PCA and spatial context PCA yield
+    19, 21 and 17 clusters; seed 1 yields 19, 23 and 18. Seed ARIs are 0.706129, 0.697725
+    and 0.825291. At resolutions 0.5/1.5, seed-0 cluster counts are 9/32, 10/33 and
+    10/29. Cross-method ARIs are PCA/kernel 0.650047, PCA/spatial 0.514149, and kernel/spatial
+    0.499264. Mean 30-neighbor recall on 256 exact-query checks is 0.988021, 0.997656
+    and 0.990885. Spatial same-cluster edge agreement is 0.476371 versus within-core
+    label-permutation mean 0.241628; this continuity is partly imposed by spatial
+    inputs.
+  strongest_alternative_explanation: Partition differences and apparent tissue domains
+    can reflect geometric transformations, algorithmic instability, depth/slide/tissue
+    composition, segmentation spillover or imposed spatial smoothing rather than distinct
+    biological cell states.
+  controls:
+  - Frozen training-only Pearson normalization and PCA; new kernel landmarks and spatial
+    PCA parameters use the same ten training donor groups. Spatial neighbors stay
+    within each core and 50 micrometers.
+  - All 407659 cells, three encoders, resolutions 0.5/1.0/1.5 at Leiden seed 0 and
+    seed 1 at resolution 1.0 retained; no favorable-method, seed or resolution selection.
+  - Synthetic planted-cluster, frozen-fit and spatial-isolation checks; exact serial
+    versus concurrent Leiden equivalence tested before the scheduling-only retry.
+  - Mean approximate-neighbor recall checked against exact neighbors on 256 queries
+    per method; all pass the prespecified 0.90 gate. Actual neighbor arrays/distances
+    retained for fixed-graph replay.
+  - Twenty within-core label permutations preserve core cluster counts while breaking
+    spatial label arrangement; report their mean separately from observed spatial
+    agreement.
+  - Input manifest/PCA checksums and coordinates verified; saved embeddings and every
+    Leiden column independently reopened and checked for finite values, shape, integer
+    labels and aligned row_index; portable report images verified.
+  remaining_uncertainty: All-cell graphs and clustering are transductive despite training-only
+    encoder fitting. Only one encoder seed and two Leiden seeds on one graph realization
+    are available. Seed sensitivity is moderate and graph/resolution sensitivity is
+    not biological validation. Shared PCA32 retains 8.21994 percent of Pearson-feature
+    variance; kernel PCA also approximates the cohort using 512 training landmarks.
+    Parallel HNSW insertion is nondeterministic; high mean recall does not imply every
+    query has exact neighbors. Slide and tissue composition are confounded. Spatial
+    smoothing, segmentation spillover and unmodeled tissue barriers can create apparent
+    domains; 266 isolated cells use their own features. No independent cell-type labels,
+    sealed generalization test, patient replication or orthogonal biological validation
+    was performed.
+  maximum_defensible_claim: Reusable normalized-expression and local-context embeddings
+    and their Leiden partitions have been produced and numerically verified for all
+    mapped SO1/SO2 cells. The methods give overlapping but different exploratory partitions
+    with measured algorithmic seed sensitivity. These outputs do not establish validated
+    cell identities, biological superiority, batch removal, predictive gain, cell-cell
+    communication or causality.
+evidence:
+  predictive_gain:
+    status: not_tested
+    summary: No masked-expression prediction, trained-model comparison or graph-specific
+      predictive-gain evaluation.
+  stability:
+    status: mixed
+    summary: Fixed-graph Leiden seed ARI is 0.706129 for PCA, 0.697725 for kernel
+      PCA and 0.825291 for spatial PCA. These indicate nonidentical partitions and
+      moderate seed sensitivity; no method is declared biologically better from seed
+      ARI. Resolution and cross-method partitions also differ.
+  faithfulness:
+    status: not_applicable
+    summary: No learned attribution, sensitivity or inferred interaction is interpreted;
+      numerical verification is not attribution faithfulness.
+  null_calibration:
+    status: mixed
+    summary: Observed same-cluster spatial-edge agreement exceeds the mean of twenty
+      within-core label permutations for all methods (PCA 0.294657 versus 0.171974;
+      kernel 0.295648 versus 0.161363; spatial 0.476371 versus 0.241628). This descriptive
+      composition-preserving null does not remove imposed smoothing, tissue confounding
+      or spillover and supplies no biological validation.
+  patient_replication:
+    status: not_tested
+    summary: The fixed donor split restricts encoder fitting, but all-cell partitioning
+      is transductive; no independent-patient replication or held-out clustering generalization
+      was tested.
+  external_support:
+    status: not_tested
+    summary: Method references motivate computation only; no independent annotations,
+      external cohort or orthogonal molecular support.
+  perturbation_support:
+    status: not_tested
+    summary: Synthetic implementation checks and label permutations are not controlled
+      biological perturbations.
+provenance:
+  created_at_utc: '2026-10-16T18:43:32Z'
+  updated_at_utc: '2026-10-16T18:43:57Z'
+  git_commit: f2776df3769620e7c2b1728116a71ca086c7e3b4
+  run_ids:
+  - r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - r_20261016T181056Z_e4e8f852_s000_f00_a01_4a3df5b3
+  expected_seeds:
+  - 0
+  - 1
+  included_seeds:
+  - 0
+  - 1
+  expected_folds:
+  - 0
+  included_folds:
+  - 0
+  failed_or_excluded_runs:
+  - run_id: r_20261016T181056Z_e4e8f852_s000_f00_a01_4a3df5b3
+    reason: Intentionally stopped after 302 seconds during the first serial Leiden
+      setting because projected runtime was excessive. Partial outputs and failed
+      status are archived. Retry retains all scientific settings and changes only
+      CPU scheduling; no partial-attempt cluster outcomes are selected or used.
+  sources:
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/analysis_summary.json
+    sha256: 2d029eeba14f4b29897ffb6a8806d2b41db90a88f27e78b18e57234bfdb6b0e1
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/resolved_config.json
+    sha256: ccef571fc804b445a3bdc345077557b5c7847f83d55679cfcfd62b6f6fe7d819
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/identity.json
+    sha256: c8259822392c4c30780f7341bcba88b1b34f17c617883d7bea8cee41e16a71c6
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/input_provenance.json
+    sha256: c4a0e5162e38043d5aefc6346aecf7bb596be452c198840c2628d722ff993273
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/input_verification.json
+    sha256: 6c4fe6ff4e9e83c71707185b47ba0641c72cac3ac8dd97dab099e6e8d16965ad
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/runner_verification.json
+    sha256: 2ef68cbc0433fa44638fa515f2e6823490049c3f1894de49e8e5ae880afa3164
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/output_verification.json
+    sha256: 903228fc198ee99694c3a891fe163f1866162c1e0743ab267e78b02794157f78
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/smoke_checks.json
+    sha256: 24415affde73002a4412ae04e82d06046dfc914e8c415d377291dc234cdf0b38
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/spatial_graph.json
+    sha256: b783ffcf5cf230ad0be55bd5a0f6602dd56cf27f829ac0bc6e8696ea3fb9bfa5
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/report/index.html
+    sha256: 1de4d519466fee76e0ffcb627b41f542d03b749be24bb936a44071b4b49eadbb
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/checksums.json
+    sha256: 1013b827a76f0519277cecb5e9305059d88a406dc158619a34baa38b1f39b6dc
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181056Z_e4e8f852_s000_f00_a01_4a3df5b3/status.json
+    sha256: 903994515230525b25fc66aa5e1738f39a26cea636df89b15739b793fd78dcff
+    verification_status: verified
+    run_id: r_20261016T181056Z_e4e8f852_s000_f00_a01_4a3df5b3
+files: []

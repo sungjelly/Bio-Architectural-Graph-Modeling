@@ -1,0 +1,466 @@
+{
+  "campaign_id": "cmp_20261018_so12_cancer_pooled_union",
+  "evaluation_id": "ev_so12_cancer_pooled_union_s0_20261018",
+  "files": {
+    "config.resolved.json": {
+      "sha256": "fd4ac85418b462078ab9bde6dd7c4d993c4645031c1f516cb58321575efb58dd",
+      "size_bytes": 1762
+    },
+    "execution.json": {
+      "sha256": "2210e752fb190e9765ae1c460cabc03c450d52b13aae56a97bf97e84c04805d6",
+      "size_bytes": 164
+    },
+    "figures/pooled_f1_bar.pdf": {
+      "sha256": "6ebaf77bb4954194922d9d9a827bc2ced7cd76cc72f8809a11fd2b02f42e3ab2",
+      "size_bytes": 27593
+    },
+    "figures/pooled_f1_bar.png": {
+      "sha256": "202edfaa1163730d23396ba6a2c9a5209b5fd79267482deb3a2ef6debf2daf78",
+      "size_bytes": 261264
+    },
+    "figures/pooled_f1_bar.svg": {
+      "sha256": "a6856963530feee1d6fb866e0e5697498763ac167201be90541be568571b6b74",
+      "size_bytes": 13070
+    },
+    "figures/pooled_f1_retention_paths.pdf": {
+      "sha256": "6413862b64ece22c476fcd0814d3de9a962be2245b0bb6ea4ddf63a1abf98d64",
+      "size_bytes": 36107
+    },
+    "figures/pooled_f1_retention_paths.png": {
+      "sha256": "7ec13045bbc516dc73bac752d96209ea0a19a3fa673abe5e3042071bcfad2789",
+      "size_bytes": 612767
+    },
+    "figures/pooled_f1_retention_paths.svg": {
+      "sha256": "b40b8909c3b97d85f2376d95d43023de13c0c3f799b6ff9f7a857ff9e5b0fb21",
+      "size_bytes": 137258
+    },
+    "figures/pooled_f1_retention_table.pdf": {
+      "sha256": "0f1599b413cd18bddde05d02a67b5b4cf9c9350232b21735a5b96909f4ae9552",
+      "size_bytes": 27598
+    },
+    "figures/pooled_f1_retention_table.png": {
+      "sha256": "52a21dfffb0c663fbed9f7378a9278f92a5342ca11789b23475705484a361e7f",
+      "size_bytes": 318398
+    },
+    "figures/pooled_f1_retention_table.svg": {
+      "sha256": "5209d87ad8fb40841165f4cd8e81fee6c69cf0cccf3b844c37c34b0267c8c7b4",
+      "size_bytes": 16001
+    },
+    "focused_tests.json": {
+      "sha256": "aa9cf38532d88f4624aefda78238b595c6392ee7d7142acd1d3a7ed63b370b65",
+      "size_bytes": 407
+    },
+    "independent_metrics_review.json": {
+      "sha256": "eb1a1032a87b787fadca183c77d805ffbec70eb68be1b843057a988afbff9bf4",
+      "size_bytes": 5112
+    },
+    "independent_visual_review.json": {
+      "sha256": "28005a9395d9dc346e2a8f5a6ffa10288d6d54f42fbfd7ae798a3c12d5880432",
+      "size_bytes": 800
+    },
+    "logs/0_so12_cancer_pooled_metrics.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "logs/1_audit_so12_cancer_pooled_union.log": {
+      "sha256": "997cecfc10f86ecf5f501f21e15bc296e065670aedc083319cc6603fd7852440",
+      "size_bytes": 105
+    },
+    "logs/2_so12_cancer_pooled_report.log": {
+      "sha256": "2c639fa01a079c5f8dc34b2ffab427add4b7466b45627345f38631031d23ec0d",
+      "size_bytes": 137
+    },
+    "logs/focused_tests.log": {
+      "sha256": "0a8ade52ab1dfc197f2cdceb3293bdbee9b186b778734a2c20924261d4fdec9e",
+      "size_bytes": 99
+    },
+    "manual_visual_review.json": {
+      "sha256": "8609fcce29390c579085294b417a83a76c0c98fa1f9237e9601f9fdf025a7e7c",
+      "size_bytes": 892
+    },
+    "metrics/pooled_best_summary.csv": {
+      "sha256": "a44367249125931fa535c8049707c60c016aff6e7a32fa25c5206883372bce81",
+      "size_bytes": 199768
+    },
+    "metrics/pooled_primary_summary.csv": {
+      "sha256": "feda0595b8aad274e82ccb36ff964450f418652af9351fe0d8a9e0a760753f60",
+      "size_bytes": 28005
+    },
+    "metrics/pooled_steps.csv": {
+      "sha256": "29d081e2d72d60da602a1047dc1541fae5446f21c97bbc21619d2e1d43321e99",
+      "size_bytes": 855495
+    },
+    "metrics/pooled_union.json": {
+      "sha256": "8374fa7eb348e62e3e47701009979266c6066013c9f7dd087327e9579f68064c",
+      "size_bytes": 4781449
+    },
+    "metrics/primary_report_table.csv": {
+      "sha256": "6eefcc38036d6f9c095e94555f037fee41bac9b7a50a984b631b9679ce8f9988",
+      "size_bytes": 1821
+    },
+    "pooled_metrics_summary.json": {
+      "sha256": "48cf436485f15882c62aefdb5af9f616731e82ab529d849bc2998faf88373d9d",
+      "size_bytes": 9192
+    },
+    "provenance/commands.json": {
+      "sha256": "ea555b59290444f0c9f46f5d77aa4a71ed0cf487a5089cbbcc0a0693a5f7f2a8",
+      "size_bytes": 1059
+    },
+    "provenance/environment.json": {
+      "sha256": "53b435630dababbb99bec5cf64df14faa215dc083b39da277a2caac6bd154df4",
+      "size_bytes": 444
+    },
+    "provenance/execution_sources/ops/supervisor/bagm-so12-cancer-pooled-union.conf": {
+      "sha256": "452f6da4d925758a1bb0ad68b9f363fcbafaa63f0008015d7a2f018b0e363cbb",
+      "size_bytes": 374
+    },
+    "provenance/execution_sources/ops/supervisor/bagm-so12-cancer-pooled-union.sh": {
+      "sha256": "5aef0270a686388514eb5db1a53abafe3d59fd5f2e031250d00364eef01ff22c",
+      "size_bytes": 502
+    },
+    "provenance/execution_sources/scripts/analysis/audit_so12_cancer_backward_union.py": {
+      "sha256": "01ab5adbdd234f3a7e644b4a85bfbbb3b6ac7fa95ab67dc56f5707744bd0d121",
+      "size_bytes": 17374
+    },
+    "provenance/execution_sources/scripts/analysis/audit_so12_cancer_pooled_union.py": {
+      "sha256": "cd6934f6a1c68fbb76bf97fa1f22bc6e8cde5a0ad0de528d81302bfe67a902df",
+      "size_bytes": 15104
+    },
+    "provenance/execution_sources/scripts/analysis/promote_so12_cancer_pooled_union_result.py": {
+      "sha256": "706854c5ddb0d97a9af46f352dc6fe96007e97e046283f894872d8eee809e9c8",
+      "size_bytes": 13148
+    },
+    "provenance/execution_sources/scripts/analysis/run_so12_cancer_limited_union.py": {
+      "sha256": "84bcb0eb074dcb5173aece0052a155c609027c2f9133a282d03c9804faaf7b6e",
+      "size_bytes": 15775
+    },
+    "provenance/execution_sources/scripts/analysis/run_so12_cancer_pooled_union.py": {
+      "sha256": "389dc09a622bfe8f81ffa6896c0ad1252b101a2d3db58b9fa70e9f87967dbc71",
+      "size_bytes": 11211
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_backward_metrics.py": {
+      "sha256": "4335a474926f308b5fa416dbf71693aa39609dae02daedec0cf1b9fcfec8f00c",
+      "size_bytes": 13328
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_limited_metrics.py": {
+      "sha256": "6d90d50cce29f09d00ce9c81690cf927780ccec3079ae4e20b00831b375e33a8",
+      "size_bytes": 18602
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_metrics.py": {
+      "sha256": "099d256bd6118c3117aa5f050e5b409c20ca499e3f8e8249283ade19e36f49b1",
+      "size_bytes": 22345
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_pooled_metrics.py": {
+      "sha256": "4c35d997fec20743e3e0c2ca187fa4833066da098b42b4ed7407d0ee553c8ddf",
+      "size_bytes": 14864
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_pooled_report.py": {
+      "sha256": "efc18ba3f07e181d877a032f62b9a91e10fbeddb6200b00d2b92fdc53b5d068f",
+      "size_bytes": 12972
+    },
+    "provenance/execution_sources/tests/unit/spatial_benchmark/test_so12_cancer_pooled_metrics.py": {
+      "sha256": "6ba4ae55c0724d855933b9e9bc1432c209c24dde170a70efd55bb11df6ee6ebb",
+      "size_bytes": 7192
+    },
+    "provenance/git_status_at_start.txt": {
+      "sha256": "e5834916c83de70ec001603f751f813f5ffe8f244d37ac57347ced20b78a8c49",
+      "size_bytes": 23634
+    },
+    "provenance/parent_before.json": {
+      "sha256": "f04984767549a93a9a42028564215e5add32e96d6cf46a8bd83b06567a04d5ad",
+      "size_bytes": 135
+    },
+    "provenance/source_binding.json": {
+      "sha256": "b7020575a1708b691cfe793c997f56fe0ed13f2545929e37d18769912a9b423b",
+      "size_bytes": 2187
+    },
+    "report/index.html": {
+      "sha256": "a14ba451f19df8cf87555f2360a31d004c061186714250b598aebcbcc613f115",
+      "size_bytes": 1593011
+    },
+    "report_data_review.json": {
+      "sha256": "20fc79e7ce311466163971d9e38436278f6460217a7699181d84ad8fd5d6a63b",
+      "size_bytes": 4369
+    },
+    "report_manifest.json": {
+      "sha256": "2d27b60032a8d934b59b70cf55b5041d5ed55edfbde5d4ac80f4c994fc70ffd7",
+      "size_bytes": 2180
+    },
+    "stages/audit_so12_cancer_pooled_union.json": {
+      "sha256": "84aedbfb6847f3368702509e0cacf8382a01e0cdd402e453dd046ef81d7e30f7",
+      "size_bytes": 61
+    },
+    "stages/so12_cancer_pooled_metrics.json": {
+      "sha256": "ea2f5202e30af8d2fbb04c98d3fac93fc777e9755147cf1f088af029ba20fff5",
+      "size_bytes": 61
+    },
+    "stages/so12_cancer_pooled_report.json": {
+      "sha256": "ff1c86ffc40407efefabb5268706fe1957a92119a50ceaea5393e474214b4416",
+      "size_bytes": 61
+    },
+    "summary.json": {
+      "sha256": "f4b2462aa734dd9acd075e5f0a706daef27cec30af748690551824c8e5d473b2",
+      "size_bytes": 6832
+    },
+    "task_contract_at_publication.md": {
+      "sha256": "c8ee9aedd0f929b3cfac498d4d82d9b9847894f9831ccbac8904a0fae3b2da3e",
+      "size_bytes": 8313
+    },
+    "task_contract_at_start.md": {
+      "sha256": "66df1c5271a9b3d7bc07076cf68ebe8b8e70b0e54f4df112fbb30e9f08dfea99",
+      "size_bytes": 5663
+    }
+  },
+  "parent_manifest_sha256": "e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0",
+  "passed": true,
+  "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+  "status": "complete",
+  "summary": {
+    "aggregation": "pooled_native_pixel_micro_F1_with_shared_cluster_selection",
+    "bar_axis_limits": [
+      0.78,
+      0.88
+    ],
+    "campaign_id": "cmp_20261018_so12_cancer_pooled_union",
+    "cell_retention_definition": "Fixed pooled denominator of cells with at least one valid owned pixel inside their annotation; unweighted count.",
+    "cluster_retention_definition": "Fixed denominator of unique global clusters overlapping either annotation at step zero.",
+    "cores": [
+      15,
+      23
+    ],
+    "evaluation_id": "ev_so12_cancer_pooled_union_s0_20261018",
+    "limitations": "Cluster groups are selected using both scored annotations. Scores are descriptive agreement, not independent cancer-classifier accuracy. Registration is approximate, annotation exhaustiveness is unverified, and only two cores contribute biological observations. Pooling weights native evaluable pixels equally, not cores or calibrated physical area. Greedy removal does not certify globally optimal subsets at every cluster count.",
+    "maximum_defensible_claim": "Exploratory pooled overlap and cell-retention tradeoffs for one shared cluster group across two approximately aligned test cores; no independent accuracy or population superiority.",
+    "maximum_greedy_gap_to_exact_unrestricted": 0.0,
+    "n_cells": 81607,
+    "partitions": 56,
+    "passed": true,
+    "paths": 56,
+    "primary_resolution": 1.0,
+    "primary_scores": [
+      {
+        "best_f1": 0.8630007828129077,
+        "cluster_retained_pct": 68.75,
+        "fn": 15066,
+        "fp": 103065,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 16,
+        "k": 11,
+        "majority_cells_retained_pct": 96.7494313874147,
+        "method": "h4",
+        "precision": 0.7830836158834189,
+        "recall": 0.9610836445918509,
+        "retention90_f1": 0.8630007828129077,
+        "retention95_f1": 0.8630007828129077,
+        "roi_cells_retained": 51081,
+        "roi_cells_retained_pct": 96.70402483813562,
+        "roi_cells_total": 52822,
+        "selected_clusters": [
+          0,
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          11,
+          15
+        ],
+        "tp": 372072
+      },
+      {
+        "best_f1": 0.8662646630553653,
+        "cluster_retained_pct": 62.5,
+        "fn": 31082,
+        "fp": 78855,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 16,
+        "k": 10,
+        "majority_cells_retained_pct": 90.7827899924185,
+        "method": "h3",
+        "precision": 0.8186870417165811,
+        "recall": 0.9197133838579524,
+        "retention90_f1": 0.8662646630553653,
+        "retention95_f1": 0.8653773838939692,
+        "roi_cells_retained": 47932,
+        "roi_cells_retained_pct": 90.74249365794556,
+        "roi_cells_total": 52822,
+        "selected_clusters": [
+          0,
+          1,
+          2,
+          4,
+          5,
+          7,
+          8,
+          11,
+          12,
+          15
+        ],
+        "tp": 356056
+      },
+      {
+        "best_f1": 0.8601693686209765,
+        "cluster_retained_pct": 75.0,
+        "fn": 16445,
+        "fp": 104076,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 16,
+        "k": 12,
+        "majority_cells_retained_pct": 96.4764973464746,
+        "method": "h2",
+        "precision": 0.7807860243613209,
+        "recall": 0.9575216072821577,
+        "retention90_f1": 0.8601693686209765,
+        "retention95_f1": 0.8601693686209765,
+        "roi_cells_retained": 50937,
+        "roi_cells_retained_pct": 96.43141115444323,
+        "roi_cells_total": 52822,
+        "selected_clusters": [
+          0,
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          10,
+          11,
+          13,
+          15
+        ],
+        "tp": 370693
+      },
+      {
+        "best_f1": 0.8583333234184467,
+        "cluster_retained_pct": 72.22222222222223,
+        "fn": 26429,
+        "fp": 92640,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 18,
+        "k": 13,
+        "majority_cells_retained_pct": 93.81728582259288,
+        "method": "h1",
+        "precision": 0.7956541207767085,
+        "recall": 0.9317323538376496,
+        "retention90_f1": 0.8583333234184467,
+        "retention95_f1": 0.826047055828836,
+        "roi_cells_retained": 49536,
+        "roi_cells_retained_pct": 93.77910719018591,
+        "roi_cells_total": 52822,
+        "selected_clusters": [
+          0,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          10,
+          11,
+          13,
+          14,
+          17
+        ],
+        "tp": 360709
+      },
+      {
+        "best_f1": 0.8241728152216488,
+        "cluster_retained_pct": 71.42857142857143,
+        "fn": 51527,
+        "fp": 91670,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 14,
+        "k": 10,
+        "majority_cells_retained_pct": 89.67778620166793,
+        "method": "h0",
+        "precision": 0.7854573454003337,
+        "recall": 0.8669027581895862,
+        "retention90_f1": 0.8217580547112462,
+        "retention95_f1": 0.7868449736242158,
+        "roi_cells_retained": 47348,
+        "roi_cells_retained_pct": 89.63689371852637,
+        "roi_cells_total": 52822,
+        "selected_clusters": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          8,
+          9,
+          10,
+          12
+        ],
+        "tp": 335611
+      },
+      {
+        "best_f1": 0.7981667752128712,
+        "cluster_retained_pct": 66.66666666666667,
+        "fn": 56242,
+        "fp": 111106,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 12,
+        "k": 8,
+        "majority_cells_retained_pct": 86.81197877179682,
+        "method": "pca",
+        "precision": 0.748630096696395,
+        "recall": 0.8547236385991559,
+        "retention90_f1": 0.7972192513368984,
+        "retention95_f1": 0.7972192513368984,
+        "roi_cells_retained": 45850,
+        "roi_cells_retained_pct": 86.80095414789292,
+        "roi_cells_total": 52822,
+        "selected_clusters": [
+          0,
+          2,
+          3,
+          4,
+          5,
+          7,
+          9,
+          10
+        ],
+        "tp": 330896
+      },
+      {
+        "best_f1": 0.8322910294699722,
+        "cluster_retained_pct": 69.23076923076923,
+        "fn": 40185,
+        "fp": 99639,
+        "greedy_gap_to_parent_unrestricted_f1": 0.0,
+        "initial_clusters": 13,
+        "k": 9,
+        "majority_cells_retained_pct": 89.93745261561789,
+        "method": "scvi",
+        "precision": 0.7768903159931212,
+        "recall": 0.8961998047207972,
+        "retention90_f1": 0.8305391499756435,
+        "retention95_f1": 0.8068914504626225,
+        "roi_cells_retained": 47484,
+        "roi_cells_retained_pct": 89.8943621975692,
+        "roi_cells_total": 52822,
+        "selected_clusters": [
+          0,
+          2,
+          3,
+          4,
+          6,
+          7,
+          8,
+          9,
+          11
+        ],
+        "tp": 346953
+      }
+    ],
+    "primary_seed": 0,
+    "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+    "status": "complete"
+  }
+}

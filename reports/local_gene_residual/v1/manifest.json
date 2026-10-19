@@ -1,0 +1,13 @@
+{
+  "files": {
+    "comparison.csv": "57ca7fa959e9401ac7d2230d4a8a986605235c70e5b6afe2a0b791e8368186ae",
+    "learning_curves.csv": "72e3c21aba91cd5a432265885fcb5bd38192e0ff6309529d55825c4c962acf4d",
+    "learning_curves.png": "d155d2765576cc3d7db91c595f4da9383d1f5c0fc4947058f5360662b2164b4d",
+    "mask_strata.csv": "5853ef1c5c9f10a80ea6668cac4f622343007d7caf5e89775800df6e08934af4",
+    "per_core.csv": "9869a4556e31c331c05319aab7ab5db044a0a2c68094057e43eb92f289bea4f2",
+    "report.md": "ded8543eac5b6b79ded6d0d7fa92c11128f77d046a7bcfc910be029f944fcf05",
+    "report_builder.py": "a6e898a5af2c2c8523f904ea7f092a78abffcdfe54c3c196c6f9f4e7f31b6392",
+    "summary.json": "cdefe8d319a2739a8732a15004c740382cdf91b3b74dd858b69b36ac23c8a6f1"
+  },
+  "schema": "checksummed_local_report_v1"
+}

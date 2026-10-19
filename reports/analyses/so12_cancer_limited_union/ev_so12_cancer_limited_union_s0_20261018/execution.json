@@ -1,0 +1,10 @@
+{
+  "child_peak_rss_kib": 4895740,
+  "compute": "CPU only, four threads; no training or GPU work",
+  "failures": [],
+  "free_bytes": 6463217664,
+  "incremental_bytes": 34284895,
+  "passed": true,
+  "runtime_seconds": 147.35105169704184,
+  "status": "complete"
+}

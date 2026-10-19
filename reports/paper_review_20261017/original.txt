@@ -1,0 +1,166 @@
+
+--- PAGE 1 ---
+         BAGM을 이용한 위 조직의 공간 세포 표현 학습
+
+        BAGM: Learning Spatial Cell Representations in Gastric Tissue
+
+                                                 Abstract
+
+Spatial transcriptomics enables cell states to be studied within their tissue context. We introduce Bio-Architectural Graph Modeling
+(BAGM), which learns cell representations by reconstructing randomly masked RNA expression using the remaining molecular
+measurements and spatial neighborhoods. Relative geometry modulates graph attention, and training minimizes Huber loss at masked
+entries. In gastric tissue, Leiden clustering of the learned representations showed clearer qualitative correspondence with clinician-
+identified cancer regions than PCA, with improved delineation after four attention layers. However, expression-prediction precision,
+recall, and AUPRC remained limited. These observations motivate quantitative validation, evaluation on larger datasets, and
+investigation of learned dependencies through attention and sensitivity analyses.
+
+1. Introduction                                                  study provides a basis for further method development and
+                                                                     evaluation on larger datasets.
+Spatial  transcriptomics  connects  molecular  measurements
+with the organization of intact tissue. Platforms such as the         2. Methods
+CosMx Spatial Molecular Imager support highly multiplexed
+                                                       The gastric tissue dataset comprised 28 cores from 14 donors,
+RNA and protein profiling with subcellular localization [1],
+                                                                     including metaplasia and cancer cores, profiled using CosMx
+creating opportunities to characterize cell states together with
+                                                         SMI. Raw RNA  counts were  normalized  using  Pearson
+their spatial context. Here, we focus on RNA expression in
+                                                                         residuals [8] to support joint analysis across slides (batches)
+gastric  tissue and representations  that  retain both  cellular
+                                                                 assayed under different conditions.
+properties and neighborhood information.
+                                                          Each tissue core is represented as a spatial graph whose nodes
+Self-supervised   learning   provides   a  way   to   derive
+                                                                       are  cells and whose edges connect nearby  cells. BAGM
+representations without exhaustive cell annotations. Masked
+                                                                       reconstructs RNA measurements randomly masked across
+reconstruction has been effective in computer vision [2], and
+                                                                               cells from the remaining expression and spatial neighborhood
+generative  models  such  as scGPT  extend  representation
+                                                                   information (Fig. 1). A shared encoder combines each cell’s
+learning  to  cellular  expression  data  [3].  Spatial methods
+                                                                        available expression, mask indicators, and metadata into an
+further incorporate tissue organization: GraphST combines
+                                                                                      initial representation.
+graph-based    contrastive    learning    with    expression
+reconstruction [4], while SpaMask [5] and the recent SAGE-        Building on graph and Transformer attention [9, 10], each cell
+FM preprint [6] incorporate masked expression prediction         integrates  neighboring  representations  according  to  their
+within spatial graphs. These studies establish a foundation for         relevance  to  the  prediction.  Relative  spatial  geometry
+learning from molecular measurements and neighborhood        modulates the comparison between cells and the weighting of
+structure.                                                      neighborhood information. The encoded cell profiles supply
+                                                                       the molecular content exchanged through attention. All cell
+An informative clustering representation does not by itself
+                                                                              states are updated through four successive graph attention
+identify the molecular relationships associated with  tissue
+                                                                            layers, integrating neighborhood information into the learned
+organization. Predicting hidden expression from cellular and
+                                                                         representations.
+neighborhood context provides a complementary task through
+which  such  relationships  can be  investigated.  Predictive     A decoder  predicts RNA  expression from  the  final  cell
+frameworks such as MISTy demonstrate how information         representations. Training minimizes Huber loss only at the
+from  different  spatial  contexts can be  used  to examine       masked entries. The learned cell representations are then used
+conditional  molecular  associations   [7].  This  motivates         for downstream analysis of tissue organization. Architectural
+representations that support both tissue-level description and          details are provided in Appendix A.
+subsequent investigation of candidate dependencies.           We apply Leiden  clustering [11]  to the embeddings and
+We propose BAGM  to learn  cell representations through        examine their correspondence with clinician-identified cancer
+masked expression prediction on spatial cell graphs. Relative         regions, using PCA-based representations as a baseline. We
+geometry shapes the weighting of information exchanged         also compare the initial state h0 with h4, the state after four
+between  cells, and successive attention layers  refine  their        graph  attention  layers,  to examine changes  in the  spatial
+representations.  We   examine   whether   the   resulting         organization of the cluster maps.
+embeddings delineate clinician-identified cancer regions more
+clearly than a PCA baseline and whether  this delineation
+changes between the initial and final graph layers. The present
+
+--- PAGE 2 ---
+Figure 1. BAGM schematic. (a) Masked expression, mask indicators, and metadata initialize cell states. (b) Four graph attention layers update all
+cells; geometry-dependent feature modulation and bias are detailed in Appendix A. (c) A decoder predicts expression, with Huber loss evaluated
+only at masked entries.
+
+3. Results                                                 complement  this approach by  quantifying how  predicted
+                                                                   expression responds locally to changes in molecular inputs
+Leiden clustering of BAGM embeddings produced  spatial
+                                                           from the same cell or its neighbors. These proposed analyses
+domains that showed qualitative correspondence with cancer
+                                                         would describe the model’s learned sensitivities and generate
+regions identified by clinicians. Compared with PCA-based
+                                                                        biological hypotheses; independent evidence would be needed
+representations, BAGM yielded clearer visual delineation of
+                                                                          to establish actual cellular interactions or responses. Their
+these regions, suggesting that the embeddings capture tumor-
+                                                                          analytical value also depends on improved prediction and
+associated tissue organization.
+                                                                          reproducibility.
+The  initial representations h0 showed  less  distinct cancer-
+                                                        Referencesregion  delineation,  whereas  the  final  representations  h4
+showed clearer correspondence with the clinician-identified          [1] S. He, R. Bhatt, C. Brown, et al., “High-plex imaging of RNA
+regions. This difference is consistent with refinement of the            and proteins at subcellular resolution in fixed tissue by spatial
+representations   through   neighborhood-aware   attention.             molecular imaging,” Nat. Biotechnol., vol. 40, pp. 1794–1806,
+                                                                           2022.
+However, the comparison does not isolate the contribution of
+                                                                                  [2] K. He, X. Chen, S. Xie, et al., “Masked Autoencoders Are
+spatial geometry from other transformations performed by the
+                                                                                Scalable Vision Learners,” Proc. IEEE/CVF CVPR, pp. 16000–
+graph layers.                                                                         16009, 2022.
+Despite the spatial organization captured by the embeddings,          [3] H. Cui, C. Wang, H. Maan, et al., “scGPT: toward building a
+precision, recall, and the area under the precision–recall curve             foundation model for single-cell multi-omics using generative
+                                                                             AI,” Nat. Methods, vol. 21, no. 8, pp. 1470–1480, 2024.(AUPRC) for expression prediction remained limited under
+                                                                                  [4] Y. Long, K. S. Ang, M. Li, et al., “Spatially informed clustering,Huber-loss  training. These  clustering observations do not
+                                                                                        integration, and deconvolution of spatial transcriptomics with
+establish reliable transcript prediction. Quantitative evaluation                                                                      GraphST,” Nat. Commun., vol. 14, art. 1155, 2023.
+is needed to determine the magnitude and reproducibility of                                                                                  [5] W. Min, D. Fang, J. Chen, et al., “SpaMask: Dual masking graph
+the apparent improvement in cancer-region delineation.                    autoencoder with contrastive learning for spatial
+                                                                                   transcriptomics,” PLoS Comput. Biol., vol. 21, no. 4, e1012881,
+4. Discussion and Conclusion                                                                           2025.
+BAGM   offers  a   preliminary  framework   for   spatial          [6] X. Zhan, J. Xu, Y. Zheng, et al., “SAGE-FM: A lightweight and
+representation learning and future method development. The               interpretable spatial transcriptomics foundation model,” arXiv
+                                                                                     preprint arXiv:2601.15504, 2026.qualitative findings suggest  potential  for describing  tissue
+                                                                                  [7] J. Tanevski, R. O. Ramirez Flores, A. Gabor, et al., “Explainableorganization,  while  transcript  prediction  remains  limited.
+                                                                           multiview framework for dissecting spatial relationships from
+Controlled comparisons are needed to assess binary cross-                                                                               highly multiplexed data,” Genome Biol., vol. 23, art. 97, 2022.
+entropy or hurdle formulations; the present results do not                                                                                  [8] J. Lause, P. Berens, and D. Kobak, “Analytic Pearson residuals
+establish that Huber loss caused the limited precision, recall,               for normalization of single-cell RNA-seq UMI data,” Genome
+or   AUPRC.    Quantitative    region-level    evaluation,                Biol., vol. 22, art. 258, 2021.
+neighborhood ablations, and assessment on larger datasets are          [9] P. Veličković, G. Cucurull, A. Casanova, et al., “Graph Attention
+priorities.                                                                Networks,” Proc. ICLR, 2018.
+                                                                             [10] A. Vaswani, N. Shazeer, N. Parmar, et al., “Attention Is All You
+Attention  paired  with   attribution   to  individual RNA
+                                                                        Need,” Adv. Neural Inf. Process. Syst., vol. 30, 2017.
+predictions  could  help  identify  candidate  dependencies
+                                                                             [11] V. A. Traag, L. Waltman, and N. J. van Eck, “From Louvain to
+between  neighboring  cells  and  guide  analysis  of  gene                                                                             Leiden: guaranteeing well-connected communities,” Sci. Rep.,
+programs and expression associations. Jacobian analysis could               vol. 9, art. 5233, 2019.
+
+--- PAGE 3 ---
+Appendix A. Graph Attention Architecture                   Here, g is the feature gate, β the geometry bias, and N(i) the
+                                                             incoming neighbors. Queries and keys are L2-normalized with
+Cell encoder. Let G denote the number of modeled genes.                                                                    ε = 10 ⁻⁶. Each head has a learnable scale τ, initialized to 1.886
+Separate linear projections of masked expression, the gene-
+                                                            and  bounded  between   0.1  and  20  by  a  sigmoid
+mask vector, and cell metadata are summed with a learned
+                                                                      parameterization. Geometry output projections start at zero,
+bias to form a 256-dimensional state, followed by LayerNorm,
+                                                                   giving unit gates and zero bias. Attention aggregates projected
+GELU, and dropout. Masked expression entries are set to
+                                                                 neighbor values; geometry enters the scoring function without
+zero. Four independently parameterized graph attention blocks
+                                                                            direct value modulation. All cell states and their queries, keys,
+each use eight heads of 32 dimensions.
+                                                            and values are recomputed at each layer.
+Spatial attention. Each block applies LayerNorm before bias-
+                                                          Updates and decoding. Concatenated heads pass through a
+free query, key, and value projections. Its geometry encoder
+                                                                          bias-free 256-dimensional  output  projection,  dropout, and
+maps 70 edge  features (64  distance-basis values and  six
+                                                                         residual addition. A second pre-normalized 256→1024→256
+relative-distance, orientation, and anisotropy descriptors) to
+                                           GELU  feed-forward  transformation  uses  another  residual
+128 dimensions using a linear projection, LayerNorm, and
+                                                                    connection. The 256→1024→G  decoder  uses GELU and
+GELU. Two bias-free output projections generate one 32-
+                                                                 dropout between projections and has unconstrained outputs.
+dimensional feature gate and one scalar bias per head. Gates
+                                                            Dropout is 0.1; attention dropout is zero. Training uses Huber
+are formed with 1 + 0.5 tanh and divided by their channel
+                                                                          loss with δ = 1 at masked entries.
+mean; biases use tanh. For incoming neighbor j of receiver i
+and head a,

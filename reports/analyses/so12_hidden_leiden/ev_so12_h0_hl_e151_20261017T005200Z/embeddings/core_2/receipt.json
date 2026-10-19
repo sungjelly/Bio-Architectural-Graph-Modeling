@@ -1,0 +1,50 @@
+{
+  "schema": "so12_all_observed_hidden_extraction_v1",
+  "completed_at": "2026-10-17T00:55:53.850227+00:00",
+  "core": {
+    "core_number": 2,
+    "alias": "SO1-C02",
+    "n_cells": 7450,
+    "row_start": 8924,
+    "row_stop": 16374,
+    "cell_rows_sha256": "992389e1761572cd7cf43a1da02f82dd9458e58fe3e6dddbb8a351b22c9f8835",
+    "edges": 1683296,
+    "split": "train"
+  },
+  "inputs_sha256": "8594f76bc669ef19c1c27da2bb4f2d044e6b5c4c423b5c66861bc34f8984e878",
+  "checkpoint_sha256": "6b4526508d223fb8a286084f57fc5f4b36129db6afeffaa328672d2c06226af4",
+  "checkpoint_epoch": 151,
+  "device": "cuda:2",
+  "gpu_name": "NVIDIA GeForce RTX 3090",
+  "torch_version": "2.13.0+cu130",
+  "cuda_version": "13.0",
+  "tf32": false,
+  "dtype": "float32",
+  "deterministic_algorithms": true,
+  "cudnn_deterministic": true,
+  "cublas_workspace_config": ":4096:8",
+  "elapsed_seconds": 0.4798835669644177,
+  "peak_allocated_bytes": 1331794432,
+  "peak_reserved_bytes": 2141192192,
+  "audit": {
+    "all_observed": true,
+    "masked_entries": 0,
+    "complete_core_graph": true,
+    "prediction_invariance_checked": false,
+    "hL_equals_full_node_embedding": true
+  },
+  "files": {
+    "h0.npy": {
+      "sha256": "fadf5d02e8b700e1e16459a345e8264218d393c8c1dc2fea2f94f161ba4c68ec",
+      "size_bytes": 7628928
+    },
+    "hL.npy": {
+      "sha256": "72a10643ae8b3155a8451ef60b5cd2846c08cd10fbc1064ada21428f169e050c",
+      "size_bytes": 7628928
+    },
+    "delta_l2.npy": {
+      "sha256": "4f4767a5b6dce75dda5ef518a275ecd3e4fbb4a01c964f342d0e8dd7e9706f24",
+      "size_bytes": 29928
+    }
+  }
+}

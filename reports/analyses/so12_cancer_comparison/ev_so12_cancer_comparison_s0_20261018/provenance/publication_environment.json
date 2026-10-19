@@ -1,0 +1,14 @@
+{
+  "free_bytes": 6491299840,
+  "git_commit": "f2776df3769620e7c2b1728116a71ca086c7e3b4",
+  "python_packages": {
+    "igraph": "1.0.0",
+    "leidenalg": "0.12.0",
+    "matplotlib": "3.11.1",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "torch": "2.13.0"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "axis_limits": {
+    "15": [
+      0.72,
+      0.8
+    ],
+    "23": [
+      0.86,
+      0.94
+    ]
+  },
+  "checks": [
+    "immutable source inventory",
+    "F1 matches audited path and source CSV",
+    "retention matches audited path",
+    "all bars and labels inside axes",
+    "bar tops equal full precision F1"
+  ],
+  "equal_axis_span": 0.08,
+  "matplotlib_version": "3.11.1",
+  "passed": true,
+  "primary_resolution": 1,
+  "primary_seed": 0,
+  "script": {
+    "sha256": "1a080a7e20f74b17ad1a8900a15a20b045b9a52c09875ff9fcfaa3f96e0fae4a",
+    "size_bytes": 8927
+  },
+  "source_evaluation": "ev_so12_cancer_backward_union_s0_20261018",
+  "source_manifest_sha256": "88f966f74307485e1c66c2728f41b4efe9bb51860823c63133976605c0483ffa",
+  "source_summary": {
+    "sha256": "c7cb38c19ba849f66eb71c1c74394be04bc3268aa6b947c00aafc2d737b9267c",
+    "size_bytes": 11485
+  },
+  "type": "presentation_only",
+  "verified_primary_rows": 14,
+  "visual_review": "passed: root and independent /root/heist_methods directly inspected both PNG figures; all 14 values, labels, axes, retention table and layout verified"
+}

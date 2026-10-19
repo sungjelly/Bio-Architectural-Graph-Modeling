@@ -1,0 +1,2 @@
+{"stage": "leiden", "status": "running", "time": "2026-10-18T06:41:00.296401+00:00", "gpu": null}
+{"stage": "leiden", "status": "complete", "time": "2026-10-18T06:41:25.722244+00:00", "free_bytes": 6552870912}

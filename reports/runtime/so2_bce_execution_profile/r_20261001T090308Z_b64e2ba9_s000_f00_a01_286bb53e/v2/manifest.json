@@ -1,0 +1,79 @@
+{
+  "command": [
+    "/venv/main/bin/python",
+    "/workspace/BAGM-relative-qkv-analysis/scripts/analysis/report_so2_bce_execution_profile.py",
+    "--run-id",
+    "r_20261001T090308Z_b64e2ba9_s000_f00_a01_286bb53e",
+    "--version",
+    "v2"
+  ],
+  "created_at_utc": "2026-10-01T09:24:39.612207+00:00",
+  "files": {
+    "cuda_activity_candidates.csv": "ab24cfd6b2cd87da4b57b188a6366d7f48e3ada2d8b848180d1b8f1588736f12",
+    "cuda_annotation_candidates.csv": "d12880f5ac913dc3150ca4bf27f57ca98195fa50400a488529ecbf4f98200176",
+    "operators.csv": "0154d0e207e59b3714e7dec28f375c9f063386582dd1cb3f342c048f1f0f712d",
+    "operators.png": "c392c4e69b9ab7a0436eb76efb9dbeb916dd4bd53d92b4626216f935346e831a",
+    "operators.svg": "387b4b1a52897f61c9312a52d964c36d0c1c1c60710ba401a9f4d17972a1047c",
+    "report.md": "81b1405066edd45f99ff4b59b04e9ba8d6a33bf6c859ee696ab40b465ce7d61a",
+    "report_builder.py": "014b3e0fa307a42f87c8752f99722ed53b69d025aa32b73496f007aceb4ff997",
+    "report_configuration_guard.py": "ab14db880b7c31694b5b72b8d37c5f32f77ad3e2d062803a2ee6e43b6c60a816",
+    "scalar_sync_copy_candidates.csv": "2742ab129c36d5874f109bed1afb8322cc2d680b4060a8ce7fc4a57e63522b21",
+    "summary.json": "5cd79e3500333b2d9dbfa28882ebe335b7aafcc18df144e1085cd5b994dda1ad",
+    "update_times.png": "6800f960745033f643ad3f43a5a734ca2843c8ed8c40a841a29e532a15e43114",
+    "update_times.svg": "5390cca5df3f41c7a57b8b14902ce14a63862d9775572a5f9a98bb1ef7de46c7",
+    "update_timings.csv": "4d81644257a400d5d34fac108216057f243b8c6818b42461474320175270b909",
+    "wall_ranges.csv": "90c354e6af0cabde0def3f463a22e28d858f3f28df0f2d7b0c99a1974035063f",
+    "wall_ranges.png": "1b3833d79ee2fb4c375f57a243794f0d8c86c347dc03d9c14b86f2c9f2de966d",
+    "wall_ranges.svg": "f22f9c8b185ae6e376cdfe12b99140575559651300611b4a9400efe341d9ba42"
+  },
+  "schema": "so2_bce_execution_profile_report_manifest_v1",
+  "source_runs": [
+    {
+      "bundle_path": "runs/2026/10/r_20261001T090308Z_b64e2ba9_s000_f00_a01_286bb53e",
+      "checkpoint_sha256": "ade29ac02a69291fa607ee141850b6b2a1fb07574ad80e12431b16803820eaa1",
+      "files": {
+        "_SUCCESS": "c42923d0586a0fc83bbfc8ff41ad7abdaf3ed7841dcd83b829abbd3ca8ab9f98",
+        "config.resolved.yaml": "75352594aec1e9e4cf50566697a964ed6c120f5ef38f832d7e4294b0725c5be8",
+        "diagnostics/execution_operator_profile.json": "105acd6fe2933eaae2899004e1a818c772a9e56cf9082850250b31986a74a5f1",
+        "diagnostics/execution_profile_environment.json": "c47d49a0b956034cbc48bea1b1dab6fd12b52ae2d1c80264d1a5db574abec93e",
+        "diagnostics/execution_profile_preflight.json": "ec4065686e24cafe45c04e018e69e61643ee68610a2b4ab6d0377c122e644c1c",
+        "diagnostics/execution_profile_resource_samples.jsonl": "d77a797e4855e04169337309f25d0999bd5fa47973b64355a76bfd9fafc7b2d0",
+        "diagnostics/execution_profile_summary.json": "9bf8076a138a5d177bb7a85d71251028f0f1888cc5df634288669937a18cb1c4",
+        "diagnostics/final_checkpoint_reload_verification.json": "33f423331d75f854c87befe4c2a936cc93a1de13a4dbde44ebaa3c1ca508da41",
+        "manifest.yaml": "0453b4a021ed10f4551a75a2ce3751468df233db4cedc53aa2ab19b6e1c7518e",
+        "metrics/final.json": "17755ba9db909faa1235182988ec5c4963283bd3b178f17738d583531ec82e69",
+        "provenance/artifact_checksums.json": "0c35120b38810ca3af6decc4c78a60fb93ae641b024b85dab22a4d8da4033c4f",
+        "provenance/data_fingerprints.json": "cbccc2db9270e6f300e163d68d9e2fb3396543c9a7eac2a6f787dd8c70e2302f",
+        "provenance/frozen_task_contract.md": "0df930f398594370fb7fdf07b8cdebdea4209be3d62e3141847a010fce39c6bb",
+        "provenance/git.json": "bc5156612c24dba629a04de9ba96116150c3884a829efc6796d828da3e9f77f7",
+        "provenance/instrumentation_files.json": "d33490ec3912234b0cc955926fbfa912f09ce6122d5ab154c556ed0ed973f4b7",
+        "provenance/parent_reference.json": "78f53d82615b9f08dbce452782909762300b2f35ef5615c8b2ed8fea6339e5b1",
+        "provenance/source_files.json": "46d63bdab5c57bcdd8dc55de6a14fb2fb14a3268dbda570a921a9e1af80016a5",
+        "provenance/source_snapshot/scripts/analysis/launch_so2_bce_execution_profile.py": "d67a7fa464bc2f8a5278b1e4fb74a01572f8fa36eb8736da620ea75439512536",
+        "provenance/source_snapshot/scripts/analysis/profile_so2_bce_execution.py": "ad689a56e362bf3d745c564d9eb99f9402c11121a968c15fb3a623822e3bbf77",
+        "provenance/source_snapshot/scripts/analysis/so2_bce_execution_profile_contract.py": "ab14db880b7c31694b5b72b8d37c5f32f77ad3e2d062803a2ee6e43b6c60a816",
+        "provenance/split_fingerprint.json": "9a752cf9f73d507676b28f5ee6a4f7f8f8834927ca2f83bd908ab942e0433769",
+        "results/epoch_metrics.csv": "6cd1ae0dc49f94e0499f8192a1f44775a2fd317ecc4e9d7018fe01185be44ab3",
+        "summary.json": "8bca31904248dcf6f8868a3dbe33b3d0d668df8d9d607d0ec0999ff7654d601b"
+      },
+      "run_id": "r_20261001T090308Z_b64e2ba9_s000_f00_a01_286bb53e"
+    },
+    {
+      "bundle_path": "runs/2026/10/r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd",
+      "checkpoint_sha256": "98498202dd650969a945af9e762bb6882dd05e89d1a7dc35a359b4bd009056fd",
+      "files": {
+        "_SUCCESS": "ab824f4bf545c54f744cc788e59d6a4b570532efb1f1169792d0868a1db71724",
+        "config.resolved.yaml": "29c0044d3cc64be4d10d7ca3e38ca2e953e5fc364ef45007db95e8ee0f8d8867",
+        "diagnostics/final_checkpoint_reload_verification.json": "03707e82e0e61f5a2e0165347412607c5ab31d8c0261e2088cfaed011620e98c",
+        "diagnostics/optimization_audit_preflight.json": "e4ed70d98b9356bd0fd5aaa5d0c503f0ef0ab25474773a8f2777901e36f2a0a5",
+        "manifest.yaml": "1b59094cb37346ba71456415fdaec04430b327357ab9cec386eadc9b865b6747",
+        "provenance/artifact_checksums.json": "8cb558d4ff359413baf47a010eeaee81c43183678348a92fbf1b790268be9c79",
+        "provenance/source_files.json": "46d63bdab5c57bcdd8dc55de6a14fb2fb14a3268dbda570a921a9e1af80016a5",
+        "results/epoch_metrics.csv": "228b18174010915fa93a898656de917c3758942a82fa4f2a34f5a218126cd269",
+        "summary.json": "4a3b48d2d5d44afe65321904f2166ebc9b49d43abc75ffc48018ffd900012afd"
+      },
+      "run_id": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd"
+    }
+  ],
+  "working_directory": "/workspace/BAGM-relative-qkv-analysis"
+}

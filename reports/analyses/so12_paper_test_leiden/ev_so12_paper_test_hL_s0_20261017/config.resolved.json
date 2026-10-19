@@ -1,0 +1,42 @@
+{
+  "additional_storage_budget_gib": 0.5,
+  "all_observed_genes": true,
+  "analysis_source_sha256": {
+    "scripts/analysis/run_so12_paper_test_leiden.py": "03fae846dd3a6b7142ab733f8f8420fb146e9872743120b6c02fa938bff9409b",
+    "scripts/analysis/so12_hidden_clustering.py": "40e8a58c32ebc210ad52341d417df41fd194ada956d86985244b0a147b1cfce8",
+    "scripts/analysis/so12_hidden_extraction.py": "18496f99196a1c93367af5b4d70f4426a1706f80860a20f372d83f59d58ab2e9",
+    "scripts/analysis/so12_hidden_maps.py": "b335a25a03279756e4bcbd304e318e7c872cf31745a18e214512c0f7c61630ce",
+    "scripts/analysis/so12_paper_test_clustering.py": "3f611bf6dcada219e12c749a8cb378e3292faaffa530abe7cfcf5e240a91d122",
+    "scripts/analysis/so12_paper_test_extraction.py": "63fcd4925d36f1934ba6151e1789bddb1d36dd4396aa7fec43dd186d10e5da26",
+    "src/spatial_benchmark/attention_niche_geometry.py": "7a0e8f0805ef73b3aaf4c62f39b97065387fd95d0be283690954407245e6a835",
+    "src/spatial_benchmark/relative_qkv_embedding_clustering.py": "ce91615830cbb7ae96aecb7adfb21d33e0f6639f08e239e7ede788955f434c13"
+  },
+  "campaign_id": "cmp_20261017_so12_paper_test_leiden",
+  "classification": {
+    "lifecycle_stage": "exploratory_screen",
+    "scientific_variant": "fully_observed_hL_joint_test_leiden_r1",
+    "study_axis": "reserved_test_core_representation"
+  },
+  "dataset_id": "so12_paper_core_split",
+  "dimensions": 256,
+  "evaluation_id": "ev_so12_paper_test_hL_s0_20261017",
+  "graph": "unweighted_undirected_union",
+  "joint_test_clustering": true,
+  "knn": 30,
+  "leiden_iterations": -1,
+  "leiden_resolution": 1.0,
+  "metric": "cosine",
+  "minimum_free_gib": 5,
+  "normalization": "unchanged_training_fitted_parameters",
+  "primary_seed": 0,
+  "representation": "hL",
+  "schema": "so12_paper_test_leiden_v1",
+  "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+  "split_id": "so12_paper_21train_5val_2test_v1",
+  "stability_seed": 1,
+  "test_cells": 81607,
+  "test_cores": [
+    15,
+    23
+  ]
+}

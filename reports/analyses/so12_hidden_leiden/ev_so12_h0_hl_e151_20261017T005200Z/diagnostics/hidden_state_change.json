@@ -1,0 +1,236 @@
+{
+  "estimand": "descriptive_all_observed_state_change",
+  "all_cells": {
+    "mean_h0_norm": 10.301412136495625,
+    "mean_hL_norm": 14.071765448152618,
+    "mean_delta_l2": 11.234839780539218,
+    "mean_h0_hL_cosine": 0.6201425304997684
+  },
+  "per_core": [
+    {
+      "core": 1,
+      "cells": 8924,
+      "mean_h0_norm": 10.47631551192452,
+      "mean_hL_norm": 13.186913146907743,
+      "mean_delta_l2": 10.26534264992123,
+      "mean_h0_hL_cosine": 0.6464474975596353
+    },
+    {
+      "core": 2,
+      "cells": 7450,
+      "mean_h0_norm": 10.447960883783136,
+      "mean_hL_norm": 12.788662582809351,
+      "mean_delta_l2": 10.164825911126892,
+      "mean_h0_hL_cosine": 0.634079661858755
+    },
+    {
+      "core": 3,
+      "cells": 12190,
+      "mean_h0_norm": 10.180946704888521,
+      "mean_hL_norm": 15.624278740986904,
+      "mean_delta_l2": 12.318794475540907,
+      "mean_h0_hL_cosine": 0.6256653638046132
+    },
+    {
+      "core": 4,
+      "cells": 14657,
+      "mean_h0_norm": 10.350606045411107,
+      "mean_hL_norm": 13.653819521057166,
+      "mean_delta_l2": 10.749873324324353,
+      "mean_h0_hL_cosine": 0.6344816050255541
+    },
+    {
+      "core": 5,
+      "cells": 11399,
+      "mean_h0_norm": 10.267043494899307,
+      "mean_hL_norm": 16.051833891212066,
+      "mean_delta_l2": 12.269147840419944,
+      "mean_h0_hL_cosine": 0.6514166506315414
+    },
+    {
+      "core": 6,
+      "cells": 18212,
+      "mean_h0_norm": 10.45527961239848,
+      "mean_hL_norm": 14.057651514317287,
+      "mean_delta_l2": 10.741327210844563,
+      "mean_h0_hL_cosine": 0.656758265761056
+    },
+    {
+      "core": 7,
+      "cells": 10722,
+      "mean_h0_norm": 10.306080091869646,
+      "mean_hL_norm": 14.647470020976705,
+      "mean_delta_l2": 11.399974109588943,
+      "mean_h0_hL_cosine": 0.6387426761943605
+    },
+    {
+      "core": 8,
+      "cells": 4972,
+      "mean_h0_norm": 10.434324898366603,
+      "mean_hL_norm": 13.660004975724735,
+      "mean_delta_l2": 10.815124149993872,
+      "mean_h0_hL_cosine": 0.6301844783062329
+    },
+    {
+      "core": 9,
+      "cells": 17223,
+      "mean_h0_norm": 10.418608871068292,
+      "mean_hL_norm": 12.787423938534287,
+      "mean_delta_l2": 10.293408918367318,
+      "mean_h0_hL_cosine": 0.6228227921331605
+    },
+    {
+      "core": 10,
+      "cells": 14756,
+      "mean_h0_norm": 10.440581447031338,
+      "mean_hL_norm": 13.09547289320504,
+      "mean_delta_l2": 10.329558819988415,
+      "mean_h0_hL_cosine": 0.6369383249904278
+    },
+    {
+      "core": 11,
+      "cells": 18145,
+      "mean_h0_norm": 10.364778773478571,
+      "mean_hL_norm": 12.581730700733248,
+      "mean_delta_l2": 10.129152839382552,
+      "mean_h0_hL_cosine": 0.6259073320051048
+    },
+    {
+      "core": 12,
+      "cells": 7816,
+      "mean_h0_norm": 10.388394376172089,
+      "mean_hL_norm": 12.812435575651692,
+      "mean_delta_l2": 10.264563848439176,
+      "mean_h0_hL_cosine": 0.6268492586661643
+    },
+    {
+      "core": 13,
+      "cells": 5345,
+      "mean_h0_norm": 10.179640357818135,
+      "mean_hL_norm": 15.469237281807523,
+      "mean_delta_l2": 12.439923118352977,
+      "mean_h0_hL_cosine": 0.6006474757757223
+    },
+    {
+      "core": 14,
+      "cells": 9785,
+      "mean_h0_norm": 10.366181371640092,
+      "mean_hL_norm": 12.957707427615436,
+      "mean_delta_l2": 10.550362676787758,
+      "mean_h0_hL_cosine": 0.6128181188544045
+    },
+    {
+      "core": 15,
+      "cells": 38145,
+      "mean_h0_norm": 10.079567810687829,
+      "mean_hL_norm": 15.932286960362482,
+      "mean_delta_l2": 12.569069426881109,
+      "mean_h0_hL_cosine": 0.6221734859018347
+    },
+    {
+      "core": 16,
+      "cells": 16229,
+      "mean_h0_norm": 10.294522636336783,
+      "mean_hL_norm": 16.211500006118424,
+      "mean_delta_l2": 12.56793681052826,
+      "mean_h0_hL_cosine": 0.6374633980137271
+    },
+    {
+      "core": 17,
+      "cells": 9041,
+      "mean_h0_norm": 10.390632100757708,
+      "mean_hL_norm": 13.097553050128484,
+      "mean_delta_l2": 10.349898500836304,
+      "mean_h0_hL_cosine": 0.6344250142008927
+    },
+    {
+      "core": 18,
+      "cells": 11696,
+      "mean_h0_norm": 10.394476656648969,
+      "mean_hL_norm": 13.265720543224406,
+      "mean_delta_l2": 10.476736882896173,
+      "mean_h0_hL_cosine": 0.6339342936556455
+    },
+    {
+      "core": 19,
+      "cells": 19119,
+      "mean_h0_norm": 10.257572917185446,
+      "mean_hL_norm": 14.60244006624903,
+      "mean_delta_l2": 11.93460376884708,
+      "mean_h0_hL_cosine": 0.5911483620896455
+    },
+    {
+      "core": 20,
+      "cells": 12155,
+      "mean_h0_norm": 10.343056939952225,
+      "mean_hL_norm": 14.401344502398524,
+      "mean_delta_l2": 11.28710949322861,
+      "mean_h0_hL_cosine": 0.6349474442032118
+    },
+    {
+      "core": 21,
+      "cells": 4897,
+      "mean_h0_norm": 10.225525075489085,
+      "mean_hL_norm": 14.705801706937766,
+      "mean_delta_l2": 11.769179111202368,
+      "mean_h0_hL_cosine": 0.6120150257071377
+    },
+    {
+      "core": 22,
+      "cells": 11443,
+      "mean_h0_norm": 10.379841007376067,
+      "mean_hL_norm": 12.946639490225039,
+      "mean_delta_l2": 10.35265886078713,
+      "mean_h0_hL_cosine": 0.6270965869959684
+    },
+    {
+      "core": 23,
+      "cells": 43462,
+      "mean_h0_norm": 10.164432027968635,
+      "mean_hL_norm": 14.459565581386846,
+      "mean_delta_l2": 11.965412482511429,
+      "mean_h0_hL_cosine": 0.581354250849306
+    },
+    {
+      "core": 24,
+      "cells": 14506,
+      "mean_h0_norm": 10.388396656032779,
+      "mean_hL_norm": 12.831717675442256,
+      "mean_delta_l2": 10.019745896715875,
+      "mean_h0_hL_cosine": 0.6473889958688275
+    },
+    {
+      "core": 25,
+      "cells": 13147,
+      "mean_h0_norm": 10.200840603027883,
+      "mean_hL_norm": 13.436433804620336,
+      "mean_delta_l2": 11.3735335883105,
+      "mean_h0_hL_cosine": 0.5696038769243752
+    },
+    {
+      "core": 26,
+      "cells": 14856,
+      "mean_h0_norm": 10.351342931111077,
+      "mean_hL_norm": 14.204320354301416,
+      "mean_delta_l2": 11.538162641429205,
+      "mean_h0_hL_cosine": 0.6040259372951056
+    },
+    {
+      "core": 27,
+      "cells": 24245,
+      "mean_h0_norm": 10.282742437520374,
+      "mean_hL_norm": 13.005088282473746,
+      "mean_delta_l2": 10.601661101465858,
+      "mean_h0_hL_cosine": 0.6092197619768164
+    },
+    {
+      "core": 28,
+      "cells": 13122,
+      "mean_h0_norm": 10.40037904907945,
+      "mean_hL_norm": 13.811986220185636,
+      "mean_delta_l2": 11.098117115356787,
+      "mean_h0_hL_cosine": 0.6186903875880425
+    }
+  ],
+  "interpretation": "hL-h0 includes graph attention, feedforward, residual and normalization transformations. Magnitude is scale-dependent and is not an isolated neighbor effect."
+}

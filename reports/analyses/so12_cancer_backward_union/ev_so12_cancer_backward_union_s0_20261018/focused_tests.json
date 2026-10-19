@@ -1,0 +1,23 @@
+{
+  "command": [
+    "/venv/main/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/unit/spatial_benchmark/test_so12_cancer_backward_metrics.py",
+    "tests/unit/test_so12_cancer_limited_publication.py"
+  ],
+  "exit_code": 0,
+  "passed": true,
+  "runtime_seconds": 2.885940516134724,
+  "source_files": {
+    "tests/unit/spatial_benchmark/test_so12_cancer_backward_metrics.py": {
+      "sha256": "f442fc5a066c8a51fcdaef4111d40e254ebeae8e50bc7ddd8ab3cd71f95141ce",
+      "size_bytes": 6658
+    },
+    "tests/unit/test_so12_cancer_limited_publication.py": {
+      "sha256": "4078f8a99f737929240f078e489d06d12ca208a72cb1a9596293931b432f6e6e",
+      "size_bytes": 1684
+    }
+  }
+}

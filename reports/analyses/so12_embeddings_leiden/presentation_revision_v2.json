@@ -1,0 +1,31 @@
+{
+  "revision": 2,
+  "kind": "presentation_only_posthoc_report",
+  "source_report_sha256": "1de4d519466fee76e0ffcb627b41f542d03b749be24bb936a44071b4b49eadbb",
+  "source_run_id": "r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4",
+  "numerical_results_changed": false,
+  "original_immutable_bundle_changed": false,
+  "change": "Add explicit cluster color keys; original plots, labels, data and calculations unchanged.",
+  "files": {
+    "index.with_legends.html": {
+      "sha256": "3de9c89c0bb4c6e7dfa15f621a4e223e49482c2ea02bc54402bc075b81186a2b",
+      "size_bytes": 21351869
+    },
+    "cluster_color_keys.png": {
+      "sha256": "808643cf717c5173cc9c0c9a9d751fa82beaf5fa26afb022781f113cae1eb955",
+      "size_bytes": 77101
+    },
+    "cluster_color_keys.pdf": {
+      "sha256": "045a98673e0f2389a1b2952d8349a66b3d8e538865febf56c387f8d84a9b12d7",
+      "size_bytes": 18992
+    },
+    "cluster_color_keys.csv": {
+      "sha256": "fb03edc66489595b2224d0417e225317b5e72ffb48ab2d9ea25a13526a9d15bd",
+      "size_bytes": 1136
+    },
+    "add_cluster_legends.py": {
+      "sha256": "5ebddabde8df577ac25ff40b06b17ead87ebd20507dab5376f113b087f15f1f2",
+      "size_bytes": 2863
+    }
+  }
+}

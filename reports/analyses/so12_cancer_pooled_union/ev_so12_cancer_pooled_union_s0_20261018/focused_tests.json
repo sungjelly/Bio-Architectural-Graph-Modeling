@@ -1,0 +1,16 @@
+{
+  "command": [
+    "/venv/main/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/unit/spatial_benchmark/test_so12_cancer_pooled_metrics.py",
+    "tests/unit/spatial_benchmark/test_so12_cancer_backward_metrics.py"
+  ],
+  "log": {
+    "sha256": "0a8ade52ab1dfc197f2cdceb3293bdbee9b186b778734a2c20924261d4fdec9e",
+    "size_bytes": 99
+  },
+  "passed": true,
+  "runtime_seconds": 3.1777949929237366
+}

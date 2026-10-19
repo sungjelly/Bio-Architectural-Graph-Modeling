@@ -1,0 +1,8 @@
+{
+  "dedicated_artifact_verification_performed_by_this_observer": false,
+  "end_time": "2026-10-01T09:11:10.945803Z",
+  "run_id": "r_20261001T090308Z_b64e2ba9_s000_f00_a01_286bb53e",
+  "source": "read-only authoritative registry",
+  "start_time": "2026-10-01T09:03:08.270564Z",
+  "status": "completed"
+}

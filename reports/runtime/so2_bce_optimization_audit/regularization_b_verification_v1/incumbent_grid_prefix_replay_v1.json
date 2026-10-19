@@ -1,0 +1,31 @@
+{
+  "confirmation_physical_gpu": "3",
+  "confirmation_prefix_snapshot_sha256": "005b657e02176164455405e25251f4b1022f58440938fd1836cd6c080f3420fb",
+  "confirmation_run_id": "r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980",
+  "epochs_compared": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "field_equality": {
+    "cumulative_optimizer_updates": true,
+    "optimizer_updates": true,
+    "train_pooled_masked_binary_cross_entropy": true,
+    "training_coverage_receipts_json": true,
+    "validation_coverage_receipts_json": true,
+    "validation_pooled_masked_binary_cross_entropy": true
+  },
+  "grid_artifact_checksum_manifest_sha256": "9bcb59f68274f6f9cc4142f9ab595b3c765dfa1e130a6e2335dd78c8127a2591",
+  "grid_physical_gpu": "1",
+  "grid_run_id": "r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202",
+  "maximum_train_or_validation_bce_absolute_difference": 0.0,
+  "observed_at": "2026-10-01T10:04:22.481546+00:00",
+  "schema": "so2_incumbent_grid_prefix_replay_v1",
+  "scope": "This verifies the completed eight-epoch prefix only. The 32-epoch confirmation remains active; this does not claim a general bitwise trajectory guarantee.",
+  "score_selection_performed": false
+}

@@ -1,0 +1,255 @@
+{
+  "files": {
+    ".bagm-run-owner.json": {
+      "sha256": "df513aa71b93621bca8dffee4519bda029400e61f2ac7cacd0bdf408b1a78b40",
+      "size": 131,
+      "type": "file"
+    },
+    "checkpoints/best.ckpt": {
+      "sha256": "88abdfc6f259fd7c9da40607a863341fefad6e4863fce26fe1b56ae1967e3edc",
+      "size": 27997523,
+      "type": "file"
+    },
+    "config.resolved.yaml": {
+      "sha256": "a464986cd3a6387bbd03fc2d84494b60e313f7863f3407e11746679f9ef314ea",
+      "size": 3983,
+      "type": "file"
+    },
+    "diagnostics/checkpoint_replay.json": {
+      "sha256": "d2075233a4812ac68e8cdec29d284d8078234327c74396e44a522fd09c4f02dd",
+      "size": 163,
+      "type": "file"
+    },
+    "diagnostics/coverage.json": {
+      "sha256": "ab12f4b81f72305b5929e81ba11c798f0fc6a56a40994e462a0fe06bdf12188b",
+      "size": 107834,
+      "type": "file"
+    },
+    "diagnostics/precision_initial.json": {
+      "sha256": "05683ecd622c21f3b03662fbd9cf017ca7cd45b0ee17052e57bdea71f73b99f7",
+      "size": 154,
+      "type": "file"
+    },
+    "diagnostics/precision_selected.json": {
+      "sha256": "2f094a9da76e604e10736bb9ef48bddc113e32d543b7b00fef9df70a66179e0a",
+      "size": 155,
+      "type": "file"
+    },
+    "diagnostics/preflight.json": {
+      "sha256": "9c22a49d403b84198f079459e30445c8870b805783a46a187bba5b69c1001f5d",
+      "size": 2640,
+      "type": "file"
+    },
+    "diagnostics/resources.json": {
+      "sha256": "6b6fd8d910dd7364f81268667026a98f7723165fda6dfe563302f003b5c8aec8",
+      "size": 120852,
+      "type": "file"
+    },
+    "diagnostics/train_fitted_constant_baseline.json": {
+      "sha256": "56eca0ff3263735d169f1417c2116a98cb86e7ddde647eac376bd8d6ae85dfcd",
+      "size": 5739,
+      "type": "file"
+    },
+    "diagnostics/validation_masks.json": {
+      "sha256": "026ac0d920e25509e56f29a40866af4154479f0c488d357534b541bfdff6d126",
+      "size": 2264,
+      "type": "file"
+    },
+    "logs/stderr.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "type": "file"
+    },
+    "logs/stdout.log": {
+      "sha256": "e6a76d8181472dde7bdfbf7d866bd01f8c08513efb40addf47ddb6dd8d0ce8c6",
+      "size": 69298,
+      "type": "file"
+    },
+    "manifest.yaml": {
+      "sha256": "2110d71827f3bf081c47e90cda5e0ecdfbba4d65ee0c983223b8daa773c6cd67",
+      "size": 167,
+      "type": "file"
+    },
+    "metrics/epoch_history.jsonl": {
+      "sha256": "4a6266209079dfc70dfc67209c8c4fd4c624bb62d347f730604cff8f620bd7ec",
+      "size": 171073,
+      "type": "file"
+    },
+    "metrics/events.jsonl": {
+      "sha256": "b917bdbde54477ea53c67ba7032ba64f4f020cecb2e16e61aa196abd476ee10e",
+      "size": 12771,
+      "type": "file"
+    },
+    "metrics/final.json": {
+      "sha256": "35c065fe8fa208c7337150dc2e561f43cb85e929d1f70bf06f8cea34f79b0c74",
+      "size": 1852,
+      "type": "file"
+    },
+    "metrics/history.parquet": {
+      "sha256": "2a879390a89a093eb6200495bae2c128925af3f6794d449e70e924538a2e3a82",
+      "size": 26611,
+      "type": "file"
+    },
+    "predictions/validation.parquet": {
+      "sha256": "dae8fd9274c08e15fb2e6bec1443055b66fcb5ea414e849c1fb2ca10a0d5ad8c",
+      "size": 3518,
+      "type": "file"
+    },
+    "provenance/command.txt": {
+      "sha256": "9db23f98f6de446c05999eb0d75550ed5299b4efe2c34f05fc592b1804023964",
+      "size": 241,
+      "type": "file"
+    },
+    "provenance/data_fingerprints.json": {
+      "sha256": "f46b4b805b1fd4fc9c7c02b4856bc0abc38d64c62c14aa6782c62f8e3d06cebb",
+      "size": 2532,
+      "type": "file"
+    },
+    "provenance/environment.txt": {
+      "sha256": "b070dc7c2c9cf40dfb3a686bf7e0ec584ea06a84aa26c3c183560d023248245c",
+      "size": 2254,
+      "type": "file"
+    },
+    "provenance/frozen_task_contract.md": {
+      "sha256": "500863ee987c2da541ebacd6fb1dfc51c8f0dd6aa9e8660485eacdff5d78e121",
+      "size": 5878,
+      "type": "file"
+    },
+    "provenance/git.json": {
+      "sha256": "b124226fb7fa4ed2475b3b3e669852bc4ff9ad518184e881473d0dfa81438667",
+      "size": 6830,
+      "type": "file"
+    },
+    "provenance/hardware.json": {
+      "sha256": "9e44747d6e822b9daa13e81b4703a4892289fe0a21cc4887e12bece5a0e57091",
+      "size": 1807,
+      "type": "file"
+    },
+    "provenance/mask_reference.json": {
+      "sha256": "d94f64af7646f1f0e1821c28b69823245e083813c26e65f135f3061ad6057671",
+      "size": 242,
+      "type": "file"
+    },
+    "provenance/source_hashes.json": {
+      "sha256": "d0d0a8c17a884337cbb2beeead70f0d7a51ec27504946409fffebde0bac69501",
+      "size": 2056,
+      "type": "file"
+    },
+    "provenance/source_snapshot/ops/supervisor/bagm-local-gene-residual.sh": {
+      "sha256": "fa02b6717a541346c16e73ea826d4cfe40ff0779c40d7e86d9b0a37f3caeb483",
+      "size": 827,
+      "type": "file"
+    },
+    "provenance/source_snapshot/scripts/diagnostics/run_so2_hurdle_gpu_trial.py": {
+      "sha256": "70d0634175955b1487748fcf4e6669ec457f6c4dcc8fc14a8899befdd1b18578",
+      "size": 9691,
+      "type": "file"
+    },
+    "provenance/source_snapshot/scripts/train/run_local_gene_residual.py": {
+      "sha256": "35b7dfa097085a9239066c8e33a4c82eb9803c7193d698e393d6235eb9b9d756",
+      "size": 28705,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/fingerprints.py": {
+      "sha256": "361ecd492c46b705b8bbaf488c5d5f23167ced07b8353172a1d914ef6acf2df8",
+      "size": 11040,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/hurdle_negative_binomial.py": {
+      "sha256": "1bf51e2654153ee13ab071cdb920c7f097f73bbbc39eb37bac22ee55bfec60a1",
+      "size": 20024,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/identifiers.py": {
+      "sha256": "224e39656611414135fabd2da60e977c87fa892322bedeec6c79b995fb7367b6",
+      "size": 17187,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/local_gene_data.py": {
+      "sha256": "6fdc17b80f2f44a1ace34b47859207c445e7cf0a9fdbbab188d8e24b3c28222c",
+      "size": 16343,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/local_gene_metrics.py": {
+      "sha256": "25685edb262543d1b24c6047c8f989077c667ac0d6b0066905711591c24b2271",
+      "size": 11356,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/local_gene_residual.py": {
+      "sha256": "ff2016b76cc62b56c7ff6df99f1af5b43d7b723584171dd05ab0402a091d9361",
+      "size": 11839,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/negative_binomial.py": {
+      "sha256": "9facdc00cc1bb402fe10ac6bd04fcbc1bb662b6cf2896f8162ba7e7b27f09905",
+      "size": 29859,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/paths.py": {
+      "sha256": "46dd8a02acdc8e5c0169f7ff72180c17b55f7fd64f155d27209717c89e9a09f7",
+      "size": 6869,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/queueing.py": {
+      "sha256": "e6b4f067342eb62f89779caad503dc5a36f2daba469bb6602db8f6581a4f5718",
+      "size": 99020,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/registry.py": {
+      "sha256": "982ddb4da513588d8598b586802bb40003722506f838bcc8f702a239cc40443b",
+      "size": 145294,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/run_archive.py": {
+      "sha256": "1eb99a69031df56f587602b537c533cbf303bf6d955aa0303c6fc1226230e99b",
+      "size": 65696,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/so2_nb_data.py": {
+      "sha256": "bbd2e18e423cac49a4021db11b7906ac36dc14b6e0acad9a06d70ee430bd21ac",
+      "size": 64897,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/so2_pooled_full_core.py": {
+      "sha256": "52c8a2d8cbeec8eedec46e7badfa8d305e764722627aff1546579e7f073d47e8",
+      "size": 24226,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/so2_relative_graphs.py": {
+      "sha256": "618c7c57e0370c2ef85e93d1b1c1164d1bb58d37b04b8ef68cc6b31752a4da77",
+      "size": 24798,
+      "type": "file"
+    },
+    "provenance/source_snapshot/src/spatial_benchmark/target_cell_masking.py": {
+      "sha256": "81d090223dd6e9a08390202e527f1abee4f18a7db91494ed1407f981a652be02",
+      "size": 21135,
+      "type": "file"
+    },
+    "provenance/split_fingerprint.json": {
+      "sha256": "bd4e23e62a0df3c17aabcc3204c8422b0d4deffc27f28878e6722e9db8e407c7",
+      "size": 170,
+      "type": "file"
+    },
+    "provenance/uncommitted_changes.patch": {
+      "sha256": "42564478d1be111fa6b0cfef1829089c935da4b49043417b6f1b05c90a08dabb",
+      "size": 73832,
+      "type": "file"
+    },
+    "results/mask_strata.json": {
+      "sha256": "fe18f8209e03e0010b970971612d6ae3fe32395c27b5bc86a6f78bda3c5ae2ac",
+      "size": 7132,
+      "type": "file"
+    },
+    "results/per_core.json": {
+      "sha256": "7d554e8da07c0b90a6c632ca97a4d29b29b8b5f4cc684ff751802f0a48532648",
+      "size": 3566,
+      "type": "file"
+    },
+    "summary.json": {
+      "sha256": "1b5aaffdfb021430e9aa4801f9720ca60a4f2b98c7afd9ced6352b3a102aa662",
+      "size": 515,
+      "type": "file"
+    }
+  },
+  "version": 1
+}

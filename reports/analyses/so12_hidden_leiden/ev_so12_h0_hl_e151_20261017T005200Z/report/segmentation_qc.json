@@ -1,0 +1,53 @@
+{
+  "all_cell_count": 407659,
+  "cells_per_core": {
+    "1": 8924,
+    "9": 17223,
+    "13": 5345,
+    "15": 38145,
+    "21": 4897,
+    "23": 43462
+  },
+  "cluster_counts": {
+    "h0": 16,
+    "hL": 22,
+    "kernel_pca": 21,
+    "pca": 19,
+    "spatial_pca": 17
+  },
+  "color_sources": {
+    "h0": "deterministic_turbo_0.04_to_0.96",
+    "hL": "deterministic_turbo_0.04_to_0.96",
+    "kernel_pca": "existing_color_keys_verified_against_original_palette",
+    "pca": "existing_color_keys_verified_against_original_palette",
+    "spatial_pca": "existing_color_keys_verified_against_original_palette"
+  },
+  "polygons": {
+    "alignment_mismatches": 0,
+    "alignment_rule": "centroid_tolerance_or_polygon_covers_coordinate",
+    "centroid_tolerance_exceeded": 1,
+    "centroid_tolerance_um": 5.0,
+    "containment_accepted": 1,
+    "coordinate_outside_polygon_count": 8,
+    "covered_cells": 117996,
+    "maximum_centroid_distance_um": 6.798546332601801,
+    "median_centroid_distance_um": 0.39748949765896224,
+    "pixel_size_um": 0.120281,
+    "repaired_cells": 0,
+    "selected_vertex_rows": 2699846,
+    "simple_polygon_without_holes_count": 117996,
+    "source_rows_scanned": 9930213
+  },
+  "polygons_sampled": false,
+  "selected_cell_count": 117996,
+  "slide_qualified_join": {
+    "all_source_and_target_cells_matched": true,
+    "coordinate_atol_um": 1e-08,
+    "keys": [
+      "slide",
+      "fov",
+      "cell_ID"
+    ],
+    "one_to_one": true
+  }
+}

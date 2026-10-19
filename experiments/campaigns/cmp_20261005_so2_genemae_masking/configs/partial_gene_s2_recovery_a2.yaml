@@ -1,0 +1,133 @@
+attempt: 2
+campaign:
+  campaign_id: cmp_20261005_so2_genemae_masking
+classification:
+  classification_confidence: high
+  lifecycle_stage: exploratory_screen
+  retention_class: exploratory_screen
+  schema_version: 1
+  scientific_variant: partial_gene_10pct
+  study_axis: so2_masking_comparison
+dataset:
+  dataset_fingerprint: 69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158
+  dataset_id: so2_genemae_log1p_v1
+  generalization_scope: fit_only_transductive
+  prepared_artifact_reference: data/processed/so2_14core_relative_qkv_v1
+  preprocessing_version: elementwise_log1p_counts_v1
+  split_fingerprint: 3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2
+  split_id: so2_genemae_all_fit_v1
+  target_scale: log1p_raw_counts
+  task: masked_expression_regression
+  total_fit_cells: 246063
+  version: v1
+evaluation:
+  canonical_prediction_split: fit
+  diagnostic_only: false
+  expected_folds:
+  - 0
+  expected_seeds:
+  - 0
+  - 1
+  - 2
+  mask_seed_namespace: evaluation-v1
+  methods:
+  - whole_cell
+  - partial_gene
+  - spatial_block
+  primary_direction: minimize
+  primary_metric: fit/whole_node/masked_huber
+  protocol: held_in_so2_genemae_masking_v1
+  replicates: 3
+  splits:
+  - fit
+features:
+  edge_features:
+  - gaussian_distance_kernel
+  node_features:
+  - visible_expression
+  - mask_token
+  use_edge_features: true
+fold: 0
+graph:
+  constructed_graph_self_loops: false
+  convolution_add_self_loops: true
+  coordinates_are_node_covariates: false
+  cross_core_edges: false
+  cross_tile_edges: false
+  edge_dropout: 0.2
+  edge_feature: gaussian_distance_kernel
+  edge_scale: within_tile_median_edge_length
+  k: 15
+  kind: symmetric_spatial_knn_tiled
+  maximum_tile_nodes: 7000
+  neighbor_k: 15
+  neighbor_sampling: false
+  radius_applied: false
+  radius_role: schema_required_not_applied
+  radius_um: 1.0
+  symmetry: union
+  tiling: recursive_median_longest_axis
+masking:
+  method: partial_gene
+  model_seed_in_masks: false
+  rate: 0.1
+  train_seed_namespace: train-v1
+  type: expression_masking
+metadata:
+  execution_role: production
+  fold_meaning: one_fitted_cohort_not_cv
+  implementation_sha256:
+    scripts/train/run_so2_genemae_masking.py: f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7
+    src/spatial_benchmark/myjju_genemae.py: 3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7
+    src/spatial_benchmark/so2_genemae_masking.py: ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1
+  pilot:
+    path: artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063
+    success_sha256: 0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd
+  selection_policy: final_epoch_only
+  runtime:
+    checkpoint_recovery:
+      source_run_id: r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b
+      source_path: artifacts/runs/2026/10/r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b
+      failed_marker_sha256: e8da4be1f154b547423e97770d8ace3ae7d127cef0528648d5932daa8aeed42c
+      checkpoint_sha256: 78158bd0473faf7380eb9d2abf38ce554d6b928cf726e904f28af438828883c2
+      recovery_script_sha256: 986d18f6ee04f678fa8381b8db8e5302b75fadb2675e8d2cfd449ce276909451
+      source_runtime_seconds: 3333.137607
+model:
+  attention_concat: false
+  attention_heads: 6
+  decoder: mlp
+  drop_edge: 0.2
+  dropout: 0.2
+  embedding_dim: 192
+  expected_trainable_parameters: 6888016
+  family: myjju_dual_path_genemae
+  fusion_hidden_dim: 256
+  graph_hidden_dim: 256
+  graph_layers: 4
+  input_genes: 1000
+  learned_per_gene_mask_token: true
+  name: myjju-genemae
+  output_genes: 1000
+  self_hidden_dim: 512
+  self_hidden_layers: 2
+  source_architecture: dual_path_genemae_sb50
+  source_fidelity_repair: assign_self_hidden_constructor_attribute
+  trainable_edge_identifiers: false
+  trainable_node_identifiers: false
+  uses_edge_inputs: true
+  uses_graph_inputs: true
+schema_version: 1
+seed: 2
+trainer:
+  batch_size: 1
+  checkpoint_policy: last_only
+  early_stopping: false
+  gradient_clip_norm: 5.0
+  learning_rate: 0.0015
+  max_epochs: 200
+  optimizer: AdamW
+  precision: fp32
+  primary_checkpoint_role: last
+  restore_best: false
+  scheduler: cosine
+  weight_decay: 0.0001

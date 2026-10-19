@@ -1,0 +1,145 @@
+{
+  "run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+  "checks": [
+    {
+      "threads": 4,
+      "iteration": 0,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 4,
+      "iteration": 1,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 4,
+      "iteration": 2,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 4,
+      "iteration": 3,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 4,
+      "iteration": 4,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 4,
+      "iteration": 5,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 4,
+      "iteration": 6,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 4,
+      "iteration": 7,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 4,
+      "iteration": 8,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 4,
+      "iteration": 9,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 1,
+      "iteration": 0,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 1,
+      "iteration": 1,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 1,
+      "iteration": 2,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 1,
+      "iteration": 3,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 1,
+      "iteration": 4,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 1,
+      "iteration": 5,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 1,
+      "iteration": 6,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 1,
+      "iteration": 7,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 1,
+      "iteration": 8,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    },
+    {
+      "threads": 1,
+      "iteration": 9,
+      "exact": true,
+      "max_abs": 0.0,
+      "finite": true
+    }
+  ]
+}

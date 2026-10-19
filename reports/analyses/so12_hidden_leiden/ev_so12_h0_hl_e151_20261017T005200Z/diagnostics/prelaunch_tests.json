@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "time": "2026-10-17T00:52:50.552955+00:00",
+  "extraction_tests": 6,
+  "clustering_tests": 4,
+  "renderer_comparison_tests": 6,
+  "orchestration_tests": 1,
+  "total": 17,
+  "elapsed_seconds": 10.36,
+  "command": "PYTHONPATH=src:scripts/analysis /venv/main/bin/python -m pytest -q tests/unit/spatial_benchmark/test_so12_hidden_extraction.py tests/unit/spatial_benchmark/test_so12_hidden_clustering.py tests/unit/spatial_benchmark/test_so12_hidden_maps.py tests/unit/spatial_benchmark/test_so12_hidden_orchestration.py",
+  "audit_smoke": {
+    "status": "passed",
+    "corruption_rejections": 3
+  }
+}

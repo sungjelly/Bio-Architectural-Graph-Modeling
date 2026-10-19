@@ -1,0 +1,18 @@
+{
+  "findings": "No clipping or mismatched values. Equal 0.08 F1 axis spans, explicit nonzero limits, full precision source CSV and retained-cell denominators.",
+  "passed": true,
+  "reviewed_figures": {
+    "f1_bar_comparison.png": {
+      "sha256": "e0566bbfd67ddd799156c90ee1faa5ec1ed41883b3da968d5713cdb86c30058a",
+      "size_bytes": 315049
+    },
+    "f1_retention_table.png": {
+      "sha256": "9944fcd6d5f83c0d9ac3993c00a669ec8d5e20e3e54e8e9bff12b090a9c74fb8",
+      "size_bytes": 412906
+    }
+  },
+  "reviewers": [
+    "root",
+    "heist_methods"
+  ]
+}

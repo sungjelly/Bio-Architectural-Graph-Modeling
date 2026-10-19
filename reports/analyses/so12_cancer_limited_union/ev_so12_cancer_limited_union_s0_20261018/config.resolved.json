@@ -1,0 +1,49 @@
+{
+  "all_evaluable_pixels_retained": true,
+  "campaign_id": "cmp_20261018_so12_cancer_limited_union",
+  "contract_sha256_at_start": "b98e1056afd6b515784207383c1df9152fde15d2da0f17b12b82f037dbf929c5",
+  "cores": [
+    15,
+    23
+  ],
+  "dataset_id": "so12_paper_core_split",
+  "evaluation_id": "ev_so12_cancer_limited_union_s0_20261018",
+  "exploratory_annotation_selected": true,
+  "incremental_budget_mib": 300,
+  "methods": [
+    "h4",
+    "h3",
+    "h2",
+    "h1",
+    "h0",
+    "pca",
+    "scvi"
+  ],
+  "minimum_free_gib": 5,
+  "n_cells": 81607,
+  "parent_evaluation_id": "ev_so12_cancer_comparison_s0_20261018",
+  "parent_manifest_sha256": "e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0",
+  "parent_path": "/workspace/BAGM/reports/analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018",
+  "primary_resolution": 1.0,
+  "primary_seed": 0,
+  "resolutions": [
+    0.25,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "schema": "so12_cancer_limited_union_v1",
+  "seeds": [
+    0,
+    1
+  ],
+  "selection": "exact exhaustive footprint F1; ties fewer clusters then lexicographic IDs",
+  "selection_modes": [
+    "best_single",
+    "best_pair",
+    "best_at_most_two"
+  ],
+  "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+  "split_id": "so12_paper_21train_5val_2test_v1",
+  "started_at": "2026-10-18T07:34:07.593108+00:00"
+}

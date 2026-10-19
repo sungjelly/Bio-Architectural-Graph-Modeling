@@ -1,0 +1,613 @@
+{
+  "campaign_id": "cmp_20261018_so12_cancer_limited_union",
+  "evaluation_id": "ev_so12_cancer_limited_union_s0_20261018",
+  "files": {
+    "config.resolved.json": {
+      "sha256": "aaa4cd73db2310d91facf0b4c60fcb84ef13f7c9fbcda09cd1d7ac6d4b19cc80",
+      "size_bytes": 1366
+    },
+    "execution.json": {
+      "sha256": "c28407ff3e57993ab1353316ffe3f4f8ae07d02f84a6406d77797de35b3d3e3d",
+      "size_bytes": 262
+    },
+    "figures/all_representations_2x7.pdf": {
+      "sha256": "d5c4edaab89ba2aeed83ae19a98e192a3a06658fc952e070536ae0072ed692c3",
+      "size_bytes": 1401527
+    },
+    "figures/all_representations_2x7.png": {
+      "sha256": "60057ad7d5002738e66fbcc7eef7ad1e1a6b799371168a43531e30ffefd43b9d",
+      "size_bytes": 1310806
+    },
+    "figures/best_single_errors.pdf": {
+      "sha256": "8234146c86a7b5815e0fcb9e389a72a0d679a952cd038d343ac626c92f4889e9",
+      "size_bytes": 1511481
+    },
+    "figures/best_single_errors.png": {
+      "sha256": "6b47f01dfc361e67f58c9e7cca8f0bf5fa1f1c9e65bc5968ac335f8ec752cdb1",
+      "size_bytes": 847576
+    },
+    "figures/combined_five_panel.pdf": {
+      "sha256": "53a8a0c3a8c358317d1d01a56eef7f5ff7b787e3653dee4b74044513c7b6814a",
+      "size_bytes": 1843482
+    },
+    "figures/combined_five_panel.png": {
+      "sha256": "6cccc8dbc0d9cfcc06b62fece9d2a04b17d6c3bde6f883436c7d41831f6fbfec",
+      "size_bytes": 1976889
+    },
+    "figures/core_15_five_panel.pdf": {
+      "sha256": "e0d88e727f019799b6d2a159d3f57eccaedc0eb73b934960d9b27638573854c8",
+      "size_bytes": 636798
+    },
+    "figures/core_15_five_panel.png": {
+      "sha256": "c410f5c4891547f05bcf711dd01b6955c196915d1172e14100719508a1e504ac",
+      "size_bytes": 769756
+    },
+    "figures/core_23_five_panel.pdf": {
+      "sha256": "0b10dae1fde1b7c57f3c24ea8a8ce77ea8c02f866c64a19b2b68321e775fd6e6",
+      "size_bytes": 1132727
+    },
+    "figures/core_23_five_panel.png": {
+      "sha256": "cf47e97068ba98a8505a21a69e417e67f470641eda66e70bcaa4dd10770a1da9",
+      "size_bytes": 1095112
+    },
+    "figures/figure_manifest.json": {
+      "sha256": "d820ad97fecbb73f534ee02bf8da1b3e3d455623229ae9ba90358b502d983e01",
+      "size_bytes": 12236
+    },
+    "figures/limited_union_errors.pdf": {
+      "sha256": "b610807b4f9c546e2dfa7445d2826b45c36cf68bdbf48b099cc944efa62a02f7",
+      "size_bytes": 1533307
+    },
+    "figures/limited_union_errors.png": {
+      "sha256": "1bd36cc08312817af9d87480511eeae5f2481e7c2f76c0b5f4f2913447fd07b2",
+      "size_bytes": 882771
+    },
+    "figures/resolution_agreement.pdf": {
+      "sha256": "475ff98ef4c754538d9c682fd025706ade647611e87f19e0177eff0107c277ba",
+      "size_bytes": 31727
+    },
+    "figures/resolution_agreement.png": {
+      "sha256": "d1912107b8f73dd316fd52da9cbe9b9197e0293e1d5ff0f9c391671b04e9ce8f",
+      "size_bytes": 518949
+    },
+    "focused_tests.json": {
+      "sha256": "7978d58adda11ff714684a767e1cb1577a329e8de32655d0298f52d724545301",
+      "size_bytes": 908
+    },
+    "independent_metrics_review.json": {
+      "sha256": "50809f4cc76cce77cd70e0bbbb01d37a1b042fef2097969a0e2624decf559bc8",
+      "size_bytes": 7670
+    },
+    "independent_visual_review.json": {
+      "sha256": "3a845a7c64b62c4417d27bc26011f218d284bfe19ad1bc5522dd6cc7a133267f",
+      "size_bytes": 6222
+    },
+    "limited_metrics_summary.json": {
+      "sha256": "5dc5c2575f00a61d655f4ad2874a972d6b74d41c6bca709954986bcbfad77785",
+      "size_bytes": 8390
+    },
+    "logs/0_so12_cancer_limited_metrics.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "logs/1_audit_so12_cancer_limited_union.log": {
+      "sha256": "f53b664e0cb5e6515846c0f53fcba8f92a65ebbd91133aa0571bb3d9f22f2394",
+      "size_bytes": 186
+    },
+    "logs/2_so12_cancer_limited_figures.log": {
+      "sha256": "5c304d2a3de472b7f1ec8013a8f11cd19957ebd389babd68ff3930528cdc4275",
+      "size_bytes": 187
+    },
+    "logs/3_so12_cancer_limited_report.log": {
+      "sha256": "36ccf642f716b164e7ba4b86a2a8690546b58dc7e8bc8fefdece3c022af325ce",
+      "size_bytes": 129
+    },
+    "logs/focused_tests.log": {
+      "sha256": "edfb58169aa794a552b0ec994ee842a7f2f04fd16d63a5937cc830a9708b9e38",
+      "size_bytes": 99
+    },
+    "manual_visual_review.json": {
+      "sha256": "4ad0fcaf11ee432711e8d351e3e9f1ff1cbe0d9340aa46469338031b7cb0ab54",
+      "size_bytes": 1275
+    },
+    "metrics/limited_union.csv": {
+      "sha256": "efe96de66ad0f20be68f929383638d04091229cb0e403f4764b8a0b07627aea2",
+      "size_bytes": 379040
+    },
+    "metrics/limited_union.json": {
+      "sha256": "9ea1cf6f54ebf378eca3e985d564976589a74f003b4774756b266cd2deb28ac0",
+      "size_bytes": 8248050
+    },
+    "metrics/primary_selection_table.csv": {
+      "sha256": "0409d7e48fc8f6239e60ec2da10ce4b7fa2e76d7d7bbd5b4693c98dd0ccd326e",
+      "size_bytes": 2885
+    },
+    "metrics/primary_summary.csv": {
+      "sha256": "4e7740ea6bc4e443642669dcab8fa3be90ab969c0b30ccdc09a9cbb156903082",
+      "size_bytes": 47878
+    },
+    "provenance/commands.json": {
+      "sha256": "c35aea7930da5003d9b9bec92afc16f564b465465a74532578dfd86ca1709bb7",
+      "size_bytes": 1402
+    },
+    "provenance/environment.json": {
+      "sha256": "63e48a2b71c541e78458cdfd0665174852096f2430f49c71fec0c5a73023d7d2",
+      "size_bytes": 548
+    },
+    "provenance/execution_source_binding.json": {
+      "sha256": "741286001ff85ca3a2a49b6a79def11970f8256baa8b05124af873a6a4b2e2e4",
+      "size_bytes": 2340
+    },
+    "provenance/execution_sources/ops/supervisor/bagm-so12-cancer-limited-union.conf": {
+      "sha256": "60c02749b254797eb9ffa039a01c3741d19f520a1d0254c834f94f7031a36d31",
+      "size_bytes": 377
+    },
+    "provenance/execution_sources/ops/supervisor/bagm-so12-cancer-limited-union.sh": {
+      "sha256": "e84f5c895f3a4bc8ce157a2cd54aac222edc6f0bb637d9a496889a305051f808",
+      "size_bytes": 503
+    },
+    "provenance/execution_sources/scripts/analysis/audit_so12_cancer_limited_union.py": {
+      "sha256": "a06263c51d453b51dd3e7d19d734a6803670d31e027a2b4e55201e317f02847b",
+      "size_bytes": 19220
+    },
+    "provenance/execution_sources/scripts/analysis/promote_so12_cancer_limited_union_result.py": {
+      "sha256": "a3ddf8d9ecde4be9cb3ec2e2dd0047b09f73a151af23379f066af59f268f485f",
+      "size_bytes": 8302
+    },
+    "provenance/execution_sources/scripts/analysis/run_so12_cancer_limited_union.py": {
+      "sha256": "84bcb0eb074dcb5173aece0052a155c609027c2f9133a282d03c9804faaf7b6e",
+      "size_bytes": 15775
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_figures.py": {
+      "sha256": "717224f3c0800861a1db3a96efd8f32533023b651203b4fc8c0f0d5632dfc491",
+      "size_bytes": 9000
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_limited_figures.py": {
+      "sha256": "e32f00a677364af22d0eeef0d2e2e98cd2a10923a76ebcb57fb771ab12a8680b",
+      "size_bytes": 10905
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_limited_metrics.py": {
+      "sha256": "6d90d50cce29f09d00ce9c81690cf927780ccec3079ae4e20b00831b375e33a8",
+      "size_bytes": 18602
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_limited_report.py": {
+      "sha256": "716ec0ab2b9db5873670a5fc5ea5a48bfad4ae9a0fec6125f14702b2ef57fc84",
+      "size_bytes": 12820
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_metrics.py": {
+      "sha256": "099d256bd6118c3117aa5f050e5b409c20ca499e3f8e8249283ade19e36f49b1",
+      "size_bytes": 22345
+    },
+    "provenance/execution_sources/scripts/analysis/so12_cancer_registration.py": {
+      "sha256": "65774f403e62852f5947abec7bc8ae2c7b0d45bc57f103d77fbb7091487029b3",
+      "size_bytes": 22878
+    },
+    "provenance/execution_sources/tests/unit/spatial_benchmark/test_so12_cancer_limited_metrics.py": {
+      "sha256": "30358960bddce83c6db050636acf4f2974d2b53a670ad3a4f46e934699c26e34",
+      "size_bytes": 9487
+    },
+    "provenance/execution_sources/tests/unit/test_so12_cancer_limited_figures.py": {
+      "sha256": "db91029994d2d7ed12d89c3ccfb2c33a7a51350cf97afb17d97b40b8302afbfb",
+      "size_bytes": 1364
+    },
+    "provenance/execution_sources/tests/unit/test_so12_cancer_limited_publication.py": {
+      "sha256": "4078f8a99f737929240f078e489d06d12ca208a72cb1a9596293931b432f6e6e",
+      "size_bytes": 1684
+    },
+    "provenance/final_sources/ops/supervisor/bagm-so12-cancer-limited-union.conf": {
+      "sha256": "60c02749b254797eb9ffa039a01c3741d19f520a1d0254c834f94f7031a36d31",
+      "size_bytes": 377
+    },
+    "provenance/final_sources/ops/supervisor/bagm-so12-cancer-limited-union.sh": {
+      "sha256": "e84f5c895f3a4bc8ce157a2cd54aac222edc6f0bb637d9a496889a305051f808",
+      "size_bytes": 503
+    },
+    "provenance/final_sources/scripts/analysis/audit_so12_cancer_limited_union.py": {
+      "sha256": "a06263c51d453b51dd3e7d19d734a6803670d31e027a2b4e55201e317f02847b",
+      "size_bytes": 19220
+    },
+    "provenance/final_sources/scripts/analysis/promote_so12_cancer_limited_union_result.py": {
+      "sha256": "a3ddf8d9ecde4be9cb3ec2e2dd0047b09f73a151af23379f066af59f268f485f",
+      "size_bytes": 8302
+    },
+    "provenance/final_sources/scripts/analysis/run_so12_cancer_limited_union.py": {
+      "sha256": "84bcb0eb074dcb5173aece0052a155c609027c2f9133a282d03c9804faaf7b6e",
+      "size_bytes": 15775
+    },
+    "provenance/final_sources/scripts/analysis/so12_cancer_figures.py": {
+      "sha256": "717224f3c0800861a1db3a96efd8f32533023b651203b4fc8c0f0d5632dfc491",
+      "size_bytes": 9000
+    },
+    "provenance/final_sources/scripts/analysis/so12_cancer_limited_figures.py": {
+      "sha256": "e32f00a677364af22d0eeef0d2e2e98cd2a10923a76ebcb57fb771ab12a8680b",
+      "size_bytes": 10905
+    },
+    "provenance/final_sources/scripts/analysis/so12_cancer_limited_metrics.py": {
+      "sha256": "6d90d50cce29f09d00ce9c81690cf927780ccec3079ae4e20b00831b375e33a8",
+      "size_bytes": 18602
+    },
+    "provenance/final_sources/scripts/analysis/so12_cancer_limited_report.py": {
+      "sha256": "716ec0ab2b9db5873670a5fc5ea5a48bfad4ae9a0fec6125f14702b2ef57fc84",
+      "size_bytes": 12820
+    },
+    "provenance/final_sources/scripts/analysis/so12_cancer_metrics.py": {
+      "sha256": "099d256bd6118c3117aa5f050e5b409c20ca499e3f8e8249283ade19e36f49b1",
+      "size_bytes": 22345
+    },
+    "provenance/final_sources/scripts/analysis/so12_cancer_registration.py": {
+      "sha256": "65774f403e62852f5947abec7bc8ae2c7b0d45bc57f103d77fbb7091487029b3",
+      "size_bytes": 22878
+    },
+    "provenance/final_sources/tests/unit/spatial_benchmark/test_so12_cancer_limited_metrics.py": {
+      "sha256": "30358960bddce83c6db050636acf4f2974d2b53a670ad3a4f46e934699c26e34",
+      "size_bytes": 9487
+    },
+    "provenance/final_sources/tests/unit/test_so12_cancer_limited_figures.py": {
+      "sha256": "db91029994d2d7ed12d89c3ccfb2c33a7a51350cf97afb17d97b40b8302afbfb",
+      "size_bytes": 1364
+    },
+    "provenance/final_sources/tests/unit/test_so12_cancer_limited_publication.py": {
+      "sha256": "4078f8a99f737929240f078e489d06d12ca208a72cb1a9596293931b432f6e6e",
+      "size_bytes": 1684
+    },
+    "provenance/git_diff_at_start.patch": {
+      "sha256": "8265c3666031e407ed0445a4241b055a511695d78e0e289956516e3fa5b1a784",
+      "size_bytes": 4073
+    },
+    "provenance/git_status_at_start.txt": {
+      "sha256": "2369b58aef7119d478ec298dadd734c81f9933e9e37747e4a798d1623f70e3af",
+      "size_bytes": 21919
+    },
+    "provenance/git_status_review.json": {
+      "sha256": "ea73c24441ae5b9ac5bc2c0c031ff3c721398b5f327882ad00ad119da60d340a",
+      "size_bytes": 889
+    },
+    "provenance/parent_verification_after.json": {
+      "sha256": "b350e9cfd64ca78961153b9b8ba5b8d14bc806f026fec04b57fef1a677af8902",
+      "size_bytes": 110
+    },
+    "provenance/parent_verification_before.json": {
+      "sha256": "c520b00cce7fd18efc1a11db6faf87313db5506a398e9627c3cd3f6b281cd809",
+      "size_bytes": 242
+    },
+    "provenance/primary_pilot.json": {
+      "sha256": "4dc474b4ee2118fcba6b84ed177ad39e2862f72b46300ca664905ffef0358474",
+      "size_bytes": 3559
+    },
+    "report/index.html": {
+      "sha256": "201c21b00105340066da5597196178edfb634c6f6e8b460c2c3e5111217a38f9",
+      "size_bytes": 9879841
+    },
+    "report_manifest.json": {
+      "sha256": "9e494b6577c0d9fb650a0c8032c55bf564d282e476ce8e64bc81625f00ec3dbc",
+      "size_bytes": 1346
+    },
+    "stages/audit_so12_cancer_limited_union.json": {
+      "sha256": "c72d1c1ac8938027118ec086b2c964c1f7434ce8d121c46e4dbe01b53d845879",
+      "size_bytes": 84
+    },
+    "stages/so12_cancer_limited_figures.json": {
+      "sha256": "7611033e33b80a9b5deb050806d4db7afb95f39c39ca218e30afc6fadf78b297",
+      "size_bytes": 86
+    },
+    "stages/so12_cancer_limited_metrics.json": {
+      "sha256": "74f16cb3e25fbaaf02342199b27bffea2e9f27ae73126a7e1eb3fd7d3aa1a311",
+      "size_bytes": 85
+    },
+    "stages/so12_cancer_limited_report.json": {
+      "sha256": "d877050fc46c7b099e08d95157f851de019fb5ad3a3bcefaae20076c5df66ca5",
+      "size_bytes": 85
+    },
+    "summary.json": {
+      "sha256": "520614b1453c09021898ad20a112ff8870d4fca3eac9217582aeebd2f240ca04",
+      "size_bytes": 9226
+    },
+    "task_contract_at_publication.md": {
+      "sha256": "47ada2eecec366f56e26e1a35d3b3c656e2142d1408d50ccc830698dac653aa1",
+      "size_bytes": 9218
+    },
+    "task_contract_at_start.md": {
+      "sha256": "b98e1056afd6b515784207383c1df9152fde15d2da0f17b12b82f037dbf929c5",
+      "size_bytes": 4755
+    }
+  },
+  "parent_manifest_sha256": "e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0",
+  "passed": true,
+  "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+  "status": "complete",
+  "summary": {
+    "all_positive_footprint_f1": {
+      "15": 0.6347487519613851,
+      "23": 0.8502023897874988
+    },
+    "campaign_id": "cmp_20261018_so12_cancer_limited_union",
+    "evaluation_id": "ev_so12_cancer_limited_union_s0_20261018",
+    "limitations": "These are annotation-selected descriptive F1 scores, not independently evaluated cancer-classifier accuracy. Region selection uses the scored core. The opposite-core transfer results are separately reported and remain exploratory because both cores were jointly clustered. Registration is approximate; section identity and annotation exhaustiveness are unverified. Only 69.5% and 65.0% of annotated pixels have segmented-cell coverage on cores 15 and 23. Two cores and one fitted encoder seed do not support population superiority claims.",
+    "maximum_defensible_claim": "Exploratory approximate-section agreement of one/two annotation-selected clusters on two test cores; no independent classifier accuracy or population superiority.",
+    "n_cells": 81607,
+    "parent_manifest_sha256": "e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0",
+    "partitions": 56,
+    "passed": true,
+    "prediction_group": "Exact best union of at most two whole visible clusters; all evaluable pixels retained",
+    "primary_resolution": 1.0,
+    "primary_scores": [
+      {
+        "core": 15,
+        "fn": 52755,
+        "fp": 11982,
+        "full_region_f1": 0.5465946897417707,
+        "limited_f1": 0.6899880759119054,
+        "method": "h4",
+        "pair_f1": 0.6899880759119054,
+        "pair_ids": "5,6",
+        "precision": 0.8573978863181948,
+        "recall": 0.5772734921512537,
+        "selected_count": 2,
+        "selected_ids": "5,6",
+        "single_f1": 0.4999970423476661,
+        "single_ids": "5",
+        "tp": 72042,
+        "transfer_f1": 0.0007689473431267322,
+        "unrestricted_f1": 0.7835877356224161
+      },
+      {
+        "core": 23,
+        "fn": 125606,
+        "fp": 2264,
+        "full_region_f1": 0.5040577877637838,
+        "limited_f1": 0.6813923356754871,
+        "method": "h4",
+        "pair_f1": 0.6813923356754871,
+        "pair_ids": "0,7",
+        "precision": 0.9837121130367844,
+        "recall": 0.5212109430092894,
+        "selected_count": 2,
+        "selected_ids": "0,7",
+        "single_f1": 0.4768238741722812,
+        "single_ids": "0",
+        "tp": 136735,
+        "transfer_f1": 0.007939007775825494,
+        "unrestricted_f1": 0.9170742259678218
+      },
+      {
+        "core": 15,
+        "fn": 34501,
+        "fp": 18249,
+        "full_region_f1": 0.6267856894948008,
+        "limited_f1": 0.7739369680554722,
+        "method": "h3",
+        "pair_f1": 0.7739369680554722,
+        "pair_ids": "0,8",
+        "precision": 0.831876180386015,
+        "recall": 0.7235430338870326,
+        "selected_count": 2,
+        "selected_ids": "0,8",
+        "single_f1": 0.6998124195908586,
+        "single_ids": "0",
+        "tp": 90296,
+        "transfer_f1": 0.0013770575802216102,
+        "unrestricted_f1": 0.7920809184357633
+      },
+      {
+        "core": 23,
+        "fn": 123083,
+        "fp": 2721,
+        "full_region_f1": 0.5105542082098267,
+        "limited_f1": 0.6888504155124654,
+        "method": "h3",
+        "pair_f1": 0.6888504155124654,
+        "pair_ids": "1,4",
+        "precision": 0.9808351939371316,
+        "recall": 0.5308281968887821,
+        "selected_count": 2,
+        "selected_ids": "1,4",
+        "single_f1": 0.4215933215789284,
+        "single_ids": "1",
+        "tp": 139258,
+        "transfer_f1": 0.012803622266642438,
+        "unrestricted_f1": 0.9143343193663384
+      },
+      {
+        "core": 15,
+        "fn": 48855,
+        "fp": 12086,
+        "full_region_f1": 0.5675636287541058,
+        "limited_f1": 0.7136567602490309,
+        "method": "h2",
+        "pair_f1": 0.7136567602490309,
+        "pair_ids": "0,3",
+        "precision": 0.8627027763893307,
+        "recall": 0.6085242433712349,
+        "selected_count": 2,
+        "selected_ids": "0,3",
+        "single_f1": 0.637935518773213,
+        "single_ids": "0",
+        "tp": 75942,
+        "transfer_f1": 0.00492205415857644,
+        "unrestricted_f1": 0.7797445680405538
+      },
+      {
+        "core": 23,
+        "fn": 142824,
+        "fp": 3519,
+        "full_region_f1": 0.4539418961057705,
+        "limited_f1": 0.6202601608295254,
+        "method": "h2",
+        "pair_f1": 0.6202601608295254,
+        "pair_ids": "1,10",
+        "precision": 0.9713986150395006,
+        "recall": 0.4555788077349709,
+        "selected_count": 2,
+        "selected_ids": "1,10",
+        "single_f1": 0.44996507211580794,
+        "single_ids": "1",
+        "tp": 119517,
+        "transfer_f1": 0.027471435481875077,
+        "unrestricted_f1": 0.9114825555215331
+      },
+      {
+        "core": 15,
+        "fn": 49346,
+        "fp": 16493,
+        "full_region_f1": 0.5557613903794522,
+        "limited_f1": 0.69623190812998,
+        "method": "h1",
+        "pair_f1": 0.69623190812998,
+        "pair_ids": "0,11",
+        "precision": 0.8206190724789002,
+        "recall": 0.6045898539227705,
+        "selected_count": 2,
+        "selected_ids": "0,11",
+        "single_f1": 0.636102435977514,
+        "single_ids": "0",
+        "tp": 75451,
+        "transfer_f1": 0.012635264162953533,
+        "unrestricted_f1": 0.7865482362211482
+      },
+      {
+        "core": 23,
+        "fn": 159220,
+        "fp": 3108,
+        "full_region_f1": 0.40458091637944393,
+        "limited_f1": 0.5595734867189408,
+        "method": "h1",
+        "pair_f1": 0.5595734867189408,
+        "pair_ids": "6,8",
+        "precision": 0.9707424526259307,
+        "recall": 0.39307999893268686,
+        "selected_count": 2,
+        "selected_ids": "6,8",
+        "single_f1": 0.34140965695303765,
+        "single_ids": "6",
+        "tp": 103121,
+        "transfer_f1": 0.02155584855905067,
+        "unrestricted_f1": 0.9011414458313864
+      },
+      {
+        "core": 15,
+        "fn": 52082,
+        "fp": 16428,
+        "full_region_f1": 0.541191268299581,
+        "limited_f1": 0.6797700289800879,
+        "method": "h0",
+        "pair_f1": 0.6797700289800879,
+        "pair_ids": "1,10",
+        "precision": 0.8157118337951381,
+        "recall": 0.5826662499899837,
+        "selected_count": 2,
+        "selected_ids": "1,10",
+        "single_f1": 0.5534983373365221,
+        "single_ids": "1",
+        "tp": 72715,
+        "transfer_f1": 0.03642031391960901,
+        "unrestricted_f1": 0.7804313680419875
+      },
+      {
+        "core": 23,
+        "fn": 163396,
+        "fp": 3040,
+        "full_region_f1": 0.39145597727502013,
+        "limited_f1": 0.5431673830580305,
+        "method": "h0",
+        "pair_f1": 0.5431673830580305,
+        "pair_ids": "6,8",
+        "precision": 0.9701916948570868,
+        "recall": 0.37716178561490576,
+        "selected_count": 2,
+        "selected_ids": "6,8",
+        "single_f1": 0.321404250173431,
+        "single_ids": "6",
+        "tp": 98945,
+        "transfer_f1": 0.04417255485310524,
+        "unrestricted_f1": 0.886716850028952
+      },
+      {
+        "core": 15,
+        "fn": 53938,
+        "fp": 13375,
+        "full_region_f1": 0.5371911164347474,
+        "limited_f1": 0.6779759939913219,
+        "method": "pca",
+        "pair_f1": 0.6779759939913219,
+        "pair_ids": "3,5",
+        "precision": 0.8412161360020894,
+        "recall": 0.567794097614526,
+        "selected_count": 2,
+        "selected_ids": "3,5",
+        "single_f1": 0.45283242193972967,
+        "single_ids": "3",
+        "tp": 70859,
+        "transfer_f1": 0.1910358174627661,
+        "unrestricted_f1": 0.7709676278916294
+      },
+      {
+        "core": 23,
+        "fn": 145414,
+        "fp": 4239,
+        "full_region_f1": 0.44568747331828995,
+        "limited_f1": 0.6097776572526707,
+        "method": "pca",
+        "pair_f1": 0.6097776572526707,
+        "pair_ids": "2,4",
+        "precision": 0.965014938183979,
+        "recall": 0.4457061610651785,
+        "selected_count": 2,
+        "selected_ids": "2,4",
+        "single_f1": 0.4307442155798069,
+        "single_ids": "2",
+        "tp": 116927,
+        "transfer_f1": 0.17692241483190166,
+        "unrestricted_f1": 0.8648248362289946
+      },
+      {
+        "core": 15,
+        "fn": 82560,
+        "fp": 32747,
+        "full_region_f1": 0.33183926965034194,
+        "limited_f1": 0.4228330021373404,
+        "method": "scvi",
+        "pair_f1": 0.4228330021373404,
+        "pair_ids": "2,4",
+        "precision": 0.5632801664355063,
+        "recall": 0.33844563571239694,
+        "selected_count": 2,
+        "selected_ids": "2,4",
+        "single_f1": 0.27040236339997414,
+        "single_ids": "2",
+        "tp": 42237,
+        "transfer_f1": 0.3686671911880409,
+        "unrestricted_f1": 0.7292150135342494
+      },
+      {
+        "core": 23,
+        "fn": 173254,
+        "fp": 5837,
+        "full_region_f1": 0.3574475085362575,
+        "limited_f1": 0.49871663890949297,
+        "method": "scvi",
+        "pair_f1": 0.49871663890949297,
+        "pair_ids": "0,2",
+        "precision": 0.9385087016982007,
+        "recall": 0.33958473894663815,
+        "selected_count": 2,
+        "selected_ids": "0,2",
+        "single_f1": 0.31634317041135523,
+        "single_ids": "2",
+        "tp": 89087,
+        "transfer_f1": 0.3827688476951209,
+        "unrestricted_f1": 0.9041324015425279
+      }
+    ],
+    "primary_seed": 0,
+    "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+    "source_sha256": {
+      "figures/figure_manifest.json": "d820ad97fecbb73f534ee02bf8da1b3e3d455623229ae9ba90358b502d983e01",
+      "metrics/limited_union.json": "9ea1cf6f54ebf378eca3e985d564976589a74f003b4774756b266cd2deb28ac0"
+    },
+    "status": "complete",
+    "test_cores": [
+      15,
+      23
+    ]
+  }
+}

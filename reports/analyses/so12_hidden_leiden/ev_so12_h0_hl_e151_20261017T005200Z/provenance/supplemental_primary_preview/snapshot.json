@@ -1,0 +1,19 @@
+{
+  "created_at": "2026-10-17T01:57:57.718348+00:00",
+  "role": "optional_primary_preview_no_final_gate_bypass",
+  "files": {
+    "scripts/analysis/render_so12_primary_preview.py": {
+      "snapshot": "provenance/supplemental_primary_preview/render_so12_primary_preview.py",
+      "sha256": "5fb4d317af3378a2883c85447d8f7afc79675adfe99600748a683cf2d1905e30",
+      "size_bytes": 12994
+    },
+    "tests/unit/spatial_benchmark/test_so12_primary_preview.py": {
+      "snapshot": "provenance/supplemental_primary_preview/test_so12_primary_preview.py",
+      "sha256": "10a3de260f9168fc3ee026c882815842f2468cdeb48e83e8f0d18e623d834c1e",
+      "size_bytes": 2695
+    }
+  },
+  "reused_frozen_renderer_sha256": "b335a25a03279756e4bcbd304e318e7c872cf31745a18e214512c0f7c61630ce",
+  "focused_checks": "8 passed in 2.70s; includes the six existing frozen-renderer tests and two preview receipt tests",
+  "runtime_started": false
+}

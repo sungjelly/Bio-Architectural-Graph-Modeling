@@ -1,0 +1,8 @@
+{
+  "code_sha256": "c4a20a070243d5fb984ae7f87208246bed2eb57dd23701d142663a64234d395f",
+  "passed": true,
+  "primary_table": "metrics/primary_summary.csv",
+  "report_path": "report/index.html",
+  "report_sha256": "4f2f1115ff67e15e63c07498f7db220c0dab18b7c01ebb3ce0d28edc749c2a92",
+  "status": "complete"
+}

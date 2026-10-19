@@ -1,0 +1,34 @@
+{
+  "alias": "SO2-C23",
+  "audit": {
+    "all_observed": true,
+    "complete_core_graph": true,
+    "direct_fourth_block_exact": true,
+    "graph_blocks": 4,
+    "hL_equals_full_node_embedding": true,
+    "masked_entries": 0,
+    "maximum_absolute_prediction_difference": 0.0,
+    "ordinary_hL_exact": true,
+    "prediction_invariance_checked": true,
+    "predictions_exact": true
+  },
+  "cell_rows_sha256": "f6416db12ef0000f875b29901784c6a4964f8f5598bc95ee355adcafb41852fc",
+  "checkpoint_sha256": "8d93aca7f24cd5d7bb2308b0361e8b13ea9b17d1719c4aea0159c1e0e277bd64",
+  "core_number": 23,
+  "dimensions": 256,
+  "edges": 9972300,
+  "elapsed_seconds": 5.427259497111663,
+  "embedding_slice_sha256": "d8a5336cd4bdbf832cb9dcc9fc6765fa6b2f93c003438415c911990ec8457565",
+  "execution": {
+    "cublas_workspace_config": ":4096:8",
+    "cudnn_deterministic": true,
+    "deterministic_algorithms": true,
+    "dtype": "float32",
+    "tf32": false
+  },
+  "n_cells": 43462,
+  "preprocessing_fingerprint": "4fcce9791bed083a9592b6c1a1ee32020fcec9ca03ca4477e3f1a87a64bd64f2",
+  "row_start": 38145,
+  "row_stop": 81607,
+  "schema": "so12_paper_test_hL_extraction_v1"
+}

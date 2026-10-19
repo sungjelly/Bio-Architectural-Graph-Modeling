@@ -1,0 +1,343 @@
+model:
+  name: relative-qkv-gat
+  family: relative_geometry_qkv_graph_transformer
+  embedding_dim: 256
+  hidden_dim: 256
+  graph_layers: 4
+  attention_heads: 8
+  attention_head_dim: 32
+  ffn_dim: 1024
+  decoder_dim: 1024
+  relative_geometry_dim: 70
+  positional_bias_hidden_dim: 128
+  positional_bias_final_zero_init: true
+  relative_geometry_role: attention_logit_bias_only
+  dropout: 0.1
+  attention_dropout: 0.0
+  receiver_chunk_size: 512
+  max_edges_per_chunk: 200000
+  activation_checkpointing: true
+  exact_receiver_partitioning: true
+  fp32_attention_accumulation: true
+  implicit_self_loops: false
+  trainable_node_identifiers: false
+  trainable_edge_identifiers: false
+  uses_graph_inputs: true
+  uses_edge_inputs: false
+  uses_relative_position: true
+  edge_key_vectors: false
+  edge_value_vectors: false
+  edge_value_gates: false
+masking:
+  type: uniform_per_cell_integer_count
+  distribution: discrete_uniform_masked_gene_count
+  count_min: 0
+  count_max: 1000
+  count_support_inclusive: true
+  positions_without_replacement: true
+  independent_across_cells: true
+  independent_views_per_core_epoch: 10
+  ratio_stratification_or_bins: false
+  all_graph_cells_masked_by_same_rule: true
+  mask_base_seed: 2026101701
+  model_seed_in_mask_derivation: false
+  mask_seed_derivation_fields:
+  - base_mask_seed
+  - core_alias
+  - global_epoch
+  - mask_view_index
+  mask_expression_only: true
+  explicit_gene_mask_channel: true
+  metadata_masked: false
+  encoder_reapplies_mask: true
+  zero_mask_step_policy: deterministic_fail_closed_resample_from_prespecified_seed_namespace
+  required_view_provenance:
+  - view_index
+  - derived_seed
+  - mask_checksum
+  - masked_count_distribution_summary
+  train_seed_namespace: so12_paper_training_v1
+features:
+  use_edge_features: false
+  fit_scope: pooled_training_cells_only
+  node_expression:
+    biological_targets: 1000
+    transformed_with: observed_only_quasipoisson_pearson_frozen_train_statistics
+    masked_values_removed_inside_encoder: true
+    explicit_mask_channel: true
+  node_metadata:
+    transformed_with: pooled_training_median_imputation_log1p_standardization
+    always_visible: true
+    fields:
+    - Area
+    - Area.um2
+    - AspectRatio
+    - Width
+    - Height
+    - Mean.PanCK
+    - Max.PanCK
+    - Mean.G
+    - Max.G
+    - Mean.Membrane
+    - Max.Membrane
+    - Mean.CD45
+    - Max.CD45
+    - Mean.DAPI
+    - Max.DAPI
+    - SplitRatioToLocal
+    - NucArea
+    - NucAspectRatio
+    - Circularity
+    - Eccentricity
+    - Perimeter
+    - Solidity
+    fit_scope: pooled_training_cells_only
+  relative_positional_encoding:
+    role: attention_logit_bias_only
+    dimension: 70
+    radial_rbf_count: 64
+    distance_range_um:
+    - 0.0
+    - 500.0
+    smooth_cutoff: true
+    local_orientation_tensor: coordinate_only_axial_traceless_2d
+    cache_policy: one_shared_read_only_memory_map_per_core
+    cache_reproducible_from_minimal_geometry: true
+    cache_copied_into_run_bundle: false
+  prohibited_node_inputs:
+  - absolute_or_local_coordinates
+  - core_alias_or_number
+  - slide_or_fov_identity
+  - cell_or_patient_identifiers
+  - vendor_cell_type_cluster_neighborhood_niche
+  - expression_derived_library_size_or_qc_totals
+  - target_derived_annotations
+graph:
+  kind: radial_stratified_knn
+  neighbor_k: 200
+  k: 200
+  radius_um: 500.0
+  maximum_range_um: 500.0
+  radial_shells:
+  - lower_um: 0.0
+    upper_um: 50.0
+    quota: 48
+  - lower_um: 50.0
+    upper_um: 150.0
+    quota: 64
+  - lower_um: 150.0
+    upper_um: 300.0
+    quota: 48
+  - lower_um: 300.0
+    upper_um: 500.0
+    quota: 40
+  quota_refill: nearest_remaining_within_500um
+  tie_breaking: distance_then_source_index
+  symmetry: union
+  directed_selection_then_bidirectional_union: true
+  deduplicate_directed_edges: true
+  canonical_order: receiver_then_source
+  min_distance_um: 0.0
+  edge_dropout: 0.0
+  self_loops: false
+  cross_core_edges: false
+  graph_batches: twenty_one_train_five_validation_two_sealed_test_complete_core_graphs
+  coordinates_are_node_covariates: false
+  construction_receiver_chunk_size: 512
+  exact_search_epsilon: 0.0
+  long_range_coverage_shell_um:
+  - 300.0
+  - 500.0
+  require_all_eligible_long_range_covered: true
+launcher:
+  kind: local_subprocess
+  concurrency: 1
+  requested_gpu: 0,1,2,3
+  requested_gpu_count: 4
+  set_cuda_visible_devices: true
+  require_exact_visible_devices: 0,1,2,3
+  distributed: true
+  distributed_backend: nccl
+  process_count: 4
+  elastic_max_restarts: 0
+  hardware_preflight_receipt: /workspace/BAGM/scratch/active_runs/pf_so12_paper_split_seed0/preflight.json
+  gpu_model_assumption: NVIDIA GeForce RTX 3090
+  gpu_memory_gb_assumption: 24
+  heartbeat_seconds: 30
+  stale_after_seconds: 900
+  disk_safety_min_free_gb: 5
+  capture_stdout: true
+  capture_stderr: true
+  active_output_root: scratch/active_runs
+  finalized_output_root: artifacts/runs
+  preflight_receipt: /workspace/BAGM/scratch/active_runs/pf_so12_paper_split_seed0/preflight.json
+  gpu_memory_allocated_limit_gb: 21
+version: 1
+seed: 0
+fold: 0
+campaign:
+  campaign_id: cmp_20261017_so12_paper_core_split
+  display_name: SO1+SO2 core holdout with test cores 15 and 23
+experiment:
+  variant_label: so12_paper_split_pearson_relative_qkv_l4_h8_seed0
+  estimand: masked_pearson_feature_reconstruction_in_held_out_cores
+  permitted_claim: exploratory_core_holdout_with_donor_overlap_and_historical_exposure
+classification:
+  schema_version: 1
+  lifecycle_stage: exploratory_screen
+  study_axis: so12_paper_core_holdout
+  scientific_variant: relative_qkv_l4_h8_train21_val5_test2_observed_only_pearson
+  retention_class: exploratory_screen
+  classification_confidence: high
+dataset:
+  dataset_id: so12_paper_core_split
+  version: v1
+  split_id: so12_paper_21train_5val_2test_v1
+  dataset_fingerprint: e976f5fa6efe76be97a31ce14e0c4d457502fe35a66216a8deffefb95b476035
+  split_fingerprint: cc641f1f9abba5c36b6ec89269c41527696b80a57546a2788ccffd12e6f24154
+  preprocessing_version: train21_quasipoisson_phi1p01_sample_sd_clip10_v1
+  training_adapter_version: observed_only_mask_adapter_v1
+  task: masked_expression_regression
+  biological_target_count: 1000
+  target_scale: train_standardized_quasipoisson_pearson_phi1p01_clip10
+  input_scale: observed_only_quasipoisson_pearson_frozen_train_statistics
+  prepared_artifact_reference: /workspace/BAGM/data/processed/so12_paper_core_split_v1
+  training_core_aliases:
+  - SO1-C01
+  - SO1-C03
+  - SO1-C04
+  - SO1-C06
+  - SO1-C07
+  - SO1-C08
+  - SO1-C09
+  - SO1-C10
+  - SO1-C11
+  - SO1-C12
+  - SO1-C14
+  - SO2-C16
+  - SO2-C17
+  - SO2-C18
+  - SO2-C19
+  - SO2-C20
+  - SO2-C21
+  - SO2-C22
+  - SO2-C24
+  - SO2-C25
+  - SO2-C26
+  validation_core_aliases:
+  - SO1-C02
+  - SO1-C05
+  - SO1-C13
+  - SO2-C27
+  - SO2-C28
+  test_core_aliases:
+  - SO2-C15
+  - SO2-C23
+  total_cells: 407659
+  training_cells: 264491
+  validation_cells: 61561
+  test_cells: 81607
+  validation_or_test_partition_present: true
+  independent_test_partition_present: true
+  upstream_fully_observed_features_usage: supervised_targets_only
+  donor_overlap_permitted: true
+  historical_test_exposure_disclosed: true
+  generalization_scope: core_holdout_with_documented_donor_overlap
+  normalization_fit_core_aliases:
+  - SO1-C01
+  - SO1-C03
+  - SO1-C04
+  - SO1-C06
+  - SO1-C07
+  - SO1-C08
+  - SO1-C09
+  - SO1-C10
+  - SO1-C11
+  - SO1-C12
+  - SO1-C14
+  - SO2-C16
+  - SO2-C17
+  - SO2-C18
+  - SO2-C19
+  - SO2-C20
+  - SO2-C21
+  - SO2-C22
+  - SO2-C24
+  - SO2-C25
+  - SO2-C26
+  normalization_application: one_frozen_training_fit_shared_by_all_partitions
+trainer:
+  learning_rate: 0.0001
+  weight_decay: 1.0e-05
+  optimizer: AdamW
+  scheduler: none
+  batch_size: 2
+  batch_unit: two_complete_cores_ten_views_each_with_final_singleton
+  global_epoch_unit: twenty_one_training_core_visits_eleven_optimizer_updates
+  core_visits_per_global_epoch: 21
+  cores_per_optimizer_update: 2
+  optimizer_updates_per_global_epoch: 11
+  neighbor_sampling: false
+  gradient_clip_norm: 1.0
+  huber_delta: 1.0
+  max_epochs: 300
+  minimum_global_epochs: 50
+  early_stopping: true
+  early_stopping_patience: 25
+  early_stopping_min_delta: 0.0001
+  validation_every: 1
+  monitored_metric: val/masked_huber
+  restore_best: true
+  primary_checkpoint_role: best
+  checkpoint_policy: best_and_latest
+  checkpoint_every_global_epochs: 1
+  mask_views_per_core_step: 10
+  mask_views_per_rank_per_optimizer_update: 5_for_pairs_3_3_2_2_for_singleton
+  mask_view_gradient_aggregation: ddp_exact_mean_over_core_views_including_singleton
+  precision: bf16
+  amp: true
+  amp_dtype: bfloat16
+  amp_requires_fp32_equivalence_preflight: true
+  deterministic: true
+  deterministic_warn_only: false
+  core_order_seed: 2026101702
+  distributed: true
+  distributed_backend: nccl
+  distributed_world_size: 4
+  graph_execution: four_rank_ddp_one_complete_core_per_gpu_exact
+  stage_complete_core_graph_on_device: true
+  staged_relative_geometry_dtype: float16
+  maximum_simultaneously_staged_cores_per_gpu: 1
+  rank_zero_only_artifact_writes: true
+  singleton_policy: visit_last_core_once_distribute_ten_views_across_four_ranks
+evaluation:
+  registry_version: 1
+  task_family: masked_expression_regression
+  protocol: so12_pearson_relative_qkv_paper_core_split_v1
+  primary_metric: val/masked_huber
+  primary_direction: minimize
+  canonical_prediction_split: validation
+  splits:
+  - validation
+  - test
+  validation_mask_views: 3
+  test_mask_views: 3
+  fixed_mask_bundle: true
+  mask_seed_namespace: so12_paper_fixed_validation_v1
+  test_mask_seed_namespace: so12_paper_fixed_test_v1
+  test_evaluation_after_best_checkpoint_selection: true
+  uncertainty_unit: core
+  validation_or_test_selection: true
+  selection_partition: validation
+  expected_seeds:
+  - 0
+  expected_folds:
+  - 0
+  reference_predictor: equal_core_training_target_mean
+metadata:
+  task_contract: experiments/campaigns/cmp_20261017_so12_paper_core_split/README.md
+  selection_policy: strict_best_validation_huber_with_separate_min_delta_patience
+  source_dataset_registration_is_target_only: true
+  initialization: fresh_seed0_no_historical_checkpoint
+  prior_recipe_reference: experiments/campaigns/cmp_20261016_so12_pearson_relative_qkv_train_validation/configs/seed0_attempt2.yaml
+  manual_cancer_regions_used_for_selection_or_inputs: false

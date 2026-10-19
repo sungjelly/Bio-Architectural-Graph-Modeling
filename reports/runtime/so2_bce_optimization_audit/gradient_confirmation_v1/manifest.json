@@ -1,0 +1,9 @@
+{
+  "files": {
+    "README.md": "be2da317038af894c6a6f426e23ef45ecabb82eea997cc074e66a1adfb4fe8a2",
+    "receipt_builder.py": "23233752b94adce2cae4db787e23d8ce35c15a591312ecdbffd9efb08a416afc",
+    "scope_epochs.csv": "ab809b12cea17db89063df2c44cc96b6022a7562bb1635e2f8eca8caad5129dc",
+    "summary.json": "ca2a62293ba6131b087666e7ab9835a3258723dce4db7bbc3ecee5ea673d234d"
+  },
+  "schema": "checksummed_local_report_v1"
+}

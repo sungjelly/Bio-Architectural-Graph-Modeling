@@ -1,0 +1,57 @@
+{
+  "all_masks_coverage_and_update_receipts_match_selected_grid_at_all_eight_epochs": true,
+  "distinct_checkpoint_inodes": true,
+  "gradient_rows_finite_with_positive_epoch_mean": 144,
+  "immutable_files_verified": 138,
+  "incumbent_confirmation_complete": false,
+  "matching_code_contract_source_prior_seed_and_parameter_count": true,
+  "predictive_score_selection_performed": false,
+  "resource_receipts": [
+    {
+      "allocator_headroom_bytes": 22668312576,
+      "gpu": "0",
+      "headroom_bytes": 21790457856,
+      "headroom_measurement": "minimum_of_allocator_remainder_and_sampled_physical_free; physical_sampling_is_not_continuous",
+      "label": "dropout_zero",
+      "maximum_sampled_cgroup_memory_bytes": 59931656192,
+      "minimum_sampled_physical_free_bytes": 21790457856,
+      "peak_allocated_bytes": 2206343680,
+      "peak_reserved_bytes": 2627731456,
+      "resource_gate_passed": true,
+      "run_id": "r_20261001T092859Z_583aa3f1_s000_f00_a01_5a4a79ea",
+      "total_device_bytes": 25296044032
+    },
+    {
+      "allocator_headroom_bytes": 22674604032,
+      "gpu": "1",
+      "headroom_bytes": 21794652160,
+      "headroom_measurement": "minimum_of_allocator_remainder_and_sampled_physical_free; physical_sampling_is_not_continuous",
+      "label": "dropout_0p3",
+      "maximum_sampled_cgroup_memory_bytes": 59932917760,
+      "minimum_sampled_physical_free_bytes": 21794652160,
+      "peak_allocated_bytes": 2218432512,
+      "peak_reserved_bytes": 2621440000,
+      "resource_gate_passed": true,
+      "run_id": "r_20261001T092859Z_6b2d1296_s000_f00_a01_f647ac07",
+      "total_device_bytes": 25296044032
+    },
+    {
+      "allocator_headroom_bytes": 22674604032,
+      "gpu": "2",
+      "headroom_bytes": 21794717696,
+      "headroom_measurement": "minimum_of_allocator_remainder_and_sampled_physical_free; physical_sampling_is_not_continuous",
+      "label": "weight_decay_0p01",
+      "maximum_sampled_cgroup_memory_bytes": 59932413952,
+      "minimum_sampled_physical_free_bytes": 21794717696,
+      "peak_allocated_bytes": 2218432512,
+      "peak_reserved_bytes": 2621440000,
+      "resource_gate_passed": true,
+      "run_id": "r_20261001T092859Z_dac08cb3_s000_f00_a01_ed817509",
+      "total_device_bytes": 25296044032
+    }
+  ],
+  "schema": "so2_regularization_screen_independent_verification_v1",
+  "scope": "The three eight-epoch screens are verified; the separate 32-epoch incumbent confirmation remains active.",
+  "screen_runs": 3,
+  "verified_at": "2026-10-01T10:12:30.149379+00:00"
+}

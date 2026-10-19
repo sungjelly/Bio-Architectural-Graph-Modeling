@@ -1,7 +1,157 @@
 {
-  "catalog_content_sha256": "31252cedd68ff4955b09020ebce20d29a67e4a621f50eda5360ebe619cb29d74",
-  "result_count": 2,
+  "catalog_content_sha256": "b9358dc1999e9ccf251725e96d35a77ccb830fefc14efa4701f24023fffcf1df",
+  "result_count": 15,
   "results": [
+    {
+      "campaign_ids": [
+        "cmp_20261016_so12_pearson_preprocessing"
+      ],
+      "directory": "data_qc/pearson_preprocessing/res_so12_pearson_preprocessing_plausibility",
+      "evidence_status": {
+        "external_support": "not_tested",
+        "faithfulness": "not_applicable",
+        "null_calibration": "mixed",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "not_tested",
+        "stability": "mixed"
+      },
+      "experiment_type": "data_qc",
+      "lifecycle_stage": "pilot",
+      "manifest_sha256": "1de1c78f386a8dec428106dbe54326ca63a42f9d90228b93687bf3d64d164b38",
+      "method_family": "pearson_preprocessing",
+      "outcome": "supported",
+      "result_id": "res_so12_pearson_preprocessing_plausibility",
+      "run_ids": [
+        "r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410",
+        "r_20261016T082320Z_660b87cb_s000_f00_a01_cd1c1544"
+      ],
+      "status": "verified",
+      "study_axis": "preprocessing",
+      "title": "Pearson preprocessing passes a joint-slide donor-separated plausibility pilot"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20261016_so12_embeddings_leiden"
+      ],
+      "directory": "descriptive_analysis/classical_encoders/res_so12_normalized_embeddings_leiden",
+      "evidence_status": {
+        "external_support": "not_tested",
+        "faithfulness": "not_applicable",
+        "null_calibration": "mixed",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "not_tested",
+        "stability": "mixed"
+      },
+      "experiment_type": "descriptive_analysis",
+      "lifecycle_stage": "exploratory_screen",
+      "manifest_sha256": "fed87f4c29663ea2360198439c109dd34b3cc00334d627f23d34120589c07011",
+      "method_family": "classical_encoders",
+      "outcome": "inconclusive",
+      "result_id": "res_so12_normalized_embeddings_leiden",
+      "run_ids": [
+        "r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4",
+        "r_20261016T181056Z_e4e8f852_s000_f00_a01_4a3df5b3"
+      ],
+      "status": "verified",
+      "study_axis": "representation",
+      "title": "Three SO1/SO2 normalized representations yield different exploratory Leiden partitions"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20261005_so2_genemae_masking"
+      ],
+      "directory": "descriptive_analysis/genemae/res_so2_genemae_ten_percent_masking",
+      "evidence_status": {
+        "external_support": "not_tested",
+        "faithfulness": "not_tested",
+        "null_calibration": "not_tested",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "not_tested",
+        "stability": "mixed"
+      },
+      "experiment_type": "descriptive_analysis",
+      "lifecycle_stage": "exploratory_screen",
+      "manifest_sha256": "18f9dc6ed4236994a2f16b1285b015b08c26ae027156e71bd8731ef7d7abf354",
+      "method_family": "genemae",
+      "outcome": "inconclusive",
+      "result_id": "res_so2_genemae_ten_percent_masking",
+      "run_ids": [
+        "r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b",
+        "r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a",
+        "r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608",
+        "r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275",
+        "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+        "r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f",
+        "r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d",
+        "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+        "r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656"
+      ],
+      "status": "verified",
+      "study_axis": "masking_comparison",
+      "title": "SO2 GeneMAE reconstruction under three 10% masking techniques"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20261017_so12_h0_hl_leiden_segmentation",
+        "cmp_20261016_so12_pearson_relative_qkv_train_validation",
+        "cmp_20261016_so12_embeddings_leiden"
+      ],
+      "directory": "descriptive_analysis/relative_qkv/res_so12_hidden_states_leiden_comparison",
+      "evidence_status": {
+        "external_support": "not_tested",
+        "faithfulness": "not_applicable",
+        "null_calibration": "not_tested",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "not_tested",
+        "stability": "mixed"
+      },
+      "experiment_type": "descriptive_analysis",
+      "lifecycle_stage": "exploratory_screen",
+      "manifest_sha256": "fe1e27db0fe0bb1bc7a362a27afb720f852a22c85376def6619aa7e2155e54be",
+      "method_family": "relative_qkv",
+      "outcome": "inconclusive",
+      "result_id": "res_so12_hidden_states_leiden_comparison",
+      "run_ids": [
+        "r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b",
+        "r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4"
+      ],
+      "status": "verified",
+      "study_axis": "fully_observed_representation_comparison",
+      "title": "SO1/SO2 initial and final hidden-state partitions compared with three PCA methods"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20260930_so2_target_isolated_geometry_modulated_binary_expression_bce_once_per_cell_seed0",
+        "cmp_20260928_so2_target_isolated_geometry_modulated_hurdle_nb_once_per_cell_seed0"
+      ],
+      "directory": "descriptive_analysis/relative_qkv/res_so2_binary_occurrence_hurdle_comparison",
+      "evidence_status": {
+        "external_support": "not_tested",
+        "faithfulness": "not_tested",
+        "null_calibration": "not_tested",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "not_tested",
+        "stability": "not_tested"
+      },
+      "experiment_type": "descriptive_analysis",
+      "lifecycle_stage": "exploratory_screen",
+      "manifest_sha256": "3c2aabc7b64f3315737aa497ef937697b9344597e491538a4bc14666151af248",
+      "method_family": "relative_qkv",
+      "outcome": "negative",
+      "result_id": "res_so2_binary_occurrence_hurdle_comparison",
+      "run_ids": [
+        "r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863",
+        "r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097"
+      ],
+      "status": "verified",
+      "study_axis": "binary_occurrence_hurdle_comparison",
+      "title": "SO2 binary-only supervision does not improve five measured occurrence metrics at matched selected endpoints"
+    },
     {
       "campaign_ids": [
         "cmp_20260905_so2_nonzero_accuracy",
@@ -64,6 +214,252 @@
       "status": "verified",
       "study_axis": "loss_and_spatial_baselines",
       "title": "SO2 objective mismatch and matched spatial baselines; neural failure cause remains unresolved"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20261018_so12_cancer_backward_union"
+      ],
+      "directory": "descriptive_analysis/representation_comparison/res_so12_test_cancer_backward_retention",
+      "evidence_status": {
+        "external_support": "mixed",
+        "faithfulness": "not_applicable",
+        "null_calibration": "not_tested",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "not_tested",
+        "stability": "mixed"
+      },
+      "experiment_type": "descriptive_analysis",
+      "lifecycle_stage": "exploratory_screen",
+      "manifest_sha256": "9eb11b458cec16a88fba446c36915bafa4582844e1f667d94d22a3c18022475d",
+      "method_family": "representation_comparison",
+      "outcome": "inconclusive",
+      "result_id": "res_so12_test_cancer_backward_retention",
+      "run_ids": [
+        "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+        "r_20261018T052052Z_04078a70_s000_f00_a01_14d78fb9"
+      ],
+      "status": "verified",
+      "study_axis": "backward_cluster_retention",
+      "title": "Backward cluster removal: region F1 and unweighted in-region cell retention"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20261018_so12_cancer_limited_union"
+      ],
+      "directory": "descriptive_analysis/representation_comparison/res_so12_test_cancer_limited_cluster_agreement",
+      "evidence_status": {
+        "external_support": "mixed",
+        "faithfulness": "not_applicable",
+        "null_calibration": "mixed",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "not_tested",
+        "stability": "mixed"
+      },
+      "experiment_type": "descriptive_analysis",
+      "lifecycle_stage": "exploratory_screen",
+      "manifest_sha256": "91c39065abc8e8d3147c056121153f15f11a8f2497bf4942fe1d6089b834a897",
+      "method_family": "representation_comparison",
+      "outcome": "inconclusive",
+      "result_id": "res_so12_test_cancer_limited_cluster_agreement",
+      "run_ids": [
+        "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+        "r_20261018T052052Z_04078a70_s000_f00_a01_14d78fb9"
+      ],
+      "status": "verified",
+      "study_axis": "limited_cluster_region_agreement",
+      "title": "One or two complete Leiden clusters against outlined regions on SO12 test cores"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20261018_so12_cancer_pooled_union"
+      ],
+      "directory": "descriptive_analysis/representation_comparison/res_so12_test_cancer_pooled_retention",
+      "evidence_status": {
+        "external_support": "mixed",
+        "faithfulness": "not_applicable",
+        "null_calibration": "not_tested",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "not_tested",
+        "stability": "mixed"
+      },
+      "experiment_type": "descriptive_analysis",
+      "lifecycle_stage": "exploratory_screen",
+      "manifest_sha256": "0082e57ed4238c23187094b0d05ee925d7892faef632bc2581afdd870569c2b8",
+      "method_family": "representation_comparison",
+      "outcome": "inconclusive",
+      "result_id": "res_so12_test_cancer_pooled_retention",
+      "run_ids": [
+        "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+        "r_20261018T052052Z_04078a70_s000_f00_a01_14d78fb9"
+      ],
+      "status": "verified",
+      "study_axis": "pooled_cluster_retention",
+      "title": "Pooled-core backward cluster removal: micro F1 and in-region cell retention"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20261018_so12_cancer_comparison"
+      ],
+      "directory": "descriptive_analysis/representation_comparison/res_so12_test_cancer_representation_agreement",
+      "evidence_status": {
+        "external_support": "mixed",
+        "faithfulness": "not_applicable",
+        "null_calibration": "mixed",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "not_tested",
+        "stability": "mixed"
+      },
+      "experiment_type": "descriptive_analysis",
+      "lifecycle_stage": "exploratory_screen",
+      "manifest_sha256": "e180989c0bb05f86fa932400bda1397f8207053397393bd6baec81b1fb9a8fa4",
+      "method_family": "representation_comparison",
+      "outcome": "inconclusive",
+      "result_id": "res_so12_test_cancer_representation_agreement",
+      "run_ids": [
+        "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+        "r_20261018T052052Z_04078a70_s000_f00_a01_14d78fb9"
+      ],
+      "status": "verified",
+      "study_axis": "annotated_region_agreement",
+      "title": "Frozen encoder cluster unions and outlined cancer regions in two SO12 test cores"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20261015_so2_prediction_pearson"
+      ],
+      "directory": "descriptive_analysis/spatial_reconstruction/res_so2_prediction_pearson",
+      "evidence_status": {
+        "external_support": "not_tested",
+        "faithfulness": "not_tested",
+        "null_calibration": "not_tested",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "not_tested",
+        "stability": "supported"
+      },
+      "experiment_type": "descriptive_analysis",
+      "lifecycle_stage": "exploratory_posthoc",
+      "manifest_sha256": "a3061e31557bd663565093844812b211afcc312e92c64f6892c2c5a345be2139",
+      "method_family": "spatial_reconstruction",
+      "outcome": "supported",
+      "result_id": "res_so2_prediction_pearson",
+      "run_ids": [
+        "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+        "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+        "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2"
+      ],
+      "status": "verified",
+      "study_axis": "masked_expression_correlation",
+      "title": "Masked-expression Pearson for existing SO2 count and historical BAGM predictors"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20261004_local_gene_residual"
+      ],
+      "directory": "predictive_benchmark/local_gene_residual/res_so2_local_gene_count_reconstruction",
+      "evidence_status": {
+        "external_support": "not_tested",
+        "faithfulness": "not_tested",
+        "null_calibration": "not_tested",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "mixed",
+        "stability": "supported"
+      },
+      "experiment_type": "predictive_benchmark",
+      "lifecycle_stage": "exploratory_validation",
+      "manifest_sha256": "d70ba502f9e251b25eb56b02cc100744f4c82e6c2995475c3b6c59681a8b6aaa",
+      "method_family": "local_gene_residual",
+      "outcome": "negative",
+      "result_id": "res_so2_local_gene_count_reconstruction",
+      "run_ids": [
+        "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+        "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+        "r_20261004T072106Z_dd0aa417_s000_f00_a01_e0116c2b",
+        "r_20261004T072107Z_dd0aa417_s001_f00_a01_ea627eca",
+        "r_20260926T104132Z_47d710fa_s000_f00_a01_b967dc7c",
+        "r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097",
+        "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de"
+      ],
+      "status": "verified",
+      "study_axis": "simple_count_reconstruction",
+      "title": "Simple local gene corrections improve count RMSE but miss the prespecified NLL margin"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20261016_so12_pearson_relative_qkv_train_validation"
+      ],
+      "directory": "predictive_benchmark/relative_qkv/res_so12_pearson_random_mask_validation",
+      "evidence_status": {
+        "external_support": "not_tested",
+        "faithfulness": "not_tested",
+        "null_calibration": "not_tested",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "mixed",
+        "stability": "not_tested"
+      },
+      "experiment_type": "predictive_benchmark",
+      "lifecycle_stage": "exploratory_screen",
+      "manifest_sha256": "0363a45c5556a7825fca23982503627f7d9d14efc62d370f9da1132ede71228b",
+      "method_family": "relative_qkv",
+      "outcome": "inconclusive",
+      "result_id": "res_so12_pearson_random_mask_validation",
+      "run_ids": [
+        "r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b"
+      ],
+      "status": "verified",
+      "study_axis": "so12_donor_held_out_validation",
+      "title": "SO1 + SO2 random-mask QKV validation against constant baselines"
+    },
+    {
+      "campaign_ids": [
+        "cmp_20261001_so2_bce_optimization_audit"
+      ],
+      "directory": "predictive_benchmark/relative_qkv/res_so2_bce_optimization_audit",
+      "evidence_status": {
+        "external_support": "not_tested",
+        "faithfulness": "not_tested",
+        "null_calibration": "not_tested",
+        "patient_replication": "not_tested",
+        "perturbation_support": "not_tested",
+        "predictive_gain": "failed",
+        "stability": "supported"
+      },
+      "experiment_type": "predictive_benchmark",
+      "lifecycle_stage": "validation_confirmation",
+      "manifest_sha256": "3ef417d2145e1efa54d991454c834e064f5a6094278fab132b867beb0c77104b",
+      "method_family": "relative_qkv",
+      "outcome": "negative",
+      "result_id": "res_so2_bce_optimization_audit",
+      "run_ids": [
+        "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd",
+        "r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae",
+        "r_20261001T074811Z_06acf7a5_s000_f00_a01_2aa32391",
+        "r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202",
+        "r_20261001T074811Z_425c1faf_s000_f00_a01_65533cf1",
+        "r_20261001T074811Z_97513f17_s000_f00_a01_bfa65cb7",
+        "r_20261001T082016Z_95cce2a4_s000_f00_a01_df1ebd49",
+        "r_20261001T082215Z_22f0027c_s000_f00_a01_54281998",
+        "r_20261001T082850Z_052d767b_s000_f00_a01_35ab7f19",
+        "r_20261001T082930Z_d0f806f6_s000_f00_a01_57f4d373",
+        "r_20261001T085324Z_32178e25_s000_f00_a01_2dfb5a15",
+        "r_20261001T085435Z_c393af7c_s000_f00_a01_459ab1fb",
+        "r_20261001T092859Z_583aa3f1_s000_f00_a01_5a4a79ea",
+        "r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980",
+        "r_20261001T092859Z_6b2d1296_s000_f00_a01_f647ac07",
+        "r_20261001T092859Z_dac08cb3_s000_f00_a01_ed817509",
+        "r_20261001T101202Z_15baf65c_s001_f00_a01_6427735a",
+        "r_20261001T101202Z_a32d61e8_s001_f00_a01_8332ee26",
+        "r_20261001T101202Z_f8197b29_s000_f00_a01_ed00c19e"
+      ],
+      "status": "verified",
+      "study_axis": "optimization",
+      "title": "SO2 BCE optimization audit at matched target exposure"
     }
   ],
   "schema_name": "bagm_result_catalog",

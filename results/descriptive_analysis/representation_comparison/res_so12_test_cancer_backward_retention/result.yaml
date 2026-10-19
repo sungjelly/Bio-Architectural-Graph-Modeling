@@ -1,0 +1,156 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so12_test_cancer_backward_retention
+title: 'Backward cluster removal: region F1 and unweighted in-region cell retention'
+status: verified
+outcome: inconclusive
+experiment_type: descriptive_analysis
+method_family: representation_comparison
+lifecycle_stage: exploratory_screen
+study_axis: backward_cluster_retention
+campaign_ids:
+- cmp_20261018_so12_cancer_backward_union
+method:
+  name: Greedy backward complete-cluster removal for frozen h0-h4, PCA and scVI
+  model_family: Relative-QKV graph encoder, training-fitted PCA50 and negative-binomial
+    scVI50
+  graph_context: Unchanged parent joint 81607-test-cell cosine k30 unweighted undirected
+    graph per representation; Leiden RBConfiguration resolutions .25,.5,1,2 and seeds
+    0,1
+  masking_or_perturbation: No model or registration refit. Start all positive-overlap
+    clusters; remove the cluster giving highest remaining pixel F1, with exact ties
+    resolved by lexicographic retained IDs; continue to empty.
+  evaluation_design: Annotation-selected per-core paths on unchanged segmented-cell
+    support. Highest path F1 breaks ties by fewest clusters then IDs. Show complete
+    curves, nondominated points, and best path F1 at ≥90%/≥95% unweighted in-region-cell
+    retention. Primary resolution 1 seed 0 remains fixed; both seeds and all resolutions
+    are retained.
+  implementation_version: so12_cancer_backward_union_v1 with immutable source, environment
+    and parent checksum binding
+conclusion:
+  question: How does annotated-region pixel F1 change as complete clusters and in-region
+    cells are removed?
+  estimand: Pixel Dice/F1 along deterministic backward-deletion paths versus retained
+    unweighted cells with at least one valid owned pixel inside the region. Cell denominators
+    stay fixed; cluster retention is relative to the initial overlapping clusters.
+    The path does not establish optimal subsets at each cardinality.
+  observed_result: 'Fixed resolution 1, Leiden seed 0, annotation-selected backward
+    path maxima: h4: core 15 best F1=0.7836, clusters=10/15 (66.7%), in-region cells=17083/19470
+    (87.7%), F1 at ≥90% retention=0.7654, F1 at ≥95% retention=0.7654; core 23 best
+    F1=0.9171, clusters=13/16 (81.2%), in-region cells=32604/33352 (97.8%), F1 at
+    ≥90% retention=0.9171, F1 at ≥95% retention=0.9171 | h3: core 15 best F1=0.7921,
+    clusters=6/14 (42.9%), in-region cells=14429/19470 (74.1%), F1 at ≥90% retention=0.7749,
+    F1 at ≥95% retention=0.6349; core 23 best F1=0.9143, clusters=13/16 (81.2%), in-region
+    cells=32480/33352 (97.4%), F1 at ≥90% retention=0.9143, F1 at ≥95% retention=0.9143
+    | h2: core 15 best F1=0.7797, clusters=9/16 (56.2%), in-region cells=17023/19470
+    (87.4%), F1 at ≥90% retention=0.7774, F1 at ≥95% retention=0.7720; core 23 best
+    F1=0.9115, clusters=14/16 (87.5%), in-region cells=32462/33352 (97.3%), F1 at
+    ≥90% retention=0.9115, F1 at ≥95% retention=0.9115 | h1: core 15 best F1=0.7865,
+    clusters=10/18 (55.6%), in-region cells=15891/19470 (81.6%), F1 at ≥90% retention=0.7783,
+    F1 at ≥95% retention=0.6347; core 23 best F1=0.9011, clusters=15/18 (83.3%), in-region
+    cells=32000/33352 (95.9%), F1 at ≥90% retention=0.9011, F1 at ≥95% retention=0.9011
+    | h0: core 15 best F1=0.7804, clusters=9/14 (64.3%), in-region cells=16135/19470
+    (82.9%), F1 at ≥90% retention=0.7744, F1 at ≥95% retention=0.6347; core 23 best
+    F1=0.8867, clusters=12/14 (85.7%), in-region cells=31878/33352 (95.6%), F1 at
+    ≥90% retention=0.8867, F1 at ≥95% retention=0.8867 | pca: core 15 best F1=0.7710,
+    clusters=6/12 (50.0%), in-region cells=15301/19470 (78.6%), F1 at ≥90% retention=0.6883,
+    F1 at ≥95% retention=0.6347; core 23 best F1=0.8648, clusters=11/12 (91.7%), in-region
+    cells=32901/33352 (98.6%), F1 at ≥90% retention=0.8648, F1 at ≥95% retention=0.8648
+    | scvi: core 15 best F1=0.7292, clusters=9/13 (69.2%), in-region cells=16203/19470
+    (83.2%), F1 at ≥90% retention=0.7288, F1 at ≥95% retention=0.6347; core 23 best
+    F1=0.9041, clusters=11/13 (84.6%), in-region cells=31520/33352 (94.5%), F1 at
+    ≥90% retention=0.9041, F1 at ≥95% retention=0.8955. All 56 partitions and 112
+    complete core paths are retained.'
+  strongest_alternative_explanation: Annotation prevalence, fragmented cell states,
+    approximate spatial alignment and annotation-selected overfitting can create favorable
+    overlap without independent predictive or population-level superiority.
+  controls:
+  - Identical canonical cells, frozen parent partitions and registration, complete
+    immutable parent checksum verification.
+  - Independent native-raster audit of every step, selected operating point, fixed
+    denominators and parent unrestricted upper bound.
+  - Selected outside pixels remain FP and omitted inside pixels remain FN; full-region
+    scores additionally include uncovered positive pixels.
+  - All 56 partitions and 112 paths through empty, both Leiden seeds and all four
+    resolutions; fixed primary resolution 1 seed 0.
+  - Majority-inside-cell sensitivity uses at least half valid owned area inside the
+    region; unweighted counts remain distinct from area-weighted pixel recall.
+  - Full F1-retention curves and nondominated points; ≥90% and ≥95% retention are
+    illustrative supplementary constraints without a combined weighted objective.
+  remaining_uncertainty: All group choices use the scored annotation and are descriptive,
+    not independent cancer-classifier accuracy. Greedy removal chooses the best next
+    deletion, not necessarily the globally best subset at every cluster count. The
+    path maximum is checked against the parent exact unrestricted optimum. Registration
+    is approximate; annotation exhaustiveness and section identity are unverified.
+    Pixels/cells are observations from only two cores, not independent patients.
+  maximum_defensible_claim: Exploratory F1/cluster-count/cell-retention tradeoffs
+    on two approximately aligned annotated test cores; no independent diagnostic accuracy
+    or population superiority.
+evidence:
+  predictive_gain:
+    status: not_tested
+    summary: Annotation-selected overlap is not independent predictive accuracy or
+      graph-specific expression gain.
+  stability:
+    status: mixed
+    summary: All four resolutions and both Leiden seeds plus majority-inside-cell
+      boundary sensitivity are reported; one fitted encoder seed remains.
+  faithfulness:
+    status: not_applicable
+    summary: No attribution or cell-cell mechanism inference.
+  null_calibration:
+    status: not_tested
+    summary: The empty endpoint and parent unrestricted oracle bound characterize
+      the deletion path; no new biological null calibration or population p-value
+      is established.
+  patient_replication:
+    status: not_tested
+    summary: Only two cores, donor overlap permitted and one fitted encoder seed;
+      cells and pixels are not independent biological replicates.
+  external_support:
+    status: mixed
+    summary: Supplied hand-outlined histology uses approximate-section registration
+      and uncertain annotation exhaustiveness; these annotations also select clusters.
+  perturbation_support:
+    status: not_tested
+    summary: Cluster removal is an analysis operation, not a controlled biological
+      perturbation.
+provenance:
+  created_at_utc: '2026-10-18T08:41:57.947874Z'
+  updated_at_utc: '2026-10-18T08:41:57.947874Z'
+  git_commit: f2776df3769620e7c2b1728116a71ca086c7e3b4
+  run_ids:
+  - r_20261017T044837Z_caf76350_s000_f00_a01_12df41be
+  - r_20261018T052052Z_04078a70_s000_f00_a01_14d78fb9
+  expected_seeds:
+  - 0
+  - 1
+  included_seeds:
+  - 0
+  - 1
+  expected_folds:
+  - 0
+  included_folds:
+  - 0
+  failed_or_excluded_runs: []
+  sources:
+  - kind: evaluation
+    root: report
+    path: analyses/so12_cancer_backward_union/ev_so12_cancer_backward_union_s0_20261018/manifest.json
+    sha256: 88f966f74307485e1c66c2728f41b4efe9bb51860823c63133976605c0483ffa
+    verification_status: verified
+    run_id: r_20261017T044837Z_caf76350_s000_f00_a01_12df41be
+  - kind: evaluation
+    root: report
+    path: analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018/manifest.json
+    sha256: e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0
+    verification_status: verified
+    run_id: r_20261017T044837Z_caf76350_s000_f00_a01_12df41be
+  - kind: report
+    root: report
+    path: analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018/scvi_run_registration.json
+    sha256: 954b0c7224d45595f64ea22b30054f21c38505b68851c11fce369a593b138b88
+    verification_status: verified
+    run_id: r_20261018T052052Z_04078a70_s000_f00_a01_14d78fb9
+files: []

@@ -1,0 +1,7 @@
+{"time": "2026-10-17T00:56:41.309104+00:00", "representation": "hL", "stage": "exact_cosine_search_started", "n_cells": 407659, "device": "cuda:1"}
+{"time": "2026-10-17T00:56:56.050920+00:00", "representation": "hL", "stage": "exact_cosine_search_progress", "queries_complete": 407659, "queries_total": 407659}
+{"time": "2026-10-17T00:57:17.052868+00:00", "representation": "hL", "stage": "leiden_started", "seed": 0, "edges": 10786423}
+{"time": "2026-10-17T01:54:13.441473+00:00", "representation": "hL", "stage": "leiden_complete", "seed": 0, "cluster_count": 22}
+{"time": "2026-10-17T01:54:13.441905+00:00", "representation": "hL", "stage": "leiden_started", "seed": 1, "edges": 10786423}
+{"time": "2026-10-17T03:59:21.860925+00:00", "representation": "hL", "stage": "leiden_complete", "seed": 1, "cluster_count": 21}
+{"time": "2026-10-17T03:59:23.577074+00:00", "representation": "hL", "stage": "clustering_complete", "seed_ARI": 0.8837090007869288, "cluster_count": 22}

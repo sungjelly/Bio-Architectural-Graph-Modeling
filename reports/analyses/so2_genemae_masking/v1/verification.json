@@ -1,0 +1,602 @@
+{
+  "campaign": "cmp_20261005_so2_genemae_masking",
+  "outcome": "inconclusive",
+  "whole_cell_baseline_outcome": "supported",
+  "baseline_gain_percent": 7.926402321666259,
+  "favor_cores": 14,
+  "favor_seeds": 3,
+  "runs": [
+    {
+      "run_id": "r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b",
+      "method": "whole_cell",
+      "seed": 0,
+      "path": "runs/2026/10/r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b",
+      "summary": {
+        "checkpoint_role": "last",
+        "checkpoint_sha256": "dccf187efe4ca32c486ad5e4475fe244e85d8565dff2d31e8d7aa4708d8b1871",
+        "completed_global_epochs": 200,
+        "final_epoch": 199,
+        "generalization_claim_supported": false,
+        "mask_rate": 0.1,
+        "model_seed": 0,
+        "parameter_count": 6888016,
+        "prediction_granularity": "per_core_gene_masked_means_not_individual_cells",
+        "primary_metric_name": "fit/whole_node/masked_huber",
+        "primary_metric_value": 0.03869772616736129,
+        "resources": {
+          "checks": {
+            "disk": true,
+            "host": true,
+            "runtime": true,
+            "tile_coverage": true,
+            "vram": true
+          },
+          "cuda": "13.0",
+          "evaluation_seconds": 691.6320691750152,
+          "free_disk_gib": 18.697128295898438,
+          "gpu_name": "NVIDIA GeForce RTX 3090",
+          "io_and_graph_seconds": 49.05352594499709,
+          "peak_allocated_vram_gib": 8.877429962158203,
+          "peak_host_memory_gib": 3.106403350830078,
+          "peak_reserved_vram_gib": 23.2109375,
+          "pilot_gate_passed": true,
+          "precision": "fp32",
+          "projected_200_epoch_hours": 0.6244716810951974,
+          "torch": "2.13.0+cu130",
+          "total_seconds": 2250.7170819530147,
+          "visible_devices": "2"
+        },
+        "run_id": "r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b",
+        "status": "success",
+        "train_method": "whole_cell"
+      },
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a",
+      "method": "partial_gene",
+      "seed": 0,
+      "path": "runs/2026/10/r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a",
+      "summary": {
+        "checkpoint_role": "last",
+        "checkpoint_sha256": "9a20f648b831aa502340c82d2063f0b6c77f9fcd8a6719a15b3368ccd4f93cd7",
+        "completed_global_epochs": 200,
+        "final_epoch": 199,
+        "generalization_claim_supported": false,
+        "mask_rate": 0.1,
+        "model_seed": 0,
+        "parameter_count": 6888016,
+        "prediction_granularity": "per_core_gene_masked_means_not_individual_cells",
+        "primary_metric_name": "fit/whole_node/masked_huber",
+        "primary_metric_value": 0.04966892458266322,
+        "resources": {
+          "checks": {
+            "disk": true,
+            "host": true,
+            "runtime": true,
+            "tile_coverage": true,
+            "vram": true
+          },
+          "cuda": "13.0",
+          "evaluation_seconds": 652.0219788959948,
+          "free_disk_gib": 18.69936752319336,
+          "gpu_name": "NVIDIA GeForce RTX 3090",
+          "io_and_graph_seconds": 51.47703532897867,
+          "peak_allocated_vram_gib": 8.877429962158203,
+          "peak_host_memory_gib": 3.1209983825683594,
+          "peak_reserved_vram_gib": 23.2109375,
+          "pilot_gate_passed": true,
+          "precision": "fp32",
+          "projected_200_epoch_hours": 0.9127699375343541,
+          "torch": "2.13.0+cu130",
+          "total_seconds": 3288.4933775839745,
+          "visible_devices": "3"
+        },
+        "run_id": "r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a",
+        "status": "success",
+        "train_method": "partial_gene"
+      },
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608",
+      "method": "spatial_block",
+      "seed": 0,
+      "path": "runs/2026/10/r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608",
+      "summary": {
+        "checkpoint_role": "last",
+        "checkpoint_sha256": "a4bd8ad6598ab0e4cbecf25802a7845c6be4e3f65642973699c0a9332f9339b9",
+        "completed_global_epochs": 200,
+        "final_epoch": 199,
+        "generalization_claim_supported": false,
+        "mask_rate": 0.1,
+        "model_seed": 0,
+        "parameter_count": 6888016,
+        "prediction_granularity": "per_core_gene_masked_means_not_individual_cells",
+        "primary_metric_name": "fit/whole_node/masked_huber",
+        "primary_metric_value": 0.043527215985281684,
+        "resources": {
+          "checks": {
+            "disk": true,
+            "host": true,
+            "runtime": true,
+            "tile_coverage": true,
+            "vram": true
+          },
+          "cuda": "13.0",
+          "evaluation_seconds": 641.3229175320012,
+          "free_disk_gib": 18.778095245361328,
+          "gpu_name": "NVIDIA GeForce RTX 3090",
+          "io_and_graph_seconds": 51.86624851200031,
+          "peak_allocated_vram_gib": 8.879209041595459,
+          "peak_host_memory_gib": 3.1016502380371094,
+          "peak_reserved_vram_gib": 23.05859375,
+          "pilot_gate_passed": true,
+          "precision": "fp32",
+          "projected_200_epoch_hours": 0.43510145485048674,
+          "torch": "2.13.0+cu130",
+          "total_seconds": 1569.0197718159761,
+          "visible_devices": "1"
+        },
+        "run_id": "r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608",
+        "status": "success",
+        "train_method": "spatial_block"
+      },
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275",
+      "method": "whole_cell",
+      "seed": 1,
+      "path": "runs/2026/10/r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275",
+      "summary": {
+        "checkpoint_role": "last",
+        "checkpoint_sha256": "5b26f93683747165e9faf3a95fbb187c72ba6be16959666cc5e8319289421211",
+        "completed_global_epochs": 200,
+        "final_epoch": 199,
+        "generalization_claim_supported": false,
+        "mask_rate": 0.1,
+        "model_seed": 1,
+        "parameter_count": 6888016,
+        "prediction_granularity": "per_core_gene_masked_means_not_individual_cells",
+        "primary_metric_name": "fit/whole_node/masked_huber",
+        "primary_metric_value": 0.03873327300494927,
+        "resources": {
+          "checks": {
+            "disk": true,
+            "host": true,
+            "runtime": true,
+            "tile_coverage": true,
+            "vram": true
+          },
+          "cuda": "13.0",
+          "evaluation_seconds": 684.0894461959833,
+          "free_disk_gib": 18.619022369384766,
+          "gpu_name": "NVIDIA GeForce RTX 3090",
+          "io_and_graph_seconds": 49.6388400089927,
+          "peak_allocated_vram_gib": 8.881218433380127,
+          "peak_host_memory_gib": 3.1507949829101562,
+          "peak_reserved_vram_gib": 22.92578125,
+          "pilot_gate_passed": true,
+          "precision": "fp32",
+          "projected_200_epoch_hours": 0.6301633391754068,
+          "torch": "2.13.0+cu130",
+          "total_seconds": 2271.208828211995,
+          "visible_devices": "0"
+        },
+        "run_id": "r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275",
+        "status": "success",
+        "train_method": "whole_cell"
+      },
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+      "method": "partial_gene",
+      "seed": 1,
+      "path": "runs/2026/10/r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+      "summary": {
+        "failure_category": "nonzero_exit",
+        "failure_message": "Experiment subprocess exited with status 1.",
+        "run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+        "status": "failed",
+        "completed_global_epochs": 200,
+        "final_epoch": 199,
+        "model_seed": 1,
+        "train_method": "partial_gene",
+        "strict_execution_gate_passed": false,
+        "resources": {
+          "visible_devices": "1",
+          "total_seconds": 3354.309329,
+          "peak_allocated_vram_gib": null,
+          "scope": "original training/evaluation; peak not saved before failure"
+        }
+      },
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f",
+      "method": "spatial_block",
+      "seed": 1,
+      "path": "runs/2026/10/r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f",
+      "summary": {
+        "checkpoint_role": "last",
+        "checkpoint_sha256": "7a51c225588e3d44704d3fb4f701a2263e5e42349f5582b5e4f3ab4d06056c25",
+        "completed_global_epochs": 200,
+        "final_epoch": 199,
+        "generalization_claim_supported": false,
+        "mask_rate": 0.1,
+        "model_seed": 1,
+        "parameter_count": 6888016,
+        "prediction_granularity": "per_core_gene_masked_means_not_individual_cells",
+        "primary_metric_name": "fit/whole_node/masked_huber",
+        "primary_metric_value": 0.04352989975219573,
+        "resources": {
+          "checks": {
+            "disk": true,
+            "host": true,
+            "runtime": true,
+            "tile_coverage": true,
+            "vram": true
+          },
+          "cuda": "13.0",
+          "evaluation_seconds": 667.2688065639813,
+          "free_disk_gib": 18.543155670166016,
+          "gpu_name": "NVIDIA GeForce RTX 3090",
+          "io_and_graph_seconds": 49.55502371001057,
+          "peak_allocated_vram_gib": 8.881293296813965,
+          "peak_host_memory_gib": 3.067890167236328,
+          "peak_reserved_vram_gib": 23.130859375,
+          "pilot_gate_passed": true,
+          "precision": "fp32",
+          "projected_200_epoch_hours": 0.4429720952694738,
+          "torch": "2.13.0+cu130",
+          "total_seconds": 1603.443942774029,
+          "visible_devices": "3"
+        },
+        "run_id": "r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f",
+        "status": "success",
+        "train_method": "spatial_block"
+      },
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d",
+      "method": "whole_cell",
+      "seed": 2,
+      "path": "runs/2026/10/r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d",
+      "summary": {
+        "checkpoint_role": "last",
+        "checkpoint_sha256": "3069abfa93a370cb7030c57c767ebe2e6a9ce3c7371221e5402f931db8b5fb73",
+        "completed_global_epochs": 200,
+        "final_epoch": 199,
+        "generalization_claim_supported": false,
+        "mask_rate": 0.1,
+        "model_seed": 2,
+        "parameter_count": 6888016,
+        "prediction_granularity": "per_core_gene_masked_means_not_individual_cells",
+        "primary_metric_name": "fit/whole_node/masked_huber",
+        "primary_metric_value": 0.03868309054810052,
+        "resources": {
+          "checks": {
+            "disk": true,
+            "host": true,
+            "runtime": true,
+            "tile_coverage": true,
+            "vram": true
+          },
+          "cuda": "13.0",
+          "evaluation_seconds": 643.5843953000149,
+          "free_disk_gib": 18.6217041015625,
+          "gpu_name": "NVIDIA GeForce RTX 3090",
+          "io_and_graph_seconds": 50.008093298005406,
+          "peak_allocated_vram_gib": 8.881107330322266,
+          "peak_host_memory_gib": 3.129009246826172,
+          "peak_reserved_vram_gib": 22.748046875,
+          "pilot_gate_passed": true,
+          "precision": "fp32",
+          "projected_200_epoch_hours": 0.6189361456323887,
+          "torch": "2.13.0+cu130",
+          "total_seconds": 2232.9730651659775,
+          "visible_devices": "0"
+        },
+        "run_id": "r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d",
+        "status": "success",
+        "train_method": "whole_cell"
+      },
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+      "method": "partial_gene",
+      "seed": 2,
+      "path": "runs/2026/10/r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+      "summary": {
+        "failure_category": "nonzero_exit",
+        "failure_message": "Experiment subprocess exited with status 1.",
+        "run_id": "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+        "status": "failed",
+        "completed_global_epochs": 200,
+        "final_epoch": 199,
+        "model_seed": 2,
+        "train_method": "partial_gene",
+        "strict_execution_gate_passed": false,
+        "resources": {
+          "visible_devices": "2",
+          "total_seconds": 3333.137607,
+          "peak_allocated_vram_gib": null,
+          "scope": "original training/evaluation; peak not saved before failure"
+        }
+      },
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656",
+      "method": "spatial_block",
+      "seed": 2,
+      "path": "runs/2026/10/r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656",
+      "summary": {
+        "checkpoint_role": "last",
+        "checkpoint_sha256": "7b224af19bba546e63a6b335ec75537d7d7af518f4aa7895e0c0a7395650cf05",
+        "completed_global_epochs": 200,
+        "final_epoch": 199,
+        "generalization_claim_supported": false,
+        "mask_rate": 0.1,
+        "model_seed": 2,
+        "parameter_count": 6888016,
+        "prediction_granularity": "per_core_gene_masked_means_not_individual_cells",
+        "primary_metric_name": "fit/whole_node/masked_huber",
+        "primary_metric_value": 0.04352769498591001,
+        "resources": {
+          "checks": {
+            "disk": true,
+            "host": true,
+            "runtime": true,
+            "tile_coverage": true,
+            "vram": true
+          },
+          "cuda": "13.0",
+          "evaluation_seconds": 656.1659123169957,
+          "free_disk_gib": 18.139507293701172,
+          "gpu_name": "NVIDIA GeForce RTX 3090",
+          "io_and_graph_seconds": 50.91405855701305,
+          "peak_allocated_vram_gib": 8.876779556274414,
+          "peak_host_memory_gib": 3.1089439392089844,
+          "peak_reserved_vram_gib": 21.634765625,
+          "pilot_gate_passed": true,
+          "precision": "fp32",
+          "projected_200_epoch_hours": 0.4531959011600702,
+          "torch": "2.13.0+cu130",
+          "total_seconds": 1638.699171707034,
+          "visible_devices": "0"
+        },
+        "run_id": "r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656",
+        "status": "success",
+        "train_method": "spatial_block"
+      },
+      "status": "completed"
+    }
+  ],
+  "excluded": [
+    {
+      "run_id": "r_20261005T064812Z_79664b14_s000_f00_a01_e8cf9d38",
+      "reason": "diagnostic resource pilot: spatial_benchmark.identifiers.IdentifierError: Unsupported canonical JSON value: bool",
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+      "reason": "diagnostic resource pilot",
+      "status": "completed"
+    },
+    {
+      "run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+      "reason": "production failure: ValueError: Checkpoint replay or hidden-target invariance failed; retained in the descriptive comparison with failed verification explicitly flagged",
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+      "reason": "production failure: ValueError: Checkpoint replay or hidden-target invariance failed; retained in the descriptive comparison with failed verification explicitly flagged",
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T084509Z_b35cac84_s001_f00_a02_a66df110",
+      "reason": "production failure: Unknown root fields: runtime",
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T084829Z_b35cac84_s001_f00_a03_8bd59a60",
+      "reason": "production failure:        [3.814500e+06, 4.483183e-02, 9.088973e-02, ..., 1.109278e-02,...",
+      "status": "failed"
+    },
+    {
+      "run_id": "r_20261005T085114Z_b35cac84_s002_f00_a02_fbab1145",
+      "reason": "production failure:        [3.814500e+06, 4.484702e-02, 9.091845e-02, ..., 1.109516e-02,...",
+      "status": "failed"
+    }
+  ],
+  "common_masks_verified": true,
+  "all_bundle_checksums_verified": true,
+  "all_execution_gates_passed": false,
+  "replay_audits": [
+    {
+      "training_run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+      "replay_run_id": "r_20261005T084829Z_b35cac84_s001_f00_a03_8bd59a60",
+      "original_run_status": "failed",
+      "strict_replay_gate_passed": false,
+      "rtol": 1e-05,
+      "atol": 1e-07,
+      "identical_masks_and_counts": true,
+      "independent_exact_cpu_checks_passed": true,
+      "fields": {
+        "n_masked": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 0.0
+        },
+        "masked_huber": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 6.7894349864428e-11
+        },
+        "masked_mse": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 1.7164834831273623e-10
+        },
+        "masked_mae": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 2.0432266989445225e-10
+        },
+        "pooled_pearson": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 4.433026334904611e-09
+        },
+        "masked_r2": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 1.8017396463676505e-09
+        },
+        "gene_pearson_mean": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 3.020024060343407e-08
+        },
+        "gene_pearson_median": {
+          "mismatch_count": 43,
+          "max_absolute_difference": 6.237103058253854e-07
+        },
+        "cell_pearson_mean": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 4.227224487118875e-09
+        },
+        "n_valid_genes": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 0.0
+        },
+        "n_valid_cells": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 0.0
+        },
+        "positive_count": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 0.0
+        },
+        "positive_huber": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 6.443219291440982e-10
+        },
+        "positive_mse": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 2.0194550476304585e-09
+        },
+        "positive_mae": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 8.001670437352004e-10
+        },
+        "zero_count": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 0.0
+        },
+        "zero_huber": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 1.300991432640064e-11
+        },
+        "zero_mse": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 3.1370340353165105e-11
+        },
+        "zero_mae": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 1.592670682837305e-10
+        }
+      },
+      "checkpoint_sha256": "7d389835911827299f3e31e9012e291b02bb832075cd1814a405a38aa431223c",
+      "replay_failed_marker_sha256": "9577afc2974f49881abd7d051e8c3d7f485b33fed9094e1215a289e5efcb7c65"
+    },
+    {
+      "training_run_id": "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+      "replay_run_id": "r_20261005T085114Z_b35cac84_s002_f00_a02_fbab1145",
+      "original_run_status": "failed",
+      "strict_replay_gate_passed": false,
+      "rtol": 1e-05,
+      "atol": 1e-07,
+      "identical_masks_and_counts": true,
+      "independent_exact_cpu_checks_passed": true,
+      "fields": {
+        "n_masked": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 0.0
+        },
+        "masked_huber": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 4.5132592108032554e-11
+        },
+        "masked_mse": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 1.447073710858504e-10
+        },
+        "masked_mae": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 1.6189778684339018e-10
+        },
+        "pooled_pearson": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 3.6515626911093335e-09
+        },
+        "masked_r2": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 1.486773815173592e-09
+        },
+        "gene_pearson_mean": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 3.639996601269985e-08
+        },
+        "gene_pearson_median": {
+          "mismatch_count": 33,
+          "max_absolute_difference": 7.361410769295314e-07
+        },
+        "cell_pearson_mean": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 3.6328217101200266e-09
+        },
+        "n_valid_genes": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 0.0
+        },
+        "n_valid_cells": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 0.0
+        },
+        "positive_count": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 0.0
+        },
+        "positive_huber": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 5.679940962011187e-10
+        },
+        "positive_mse": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 1.7405723529151373e-09
+        },
+        "positive_mae": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 6.967136867430668e-10
+        },
+        "zero_count": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 0.0
+        },
+        "zero_huber": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 1.514588975071174e-11
+        },
+        "zero_mse": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 3.521262101346956e-11
+        },
+        "zero_mae": {
+          "mismatch_count": 0,
+          "max_absolute_difference": 1.6375749714581112e-10
+        }
+      },
+      "checkpoint_sha256": "78158bd0473faf7380eb9d2abf38ce554d6b928cf726e904f28af438828883c2",
+      "replay_failed_marker_sha256": "a15280aa8d001bc5d7c2d7aa18079ffc53bd2ee8132a9ed610761792219c0c58"
+    }
+  ]
+}

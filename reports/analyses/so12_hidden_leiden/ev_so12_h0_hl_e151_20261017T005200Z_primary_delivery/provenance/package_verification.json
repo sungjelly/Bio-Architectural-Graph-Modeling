@@ -1,0 +1,10 @@
+{
+  "all_primary_statistics_replayed_exactly": true,
+  "cluster_color_counts_cover_all_cells": true,
+  "cluster_color_counts_cover_selected_cells": true,
+  "registry_or_publication_performed": false,
+  "secondary_stability_pending": true,
+  "seven_pngs_match_source_bytes": true,
+  "source_preview_sha256": "51a71be945c260fd78c2ea57f4b68919ab57545d6990a8dc2be02bdc68c93df2",
+  "status": "passed"
+}

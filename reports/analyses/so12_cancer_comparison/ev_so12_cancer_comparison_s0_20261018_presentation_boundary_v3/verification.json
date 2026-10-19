@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "original_palette_csv_identical": true,
+  "original_png_checksums_verified": true,
+  "png_format_verified": true,
+  "pixel_checks": [
+    {
+      "core": 15,
+      "changed_pixels": 60448,
+      "changed_pixels_outside_boundary_and_caption": 0,
+      "identical_dimensions": true
+    },
+    {
+      "core": 23,
+      "changed_pixels": 159773,
+      "changed_pixels_outside_boundary_and_caption": 0,
+      "identical_dimensions": true
+    }
+  ],
+  "boundary": "Black #000000, 1.5pt versus original 0.5pt; narrow white under-stroke",
+  "visual_review": "Both core PNGs reviewed; original cluster colors/layout retained; black boundaries clear."
+}

@@ -1,0 +1,107 @@
+{
+  "bar_axis_limits": [
+    0.78,
+    0.88
+  ],
+  "bar_svg_exact_score_labels_verified": 7,
+  "checks": [
+    "All seven primary summary and CSV rows match best-step raw counts, independently recomputed F1, precision, recall and retention percentages.",
+    "Best path and at-least-90/95-percent operating points independently selected with exact fractions and declared ties.",
+    "All three PNG data URIs decode to the original bytes and report-manifest hashes; all nine figure files match hashes and sizes.",
+    "HTML table formatting matches exact primary values; PDF headers, SVG XML, bar labels and zoom limits verified."
+  ],
+  "embedded_pngs": {
+    "pooled_f1_bar": {
+      "sha256": "202edfaa1163730d23396ba6a2c9a5209b5fd79267482deb3a2ef6debf2daf78",
+      "size_bytes": 261264
+    },
+    "pooled_f1_retention_paths": {
+      "sha256": "7ec13045bbc516dc73bac752d96209ea0a19a3fa673abe5e3042071bcfad2789",
+      "size_bytes": 612767
+    },
+    "pooled_f1_retention_table": {
+      "sha256": "52a21dfffb0c663fbed9f7378a9278f92a5342ca11789b23475705484a361e7f",
+      "size_bytes": 318398
+    }
+  },
+  "embedded_pngs_verified": 3,
+  "evaluation_id": "ev_so12_cancer_pooled_union_s0_20261018",
+  "exact_rational_best_and_retention_ties_verified": true,
+  "figure_files": {
+    "figures/pooled_f1_bar.pdf": {
+      "sha256": "6ebaf77bb4954194922d9d9a827bc2ced7cd76cc72f8809a11fd2b02f42e3ab2",
+      "size_bytes": 27593
+    },
+    "figures/pooled_f1_bar.png": {
+      "sha256": "202edfaa1163730d23396ba6a2c9a5209b5fd79267482deb3a2ef6debf2daf78",
+      "size_bytes": 261264
+    },
+    "figures/pooled_f1_bar.svg": {
+      "sha256": "a6856963530feee1d6fb866e0e5697498763ac167201be90541be568571b6b74",
+      "size_bytes": 13070
+    },
+    "figures/pooled_f1_retention_paths.pdf": {
+      "sha256": "6413862b64ece22c476fcd0814d3de9a962be2245b0bb6ea4ddf63a1abf98d64",
+      "size_bytes": 36107
+    },
+    "figures/pooled_f1_retention_paths.png": {
+      "sha256": "7ec13045bbc516dc73bac752d96209ea0a19a3fa673abe5e3042071bcfad2789",
+      "size_bytes": 612767
+    },
+    "figures/pooled_f1_retention_paths.svg": {
+      "sha256": "b40b8909c3b97d85f2376d95d43023de13c0c3f799b6ff9f7a857ff9e5b0fb21",
+      "size_bytes": 137258
+    },
+    "figures/pooled_f1_retention_table.pdf": {
+      "sha256": "0f1599b413cd18bddde05d02a67b5b4cf9c9350232b21735a5b96909f4ae9552",
+      "size_bytes": 27598
+    },
+    "figures/pooled_f1_retention_table.png": {
+      "sha256": "52a21dfffb0c663fbed9f7378a9278f92a5342ca11789b23475705484a361e7f",
+      "size_bytes": 318398
+    },
+    "figures/pooled_f1_retention_table.svg": {
+      "sha256": "5209d87ad8fb40841165f4cd8e81fee6c69cf0cccf3b844c37c34b0267c8c7b4",
+      "size_bytes": 16001
+    }
+  },
+  "figure_formats_verified": {
+    "pdf": 3,
+    "png": 3,
+    "svg": 3
+  },
+  "frozen_sources_unchanged": true,
+  "html": {
+    "sha256": "a14ba451f19df8cf87555f2360a31d004c061186714250b598aebcbcc613f115",
+    "size_bytes": 1593011
+  },
+  "linked_csv_files": {
+    "metrics/pooled_best_summary.csv": {
+      "sha256": "a44367249125931fa535c8049707c60c016aff6e7a32fa25c5206883372bce81",
+      "size_bytes": 199768
+    },
+    "metrics/pooled_steps.csv": {
+      "sha256": "29d081e2d72d60da602a1047dc1541fae5446f21c97bbc21619d2e1d43321e99",
+      "size_bytes": 855495
+    },
+    "metrics/primary_report_table.csv": {
+      "sha256": "6eefcc38036d6f9c095e94555f037fee41bac9b7a50a984b631b9679ce8f9988",
+      "size_bytes": 1821
+    }
+  },
+  "metrics_sha256": "8374fa7eb348e62e3e47701009979266c6066013c9f7dd087327e9579f68064c",
+  "partition_count": 56,
+  "passed": true,
+  "pooled_best_confusions_reconciled": true,
+  "portable_html_note": "All displayed PNGs are embedded and byte-identical. CSV download links require the surrounding report bundle.",
+  "primary_csv_sha256": "6eefcc38036d6f9c095e94555f037fee41bac9b7a50a984b631b9679ce8f9988",
+  "primary_fields_per_row": 18,
+  "primary_operating_points_verified": 21,
+  "primary_rows_verified": 7,
+  "rendered_html_table_rows_verified": 7,
+  "report_manifest_sha256": "2d27b60032a8d934b59b70cf55b5041d5ed55edfbde5d4ac80f4c994fc70ffd7",
+  "reviewed_at_utc": "2026-10-18T09:35:51.182080+00:00",
+  "reviewer": "independent result and report-data review",
+  "summary_and_csv_recomputed_from_best_steps": true,
+  "summary_sha256": "f4b2462aa734dd9acd075e5f0a706daef27cec30af748690551824c8e5d473b2"
+}

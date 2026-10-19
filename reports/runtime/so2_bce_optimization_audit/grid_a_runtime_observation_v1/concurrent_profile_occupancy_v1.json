@@ -1,0 +1,14 @@
+{
+  "campaign": "cmp_20261001_so2_bce_execution_profile",
+  "captured_optimizer_updates": 3,
+  "dedicated_verification_owner": "bce_comparator_audit",
+  "grid_gpu_0_last_run_completed_before_profile": true,
+  "physical_gpu": "0",
+  "profile_budget_epochs": 1,
+  "recorded_at": "2026-10-01T09:04:49.285899+00:00",
+  "run_id": "r_20261001T090308Z_b64e2ba9_s000_f00_a01_286bb53e",
+  "schema": "runtime_concurrent_work_observation_v1",
+  "scope": "Separate profiling run, excluded from predictive selection. Shared cgroup and GPU-0 observer samples during occupancy include this work. The grid stage running_lanes field lists grid jobs only.",
+  "source": "root orchestration message",
+  "started_at": "2026-10-01T09:03:08Z"
+}

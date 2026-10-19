@@ -1,0 +1,514 @@
+{
+  "all_8_epoch_mask_receipts_identical_across_grid": true,
+  "checkpoint_inodes_distinct": true,
+  "code_contract_source_prevalence_parameter_count_and_seed_consistent": true,
+  "concurrent_profile_occupancy": {
+    "campaign": "cmp_20261001_so2_bce_execution_profile",
+    "captured_optimizer_updates": 3,
+    "dedicated_verification_owner": "bce_comparator_audit",
+    "grid_gpu_0_last_run_completed_before_profile": true,
+    "physical_gpu": "0",
+    "profile_budget_epochs": 1,
+    "recorded_at": "2026-10-01T09:04:49.285899+00:00",
+    "run_id": "r_20261001T090308Z_b64e2ba9_s000_f00_a01_286bb53e",
+    "schema": "runtime_concurrent_work_observation_v1",
+    "scope": "Separate profiling run, excluded from predictive selection. Shared cgroup and GPU-0 observer samples during occupancy include this work. The grid stage running_lanes field lists grid jobs only.",
+    "source": "root orchestration message",
+    "started_at": "2026-10-01T09:03:08Z"
+  },
+  "concurrent_profile_registry_completion": {
+    "dedicated_artifact_verification_performed_by_this_observer": false,
+    "end_time": "2026-10-01T09:11:10.945803Z",
+    "run_id": "r_20261001T090308Z_b64e2ba9_s000_f00_a01_286bb53e",
+    "source": "read-only authoritative registry",
+    "start_time": "2026-10-01T09:03:08.270564Z",
+    "status": "completed"
+  },
+  "finite_gradient_rows_with_positive_epoch_mean_verified": 480,
+  "limitations": [
+    "Point samples can miss brief utilization, memory, temperature or throttle peaks.",
+    "A separate registered execution profile occupied GPU 0 after that grid lane completed; shared cgroup and GPU-0 observer samples include it. Grid running_lanes lists grid jobs only.",
+    "Cgroup CPU counters include other processes and throttled_usec is not wall-clock slowdown.",
+    "GPU utilization summaries include loading, validation and finalization while the sampler was active; the independent observer began after the first jobs started.",
+    "Physical GPU and concurrent work are confounded with configuration; runtime is secondary and does not establish a hyperparameter effect.",
+    "Plausible CPU serial work and scalar synchronization costs have not been quantified by this read-only review.",
+    "The prevalence-initialized decoder output weight is zero, so the first backward pass has zero backbone gradients; epoch-1 block minimum norms are zero, while every reported block epoch mean is positive.",
+    "Identical masking and fixed seed do not imply identical stochastic dropout trajectories after different optimizer batch sizes."
+  ],
+  "mask_receipt_hashes": {
+    "train_epoch_1": "b3d724a78d4da0baf1ed0c905fc5875eb89175d713d8f0bade9d1f31b20cce75",
+    "train_epoch_2": "99e37242af722ff6ae56446ffbf1c1dc63088f7e0c54edb9cae46b29ba367e08",
+    "train_epoch_3": "311f341a26e7f1276ceec98c98270f1001d434fc0bc839644794ba90de3e124d",
+    "train_epoch_4": "ae7689ae47830bcb18d952511636f2156028a4a76edeafe41cf377c64ac0b71c",
+    "train_epoch_5": "810d80ef938871ba2e27ecc7ebae8a5770169e5050be5288701beeac8a17bbe3",
+    "train_epoch_6": "9525f1bc1070152a093dd9bcdf481410209930027a56e4b323d2a47904761265",
+    "train_epoch_7": "e7cfdc3b6a10b3597d78b850b32b7c8bbd80b589ec60cb3ef477999394ed17ee",
+    "train_epoch_8": "fed8e1e9cb8347a0604695698098481608c9362f405fb147920240a372a2bbf8",
+    "validation_epoch_1": "985efafb5cc3ee0705e48995b39221eedfad046ff96ede165d8659b86bac75aa",
+    "validation_epoch_2": "985efafb5cc3ee0705e48995b39221eedfad046ff96ede165d8659b86bac75aa",
+    "validation_epoch_3": "985efafb5cc3ee0705e48995b39221eedfad046ff96ede165d8659b86bac75aa",
+    "validation_epoch_4": "985efafb5cc3ee0705e48995b39221eedfad046ff96ede165d8659b86bac75aa",
+    "validation_epoch_5": "985efafb5cc3ee0705e48995b39221eedfad046ff96ede165d8659b86bac75aa",
+    "validation_epoch_6": "985efafb5cc3ee0705e48995b39221eedfad046ff96ede165d8659b86bac75aa",
+    "validation_epoch_7": "985efafb5cc3ee0705e48995b39221eedfad046ff96ede165d8659b86bac75aa",
+    "validation_epoch_8": "985efafb5cc3ee0705e48995b39221eedfad046ff96ede165d8659b86bac75aa"
+  },
+  "observer": {
+    "cpu_cumulative_throttled_usec": 47746581,
+    "cpu_periods": 52113,
+    "cpu_throttled_period_fraction": 0.001093776984629555,
+    "cpu_throttled_periods": 57,
+    "devices": {
+      "0": {
+        "active_flag_sample_counts": {
+          "clocks_event_reasons.hw_slowdown": 0,
+          "clocks_event_reasons.hw_thermal_slowdown": 0,
+          "clocks_event_reasons.sw_power_cap": 24,
+          "clocks_event_reasons.sw_thermal_slowdown": 0
+        },
+        "gpu_utilization_mean_percent": 20.333333333333332,
+        "power_draw_range_w": [
+          21.44,
+          221.93
+        ],
+        "samples": 174,
+        "sm_clock_range_mhz": [
+          210.0,
+          1935.0
+        ],
+        "temperature_max_c": 61.0
+      },
+      "1": {
+        "active_flag_sample_counts": {
+          "clocks_event_reasons.hw_slowdown": 0,
+          "clocks_event_reasons.hw_thermal_slowdown": 0,
+          "clocks_event_reasons.sw_power_cap": 13,
+          "clocks_event_reasons.sw_thermal_slowdown": 0
+        },
+        "gpu_utilization_mean_percent": 29.24137931034483,
+        "power_draw_range_w": [
+          20.33,
+          240.7
+        ],
+        "samples": 174,
+        "sm_clock_range_mhz": [
+          210.0,
+          1965.0
+        ],
+        "temperature_max_c": 67.0
+      },
+      "2": {
+        "active_flag_sample_counts": {
+          "clocks_event_reasons.hw_slowdown": 0,
+          "clocks_event_reasons.hw_thermal_slowdown": 0,
+          "clocks_event_reasons.sw_power_cap": 6,
+          "clocks_event_reasons.sw_thermal_slowdown": 1
+        },
+        "gpu_utilization_mean_percent": 27.936781609195403,
+        "power_draw_range_w": [
+          19.04,
+          225.32
+        ],
+        "samples": 174,
+        "sm_clock_range_mhz": [
+          210.0,
+          1965.0
+        ],
+        "temperature_max_c": 62.0
+      },
+      "3": {
+        "active_flag_sample_counts": {
+          "clocks_event_reasons.hw_slowdown": 0,
+          "clocks_event_reasons.hw_thermal_slowdown": 0,
+          "clocks_event_reasons.sw_power_cap": 23,
+          "clocks_event_reasons.sw_thermal_slowdown": 0
+        },
+        "gpu_utilization_mean_percent": 19.804597701149426,
+        "power_draw_range_w": [
+          22.11,
+          212.18
+        ],
+        "samples": 174,
+        "sm_clock_range_mhz": [
+          210.0,
+          1950.0
+        ],
+        "temperature_max_c": 62.0
+      }
+    },
+    "end": "2026-10-01T09:27:08.152525+00:00",
+    "minimum_disk_free_gib": 20.022132873535156,
+    "peak_cgroup_gib": 57.219486236572266,
+    "samples": 174,
+    "source_snapshot_sha256": "fb3caa9674a8b7561f1fd899c6ae1c64df9a60e6d1e313f674fdb12032238af4",
+    "start": "2026-10-01T08:00:16.857835+00:00"
+  },
+  "runs_verified": 10,
+  "runtime_by_job": [
+    {
+      "gpu": "2",
+      "label": "b2048_lr0p0003",
+      "maximum_worker_sampled_cgroup_gib": 56.88266372680664,
+      "mean_training_epoch_seconds": 203.49750386724918,
+      "median_training_epoch_seconds": 200.73435306699685,
+      "minimum_worker_sampled_physical_free_gib": 19.75299072265625,
+      "peak_allocated_gib": 2.4903063774108887,
+      "peak_reserved_gib": 2.986328125,
+      "run_id": "r_20261001T074811Z_06acf7a5_s000_f00_a01_2aa32391",
+      "total_runtime_seconds": 1896.5525668269984,
+      "training_epoch_seconds": [
+        204.502536977001,
+        225.11726220700075,
+        198.54626859299606,
+        196.4532000379986,
+        200.81000484900142,
+        196.84639690800395,
+        200.65870128499228,
+        205.04566008099937
+      ],
+      "updates_per_epoch": 108,
+      "validation_epoch_seconds": [
+        12.283058719986002,
+        12.799188927994692,
+        12.736169417999918,
+        12.88573873299174,
+        12.489048603994888,
+        12.289693465005257,
+        12.64121162900119,
+        12.7344342879951
+      ],
+      "worker_gpu_sample_count": 347,
+      "worker_sampled_gpu_utilization_mean_percent": 27.414985590778098,
+      "worker_sampled_gpu_utilization_median_percent": 36.0
+    },
+    {
+      "gpu": "1",
+      "label": "b1024_lr0p0001",
+      "maximum_worker_sampled_cgroup_gib": 56.88798141479492,
+      "mean_training_epoch_seconds": 217.46643966962438,
+      "median_training_epoch_seconds": 215.8165568004988,
+      "minimum_worker_sampled_physical_free_gib": 20.06353759765625,
+      "peak_allocated_gib": 2.2399115562438965,
+      "peak_reserved_gib": 2.67578125,
+      "run_id": "r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202",
+      "total_runtime_seconds": 2011.1334319419984,
+      "training_epoch_seconds": [
+        210.6210309540038,
+        210.70493522600736,
+        208.95840807999775,
+        233.6854583050008,
+        220.30488985800184,
+        223.59485702999518,
+        211.32822374299576,
+        220.53371416099253
+      ],
+      "updates_per_epoch": 209,
+      "validation_epoch_seconds": [
+        11.617145513009746,
+        12.132500099003664,
+        12.056351728009759,
+        12.518612767991726,
+        17.50817901699338,
+        12.556164441004512,
+        13.01157227899239,
+        12.142592892996618
+      ],
+      "worker_gpu_sample_count": 370,
+      "worker_sampled_gpu_utilization_mean_percent": 30.386486486486486,
+      "worker_sampled_gpu_utilization_median_percent": 38.0
+    },
+    {
+      "gpu": "0",
+      "label": "b512_lr3em05",
+      "maximum_worker_sampled_cgroup_gib": 58.346160888671875,
+      "mean_training_epoch_seconds": 270.34570275387523,
+      "median_training_epoch_seconds": 270.82815676050086,
+      "minimum_worker_sampled_physical_free_gib": 20.2978515625,
+      "peak_allocated_gib": 2.0660762786865234,
+      "peak_reserved_gib": 2.44140625,
+      "run_id": "r_20261001T074811Z_97513f17_s000_f00_a01_bfa65cb7",
+      "total_runtime_seconds": 2448.172840052008,
+      "training_epoch_seconds": [
+        269.2043579559977,
+        274.3084031489998,
+        262.5725992689986,
+        272.451955565004,
+        262.36707990600553,
+        260.4261358539952,
+        286.29688223700214,
+        275.13820809499884
+      ],
+      "updates_per_epoch": 413,
+      "validation_epoch_seconds": [
+        12.004197173999273,
+        12.606268193005235,
+        12.059683372994186,
+        21.105907672987087,
+        12.150691222996102,
+        17.869263808999676,
+        12.030917327007046,
+        12.160312762003741
+      ],
+      "worker_gpu_sample_count": 455,
+      "worker_sampled_gpu_utilization_mean_percent": 23.32967032967033,
+      "worker_sampled_gpu_utilization_median_percent": 25.0
+    },
+    {
+      "gpu": "3",
+      "label": "b512_lr0p0001",
+      "maximum_worker_sampled_cgroup_gib": 58.706050872802734,
+      "mean_training_epoch_seconds": 267.53216996812625,
+      "median_training_epoch_seconds": 262.7571536359974,
+      "minimum_worker_sampled_physical_free_gib": 20.29791259765625,
+      "peak_allocated_gib": 2.0660762786865234,
+      "peak_reserved_gib": 2.44140625,
+      "run_id": "r_20261001T074811Z_425c1faf_s000_f00_a01_65533cf1",
+      "total_runtime_seconds": 2411.9520521550003,
+      "training_epoch_seconds": [
+        309.24641827499727,
+        256.1198724970018,
+        258.3598772030091,
+        261.81315474800067,
+        255.08910859200114,
+        271.1847093599936,
+        264.7430665460124,
+        263.7011525239941
+      ],
+      "updates_per_epoch": 413,
+      "validation_epoch_seconds": [
+        12.528629392007133,
+        12.867329760003486,
+        12.641458635000163,
+        12.09626659800415,
+        12.41086777500459,
+        12.83168759100954,
+        12.80498536300729,
+        12.280553382006474
+      ],
+      "worker_gpu_sample_count": 448,
+      "worker_sampled_gpu_utilization_mean_percent": 24.426339285714285,
+      "worker_sampled_gpu_utilization_median_percent": 27.0
+    },
+    {
+      "gpu": "1",
+      "label": "b2048_lr3em05",
+      "maximum_worker_sampled_cgroup_gib": 57.61027908325195,
+      "mean_training_epoch_seconds": 196.61451461475008,
+      "median_training_epoch_seconds": 196.20489065049333,
+      "minimum_worker_sampled_physical_free_gib": 19.75299072265625,
+      "peak_allocated_gib": 2.4903063774108887,
+      "peak_reserved_gib": 2.986328125,
+      "run_id": "r_20261001T082215Z_22f0027c_s000_f00_a01_54281998",
+      "total_runtime_seconds": 1837.5116726279957,
+      "training_epoch_seconds": [
+        200.30362096099998,
+        196.05234045199177,
+        196.35744084899488,
+        191.50754696701188,
+        200.14080540300347,
+        189.31880508099857,
+        206.28421281999908,
+        192.951344385001
+      ],
+      "updates_per_epoch": 108,
+      "validation_epoch_seconds": [
+        12.68409406900173,
+        12.186165076986072,
+        12.677468642999884,
+        11.984495686992886,
+        12.256395333999535,
+        12.346041339988005,
+        12.283774673996959,
+        12.301417830996797
+      ],
+      "worker_gpu_sample_count": 336,
+      "worker_sampled_gpu_utilization_mean_percent": 30.81845238095238,
+      "worker_sampled_gpu_utilization_median_percent": 38.0
+    },
+    {
+      "gpu": "2",
+      "label": "b1024_lr3em05",
+      "maximum_worker_sampled_cgroup_gib": 58.116207122802734,
+      "mean_training_epoch_seconds": 219.9792809663777,
+      "median_training_epoch_seconds": 217.83412245750515,
+      "minimum_worker_sampled_physical_free_gib": 20.06353759765625,
+      "peak_allocated_gib": 2.2399115562438965,
+      "peak_reserved_gib": 2.67578125,
+      "run_id": "r_20261001T082016Z_95cce2a4_s000_f00_a01_df1ebd49",
+      "total_runtime_seconds": 2026.8848717880028,
+      "training_epoch_seconds": [
+        240.2184874250088,
+        217.14744586900633,
+        216.2541864329978,
+        220.89287541799422,
+        218.52079904600396,
+        211.41465562899248,
+        220.47235243101022,
+        214.9134454800078
+      ],
+      "updates_per_epoch": 209,
+      "validation_epoch_seconds": [
+        12.860595234000357,
+        12.81558992099599,
+        12.486859223994543,
+        12.046312145001139,
+        12.221309201006079,
+        12.392690628999844,
+        12.372711114003323,
+        12.449200746996212
+      ],
+      "worker_gpu_sample_count": 373,
+      "worker_sampled_gpu_utilization_mean_percent": 29.71313672922252,
+      "worker_sampled_gpu_utilization_median_percent": 37.0
+    },
+    {
+      "gpu": "0",
+      "label": "b2048_lr0p0001",
+      "maximum_worker_sampled_cgroup_gib": 57.61621856689453,
+      "mean_training_epoch_seconds": 203.83492868487338,
+      "median_training_epoch_seconds": 198.13924258000043,
+      "minimum_worker_sampled_physical_free_gib": 19.75299072265625,
+      "peak_allocated_gib": 2.4903063774108887,
+      "peak_reserved_gib": 2.986328125,
+      "run_id": "r_20261001T082930Z_d0f806f6_s000_f00_a01_57f4d373",
+      "total_runtime_seconds": 1933.0591512890096,
+      "training_epoch_seconds": [
+        199.61828357499326,
+        193.4067609009944,
+        195.79827111899795,
+        193.75822125999548,
+        197.95543798799918,
+        198.32304717200168,
+        237.38636166299693,
+        214.43304580100812
+      ],
+      "updates_per_epoch": 108,
+      "validation_epoch_seconds": [
+        12.797668896993855,
+        12.368928114010487,
+        12.440925995993894,
+        12.42988916100876,
+        21.340982781999628,
+        12.642913165997015,
+        21.27783453000302,
+        15.925484577004681
+      ],
+      "worker_gpu_sample_count": 353,
+      "worker_sampled_gpu_utilization_mean_percent": 30.274787535410766,
+      "worker_sampled_gpu_utilization_median_percent": 37.0
+    },
+    {
+      "gpu": "3",
+      "label": "b512_lr0p0003",
+      "maximum_worker_sampled_cgroup_gib": 58.76325607299805,
+      "mean_training_epoch_seconds": 269.25811618825173,
+      "median_training_epoch_seconds": 267.62365598700126,
+      "minimum_worker_sampled_physical_free_gib": 20.2978515625,
+      "peak_allocated_gib": 2.0660762786865234,
+      "peak_reserved_gib": 2.44140625,
+      "run_id": "r_20261001T082850Z_052d767b_s000_f00_a01_35ab7f19",
+      "total_runtime_seconds": 2415.3841839149973,
+      "training_epoch_seconds": [
+        260.44507076899754,
+        266.54672062299505,
+        248.92267633099982,
+        257.36141970098834,
+        268.70059135100746,
+        279.9424358020042,
+        288.8659720140131,
+        283.2800429150084
+      ],
+      "updates_per_epoch": 413,
+      "validation_epoch_seconds": [
+        12.164951140002813,
+        12.124851921995287,
+        12.483794626008603,
+        14.355407643000945,
+        12.333213003992569,
+        12.119061630990473,
+        11.837411829998018,
+        12.194630393001717
+      ],
+      "worker_gpu_sample_count": 450,
+      "worker_sampled_gpu_utilization_mean_percent": 27.0,
+      "worker_sampled_gpu_utilization_median_percent": 30.0
+    },
+    {
+      "gpu": "1",
+      "label": "core_pair_reference",
+      "maximum_worker_sampled_cgroup_gib": 56.298431396484375,
+      "mean_training_epoch_seconds": 174.3824494656219,
+      "median_training_epoch_seconds": 174.1177208139925,
+      "minimum_worker_sampled_physical_free_gib": 4.767578125,
+      "peak_allocated_gib": 14.88110876083374,
+      "peak_reserved_gib": 17.97265625,
+      "run_id": "r_20261001T085324Z_32178e25_s000_f00_a01_2dfb5a15",
+      "total_runtime_seconds": 1652.5301926630054,
+      "training_epoch_seconds": [
+        176.49674364400562,
+        175.7521310519951,
+        176.97070287399401,
+        175.44989346599323,
+        172.11721244199725,
+        172.78554816199176,
+        172.77449187899765,
+        172.7128722060006
+      ],
+      "updates_per_epoch": 6,
+      "validation_epoch_seconds": [
+        12.494985477009322,
+        12.535915321001085,
+        12.361531226008083,
+        12.426190614001825,
+        12.022325455996906,
+        12.263744056996075,
+        12.839078919001622,
+        12.441201890993398
+      ],
+      "worker_gpu_sample_count": 301,
+      "worker_sampled_gpu_utilization_mean_percent": 35.269102990033225,
+      "worker_sampled_gpu_utilization_median_percent": 40.0
+    },
+    {
+      "gpu": "2",
+      "label": "b1024_lr0p0003",
+      "maximum_worker_sampled_cgroup_gib": 56.41492462158203,
+      "mean_training_epoch_seconds": 205.02985116037598,
+      "median_training_epoch_seconds": 198.72383621199697,
+      "minimum_worker_sampled_physical_free_gib": 20.06353759765625,
+      "peak_allocated_gib": 2.2399115562438965,
+      "peak_reserved_gib": 2.67578125,
+      "run_id": "r_20261001T085435Z_c393af7c_s000_f00_a01_459ab1fb",
+      "total_runtime_seconds": 1897.3693254480022,
+      "training_epoch_seconds": [
+        204.77755751099903,
+        211.4051946289983,
+        240.72735184601333,
+        200.69778660600423,
+        195.01741227100138,
+        195.03065416699974,
+        196.7498858179897,
+        195.83296643500216
+      ],
+      "updates_per_epoch": 209,
+      "validation_epoch_seconds": [
+        11.701547914999537,
+        17.338610441001947,
+        12.389485504987533,
+        11.543414120009402,
+        11.488244951004162,
+        11.948946151009295,
+        11.77251345399418,
+        11.480401681998046
+      ],
+      "worker_gpu_sample_count": 349,
+      "worker_sampled_gpu_utilization_mean_percent": 31.171919770773638,
+      "worker_sampled_gpu_utilization_median_percent": 38.0
+    }
+  ],
+  "schema": "so2_bce_audit_independent_grid_protocol_and_runtime_v1",
+  "score_selection_performed": false,
+  "stage_id": "grid_a_v1",
+  "stage_plan_sha256": "ee24e9b8571242966635225fb24e715a221e8c96f7431a61fe3660098b73d745",
+  "verified_at": "2026-10-01T09:27:39.437375+00:00"
+}

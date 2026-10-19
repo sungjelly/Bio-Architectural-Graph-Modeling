@@ -1,0 +1,2 @@
+{"stage": "pca", "status": "running", "time": "2026-10-18T05:20:50.342515+00:00", "gpu": null}
+{"stage": "pca", "status": "complete", "time": "2026-10-18T05:22:45.074194+00:00", "free_bytes": 6846062592}

@@ -1,0 +1,56 @@
+{
+  "schema": "so12_primary_partition_numeric_audit_v1",
+  "status": "passed",
+  "representation": "h0",
+  "seed": 0,
+  "audited_at": "2026-10-17T02:13:11.172843+00:00",
+  "elapsed_seconds": 16.61447643698193,
+  "input_sha256": {
+    "graph_receipt": "ed323f1e19abfeb340f424f3820ea2dc66e9dfaa9e8a17b11d1da523a64b65d0",
+    "seed0_receipt": "648ab5d1cdc40c8da4cb361b041970e94b48023000fdf0ab989c218d9a9cd453",
+    "labels": "9ca66fd2c0c9aed384535ba6aace269839b7767b23e26a88c77a146256d93afa",
+    "edges": "ba33b22e137bea8cf56e8eef8d14849e1d903ac7c82a82a090cf09c4084e03a1",
+    "hL_labels": "abcdc518ef600eaa3e55edc452df81dc75cbbe2dc544f828135ba76316da16c0",
+    "hL_primary_audit": "e73feb3abd329f3534926de609e384df8257deef3953ab3c8ef3df6dd1319988"
+  },
+  "graph": {
+    "n_cells": 407659,
+    "k": 30,
+    "directed_entries": 12229770,
+    "undirected_edges": 11298105,
+    "degree_min": 30,
+    "degree_max": 2828,
+    "degree_mean": 55.42919449834298,
+    "all_neighbor_rows_unique_and_self_free": true,
+    "union_exact": true
+  },
+  "partition": {
+    "clusters": 16,
+    "sizes": [
+      65607,
+      44889,
+      40337,
+      34825,
+      26958,
+      25203,
+      25141,
+      22459,
+      21234,
+      19315,
+      17418,
+      16975,
+      16394,
+      14885,
+      8122,
+      7897
+    ],
+    "modularity": 0.7573038596174426,
+    "quality": 17112197.045726255,
+    "complete_contiguous_sorted_labels": true
+  },
+  "h0_hL_primary_ARI": 0.3701562885697946,
+  "audit_source_sha256": "b5eedca3716b1d671fa8715d2a5f24bfb097c69f532a9348a33768d4e444d61d",
+  "scope": "Completed h0 seed-0 graph and partition; h0-hL primary ARI. Seed-1 stability is not yet evaluated",
+  "gpu_accessed": false,
+  "clustering_repeated": false
+}

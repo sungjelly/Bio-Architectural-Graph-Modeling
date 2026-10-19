@@ -1,0 +1,46 @@
+{
+  "ops/supervisor/bagm-so12-cancer-backward-union.conf": {
+    "sha256": "010da72f465d37f5a42899b72a7b1ecdac68f22d51bd1abfce89d055784802c0",
+    "size_bytes": 378
+  },
+  "ops/supervisor/bagm-so12-cancer-backward-union.sh": {
+    "sha256": "2a7c4f52359746df744ffaab58f5a7e44f5572fb04c69ab285e605e1a0112ca0",
+    "size_bytes": 504
+  },
+  "scripts/analysis/audit_so12_cancer_backward_union.py": {
+    "sha256": "01ab5adbdd234f3a7e644b4a85bfbbb3b6ac7fa95ab67dc56f5707744bd0d121",
+    "size_bytes": 17374
+  },
+  "scripts/analysis/promote_so12_cancer_backward_union_result.py": {
+    "sha256": "2b2a51db46819e553016d147df69a5254e03b8b11e786f026238521bd5da24f3",
+    "size_bytes": 13074
+  },
+  "scripts/analysis/run_so12_cancer_backward_union.py": {
+    "sha256": "8ac41d76742887f29cba20401e7e2d403b45fba90c4bb6e2efbd288d0808a6c2",
+    "size_bytes": 10970
+  },
+  "scripts/analysis/run_so12_cancer_limited_union.py": {
+    "sha256": "84bcb0eb074dcb5173aece0052a155c609027c2f9133a282d03c9804faaf7b6e",
+    "size_bytes": 15775
+  },
+  "scripts/analysis/so12_cancer_backward_metrics.py": {
+    "sha256": "4335a474926f308b5fa416dbf71693aa39609dae02daedec0cf1b9fcfec8f00c",
+    "size_bytes": 13328
+  },
+  "scripts/analysis/so12_cancer_backward_report.py": {
+    "sha256": "f11ab108cf5e186de5ee62f4a88360fe9c4b2b8c1876876c442f624668d81fcd",
+    "size_bytes": 12306
+  },
+  "scripts/analysis/so12_cancer_limited_metrics.py": {
+    "sha256": "6d90d50cce29f09d00ce9c81690cf927780ccec3079ae4e20b00831b375e33a8",
+    "size_bytes": 18602
+  },
+  "scripts/analysis/so12_cancer_metrics.py": {
+    "sha256": "099d256bd6118c3117aa5f050e5b409c20ca499e3f8e8249283ade19e36f49b1",
+    "size_bytes": 22345
+  },
+  "tests/unit/spatial_benchmark/test_so12_cancer_backward_metrics.py": {
+    "sha256": "f442fc5a066c8a51fcdaef4111d40e254ebeae8e50bc7ddd8ab3cd71f95141ce",
+    "size_bytes": 6658
+  }
+}

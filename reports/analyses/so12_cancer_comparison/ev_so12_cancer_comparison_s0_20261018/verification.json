@@ -1,0 +1,11 @@
+{
+  "cells_sha256": "d68ee95082b948b6a3a87ce01ee5148582e012f3e037ada6d58ee3bac7529cb1",
+  "checkpoint_sha256": "8d93aca7f24cd5d7bb2308b0361e8b13ea9b17d1719c4aea0159c1e0e277bd64",
+  "clinical_inputs_unchanged": true,
+  "n_cells": 81607,
+  "partitions": 56,
+  "passed": true,
+  "source_epoch": 194,
+  "status": "complete",
+  "verified_at": "2026-10-18T06:50:41.625759+00:00"
+}

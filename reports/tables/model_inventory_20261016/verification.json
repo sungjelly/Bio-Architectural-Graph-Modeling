@@ -1,0 +1,8 @@
+{
+  "registry_identity_status_metric_check": "passed",
+  "summary_rows": 125,
+  "all_source_checksums": "passed",
+  "workbook_sheet_counts": "passed",
+  "all_csv_files_parse": "passed",
+  "scope": "Inventory artifact verification only; no model experiments run."
+}

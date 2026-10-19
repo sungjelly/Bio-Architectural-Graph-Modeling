@@ -1,0 +1,17 @@
+{
+  "evaluation_id": "ev_so12_zero_mean_e086_20261016T155304Z",
+  "source_run_id": "r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b",
+  "files": {
+    "config.resolved.json": "c42a0b16042c2f0e15e98049ef120c9dee3d13837fe10c7362992849bb33e610",
+    "model_best_epoch.json": "6966fa1e6805be2e4b9f4ae430d5cb234bfee2194425e3d716ed567f7dd1230a",
+    "provenance.json": "25274978f73fc4718649e7257cea001158e47e0cb80ee75308e035d1271ee6b0",
+    "analysis_source.py": "4aecedd108f1dc3765328ced0c901ece3f150375407168bf7fc8adb498e259ed",
+    "fitted_constants.npz": "dd1154650977cb96d210a7dd694e6e116fd2952bcbd8f91fb1e5e423dea830a5",
+    "comparison.csv": "f0ed677617a11beefa03a380712129aae12e2b85084816883cf7020a3851f139",
+    "per_core_huber.csv": "e05beaa67177b2bc877f5ff8a039b9a2e60880d6b391332bb4c4597d906c1849",
+    "metrics.json": "54ef3b2d3dc04e5d372b194fa41da941e31ecc9b63eef89074fb9b1368ef10bb",
+    "mask_receipts.json": "cbca22427329db9b2aff4fd8bbe9b1ea7cfa0e8139d6ddb583ee61b21c7dfaf7",
+    "baseline_view_statistics.json": "6eb9b6bad9621610cafc819bb2e236dbf355154d1b47ab6f361b036b6f64f216",
+    "verification.json": "b826b25666975b949fbb3129cca7a877de18a26f4d7f058d8153a0b23473d43d"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "code_sha256": "099d256bd6118c3117aa5f050e5b409c20ca499e3f8e8249283ade19e36f49b1",
+  "limitations": "Annotation-selected oracle is an upper bound, not unbiased accuracy. Transfer is between two jointly clustered cores, with donor overlap allowed. Outside outlines is reference-negative for this exercise, not proof of cancer absence.",
+  "methods": [
+    "h0",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "pca",
+    "scvi"
+  ],
+  "n_cells": 81607,
+  "no_population_confidence_interval_or_superiority_claim": true,
+  "null_controls": "20 within-core visible-cell label shuffles for each method at resolution1 seed0; oracle reselected for every shuffle",
+  "output_sha256": {
+    "metrics/pixel_agreement.csv": "e7bc49fb59232cacd24d70466f87053e0955259f743ab35178e19ed824968563",
+    "metrics/pixel_agreement.json": "fce64d8159fd5081b9f869260280fb34d05e4ec6521b9f0d1236ab0ecfe73e77",
+    "metrics/seed_stability.csv": "e779e8deefb7351efa5b5015ca2e2305e15413e1e87d279c5b312b70b73bc2cf"
+  },
+  "passed": true,
+  "pixel_scores_available": true,
+  "primary_resolution": 1.0,
+  "primary_seed": 0,
+  "raster_sources": {
+    "15": {
+      "path": "registration/core_15_raster.npz",
+      "registration_status": "verified_approximate_section",
+      "sha256": "00f3b79e9831a150be2c8cbe0ad3d3fca024d60c2389b98d31488f5861454731"
+    },
+    "23": {
+      "path": "registration/core_23_raster.npz",
+      "registration_status": "verified_approximate_section",
+      "sha256": "c06153c231688a9b8057b15798821f63abf791872e662b093f5ef97b1e6b630e"
+    }
+  },
+  "registration_status_by_core": {
+    "15": "complete",
+    "23": "complete"
+  },
+  "resolutions": [
+    0.25,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "schema": "so12_cancer_pixel_agreement_v1",
+  "seeds": [
+    0,
+    1
+  ],
+  "selection_support": "segmented_cell_footprint",
+  "status": "complete"
+}

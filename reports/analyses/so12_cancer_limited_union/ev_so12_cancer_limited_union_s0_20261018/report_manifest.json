@@ -1,0 +1,44 @@
+{
+  "embedded_pngs": [
+    {
+      "name": "combined_five_panel",
+      "sha256": "6cccc8dbc0d9cfcc06b62fece9d2a04b17d6c3bde6f883436c7d41831f6fbfec",
+      "size_bytes": 1976889
+    },
+    {
+      "name": "limited_union_errors",
+      "sha256": "1bd36cc08312817af9d87480511eeae5f2481e7c2f76c0b5f4f2913447fd07b2",
+      "size_bytes": 882771
+    },
+    {
+      "name": "best_single_errors",
+      "sha256": "6b47f01dfc361e67f58c9e7cca8f0bf5fa1f1c9e65bc5968ac335f8ec752cdb1",
+      "size_bytes": 847576
+    },
+    {
+      "name": "core_15_five_panel",
+      "sha256": "c410f5c4891547f05bcf711dd01b6955c196915d1172e14100719508a1e504ac",
+      "size_bytes": 769756
+    },
+    {
+      "name": "core_23_five_panel",
+      "sha256": "cf47e97068ba98a8505a21a69e417e67f470641eda66e70bcaa4dd10770a1da9",
+      "size_bytes": 1095112
+    },
+    {
+      "name": "all_representations_2x7",
+      "sha256": "60057ad7d5002738e66fbcc7eef7ad1e1a6b799371168a43531e30ffefd43b9d",
+      "size_bytes": 1310806
+    },
+    {
+      "name": "resolution_agreement",
+      "sha256": "d1912107b8f73dd316fd52da9cbe9b9197e0293e1d5ff0f9c391671b04e9ce8f",
+      "size_bytes": 518949
+    }
+  ],
+  "passed": true,
+  "report_path": "report/index.html",
+  "sha256": "201c21b00105340066da5597196178edfb634c6f6e8b460c2c3e5111217a38f9",
+  "size_bytes": 9879841,
+  "status": "complete"
+}

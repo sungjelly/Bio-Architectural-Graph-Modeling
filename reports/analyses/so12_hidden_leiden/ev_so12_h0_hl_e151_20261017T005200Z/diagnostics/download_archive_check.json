@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "checked_at": "2026-10-17T04:51:45.452960+00:00",
+  "archive": "so12_all28cores_h0_hL_PCA_six_core_images.zip",
+  "file_count": 26,
+  "size_bytes": 18619413,
+  "sha256": "638260bbc8e464c84a838b8102c799fedc907423c1e79241479db55b4025b3e8",
+  "crc_check": "passed",
+  "every_member_matches_original": true,
+  "heavy_embeddings_excluded": true,
+  "historical_pending_previews_excluded": true
+}

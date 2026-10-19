@@ -1,0 +1,122 @@
+{
+  "attempt": 2,
+  "campaign_id": "cmp_20261016_so12_embeddings_leiden",
+  "claim": "exploratory_fully_observed_transductive_clustering",
+  "classification": {
+    "lifecycle_stage": "exploratory_screen",
+    "study_axis": "representation"
+  },
+  "clustering_population": "all_mapped_cells",
+  "dataset": {
+    "dataset_id": "so12_pearson_integration",
+    "preprocessing_version": "so12_quasipoisson_v1",
+    "split_id": "so12_10train_4diagnostic_donors_v1",
+    "version": "v1"
+  },
+  "diagnostic_cores": [
+    11,
+    12,
+    13,
+    14,
+    25,
+    26,
+    27,
+    28
+  ],
+  "expected_cells": 407659,
+  "expected_genes": 1000,
+  "expected_train_cells": 301198,
+  "fit_population": "training_donors_only",
+  "fold": 0,
+  "graph": {
+    "M": 32,
+    "backend": "hnsw",
+    "directed_weight": "exp(-squared_distance/(kth_squared_distance+epsilon))",
+    "ef_construction": 120,
+    "ef_search": 128,
+    "ef_search_retry": [
+      256,
+      512
+    ],
+    "exact_recall_queries": 256,
+    "metric": "euclidean",
+    "minimum_exact_recall": 0.9,
+    "neighbor_k": 30,
+    "symmetrization": "arithmetic_mean"
+  },
+  "kernel": {
+    "gamma": "inverse_median_positive_squared_landmark_distance",
+    "landmark_selection": "core_balanced_training_only",
+    "type": "rbf"
+  },
+  "kernel_landmarks": 512,
+  "knn_k": 30,
+  "leiden": {
+    "n_iterations": 2,
+    "partition": "RBConfigurationVertexPartition",
+    "second_seed_resolution": 1.0
+  },
+  "leiden_resolutions": [
+    0.5,
+    1.0,
+    1.5
+  ],
+  "leiden_seeds": [
+    0,
+    1
+  ],
+  "methods": [
+    "pca",
+    "kernel_pca",
+    "spatial_pca"
+  ],
+  "model": {
+    "embedding_dim": 32,
+    "family": "classical_cell_encoders"
+  },
+  "n_components": 32,
+  "protocol": "so12_fully_observed_embeddings_v1",
+  "runtime": {
+    "cpu_only_reason": "protect_active_gpu_training_use_frozen_pca_and_small_kernel",
+    "device": "cpu",
+    "leiden_parallel_workers": 4,
+    "maximum_bundle_gib": 1.0,
+    "minimum_free_gib": 5.0
+  },
+  "seed": 0,
+  "spatial": {
+    "block_scaling": "train_center_and_scalar_rms_each_block",
+    "boundary": "within_core_and_slide_only",
+    "isolated_cell": "self_fallback",
+    "sigma": "farthest_eligible_neighbor_distance",
+    "weighting": "gaussian"
+  },
+  "spatial_k": 15,
+  "spatial_null_permutations": 20,
+  "spatial_radius_um": 50.0,
+  "spatial_weight": 0.3,
+  "threads": 8,
+  "train_cores": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "upstream_run_id": "r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410"
+}

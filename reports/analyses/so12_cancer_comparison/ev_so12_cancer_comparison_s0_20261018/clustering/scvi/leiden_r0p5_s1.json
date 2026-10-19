@@ -1,0 +1,44 @@
+{
+  "elapsed_seconds": 337.44701454788446,
+  "graph_receipt_sha256": "5e22988656860519fdaf0b74584f03045ef29b1a5218ca4393016976cf1cb923",
+  "labels": {
+    "path": "clustering/scvi/labels_r0p5_s1.npy",
+    "relative": true,
+    "sha256": "5d54387d3b3b6008b83bf05e852eff995ec860d0c2fd60a7fe6d3718b33c972c",
+    "size_bytes": 326556
+  },
+  "leiden": {
+    "cluster_count": 5,
+    "cluster_size_max": 23391,
+    "cluster_size_min": 7832,
+    "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+    "igraph_version": "1.0.0",
+    "implementation": "leidenalg.RBConfigurationVertexPartition",
+    "labels_sha256": "3e1e0df61bc27386ef9acc34934db1e8a244acc41da9c33ba12f8178b28a3d6f",
+    "largest_graph_component_proportion": 1.0,
+    "largest_graph_component_size": 81607,
+    "leidenalg_version": "0.12.0",
+    "modularity": 0.6506299355753468,
+    "n_iterations": -1,
+    "number_of_graph_components": 1,
+    "quality": 2797077.131274221,
+    "random_seed": 1,
+    "raw_to_sorted_cluster": {
+      "0": 0,
+      "1": 1,
+      "2": 2,
+      "3": 3,
+      "4": 4
+    },
+    "resolution": 0.5
+  },
+  "method": "scvi",
+  "n_cells": 81607,
+  "passed": true,
+  "reference_labels": null,
+  "resolution": 0.5,
+  "reused_resolution_one": false,
+  "schema": "so12_cancer_common_cosine_leiden_v1",
+  "seed": 1,
+  "status": "complete"
+}

@@ -1,0 +1,40 @@
+{
+  "reason": "Measured partial-gene epochs take about 13 seconds, whole-cell 7.5 seconds, spatial-block 4.5 seconds; prioritize longer independent remaining jobs to reduce idle GPUs at campaign end. Scientific configurations and seeds unchanged.",
+  "changes": [
+    {
+      "job_id": "q_c915c007cf1c1ce9d1b6",
+      "method": "partial_gene",
+      "seed": 1,
+      "previous_priority": 0,
+      "priority": 2
+    },
+    {
+      "job_id": "q_1d2bcd9c22acf7dde87d",
+      "method": "spatial_block",
+      "seed": 1,
+      "previous_priority": 0,
+      "priority": 0
+    },
+    {
+      "job_id": "q_7b3e79bfec514899bd97",
+      "method": "whole_cell",
+      "seed": 2,
+      "previous_priority": 0,
+      "priority": 1
+    },
+    {
+      "job_id": "q_b0d2781baadd1e76c37d",
+      "method": "partial_gene",
+      "seed": 2,
+      "previous_priority": 0,
+      "priority": 2
+    },
+    {
+      "job_id": "q_03591a07d1886e724cb3",
+      "method": "spatial_block",
+      "seed": 2,
+      "previous_priority": 0,
+      "priority": 0
+    }
+  ]
+}

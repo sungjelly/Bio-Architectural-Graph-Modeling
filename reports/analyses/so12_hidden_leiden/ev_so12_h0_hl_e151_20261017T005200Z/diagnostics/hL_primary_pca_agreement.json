@@ -1,0 +1,215 @@
+{
+  "alignment": {
+    "all_28_cores": true,
+    "coordinates_absolute_tolerance_um": 1e-08,
+    "core_and_split_exact": true,
+    "matched_cells": 407659,
+    "maximum_coordinate_difference_um": 0.0,
+    "one_to_one_outer_join_complete": true,
+    "target_order_preserved": true,
+    "unique_slide_qualified_keys": true
+  },
+  "all_cells": {
+    "cluster_counts": {
+      "hL": 22,
+      "kernel_pca": 21,
+      "pca": 19,
+      "spatial_pca": 17
+    },
+    "hL_vs_method_ARI": {
+      "kernel_pca": 0.27736674118010246,
+      "pca": 0.2849100927644078,
+      "spatial_pca": 0.39323740331417256
+    },
+    "n_cells": 407659
+  },
+  "checkpoint_epoch": 151,
+  "checkpoint_sha256": "6b4526508d223fb8a286084f57fc5f4b36129db6afeffaa328672d2c06226af4",
+  "created_at": "2026-10-17T02:03:19.489781+00:00",
+  "evaluation_id": "ev_so12_h0_hl_e151_20261017T005200Z",
+  "limitations": [
+    "Primary seed0 comparison only; hL seed1 stability result pending at request.",
+    "ARI measures partition agreement and is not biological validation or an encoder-quality ranking.",
+    "Representations, distance metrics, graph weighting and Leiden iteration limits differ between hidden-state and historical PCA pipelines.",
+    "All-cell partitions are exploratory and transductive; include training and validation cores."
+  ],
+  "partition_setting": {
+    "hL": {
+      "dimensions": 256,
+      "graph": "exact_k30_unweighted_undirected_union",
+      "iterations": -1,
+      "metric": "cosine",
+      "resolution": 1.0,
+      "seed": 0
+    },
+    "pca_family": {
+      "dimensions": 32,
+      "graph": "HNSW_k30_weighted_symmetric",
+      "iterations": 2,
+      "metric": "euclidean",
+      "resolution": 1.0,
+      "saved_column": "leiden_r1.0_s0",
+      "seed": 0
+    }
+  },
+  "pca_run_id": "r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4",
+  "primary_only": true,
+  "requested_cores": {
+    "1": {
+      "cluster_counts_present": {
+        "hL": 20,
+        "kernel_pca": 20,
+        "pca": 19,
+        "spatial_pca": 17
+      },
+      "hL_vs_method_ARI": {
+        "kernel_pca": 0.26076186693672987,
+        "pca": 0.2642013830959738,
+        "spatial_pca": 0.3732001914769442
+      },
+      "n_cells": 8924,
+      "split": "train"
+    },
+    "13": {
+      "cluster_counts_present": {
+        "hL": 11,
+        "kernel_pca": 20,
+        "pca": 19,
+        "spatial_pca": 16
+      },
+      "hL_vs_method_ARI": {
+        "kernel_pca": 0.32628201294376186,
+        "pca": 0.3660572095092328,
+        "spatial_pca": 0.6144384932203
+      },
+      "n_cells": 5345,
+      "split": "validation"
+    },
+    "15": {
+      "cluster_counts_present": {
+        "hL": 20,
+        "kernel_pca": 21,
+        "pca": 19,
+        "spatial_pca": 17
+      },
+      "hL_vs_method_ARI": {
+        "kernel_pca": 0.45706619160050815,
+        "pca": 0.29389888149070453,
+        "spatial_pca": 0.705280745408732
+      },
+      "n_cells": 38145,
+      "split": "train"
+    },
+    "21": {
+      "cluster_counts_present": {
+        "hL": 17,
+        "kernel_pca": 21,
+        "pca": 19,
+        "spatial_pca": 17
+      },
+      "hL_vs_method_ARI": {
+        "kernel_pca": 0.33668952601567115,
+        "pca": 0.3219567299800206,
+        "spatial_pca": 0.454873188776426
+      },
+      "n_cells": 4897,
+      "split": "train"
+    },
+    "23": {
+      "cluster_counts_present": {
+        "hL": 18,
+        "kernel_pca": 21,
+        "pca": 19,
+        "spatial_pca": 17
+      },
+      "hL_vs_method_ARI": {
+        "kernel_pca": 0.3134719762949041,
+        "pca": 0.2893976123259978,
+        "spatial_pca": 0.5768611791442425
+      },
+      "n_cells": 43462,
+      "split": "train"
+    },
+    "9": {
+      "cluster_counts_present": {
+        "hL": 17,
+        "kernel_pca": 20,
+        "pca": 19,
+        "spatial_pca": 17
+      },
+      "hL_vs_method_ARI": {
+        "kernel_pca": 0.1537514995409712,
+        "pca": 0.1521412685499673,
+        "spatial_pca": 0.22538269363403005
+      },
+      "n_cells": 17223,
+      "split": "train"
+    }
+  },
+  "schema": "so12_hL_primary_pca_agreement_v1",
+  "source_files": {
+    "model/cells.parquet": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/cells.parquet",
+      "sha256": "d485d5e202488e40814a5b979dfa425bfca5da12287f32d4c6002536a55acac1",
+      "size_bytes": 5493230
+    },
+    "model/clustering/hL/graph_receipt.json": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/hL/graph_receipt.json",
+      "sha256": "338406647944d8dfcaf202a93c920201ec0ed409b70b3ae5b5c324c82ced2791",
+      "size_bytes": 9025
+    },
+    "model/clustering/hL/leiden_seed0_receipt.json": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/hL/leiden_seed0_receipt.json",
+      "sha256": "167a9a87874ff88933522640762bca8f12b88fc785619b264b97c95a686549f3",
+      "size_bytes": 1229
+    },
+    "model/clustering/hL_labels.npy": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/clustering/hL_labels.npy",
+      "sha256": "abcdc518ef600eaa3e55edc452df81dc75cbbe2dc544f828135ba76316da16c0",
+      "size_bytes": 1630764
+    },
+    "model/embeddings/extraction_manifest.json": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/embeddings/extraction_manifest.json",
+      "sha256": "cf2b52de5a93cbdf5c3ef8b0709dcee2517167053d75a111485c81aaf6261b77",
+      "size_bytes": 6664
+    },
+    "model/extraction_inputs.json": {
+      "path": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z/extraction_inputs.json",
+      "sha256": "dd791fca7299900e2e6ce3e7bb33eb793ae91a4d267fa410bd84861f0fca5e77",
+      "size_bytes": 60082
+    },
+    "pca/_SUCCESS": {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/_SUCCESS",
+      "sha256": "294c44ffed66f824e7d3c67b9740f91bc10349bd44edfbec33de46a602ada717",
+      "size_bytes": 50
+    },
+    "pca/cells.csv.gz": {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/cells.csv.gz",
+      "sha256": "d339e066d33713e9448d0272c18a42aa98cf42449fac91e351f079c9e658b5d5",
+      "size_bytes": 7580080
+    },
+    "pca/checksums.json": {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/checksums.json",
+      "sha256": "1013b827a76f0519277cecb5e9305059d88a406dc158619a34baa38b1f39b6dc",
+      "size_bytes": 10022
+    },
+    "pca/methods/kernel_pca/clusters.csv.gz": {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/methods/kernel_pca/clusters.csv.gz",
+      "sha256": "6548d395af88341d428b76d2013da992302c53351a1754ccca5597e9710181c0",
+      "size_bytes": 1426579
+    },
+    "pca/methods/pca/clusters.csv.gz": {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/methods/pca/clusters.csv.gz",
+      "sha256": "ff39bf9b243f50e04c570fe7b6a928b7793e62f1b28ea1d813d25a18affd3cf8",
+      "size_bytes": 1414892
+    },
+    "pca/methods/spatial_pca/clusters.csv.gz": {
+      "path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/methods/spatial_pca/clusters.csv.gz",
+      "sha256": "3cc603c98f8a7b7abfa3a1e01e8b824a2e7cc4fe4a0beac57e584bcc7684c45d",
+      "size_bytes": 1299781
+    }
+  },
+  "source_model_run_id": "r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b",
+  "stability_pending": true,
+  "status": "verified_primary_only"
+}

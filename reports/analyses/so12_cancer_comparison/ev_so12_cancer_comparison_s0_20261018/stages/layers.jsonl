@@ -1,0 +1,2 @@
+{"stage": "layers", "status": "running", "time": "2026-10-18T05:14:50.014385+00:00", "gpu": 0}
+{"stage": "layers", "status": "complete", "time": "2026-10-18T05:16:41.550398+00:00", "free_bytes": 7214526464}

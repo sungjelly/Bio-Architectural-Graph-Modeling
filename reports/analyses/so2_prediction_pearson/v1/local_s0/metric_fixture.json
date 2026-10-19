@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "reference": "scipy.stats.pearsonr",
+  "tolerance": 1e-12,
+  "maximum_absolute_difference": 2.220446049250313e-16,
+  "includes_empty_singleton_constant_rows_and_constant_gene": true
+}

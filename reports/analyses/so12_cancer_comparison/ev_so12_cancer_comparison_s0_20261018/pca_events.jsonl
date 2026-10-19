@@ -1,0 +1,17 @@
+{"time": "2026-10-18T05:32:01.974576+00:00", "representation": "pca", "stage": "graph_ready", "reused": false, "edges": 2186426}
+{"time": "2026-10-18T05:35:04.348317+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 0.25, "seed": 1, "complete": 1, "total": 16}
+{"time": "2026-10-18T05:35:12.959413+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 0.25, "seed": 0, "complete": 2, "total": 16}
+{"time": "2026-10-18T05:36:43.905462+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 0.5, "seed": 1, "complete": 3, "total": 16}
+{"time": "2026-10-18T05:40:23.082908+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 0.5, "seed": 0, "complete": 4, "total": 16}
+{"time": "2026-10-18T05:41:41.689283+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 1.0, "seed": 0, "complete": 5, "total": 16}
+{"time": "2026-10-18T05:43:44.872981+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 1.0, "seed": 1, "complete": 6, "total": 16}
+{"time": "2026-10-18T05:49:52.651913+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 2.0, "seed": 0, "complete": 7, "total": 16}
+{"time": "2026-10-18T06:01:52.274358+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 2.0, "seed": 1, "complete": 11, "total": 16}
+{"time": "2026-10-18T06:41:21.006314+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 0.25, "seed": 0, "complete": 39, "total": 56}
+{"time": "2026-10-18T06:41:21.030280+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 0.25, "seed": 1, "complete": 41, "total": 56}
+{"time": "2026-10-18T06:41:21.058125+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 0.5, "seed": 1, "complete": 42, "total": 56}
+{"time": "2026-10-18T06:41:21.062390+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 0.5, "seed": 0, "complete": 43, "total": 56}
+{"time": "2026-10-18T06:41:21.258728+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 1.0, "seed": 0, "complete": 45, "total": 56}
+{"time": "2026-10-18T06:41:21.259127+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 1.0, "seed": 1, "complete": 46, "total": 56}
+{"time": "2026-10-18T06:41:21.292294+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 2.0, "seed": 0, "complete": 47, "total": 56}
+{"time": "2026-10-18T06:41:21.311757+00:00", "representation": "pca", "stage": "leiden_complete", "resolution": 2.0, "seed": 1, "complete": 49, "total": 56}

@@ -1,0 +1,156 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so2_prediction_pearson
+title: Masked-expression Pearson for existing SO2 count and historical BAGM predictors
+status: verified
+outcome: supported
+experiment_type: descriptive_analysis
+method_family: spatial_reconstruction
+lifecycle_stage: exploratory_posthoc
+study_axis: masked_expression_correlation
+campaign_ids:
+- cmp_20261015_so2_prediction_pearson
+method:
+  name: Frozen-checkpoint Pearson metric extension under two native protocols
+  model_family: Local Gene Residual hurdle-count MLP, seeds 0 and 1 at epoch 30; historical
+    Relative-QKV graph Transformer, seed 0 at epoch 300
+  graph_context: 'Local predictor: clean non-self same-gene neighbor summaries within
+    75 micrometers, capped at 16 neighbors; historical predictor: original full-core
+    spatial relative-geometry graphs'
+  masking_or_perturbation: 'Preserved original masks: local target-isolated Uniform{1,...,1000}
+    hidden genes per cell; historical simultaneous Uniform{0,...,1000} hidden genes
+    per graph cell; include recorded zeros and positives'
+  evaluation_design: 'Local: 37367 validation cells in two cores from one held-out
+    donor, reused for checkpoint selection, after training on 12 cores; both seeds
+    retained. Historical: 246063 fitted cells across all 14 cores, including the later
+    validation cores; only seed 0 available. Report global and equal-core metrics
+    separately; no cross-protocol superiority comparison.'
+  implementation_version: so2_prediction_pearson_v1; source snapshots, checkpoint/data/mask
+    hashes and immutable evaluation/comparison manifests preserved
+conclusion:
+  question: How strongly do the selected existing expression predictions covary with
+    masked observed counts under their original evaluation protocols?
+  estimand: 'Descriptive masked-entry reconstruction correlation: mean valid-cell
+    Pearson, mean valid-gene Pearson and pooled Pearson, with log1p counts primary
+    and native/additional scales separate'
+  observed_result: On log1p observed counts, Local Gene Residual has mean cell-wise
+    Pearson 0.315556, mean gene-wise Pearson 0.259823, and pooled Pearson 0.440311
+    across seeds 0 and 1 on the reused validation donor. Historical Relative-QKV seed
+    0 has corresponding fitted-cohort values 0.421892, 0.271327, and 0.561158. Local
+    raw-count MAE/RMSE average 0.223391/1.100785. All three frozen checkpoint replays
+    passed source, mask and native metric verification. These are separate native
+    protocols and populations, not a matched ranking.
+  strongest_alternative_explanation: Correlations can reflect gene abundance, same-cell
+    coexpression or fitted-cohort reuse rather than spatial predictive gain; differences
+    between endpoints can arise from masks, populations, permitted neighbor inputs
+    and normalization.
+  controls:
+  - Independent SciPy fixture for masked cell/gene/pooled Pearson including empty,
+    singleton and constant vectors; float64 accumulation
+  - Checkpoint and source checksums; original mask counts and hashes; native per-core/global
+    metric replay at unchanged tolerances 1e-5 local and 2e-6 historical
+  - Both prespecified local seeds and the only historical seed retained; no retraining,
+    new checkpoint selection or threshold tuning
+  - Cell/gene/pooled correlations, raw/log/standardized scales, equal-core sensitivity
+    and undefined-correlation counts reported separately
+  remaining_uncertainty: The local validation donor was repeatedly used for selection
+    and is not a sealed test; only one held-out donor is available. Historical fitting
+    and normalization used all 14 cores. The two protocols differ in available neighbor
+    information and cannot isolate an architecture or training-set-size effect. Seed
+    variation is technical, not donor uncertainty. No new baseline/null evaluation,
+    detection improvement, calibration or biological true-zero ground truth is established.
+  maximum_defensible_claim: All selected frozen models exhibit positive descriptive
+    masked-expression correlation under their own native protocols, with verified
+    metric reconstruction. This adds reproducible metrics and does not establish SOTA,
+    graph-specific superiority, independent-test generalization or biology.
+evidence:
+  predictive_gain:
+    status: not_tested
+    summary: No matched baseline or cross-protocol superiority test; positive correlations
+      alone do not demonstrate spatial gain.
+  stability:
+    status: supported
+    summary: Both local seeds give near-identical log-scale cell correlations (0.315539
+      to 0.315573); all native metric replays pass. This covers technical seed/replay
+      consistency only; historical has one seed and broader robustness is untested.
+  faithfulness:
+    status: not_tested
+    summary: No attribution or graph-use faithfulness experiment.
+  null_calibration:
+    status: not_tested
+    summary: No new biological or spatial nulls in this metric-extension task.
+  patient_replication:
+    status: not_tested
+    summary: One reused local validation donor; historical evaluation entirely fitted-cohort.
+  external_support:
+    status: not_tested
+    summary: No external benchmark or orthogonal molecular validation.
+  perturbation_support:
+    status: not_tested
+    summary: No biological perturbation evidence.
+provenance:
+  created_at_utc: '2026-10-15T07:22:16.803438Z'
+  updated_at_utc: '2026-10-15T07:22:16.803438Z'
+  git_commit: f2776df3769620e7c2b1728116a71ca086c7e3b4
+  run_ids:
+  - r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5
+  - r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983
+  - r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2
+  expected_seeds:
+  - 0
+  - 1
+  included_seeds:
+  - 0
+  - 1
+  expected_folds: []
+  included_folds: []
+  failed_or_excluded_runs: []
+  sources:
+  - kind: evaluation
+    root: report
+    path: analyses/so2_prediction_pearson/v1/local_s0/manifest.json
+    sha256: 9aa0c34a9e68bac5b61b9f23c4d58479b148266972dea43aa3a1aa3acb8d1bc0
+    verification_status: verified
+    run_id: r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5/provenance/artifact_checksums.json
+    sha256: 618689af937aa1c0e1cf0640024ae878ba7a8629f62929eaeb6b91d19b4893fa
+    verification_status: verified
+    run_id: r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5
+  - kind: evaluation
+    root: report
+    path: analyses/so2_prediction_pearson/v1/local_s1/manifest.json
+    sha256: bd22c08dc58592b57427dfc55c2ca8b865005589894a76aff87414b0d228987c
+    verification_status: verified
+    run_id: r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983/provenance/artifact_checksums.json
+    sha256: 1101a6958085bc44c5b8f03489732cc2fc6d51658da62ee6d32f798aaaa8e88a
+    verification_status: verified
+    run_id: r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983
+  - kind: evaluation
+    root: report
+    path: analyses/so2_prediction_pearson/v1/historical_e300/manifest.json
+    sha256: 41c382e7b99382183bc76320c3e8d4668c8264691448bbc9ee7225c46a5adbe1
+    verification_status: verified
+    run_id: r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/08/r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2/provenance/artifact_checksums.json
+    sha256: ad0fc5fab67fb5e3a7ad2f2d7aa2522c332a3696999e5305f8698ff63e4ec5ad
+    verification_status: verified
+    run_id: r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2
+  - kind: report
+    root: report
+    path: analyses/so2_prediction_pearson/v1/comparison/manifest.json
+    sha256: 087a5a523fcec6bc225893479a50fb7a55937db8dbb37257eacdb5de32278df1
+    verification_status: verified
+  - kind: campaign_record
+    root: project
+    path: experiments/campaigns/cmp_20261015_so2_prediction_pearson/frozen_task_contract.md
+    sha256: 49e93ebdd24b092bdf7f9085ffcd65719050043c115a6e991dd73222c1546975
+    verification_status: verified
+files: []

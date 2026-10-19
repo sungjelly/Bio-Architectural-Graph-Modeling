@@ -1,0 +1,4219 @@
+{
+  "rows": [
+    {
+      "model": "Local Gene Residual count model",
+      "training_strategy": "Two hidden 512-wide MLP layers, dropout 0.1, mask indicators plus 22 node covariates, Bernoulli hurdle / zero-truncated NB2 count output; 2,329,432 parameters. Target-isolated Uniform{1,...,1000} gene masking, train-only standardization; AdamW lr 0.001, weight decay 1e-5, cosine minimum lr 0.0001, clip 1, BF16 autocast with FP32 likelihood, batch <=1024, every target visited once/epoch, 32 epochs, checkpoint minimizing validation count NLL. Seeds 0 and 1. Local residual adds four learned same-gene weights per gene on clean non-self neighborhood log1p mean counts and positive fractions (<=16 neighbors, <=75 micrometers).",
+      "performance": "Two-seed mean: count NLL 0.326651; raw MAE 0.223391; raw RMSE 1.100785; detection AP 0.302010. Log1p mean cell/gene/pooled Pearson 0.315556 / 0.259823 / 0.440311; raw mean cell/gene/pooled Pearson 0.384223 / 0.280235 / 0.607006.",
+      "caveats": "Exploratory reused validation donor: train 208,696 cells / 12 cores / 6 donor groups; validate 37,367 cells / 2 cores / 1 different donor; no sealed test. Both selected epoch 30 of 32. Registry stage validation_confirmation is a catalog bucket, not an independent confirmatory study. Improves over matched self-only in both seeds, but prespecified historical-endpoint NLL threshold <=0.326242 failed (observed 0.326651).",
+      "sources": [
+        "/workspace/BAGM/reports/local_gene_residual/v1/report.md",
+        "/workspace/BAGM/reports/local_gene_residual/v1/comparison.csv",
+        "/workspace/BAGM/reports/analyses/so2_prediction_pearson/v1/comparison/report.md",
+        "/workspace/BAGM/reports/analyses/so2_prediction_pearson/v1/comparison/summary.csv"
+      ],
+      "metrics": {
+        "per_seed": [
+          {
+            "run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+            "variant": "local",
+            "seed": 0.0,
+            "best_epoch": 30.0,
+            "final_epoch": 32.0,
+            "terminal_mean_count_nll": 0.3267652912427351,
+            "parameter_count": 2329432.0,
+            "duration_seconds": 1435.372440393956,
+            "count_nll": 0.3266412828538299,
+            "detection_accuracy": 0.922582265633473,
+            "detection_auroc": 0.7716369114222912,
+            "detection_auroc_defined": 1.0,
+            "detection_average_precision": 0.30207019667355234,
+            "detection_average_precision_defined": 1.0,
+            "detection_bce": 0.23975311343305106,
+            "detection_brier": 0.06579638664906876,
+            "detection_f1": 0.13236110769982812,
+            "detection_histogram_bins": 4096.0,
+            "detection_precision": 0.7335900926325575,
+            "detection_precision_defined": 1.0,
+            "detection_recall": 0.07274303978002268,
+            "false_negative": 1408227.0,
+            "false_positive": 40120.0,
+            "log1p_count_mae": 0.14662199278990667,
+            "log1p_count_rmse": 0.2522893998271809,
+            "masked_entries": 18708207.0,
+            "mean_nonzero_probability": 0.07995047943353398,
+            "observed_count_mean": 0.15125051802131545,
+            "observed_positive_fraction": 0.08117838336939505,
+            "observed_raw_count_mean": 0.15125051802131545,
+            "positive_conditional_count_nll": 1.0703362893321073,
+            "positive_conditional_raw_count_mae": 0.84664891023498,
+            "positive_conditional_raw_count_rmse": 3.522290887651922,
+            "positive_entries": 1518702.0,
+            "positive_marginal_raw_count_mae": 1.4888009255269923,
+            "positive_marginal_raw_count_rmse": 3.790837710771864,
+            "positive_metrics_defined": 1.0,
+            "predicted_count_mean": 0.14120215670229608,
+            "predicted_positive_fraction": 0.008049675738567571,
+            "predicted_raw_count_mean": 0.14120215670229608,
+            "raw_count_mae": 0.22322375064599287,
+            "raw_count_rmse": 1.1019025346035851,
+            "true_negative": 17149385.0,
+            "true_positive": 110475.0,
+            "zero_entries": 17189505.0,
+            "zero_metrics_defined": 1.0,
+            "zero_raw_count_mae": 0.11140932744729554,
+            "zero_raw_count_rmse": 0.22765420786014345
+          },
+          {
+            "run_id": "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+            "variant": "local",
+            "seed": 1.0,
+            "best_epoch": 30.0,
+            "final_epoch": 32.0,
+            "terminal_mean_count_nll": 0.3268077106898191,
+            "parameter_count": 2329432.0,
+            "duration_seconds": 1309.854296887992,
+            "count_nll": 0.32666074623693225,
+            "detection_accuracy": 0.9225619002398252,
+            "detection_auroc": 0.7715261726009722,
+            "detection_auroc_defined": 1.0,
+            "detection_average_precision": 0.3019505478334784,
+            "detection_average_precision_defined": 1.0,
+            "detection_bce": 0.23978642727159796,
+            "detection_brier": 0.06580512174297612,
+            "detection_f1": 0.13140804266912245,
+            "detection_histogram_bins": 4096.0,
+            "detection_precision": 0.7344941756812912,
+            "detection_precision_defined": 1.0,
+            "detection_recall": 0.07215898839930414,
+            "false_negative": 1409114.0,
+            "false_positive": 39614.0,
+            "log1p_count_mae": 0.1469015160201805,
+            "log1p_count_rmse": 0.252327235696156,
+            "masked_entries": 18708207.0,
+            "mean_nonzero_probability": 0.08006761851336901,
+            "observed_count_mean": 0.15125051802131545,
+            "observed_positive_fraction": 0.08117838336939505,
+            "observed_raw_count_mean": 0.15125051802131545,
+            "positive_conditional_count_nll": 1.0701656280741711,
+            "positive_conditional_raw_count_mae": 0.8465452426018212,
+            "positive_conditional_raw_count_rmse": 3.514570640853123,
+            "positive_entries": 1518702.0,
+            "positive_marginal_raw_count_mae": 1.4891394333915768,
+            "positive_marginal_raw_count_rmse": 3.7805493176732856,
+            "positive_metrics_defined": 1.0,
+            "predicted_count_mean": 0.14167621731527974,
+            "predicted_positive_fraction": 0.007975216438432608,
+            "predicted_raw_count_mean": 0.14167621731527974,
+            "raw_count_mae": 0.22355755555399265,
+            "raw_count_rmse": 1.0996672740837798,
+            "true_negative": 17149891.0,
+            "true_positive": 109588.0,
+            "zero_entries": 17189505.0,
+            "zero_metrics_defined": 1.0,
+            "zero_raw_count_mae": 0.11174271684655493,
+            "zero_raw_count_rmse": 0.23098236665061922
+          }
+        ],
+        "seed_mean": {
+          "count_nll": 0.32665101454538104,
+          "raw_count_mae": 0.22339065309999276,
+          "raw_count_rmse": 1.1007849043436826,
+          "log1p_count_mae": 0.14676175440504358,
+          "log1p_count_rmse": 0.25230831776166845,
+          "detection_bce": 0.2397697703523245,
+          "detection_average_precision": 0.30201037225351535,
+          "detection_precision": 0.7340421341569243,
+          "detection_recall": 0.07245101408966341,
+          "detection_f1": 0.13188457518447527
+        },
+        "pearson_replay": [
+          {
+            "endpoint": "local_s0",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+            "seed": 0.0,
+            "scope": "reused_validation_one_donor",
+            "aggregation": "global",
+            "scale": "raw_count",
+            "cell_pearson_mean": 0.3843320866042245,
+            "gene_pearson_mean": 0.2810370891427191,
+            "pooled_pearson": 0.6069858528051307,
+            "masked_mae": 0.22322375064443983,
+            "masked_mse": 1.214189197325621,
+            "masked_rmse": 1.101902535311368,
+            "masked_r2": 0.3085214795612755,
+            "n_cells": 37367.0,
+            "n_masked": 18708207.0,
+            "n_valid_cells": 36474.0,
+            "n_undefined_cells": 893.0,
+            "n_valid_genes": 1000.0,
+            "n_undefined_genes": 0.0
+          },
+          {
+            "endpoint": "local_s0",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+            "seed": 0.0,
+            "scope": "reused_validation_one_donor",
+            "aggregation": "equal_core",
+            "scale": "raw_count",
+            "cell_pearson_mean": 0.3844605449651556,
+            "gene_pearson_mean": 0.27913200719057163,
+            "pooled_pearson": 0.609353998420223,
+            "masked_mae": 0.2224300057743882,
+            "masked_mse": 1.2139994350891348,
+            "masked_rmse": 1.1018163872870308,
+            "masked_r2": 0.3104325346835267,
+            "n_cells": null,
+            "n_masked": null,
+            "n_valid_cells": null,
+            "n_undefined_cells": null,
+            "n_valid_genes": null,
+            "n_undefined_genes": null
+          },
+          {
+            "endpoint": "local_s0",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+            "seed": 0.0,
+            "scope": "reused_validation_one_donor",
+            "aggregation": "global",
+            "scale": "log1p",
+            "cell_pearson_mean": 0.3155727568798135,
+            "gene_pearson_mean": 0.2600776529927223,
+            "pooled_pearson": 0.4403092521067279,
+            "masked_mae": 0.14662199173484683,
+            "masked_mse": 0.06364993994838421,
+            "masked_rmse": 0.25228939721752913,
+            "masked_r2": 0.16498434234591675,
+            "n_cells": 37367.0,
+            "n_masked": 18708207.0,
+            "n_valid_cells": 36474.0,
+            "n_undefined_cells": 893.0,
+            "n_valid_genes": 1000.0,
+            "n_undefined_genes": 0.0
+          },
+          {
+            "endpoint": "local_s0",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+            "seed": 0.0,
+            "scope": "reused_validation_one_donor",
+            "aggregation": "equal_core",
+            "scale": "log1p",
+            "cell_pearson_mean": 0.31450450076314507,
+            "gene_pearson_mean": 0.2625154698382363,
+            "pooled_pearson": 0.44032372799536057,
+            "masked_mae": 0.14569763147339834,
+            "masked_mse": 0.06345645595611465,
+            "masked_rmse": 0.25190234082878393,
+            "masked_r2": 0.16556954990843464,
+            "n_cells": null,
+            "n_masked": null,
+            "n_valid_cells": null,
+            "n_undefined_cells": null,
+            "n_valid_genes": null,
+            "n_undefined_genes": null
+          },
+          {
+            "endpoint": "local_s1",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+            "seed": 1.0,
+            "scope": "reused_validation_one_donor",
+            "aggregation": "global",
+            "scale": "raw_count",
+            "cell_pearson_mean": 0.3841148528523824,
+            "gene_pearson_mean": 0.27943225265231975,
+            "pooled_pearson": 0.6070269986558424,
+            "masked_mae": 0.22355755556442014,
+            "masked_mse": 1.2092681164415298,
+            "masked_rmse": 1.0996672753344667,
+            "masked_r2": 0.3113240260970096,
+            "n_cells": 37367.0,
+            "n_masked": 18708207.0,
+            "n_valid_cells": 36474.0,
+            "n_undefined_cells": 893.0,
+            "n_valid_genes": 1000.0,
+            "n_undefined_genes": 0.0
+          },
+          {
+            "endpoint": "local_s1",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+            "seed": 1.0,
+            "scope": "reused_validation_one_donor",
+            "aggregation": "equal_core",
+            "scale": "raw_count",
+            "cell_pearson_mean": 0.3844232877777868,
+            "gene_pearson_mean": 0.277543795891893,
+            "pooled_pearson": 0.6095243678651894,
+            "masked_mae": 0.22275639741878667,
+            "masked_mse": 1.2085395352748056,
+            "masked_rmse": 1.0993353876074254,
+            "masked_r2": 0.31352449552898404,
+            "n_cells": null,
+            "n_masked": null,
+            "n_valid_cells": null,
+            "n_undefined_cells": null,
+            "n_valid_genes": null,
+            "n_undefined_genes": null
+          },
+          {
+            "endpoint": "local_s1",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+            "seed": 1.0,
+            "scope": "reused_validation_one_donor",
+            "aggregation": "global",
+            "scale": "log1p",
+            "cell_pearson_mean": 0.31553875778637736,
+            "gene_pearson_mean": 0.25956789975317734,
+            "pooled_pearson": 0.44031333185914384,
+            "masked_mae": 0.14690151496127787,
+            "masked_mse": 0.06366903255717127,
+            "masked_rmse": 0.2523272330866632,
+            "masked_r2": 0.16473386878230312,
+            "n_cells": 37367.0,
+            "n_masked": 18708207.0,
+            "n_valid_cells": 36474.0,
+            "n_undefined_cells": 893.0,
+            "n_valid_genes": 1000.0,
+            "n_undefined_genes": 0.0
+          },
+          {
+            "endpoint": "local_s1",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+            "seed": 1.0,
+            "scope": "reused_validation_one_donor",
+            "aggregation": "equal_core",
+            "scale": "log1p",
+            "cell_pearson_mean": 0.3146254149776021,
+            "gene_pearson_mean": 0.26195275680578906,
+            "pooled_pearson": 0.4403201972964698,
+            "masked_mae": 0.14596871621168717,
+            "masked_mse": 0.0634759285708751,
+            "masked_rmse": 0.2519410029738054,
+            "masked_r2": 0.16531333808213744,
+            "n_cells": null,
+            "n_masked": null,
+            "n_valid_cells": null,
+            "n_undefined_cells": null,
+            "n_valid_genes": null,
+            "n_undefined_genes": null
+          },
+          {
+            "endpoint": "local_seed_mean",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5|r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+            "seed": "mean_of_0_and_1",
+            "scope": "reused_validation_one_donor",
+            "aggregation": "global",
+            "scale": "raw_count",
+            "cell_pearson_mean": 0.38422346972830346,
+            "gene_pearson_mean": 0.2802346708975194,
+            "pooled_pearson": 0.6070064257304866,
+            "masked_mae": 0.22339065310443,
+            "masked_mse": 1.2117286568835755,
+            "masked_rmse": 1.1007849053229175,
+            "masked_r2": 0.30992275282914256,
+            "n_cells": 37367.0,
+            "n_masked": 18708207.0,
+            "n_valid_cells": 36474.0,
+            "n_undefined_cells": 893.0,
+            "n_valid_genes": 1000.0,
+            "n_undefined_genes": 0.0
+          },
+          {
+            "endpoint": "local_seed_mean",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5|r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+            "seed": "mean_of_0_and_1",
+            "scope": "reused_validation_one_donor",
+            "aggregation": "equal_core",
+            "scale": "raw_count",
+            "cell_pearson_mean": 0.3844419163714712,
+            "gene_pearson_mean": 0.2783379015412323,
+            "pooled_pearson": 0.6094391831427062,
+            "masked_mae": 0.22259320159658744,
+            "masked_mse": 1.2112694851819703,
+            "masked_rmse": 1.1005758874472282,
+            "masked_r2": 0.3119785151062554,
+            "n_cells": null,
+            "n_masked": null,
+            "n_valid_cells": null,
+            "n_undefined_cells": null,
+            "n_valid_genes": null,
+            "n_undefined_genes": null
+          },
+          {
+            "endpoint": "local_seed_mean",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5|r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+            "seed": "mean_of_0_and_1",
+            "scope": "reused_validation_one_donor",
+            "aggregation": "global",
+            "scale": "log1p",
+            "cell_pearson_mean": 0.31555575733309543,
+            "gene_pearson_mean": 0.2598227763729498,
+            "pooled_pearson": 0.44031129198293584,
+            "masked_mae": 0.14676175334806235,
+            "masked_mse": 0.06365948625277773,
+            "masked_rmse": 0.2523083151520962,
+            "masked_r2": 0.16485910556410993,
+            "n_cells": 37367.0,
+            "n_masked": 18708207.0,
+            "n_valid_cells": 36474.0,
+            "n_undefined_cells": 893.0,
+            "n_valid_genes": 1000.0,
+            "n_undefined_genes": 0.0
+          },
+          {
+            "endpoint": "local_seed_mean",
+            "source_run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5|r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+            "seed": "mean_of_0_and_1",
+            "scope": "reused_validation_one_donor",
+            "aggregation": "equal_core",
+            "scale": "log1p",
+            "cell_pearson_mean": 0.3145649578703736,
+            "gene_pearson_mean": 0.2622341133220127,
+            "pooled_pearson": 0.44032196264591517,
+            "masked_mae": 0.14583317384254274,
+            "masked_mse": 0.06346619226349487,
+            "masked_rmse": 0.25192167190129466,
+            "masked_r2": 0.16544144399528604,
+            "n_cells": null,
+            "n_masked": null,
+            "n_valid_cells": null,
+            "n_undefined_cells": null,
+            "n_valid_genes": null,
+            "n_undefined_genes": null
+          }
+        ]
+      },
+      "run_ids": [
+        "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+        "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983"
+      ],
+      "lifecycle": "full",
+      "campaign_id": "cmp_20261004_local_gene_residual"
+    },
+    {
+      "model": "Local Gene Residual self-only ablation",
+      "training_strategy": "Two hidden 512-wide MLP layers, dropout 0.1, mask indicators plus 22 node covariates, Bernoulli hurdle / zero-truncated NB2 count output; 2,329,432 parameters. Target-isolated Uniform{1,...,1000} gene masking, train-only standardization; AdamW lr 0.001, weight decay 1e-5, cosine minimum lr 0.0001, clip 1, BF16 autocast with FP32 likelihood, batch <=1024, every target visited once/epoch, 32 epochs, checkpoint minimizing validation count NLL. Seeds 0 and 1. Local residual disabled, preserving otherwise matched masks, order, schedule, and budget.",
+      "performance": "Two-seed mean: count NLL 0.328377; raw MAE 0.229246; raw RMSE 1.131437; detection AP 0.292874.",
+      "caveats": "Exploratory reused validation donor: train 208,696 cells / 12 cores / 6 donor groups; validate 37,367 cells / 2 cores / 1 different donor; no sealed test. Both selected epoch 30 of 32. Registry stage validation_confirmation is a catalog bucket, not an independent confirmatory study.",
+      "sources": [
+        "/workspace/BAGM/reports/local_gene_residual/v1/report.md",
+        "/workspace/BAGM/reports/local_gene_residual/v1/comparison.csv",
+        "/workspace/BAGM/reports/analyses/so2_prediction_pearson/v1/comparison/report.md",
+        "/workspace/BAGM/reports/analyses/so2_prediction_pearson/v1/comparison/summary.csv"
+      ],
+      "metrics": {
+        "per_seed": [
+          {
+            "run_id": "r_20261004T072106Z_dd0aa417_s000_f00_a01_e0116c2b",
+            "variant": "self",
+            "seed": 0.0,
+            "best_epoch": 30.0,
+            "final_epoch": 32.0,
+            "terminal_mean_count_nll": 0.3287371548854201,
+            "parameter_count": 2329432.0,
+            "duration_seconds": 1240.596780013002,
+            "count_nll": 0.32838358053233,
+            "detection_accuracy": 0.922035553701111,
+            "detection_auroc": 0.7692498298219257,
+            "detection_auroc_defined": 1.0,
+            "detection_average_precision": 0.2928962248948199,
+            "detection_average_precision_defined": 1.0,
+            "detection_bce": 0.24096420582621841,
+            "detection_brier": 0.0661908002949445,
+            "detection_f1": 0.12313371147562666,
+            "detection_histogram_bins": 4096.0,
+            "detection_precision": 0.7077743912974367,
+            "detection_precision_defined": 1.0,
+            "detection_recall": 0.06743258387754807,
+            "false_negative": 1416292.0,
+            "false_positive": 42283.0,
+            "log1p_count_mae": 0.1494283997814742,
+            "log1p_count_rmse": 0.2580827221645864,
+            "masked_entries": 18708207.0,
+            "mean_nonzero_probability": 0.08013301926644333,
+            "observed_count_mean": 0.15125051802131545,
+            "observed_positive_fraction": 0.08117838336939505,
+            "observed_raw_count_mean": 0.15125051802131545,
+            "positive_conditional_count_nll": 1.0768799477901194,
+            "positive_conditional_raw_count_mae": 0.8890117919767759,
+            "positive_conditional_raw_count_rmse": 3.5800053016185243,
+            "positive_entries": 1518702.0,
+            "positive_marginal_raw_count_mae": 1.501084281935992,
+            "positive_marginal_raw_count_rmse": 3.874135977596222,
+            "positive_metrics_defined": 1.0,
+            "predicted_count_mean": 0.1467500504975674,
+            "predicted_positive_fraction": 0.00773419922069496,
+            "predicted_raw_count_mean": 0.1467500504975674,
+            "raw_count_mae": 0.2292364307950588,
+            "raw_count_rmse": 1.1329589246329137,
+            "true_negative": 17147222.0,
+            "true_positive": 102410.0,
+            "zero_entries": 17189505.0,
+            "zero_metrics_defined": 1.0,
+            "zero_raw_count_mae": 0.11686798998053641,
+            "zero_raw_count_rmse": 0.26637440683282665
+          },
+          {
+            "run_id": "r_20261004T072107Z_dd0aa417_s001_f00_a01_ea627eca",
+            "variant": "self",
+            "seed": 1.0,
+            "best_epoch": 30.0,
+            "final_epoch": 32.0,
+            "terminal_mean_count_nll": 0.3286780915689836,
+            "parameter_count": 2329432.0,
+            "duration_seconds": 1214.9706362689612,
+            "count_nll": 0.3283695183549658,
+            "detection_accuracy": 0.9220336294119474,
+            "detection_auroc": 0.7692901913701018,
+            "detection_auroc_defined": 1.0,
+            "detection_average_precision": 0.29285271659690965,
+            "detection_average_precision_defined": 1.0,
+            "detection_bce": 0.24095048148521128,
+            "detection_brier": 0.06618962569252133,
+            "detection_f1": 0.12425242906143937,
+            "detection_histogram_bins": 4096.0,
+            "detection_precision": 0.7045873933500841,
+            "detection_precision_defined": 1.0,
+            "detection_recall": 0.068133840608625,
+            "false_negative": 1415227.0,
+            "false_positive": 43384.0,
+            "log1p_count_mae": 0.14919607847171648,
+            "log1p_count_rmse": 0.2583517676125403,
+            "masked_entries": 18708207.0,
+            "mean_nonzero_probability": 0.08008417982283111,
+            "observed_count_mean": 0.15125051802131545,
+            "observed_positive_fraction": 0.08117838336939505,
+            "observed_raw_count_mean": 0.15125051802131545,
+            "positive_conditional_count_nll": 1.0768757912801523,
+            "positive_conditional_raw_count_mae": 0.8917128022171167,
+            "positive_conditional_raw_count_rmse": 3.5767879011161536,
+            "positive_entries": 1518702.0,
+            "positive_marginal_raw_count_mae": 1.5021869677318385,
+            "positive_marginal_raw_count_rmse": 3.8585980691298576,
+            "positive_metrics_defined": 1.0,
+            "predicted_count_mean": 0.14705958687202844,
+            "predicted_positive_fraction": 0.007849977285369998,
+            "predicted_raw_count_mean": 0.14705958687202844,
+            "raw_count_mae": 0.22925487545600282,
+            "raw_count_rmse": 1.129915401429734,
+            "true_negative": 17146121.0,
+            "true_positive": 103475.0,
+            "zero_entries": 17189505.0,
+            "zero_metrics_defined": 1.0,
+            "zero_raw_count_mae": 0.11679064135481745,
+            "zero_raw_count_rmse": 0.2721674055030743
+          }
+        ],
+        "seed_mean": {
+          "count_nll": 0.3283765494436479,
+          "raw_count_mae": 0.2292456531255308,
+          "raw_count_rmse": 1.1314371630313238,
+          "log1p_count_mae": 0.14931223912659536,
+          "log1p_count_rmse": 0.25821724488856335,
+          "detection_bce": 0.24095734365571486,
+          "detection_average_precision": 0.2928744707458648,
+          "detection_precision": 0.7061808923237605,
+          "detection_recall": 0.06778321224308653,
+          "detection_f1": 0.12369307026853302
+        },
+        "pearson_replay": []
+      },
+      "run_ids": [
+        "r_20261004T072106Z_dd0aa417_s000_f00_a01_e0116c2b",
+        "r_20261004T072107Z_dd0aa417_s001_f00_a01_ea627eca"
+      ],
+      "lifecycle": "full",
+      "campaign_id": "cmp_20261004_local_gene_residual"
+    },
+    {
+      "model": "Local Gene Residual diagnostic pilot",
+      "training_strategy": "Two hidden 512-wide MLP layers, dropout 0.1, mask indicators plus 22 node covariates, Bernoulli hurdle / zero-truncated NB2 count output; 2,329,432 parameters. Target-isolated Uniform{1,...,1000} gene masking, train-only standardization; AdamW lr 0.001, weight decay 1e-5, cosine minimum lr 0.0001, clip 1, BF16 autocast with FP32 likelihood, batch <=1024, every target visited once/epoch, 2 epochs, checkpoint minimizing validation count NLL. Seed 0. Same local branch.",
+      "performance": "Validation count NLL 0.3334949669.",
+      "caveats": "Diagnostic resource/implementation pilot; not part of the two-seed full-model result.",
+      "sources": [
+        "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T071603Z_178fc589_s000_f00_a01_254a98de/summary.json",
+        "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T071603Z_178fc589_s000_f00_a01_254a98de/config.resolved.yaml"
+      ],
+      "run_ids": [
+        "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de"
+      ],
+      "lifecycle": "diagnostic",
+      "campaign_id": "cmp_20261004_local_gene_residual"
+    },
+    {
+      "model": "GeneMAE 10% whole-cell masking",
+      "training_strategy": "Dual-path GeneMAE, 6,888,016 parameters: four GATv2 layers, width 256, six heads, graph embedding 192, self MLP 512/512/192, MLP decoder, dropout and DropEdge 0.2. Coordinate-only symmetric-union k=15 graph with Gaussian distance feature within <=7000-cell tiles. AdamW lr 0.0015, weight decay 0.0001, cosine schedule, gradient clip 5, FP32; 200 epochs, one tile/step, final checkpoint only; seeds 0/1/2. Log1p raw-count Huber delta 1 on hidden entries. Hide all 1000 genes in 10% of cells per core. Masks renewed each epoch.",
+      "performance": "Own training-mask evaluation: Huber 0.038705, MSE 0.079474, MAE 0.148733, R2 0.2036, pooled/gene/cell Pearson 0.4437 / 0.1479 / 0.4047. Common whole-cell evaluation: Huber 0.038705, MSE 0.079474, MAE 0.148733, pooled/gene/cell Pearson 0.4437 / 0.1479 / 0.4047.",
+      "caveats": "Transductive fitted-cohort reconstruction on all 246,063 cells / 14 SO2 cores, no donor-held-out split. Three fixed evaluation mask replicates; averages replicates within core, cores equally, then seeds. Training mask schedule shared across seeds. Different evaluation tasks cannot be ranked together. All three runs completed/verified. Whole-cell Huber improves 7.93% over visible-gene-mean baseline in 14/14 cores and 3/3 seeds; zero predictor has better MAE. Does not establish biological mechanism or patient generalization.",
+      "sources": [
+        "/workspace/BAGM/experiments/campaigns/cmp_20261005_so2_genemae_masking/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/model_task_means.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/equal_core_seed_metrics.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/verification.json"
+      ],
+      "metrics": {
+        "cross_task_means": [
+          {
+            "train_method": "whole_cell",
+            "evaluation_method": "partial_gene",
+            "masked_huber": 0.039466800440182574,
+            "masked_mse": 0.0814211484945861,
+            "masked_mae": 0.14818249162845576,
+            "masked_r2": 0.1892850955356338,
+            "pooled_pearson": 0.4369235816388628,
+            "gene_pearson_mean": 0.1465183371210473,
+            "cell_pearson_mean": 0.3455284960702001,
+            "positive_mse": 0.6989265250136313,
+            "positive_mae": 0.7766657760080365,
+            "zero_mse": 0.010390031302166617
+          },
+          {
+            "train_method": "whole_cell",
+            "evaluation_method": "spatial_block",
+            "masked_huber": 0.044230416978699304,
+            "masked_mse": 0.09553780085879242,
+            "masked_mae": 0.1454251708360265,
+            "masked_r2": 0.07124490059628392,
+            "pooled_pearson": 0.300673853307613,
+            "gene_pearson_mean": 0.021880959746904516,
+            "cell_pearson_mean": 0.3097677305815503,
+            "positive_mse": 0.8439543440450475,
+            "positive_mae": 0.8438664845598597,
+            "zero_mse": 0.006858491313635311
+          },
+          {
+            "train_method": "whole_cell",
+            "evaluation_method": "whole_cell",
+            "masked_huber": 0.03870469657347036,
+            "masked_mse": 0.07947433656323971,
+            "masked_mae": 0.14873282761546958,
+            "masked_r2": 0.20360889682858527,
+            "pooled_pearson": 0.4437254504197281,
+            "gene_pearson_mean": 0.14793309252352574,
+            "cell_pearson_mean": 0.4046677507953848,
+            "positive_mse": 0.6711501426689734,
+            "positive_mae": 0.7600827020582309,
+            "zero_mse": 0.012176984548280846
+          }
+        ],
+        "per_seed_task": [
+          {
+            "train_method": "whole_cell",
+            "model_seed": 0.0,
+            "evaluation_method": "partial_gene",
+            "condition": "observed",
+            "masked_huber": 0.039133595135436086,
+            "masked_mse": 0.08064985404251232,
+            "masked_mae": 0.1475845519917984,
+            "masked_r2": 0.19588684144872967,
+            "pooled_pearson": 0.444287983769903,
+            "gene_pearson_mean": 0.1597146810176849,
+            "cell_pearson_mean": 0.34551248948648394,
+            "positive_mse": 0.692405868826698,
+            "positive_mae": 0.7728210815103627,
+            "zero_mse": 0.010403306626757824
+          },
+          {
+            "train_method": "whole_cell",
+            "model_seed": 0.0,
+            "evaluation_method": "spatial_block",
+            "condition": "observed",
+            "masked_huber": 0.04431486621628943,
+            "masked_mse": 0.09564635272552842,
+            "masked_mae": 0.14280367689097298,
+            "masked_r2": 0.07009064464066465,
+            "pooled_pearson": 0.302152137603316,
+            "gene_pearson_mean": 0.019858959889293804,
+            "cell_pearson_mean": 0.3134544416237554,
+            "positive_mse": 0.8476638137263476,
+            "positive_mae": 0.8465591138229802,
+            "zero_mse": 0.0065494209631851265
+          },
+          {
+            "train_method": "whole_cell",
+            "model_seed": 0.0,
+            "evaluation_method": "whole_cell",
+            "condition": "observed",
+            "masked_huber": 0.03869772616736129,
+            "masked_mse": 0.07945357548710703,
+            "masked_mae": 0.1488589417872884,
+            "masked_r2": 0.20383786026665088,
+            "pooled_pearson": 0.44392301881401053,
+            "gene_pearson_mean": 0.14856854505485392,
+            "cell_pearson_mean": 0.40465017704183187,
+            "positive_mse": 0.670281440060994,
+            "positive_mae": 0.7595211657888983,
+            "zero_mse": 0.01224257362819289
+          },
+          {
+            "train_method": "whole_cell",
+            "model_seed": 1.0,
+            "evaluation_method": "partial_gene",
+            "condition": "observed",
+            "masked_huber": 0.0399307523593377,
+            "masked_mse": 0.08253512406587322,
+            "masked_mae": 0.14951444914206272,
+            "masked_r2": 0.17984708039421585,
+            "pooled_pearson": 0.42700153046200445,
+            "gene_pearson_mean": 0.12890173532546836,
+            "cell_pearson_mean": 0.3451312745281369,
+            "positive_mse": 0.708245864576069,
+            "positive_mae": 0.7819256527226915,
+            "zero_mse": 0.010376978288568183
+          },
+          {
+            "train_method": "whole_cell",
+            "model_seed": 1.0,
+            "evaluation_method": "spatial_block",
+            "condition": "observed",
+            "masked_huber": 0.04431690872804346,
+            "masked_mse": 0.09591239180178823,
+            "masked_mae": 0.1449461818010951,
+            "masked_r2": 0.06838904498645394,
+            "pooled_pearson": 0.29623387966598536,
+            "gene_pearson_mean": 0.02205607337704817,
+            "cell_pearson_mean": 0.3067408678323948,
+            "positive_mse": 0.849054380175002,
+            "positive_mae": 0.8460697456317731,
+            "zero_mse": 0.006640715705078274
+          },
+          {
+            "train_method": "whole_cell",
+            "model_seed": 1.0,
+            "evaluation_method": "whole_cell",
+            "condition": "observed",
+            "masked_huber": 0.03873327300494927,
+            "masked_mse": 0.0795386444525807,
+            "masked_mae": 0.148797161732577,
+            "masked_r2": 0.2030090215461962,
+            "pooled_pearson": 0.44307039221793304,
+            "gene_pearson_mean": 0.14619952866264893,
+            "cell_pearson_mean": 0.4046874108643386,
+            "positive_mse": 0.6717193607128776,
+            "positive_mae": 0.7604214218555982,
+            "zero_mse": 0.012183556954647025
+          },
+          {
+            "train_method": "whole_cell",
+            "model_seed": 2.0,
+            "evaluation_method": "partial_gene",
+            "condition": "observed",
+            "masked_huber": 0.03933605382577394,
+            "masked_mse": 0.0810784673753728,
+            "masked_mae": 0.1474484737515062,
+            "masked_r2": 0.19212136476395594,
+            "pooled_pearson": 0.4394812306846809,
+            "gene_pearson_mean": 0.15093859501998866,
+            "cell_pearson_mean": 0.34594172419597935,
+            "positive_mse": 0.696127841638127,
+            "positive_mae": 0.7752505937910554,
+            "zero_mse": 0.010389808991173847
+          },
+          {
+            "train_method": "whole_cell",
+            "model_seed": 2.0,
+            "evaluation_method": "spatial_block",
+            "condition": "observed",
+            "masked_huber": 0.04405947599176502,
+            "masked_mse": 0.09505465804906058,
+            "masked_mae": 0.14852565381601143,
+            "masked_r2": 0.07525501216173316,
+            "pooled_pearson": 0.3036355426535376,
+            "gene_pearson_mean": 0.023727845974371574,
+            "cell_pearson_mean": 0.3091078822885008,
+            "positive_mse": 0.8351448382337929,
+            "positive_mae": 0.8389705942248261,
+            "zero_mse": 0.007385337272642535
+          },
+          {
+            "train_method": "whole_cell",
+            "model_seed": 2.0,
+            "evaluation_method": "whole_cell",
+            "condition": "observed",
+            "masked_huber": 0.03868309054810052,
+            "masked_mse": 0.07943078975003139,
+            "masked_mae": 0.1485423793265433,
+            "masked_r2": 0.2039798086729087,
+            "pooled_pearson": 0.4441829402272407,
+            "gene_pearson_mean": 0.14903120385307436,
+            "cell_pearson_mean": 0.40466566447998387,
+            "positive_mse": 0.6714496272330488,
+            "positive_mae": 0.7603055185301965,
+            "zero_mse": 0.012104823062002622
+          }
+        ]
+      },
+      "run_ids": [
+        "r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b",
+        "r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275",
+        "r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d"
+      ],
+      "lifecycle": "full",
+      "campaign_id": "cmp_20261005_so2_genemae_masking"
+    },
+    {
+      "model": "GeneMAE 10% individual-gene masking",
+      "training_strategy": "Dual-path GeneMAE, 6,888,016 parameters: four GATv2 layers, width 256, six heads, graph embedding 192, self MLP 512/512/192, MLP decoder, dropout and DropEdge 0.2. Coordinate-only symmetric-union k=15 graph with Gaussian distance feature within <=7000-cell tiles. AdamW lr 0.0015, weight decay 0.0001, cosine schedule, gradient clip 5, FP32; 200 epochs, one tile/step, final checkpoint only; seeds 0/1/2. Log1p raw-count Huber delta 1 on hidden entries. Hide exactly 100 of 1000 genes in every cell. Masks renewed each epoch.",
+      "performance": "Own training-mask evaluation: Huber 0.035050, MSE 0.071174, MAE 0.139764, R2 0.2863, pooled/gene/cell Pearson 0.5302 / 0.2812 / 0.3685. Common whole-cell evaluation: Huber 0.049533, MSE 0.108489, MAE 0.113272, pooled/gene/cell Pearson 0.2333 / 0.0173 / 0.2349.",
+      "caveats": "Transductive fitted-cohort reconstruction on all 246,063 cells / 14 SO2 cores, no donor-held-out split. Three fixed evaluation mask replicates; averages replicates within core, cores equally, then seeds. Training mask schedule shared across seeds. Different evaluation tasks cannot be ranked together. Seeds 1 and 2 completed all 200 epochs but failed execution verification; later recovery replays failed strict median gene-Pearson tolerance. All original scores retained descriptively. Campaign full nine-run verification criterion fails.",
+      "sources": [
+        "/workspace/BAGM/experiments/campaigns/cmp_20261005_so2_genemae_masking/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/model_task_means.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/equal_core_seed_metrics.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/verification.json"
+      ],
+      "metrics": {
+        "cross_task_means": [
+          {
+            "train_method": "partial_gene",
+            "evaluation_method": "partial_gene",
+            "masked_huber": 0.035050191447850466,
+            "masked_mse": 0.07117399936865092,
+            "masked_mae": 0.13976407606100957,
+            "masked_r2": 0.2863321511912163,
+            "pooled_pearson": 0.5302493837647336,
+            "gene_pearson_mean": 0.28115070903923095,
+            "cell_pearson_mean": 0.3685468344045286,
+            "positive_mse": 0.5769255030871935,
+            "positive_mae": 0.6993016429552367,
+            "zero_mse": 0.013617495374863666
+          },
+          {
+            "train_method": "partial_gene",
+            "evaluation_method": "spatial_block",
+            "masked_huber": 0.05015450481303741,
+            "masked_mse": 0.11028106155063648,
+            "masked_mae": 0.11679818174876322,
+            "masked_r2": -0.06845014891769026,
+            "pooled_pearson": 0.2007705866639697,
+            "gene_pearson_mean": 0.0012529564359102052,
+            "cell_pearson_mean": 0.20679239626502063,
+            "positive_mse": 1.0263895979728712,
+            "positive_mae": 0.9401507730159034,
+            "zero_mse": 0.0018636224882730998
+          },
+          {
+            "train_method": "partial_gene",
+            "evaluation_method": "whole_cell",
+            "masked_huber": 0.04953252795532079,
+            "masked_mse": 0.10848872584799914,
+            "masked_mae": 0.1132724219040998,
+            "masked_r2": -0.05954661023107046,
+            "pooled_pearson": 0.23327358746170734,
+            "gene_pearson_mean": 0.017314389336492212,
+            "cell_pearson_mean": 0.23489788860011074,
+            "positive_mse": 1.0242599524697826,
+            "positive_mae": 0.9413448095726568,
+            "zero_mse": 0.001099575155749196
+          }
+        ],
+        "per_seed_task": [
+          {
+            "train_method": "partial_gene",
+            "model_seed": 0.0,
+            "evaluation_method": "partial_gene",
+            "condition": "observed",
+            "masked_huber": 0.035060751636596665,
+            "masked_mse": 0.07119596072931317,
+            "masked_mae": 0.13980548194261516,
+            "masked_r2": 0.28610688616007224,
+            "pooled_pearson": 0.5300296727686961,
+            "gene_pearson_mean": 0.2810062210669101,
+            "cell_pearson_mean": 0.36836132466838206,
+            "positive_mse": 0.5770888146652647,
+            "positive_mae": 0.6994072148065767,
+            "zero_mse": 0.013624647844057458
+          },
+          {
+            "train_method": "partial_gene",
+            "model_seed": 0.0,
+            "evaluation_method": "spatial_block",
+            "condition": "observed",
+            "masked_huber": 0.05057966988928142,
+            "masked_mse": 0.11139235225985893,
+            "masked_mae": 0.11838444008985624,
+            "masked_r2": -0.0790514144129829,
+            "pooled_pearson": 0.18797897426728838,
+            "gene_pearson_mean": 0.0003887221619349039,
+            "cell_pearson_mean": 0.19424117363630838,
+            "positive_mse": 1.03722442047074,
+            "positive_mae": 0.9451258850528809,
+            "zero_mse": 0.001823113589158526
+          },
+          {
+            "train_method": "partial_gene",
+            "model_seed": 0.0,
+            "evaluation_method": "whole_cell",
+            "condition": "observed",
+            "masked_huber": 0.04966892458266322,
+            "masked_mse": 0.10864549873522045,
+            "masked_mae": 0.11488250466410099,
+            "masked_r2": -0.06093486182279697,
+            "pooled_pearson": 0.2327723953308349,
+            "gene_pearson_mean": 0.02006805161938831,
+            "cell_pearson_mean": 0.23529956336745914,
+            "positive_mse": 1.023716828875285,
+            "positive_mae": 0.9416844546492892,
+            "zero_mse": 0.001305920790398689
+          },
+          {
+            "train_method": "partial_gene",
+            "model_seed": 1.0,
+            "evaluation_method": "partial_gene",
+            "condition": "observed",
+            "masked_huber": 0.03503236471233559,
+            "masked_mse": 0.07113376371504247,
+            "masked_mae": 0.13971827686658164,
+            "masked_r2": 0.2867438391156331,
+            "pooled_pearson": 0.5306430028952587,
+            "gene_pearson_mean": 0.2813488272046359,
+            "cell_pearson_mean": 0.3688404088491664,
+            "positive_mse": 0.5766191051074271,
+            "positive_mae": 0.699122694329321,
+            "zero_mse": 0.013604908625754574
+          },
+          {
+            "train_method": "partial_gene",
+            "model_seed": 1.0,
+            "evaluation_method": "spatial_block",
+            "condition": "observed",
+            "masked_huber": 0.0502036292382606,
+            "masked_mse": 0.11034750296313707,
+            "masked_mae": 0.11695383427130454,
+            "masked_r2": -0.06893218251461757,
+            "pooled_pearson": 0.19983066092820523,
+            "gene_pearson_mean": 0.0030660501856983454,
+            "cell_pearson_mean": 0.20644694202141803,
+            "positive_mse": 1.0265488955784055,
+            "positive_mae": 0.9404679732818948,
+            "zero_mse": 0.0019081018371344752
+          },
+          {
+            "train_method": "partial_gene",
+            "model_seed": 1.0,
+            "evaluation_method": "whole_cell",
+            "condition": "observed",
+            "masked_huber": 0.049479329871365337,
+            "masked_mse": 0.10830052487993413,
+            "masked_mae": 0.11292254013303031,
+            "masked_r2": -0.05837831534367561,
+            "pooled_pearson": 0.2359950534175273,
+            "gene_pearson_mean": 0.019684849898879402,
+            "cell_pearson_mean": 0.2366201934256806,
+            "positive_mse": 1.0230796349515725,
+            "positive_mae": 0.9410268523680101,
+            "zero_mse": 0.0010845772051324394
+          },
+          {
+            "train_method": "partial_gene",
+            "model_seed": 2.0,
+            "evaluation_method": "partial_gene",
+            "condition": "observed",
+            "masked_huber": 0.035057457994619144,
+            "masked_mse": 0.0711922736615971,
+            "masked_mae": 0.13976846937383186,
+            "masked_r2": 0.2861457282979435,
+            "pooled_pearson": 0.5300754756302463,
+            "gene_pearson_mean": 0.2810970788461468,
+            "cell_pearson_mean": 0.36843876969603734,
+            "positive_mse": 0.5770685894888885,
+            "positive_mae": 0.6993750197298122,
+            "zero_mse": 0.013622929654778968
+          },
+          {
+            "train_method": "partial_gene",
+            "model_seed": 2.0,
+            "evaluation_method": "spatial_block",
+            "condition": "observed",
+            "masked_huber": 0.04968021531157023,
+            "masked_mse": 0.10910332942891342,
+            "masked_mae": 0.1150562708851289,
+            "masked_r2": -0.057366849825470315,
+            "pooled_pearson": 0.21450212479641548,
+            "gene_pearson_mean": 0.0003040969600973658,
+            "cell_pearson_mean": 0.21968907313733546,
+            "positive_mse": 1.015395477869468,
+            "positive_mae": 0.9348584607129347,
+            "zero_mse": 0.0018596520385262987
+          },
+          {
+            "train_method": "partial_gene",
+            "model_seed": 2.0,
+            "evaluation_method": "whole_cell",
+            "condition": "observed",
+            "masked_huber": 0.04944932941193381,
+            "masked_mse": 0.10852015392884287,
+            "masked_mae": 0.11201222091516805,
+            "masked_r2": -0.059326653526738785,
+            "pooled_pearson": 0.2310533136367598,
+            "gene_pearson_mean": 0.01219026649120892,
+            "cell_pearson_mean": 0.2327739090071925,
+            "positive_mse": 1.02598339358249,
+            "positive_mae": 0.9413231217006708,
+            "zero_mse": 0.0009082274717164601
+          }
+        ]
+      },
+      "run_ids": [
+        "r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a",
+        "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+        "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b"
+      ],
+      "lifecycle": "full",
+      "campaign_id": "cmp_20261005_so2_genemae_masking"
+    },
+    {
+      "model": "GeneMAE 10% spatial-block masking",
+      "training_strategy": "Dual-path GeneMAE, 6,888,016 parameters: four GATv2 layers, width 256, six heads, graph embedding 192, self MLP 512/512/192, MLP decoder, dropout and DropEdge 0.2. Coordinate-only symmetric-union k=15 graph with Gaussian distance feature within <=7000-cell tiles. AdamW lr 0.0015, weight decay 0.0001, cosine schedule, gradient clip 5, FP32; 200 epochs, one tile/step, final checkpoint only; seeds 0/1/2. Log1p raw-count Huber delta 1 on hidden entries. Hide all genes in 10% of cells nearest a random spatial anchor; zero-target tiles skip optimization. Masks renewed each epoch.",
+      "performance": "Own training-mask evaluation: Huber 0.043937, MSE 0.093830, MAE 0.166699, R2 0.0776, pooled/gene/cell Pearson 0.3048 / 0.0004 / 0.3057. Common whole-cell evaluation: Huber 0.043528, MSE 0.092695, MAE 0.166251, pooled/gene/cell Pearson 0.3077 / -0.0008 / 0.3095.",
+      "caveats": "Transductive fitted-cohort reconstruction on all 246,063 cells / 14 SO2 cores, no donor-held-out split. Three fixed evaluation mask replicates; averages replicates within core, cores equally, then seeds. Training mask schedule shared across seeds. Different evaluation tasks cannot be ranked together. All three runs completed/verified; does not beat visible-gene-mean baseline on its own spatial-block task (baseline Huber 0.042513).",
+      "sources": [
+        "/workspace/BAGM/experiments/campaigns/cmp_20261005_so2_genemae_masking/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/model_task_means.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/equal_core_seed_metrics.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/verification.json"
+      ],
+      "metrics": {
+        "cross_task_means": [
+          {
+            "train_method": "spatial_block",
+            "evaluation_method": "partial_gene",
+            "masked_huber": 0.20801918263207786,
+            "masked_mse": 0.6192933983498832,
+            "masked_mae": 0.4652933270023228,
+            "masked_r2": -5.165622017880099,
+            "pooled_pearson": -0.2678383278869747,
+            "gene_pearson_mean": -0.06671667083425581,
+            "cell_pearson_mean": -0.17800487788152516,
+            "positive_mse": 3.7570905454175474,
+            "positive_mae": 1.5615232488110944,
+            "zero_mse": 0.2482656095128153
+          },
+          {
+            "train_method": "spatial_block",
+            "evaluation_method": "spatial_block",
+            "masked_huber": 0.043937443726242496,
+            "masked_mse": 0.0938303175838155,
+            "masked_mae": 0.16669855175329665,
+            "masked_r2": 0.07764980664501064,
+            "pooled_pearson": 0.30478279387945045,
+            "gene_pearson_mean": 0.0003512918704184134,
+            "cell_pearson_mean": 0.3057209201955689,
+            "positive_mse": 0.7655604260749879,
+            "positive_mae": 0.7972743800348278,
+            "zero_mse": 0.01425200057198757
+          },
+          {
+            "train_method": "spatial_block",
+            "evaluation_method": "whole_cell",
+            "masked_huber": 0.04352827024112915,
+            "masked_mse": 0.09269512864288502,
+            "masked_mae": 0.16625134776570122,
+            "masked_r2": 0.0841102242656835,
+            "pooled_pearson": 0.30773794901064266,
+            "gene_pearson_mean": -0.0007776833743548724,
+            "cell_pearson_mean": 0.3094545664578557,
+            "positive_mse": 0.7618301922961571,
+            "positive_mae": 0.7954275676492509,
+            "zero_mse": 0.014235342193787373
+          }
+        ],
+        "per_seed_task": [
+          {
+            "train_method": "spatial_block",
+            "model_seed": 0.0,
+            "evaluation_method": "partial_gene",
+            "condition": "observed",
+            "masked_huber": 0.2432893683357391,
+            "masked_mse": 0.7560130657649123,
+            "masked_mae": 0.5233528210011593,
+            "masked_r2": -6.561658947825597,
+            "pooled_pearson": -0.2881275031759654,
+            "gene_pearson_mean": -0.04821195850929153,
+            "cell_pearson_mean": -0.2444804446186155,
+            "positive_mse": 4.459589600629455,
+            "positive_mae": 1.6883946340053233,
+            "zero_mse": 0.3197142995189644
+          },
+          {
+            "train_method": "spatial_block",
+            "model_seed": 0.0,
+            "evaluation_method": "spatial_block",
+            "condition": "observed",
+            "masked_huber": 0.0439367902374692,
+            "masked_mse": 0.0938288346010141,
+            "masked_mae": 0.16671081862073464,
+            "masked_r2": 0.07767599029323426,
+            "pooled_pearson": 0.30481121896752456,
+            "gene_pearson_mean": 0.00026709555819021726,
+            "cell_pearson_mean": 0.30575958715609713,
+            "positive_mse": 0.7655732304368874,
+            "positive_mae": 0.7972903693644119,
+            "zero_mse": 0.014248461390328954
+          },
+          {
+            "train_method": "spatial_block",
+            "model_seed": 0.0,
+            "evaluation_method": "whole_cell",
+            "condition": "observed",
+            "masked_huber": 0.04352721598528169,
+            "masked_mse": 0.09269455480377987,
+            "masked_mae": 0.1661409382136865,
+            "masked_r2": 0.08412689519181536,
+            "pooled_pearson": 0.3077349441672193,
+            "gene_pearson_mean": 0.0006920775912115072,
+            "cell_pearson_mean": 0.30942608484616096,
+            "positive_mse": 0.7620053283781605,
+            "positive_mae": 0.795532110470198,
+            "zero_mse": 0.014215965284896766
+          },
+          {
+            "train_method": "spatial_block",
+            "model_seed": 1.0,
+            "evaluation_method": "partial_gene",
+            "condition": "observed",
+            "masked_huber": 0.17230308222366264,
+            "masked_mse": 0.49645082850985417,
+            "masked_mae": 0.4068178155585272,
+            "masked_r2": -3.897785475981593,
+            "pooled_pearson": -0.24285693301764327,
+            "gene_pearson_mean": -0.0767599774393287,
+            "cell_pearson_mean": -0.11260256727686364,
+            "positive_mse": 3.13402199605576,
+            "positive_mae": 1.4290258211562283,
+            "zero_mse": 0.1822329402199133
+          },
+          {
+            "train_method": "spatial_block",
+            "model_seed": 1.0,
+            "evaluation_method": "spatial_block",
+            "condition": "observed",
+            "masked_huber": 0.04393912908782172,
+            "masked_mse": 0.09383039870183918,
+            "masked_mae": 0.16670747003323366,
+            "masked_r2": 0.07760335674882468,
+            "pooled_pearson": 0.30476974948974833,
+            "gene_pearson_mean": 0.0001789369870930977,
+            "cell_pearson_mean": 0.3057072174159616,
+            "positive_mse": 0.7653613245795238,
+            "positive_mae": 0.7971587357638505,
+            "zero_mse": 0.014276430090334276
+          },
+          {
+            "train_method": "spatial_block",
+            "model_seed": 1.0,
+            "evaluation_method": "whole_cell",
+            "condition": "observed",
+            "masked_huber": 0.04352989975219574,
+            "masked_mse": 0.09269381635857031,
+            "masked_mae": 0.16645687245296492,
+            "masked_r2": 0.08409887000115421,
+            "pooled_pearson": 0.30775607065829397,
+            "gene_pearson_mean": -0.003565186235140021,
+            "cell_pearson_mean": 0.30949364411541297,
+            "positive_mse": 0.7614811319271458,
+            "positive_mae": 0.7952335330914172,
+            "zero_mse": 0.014271606556945041
+          },
+          {
+            "train_method": "spatial_block",
+            "model_seed": 2.0,
+            "evaluation_method": "partial_gene",
+            "condition": "observed",
+            "masked_huber": 0.20846509733683186,
+            "masked_mse": 0.6054163007748831,
+            "masked_mae": 0.4657093444472818,
+            "masked_r2": -5.037421629833108,
+            "pooled_pearson": -0.2725305474673154,
+            "gene_pearson_mean": -0.07517807655414721,
+            "cell_pearson_mean": -0.17693162174909624,
+            "positive_mse": 3.6776600395674266,
+            "positive_mae": 1.5671492912717309,
+            "zero_mse": 0.24284958879956817
+          },
+          {
+            "train_method": "spatial_block",
+            "model_seed": 2.0,
+            "evaluation_method": "spatial_block",
+            "condition": "observed",
+            "masked_huber": 0.04393641185343656,
+            "masked_mse": 0.09383171944859323,
+            "masked_mae": 0.16667736660592167,
+            "masked_r2": 0.07767007289297298,
+            "pooled_pearson": 0.30476741318107836,
+            "gene_pearson_mean": 0.000607843065971925,
+            "cell_pearson_mean": 0.30569595601464805,
+            "positive_mse": 0.7657467232085524,
+            "positive_mae": 0.797374034976221,
+            "zero_mse": 0.01423111023529948
+          },
+          {
+            "train_method": "spatial_block",
+            "model_seed": 2.0,
+            "evaluation_method": "whole_cell",
+            "condition": "observed",
+            "masked_huber": 0.04352769498591002,
+            "masked_mse": 0.09269701476630487,
+            "masked_mae": 0.16615623263045223,
+            "masked_r2": 0.08410490760408094,
+            "pooled_pearson": 0.30772283220641466,
+            "gene_pearson_mean": 0.0005400585208638967,
+            "cell_pearson_mean": 0.3094439704119932,
+            "positive_mse": 0.7620041165831649,
+            "positive_mae": 0.7955170593861378,
+            "zero_mse": 0.014218454739520311
+          }
+        ]
+      },
+      "run_ids": [
+        "r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608",
+        "r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f",
+        "r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656"
+      ],
+      "lifecycle": "full",
+      "campaign_id": "cmp_20261005_so2_genemae_masking"
+    },
+    {
+      "model": "GeneMAE original diagnostic pilot",
+      "training_strategy": "Dual-path GeneMAE, 6,888,016 parameters: four GATv2 layers, width 256, six heads, graph embedding 192, self MLP 512/512/192, MLP decoder, dropout and DropEdge 0.2. Coordinate-only symmetric-union k=15 graph with Gaussian distance feature within <=7000-cell tiles. AdamW lr 0.0015, weight decay 0.0001, cosine schedule, gradient clip 5, FP32; 2 epochs, one tile/step, final checkpoint only; seed 0. Log1p raw-count Huber delta 1 on hidden entries. 10% whole-cell masking.",
+      "performance": "Equal-core training Huber 0.052778 then 0.046227.",
+      "caveats": "Completed two training epochs and evaluation but failed resource-summary JSON serialization; not a validated full result.",
+      "sources": [
+        "/workspace/BAGM/experiments/campaigns/cmp_20261005_so2_genemae_masking/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/model_task_means.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/equal_core_seed_metrics.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/verification.json"
+      ],
+      "run_ids": [
+        "r_20261005T064812Z_79664b14_s000_f00_a01_e8cf9d38"
+      ],
+      "lifecycle": "diagnostic",
+      "campaign_id": "cmp_20261005_so2_genemae_masking"
+    },
+    {
+      "model": "GeneMAE corrected diagnostic pilot",
+      "training_strategy": "Dual-path GeneMAE, 6,888,016 parameters: four GATv2 layers, width 256, six heads, graph embedding 192, self MLP 512/512/192, MLP decoder, dropout and DropEdge 0.2. Coordinate-only symmetric-union k=15 graph with Gaussian distance feature within <=7000-cell tiles. AdamW lr 0.0015, weight decay 0.0001, cosine schedule, gradient clip 5, FP32; 2 epochs, one tile/step, final checkpoint only; seed 0. Log1p raw-count Huber delta 1 on hidden entries. 10% whole-cell masking.",
+      "performance": "Whole-cell evaluation Huber 0.0448182212; all resource/replay gates passed.",
+      "caveats": "Successful two-epoch pilot; diagnostic only.",
+      "sources": [
+        "/workspace/BAGM/experiments/campaigns/cmp_20261005_so2_genemae_masking/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/model_task_means.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/equal_core_seed_metrics.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/verification.json"
+      ],
+      "run_ids": [
+        "r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063"
+      ],
+      "lifecycle": "diagnostic",
+      "campaign_id": "cmp_20261005_so2_genemae_masking"
+    },
+    {
+      "model": "GeneMAE partial-gene recovery audit attempts (not new trained models)",
+      "training_strategy": "Reuse saved seed-1/2 weights with zero further optimizer steps. Seed-1 attempt 2 rejected before execution; seed-1 attempt 3 and seed-2 attempt 2 rerun full fixed-mask evaluation.",
+      "performance": "No new training performance. Original Huber/MSE/MAE replay differences <=2.05e-10; median gene-Pearson maximum differences 6.2371e-7 (seed 1) and 7.3614e-7 (seed 2), failing the fixed tolerance.",
+      "caveats": "All three recovery attempts retain failed status. Do not count them as three newly trained models or replace failed verification with success.",
+      "sources": [
+        "/workspace/BAGM/experiments/campaigns/cmp_20261005_so2_genemae_masking/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/README.md",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/model_task_means.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/equal_core_seed_metrics.csv",
+        "/workspace/BAGM/reports/analyses/so2_genemae_masking/v1/verification.json"
+      ],
+      "run_ids": [
+        "r_20261005T084509Z_b35cac84_s001_f00_a02_a66df110",
+        "r_20261005T084829Z_b35cac84_s001_f00_a03_8bd59a60",
+        "r_20261005T085114Z_b35cac84_s002_f00_a02_fbab1145"
+      ],
+      "lifecycle": "replay_only",
+      "campaign_id": "cmp_20261005_so2_genemae_masking"
+    },
+    {
+      "model": "Local Gene Residual validation early stopping (planned, untrained)",
+      "training_strategy": "Planned local and self-only variants, seeds 0/1, validation early-stopping protocol; handoff depends on the GeneMAE masking matrix.",
+      "performance": "Not available: no registered runs or variants.",
+      "caveats": "Campaign status planned as of audit. Handoff acceptance records new_campaign_run_count=0. Do not present as a trained model.",
+      "sources": [
+        "/workspace/BAGM/state/handoffs/local_gene_early_stopping/plan.json",
+        "/workspace/BAGM/reports/local_gene_early_stopping/verification_v1/handoff_acceptance.json",
+        "/workspace/BAGM/state/tracking/bagm.sqlite3"
+      ],
+      "run_ids": [],
+      "lifecycle": "planned",
+      "campaign_id": "cmp_20261005_local_gene_early_stopping"
+    },
+    {
+      "model": "Historical SO2 Relative-QKV epoch-300 endpoint \u2014 October Pearson replay",
+      "training_strategy": "Existing Huber-trained epoch-300 seed-0 endpoint; no October retraining. Fitted on all 14 cores with simultaneous Uniform{0,...,1000} gene masks in graph cells; gene-standardized log1p targets.",
+      "performance": "Log1p cell/gene/pooled Pearson 0.421892 / 0.271327 / 0.561158; MAE 0.119613; RMSE 0.285272. Native standardized-scale cell/gene/pooled Pearson 0.195858 / 0.271327 / 0.297018; MAE 0.400919; RMSE 1.001743.",
+      "caveats": "Transductive fitted cohort, 246,063 cells and 122,903,254 masked entries; not a matched ranking against Local Gene Residual, which uses a held-out validation donor and clean neighbor summaries. Different populations, masks, target scaling. Endpoint preselected from earlier standardized MSE comparison.",
+      "sources": [
+        "/workspace/BAGM/reports/analyses/so2_prediction_pearson/v1/comparison/report.md",
+        "/workspace/BAGM/reports/analyses/so2_prediction_pearson/v1/comparison/summary.csv",
+        "/workspace/BAGM/experiments/campaigns/cmp_20261015_so2_prediction_pearson/README.md"
+      ],
+      "metrics": {
+        "pearson_replay": [
+          {
+            "endpoint": "historical_e300",
+            "source_run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+            "seed": 0.0,
+            "scope": "fitted_cohort_all14",
+            "aggregation": "global",
+            "scale": "standardized",
+            "cell_pearson_mean": 0.1958581168998234,
+            "gene_pearson_mean": 0.27132726058241036,
+            "pooled_pearson": 0.2970178281222927,
+            "masked_mae": 0.40091925896256564,
+            "masked_mse": 1.003489618723795,
+            "masked_rmse": 1.001743289832178,
+            "masked_r2": 0.059866851593786796,
+            "n_cells": 246063.0,
+            "n_masked": 122903254.0,
+            "n_valid_cells": 245556.0,
+            "n_undefined_cells": 507.0,
+            "n_valid_genes": 1000.0,
+            "n_undefined_genes": 0.0
+          },
+          {
+            "endpoint": "historical_e300",
+            "source_run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+            "seed": 0.0,
+            "scope": "fitted_cohort_all14",
+            "aggregation": "equal_core",
+            "scale": "standardized",
+            "cell_pearson_mean": 0.18679781615391286,
+            "gene_pearson_mean": 0.2504677371794671,
+            "pooled_pearson": 0.2745571692852472,
+            "masked_mae": 0.37346323177380497,
+            "masked_mse": 0.9474188978189474,
+            "masked_rmse": 0.9703065315741626,
+            "masked_r2": 0.048160846052337176,
+            "n_cells": null,
+            "n_masked": null,
+            "n_valid_cells": null,
+            "n_undefined_cells": null,
+            "n_valid_genes": null,
+            "n_undefined_genes": null
+          },
+          {
+            "endpoint": "historical_e300",
+            "source_run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+            "seed": 0.0,
+            "scope": "fitted_cohort_all14",
+            "aggregation": "global",
+            "scale": "log1p",
+            "cell_pearson_mean": 0.42189213075145165,
+            "gene_pearson_mean": 0.27132726061833345,
+            "pooled_pearson": 0.5611582724775751,
+            "masked_mae": 0.11961306359547799,
+            "masked_mse": 0.08138030753151461,
+            "masked_rmse": 0.285272339233082,
+            "masked_r2": 0.2948888314869159,
+            "n_cells": 246063.0,
+            "n_masked": 122903254.0,
+            "n_valid_cells": 241569.0,
+            "n_undefined_cells": 4494.0,
+            "n_valid_genes": 1000.0,
+            "n_undefined_genes": 0.0
+          },
+          {
+            "endpoint": "historical_e300",
+            "source_run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+            "seed": 0.0,
+            "scope": "fitted_cohort_all14",
+            "aggregation": "equal_core",
+            "scale": "log1p",
+            "cell_pearson_mean": 0.3909339091223882,
+            "gene_pearson_mean": 0.25046773720718696,
+            "pooled_pearson": 0.5021763909676377,
+            "masked_mae": 0.11137341125075188,
+            "masked_mse": 0.0764014318496701,
+            "masked_rmse": 0.2755151818347547,
+            "masked_r2": 0.23675597973552082,
+            "n_cells": null,
+            "n_masked": null,
+            "n_valid_cells": null,
+            "n_undefined_cells": null,
+            "n_valid_genes": null,
+            "n_undefined_genes": null
+          }
+        ]
+      },
+      "run_ids": [
+        "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2"
+      ],
+      "lifecycle": "posthoc_metrics",
+      "campaign_id": "cmp_20261015_so2_prediction_pearson"
+    }
+  ],
+  "registry_runs": [
+    {
+      "run_id": "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de",
+      "campaign_id": "cmp_20261004_local_gene_residual",
+      "status": "completed",
+      "seed": 0,
+      "attempt": 1,
+      "primary_metric_name": "val/count_nll",
+      "primary_metric_value": 0.333494966941514,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T071603Z_178fc589_s000_f00_a01_254a98de",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261004_local_gene_residual"
+        },
+        "classification": {
+          "lifecycle_stage": "diagnostic",
+          "retention_class": "diagnostic",
+          "study_axis": "simple_count_reconstruction",
+          "variant_label": "local"
+        },
+        "dataset": {
+          "biological_target_count": 1000,
+          "dataset_fingerprint": "206148ffc8976526118932c7fbed82674f79ff8f2326bbd2a7c54dba8540260c",
+          "dataset_fingerprint_role": "immutable_overlay_manifest_content_sha256",
+          "dataset_id": "cosmx_so2_nb_train12_val2_v1",
+          "donor_identifier_values_persisted": false,
+          "experimental_unit": "donor_group",
+          "generalization_claim_supported": false,
+          "input_scale": "train_only_equal_core_standardized_log1p_raw_biological_counts",
+          "node_covariate_count": 22,
+          "overlay_manifest_file_sha256": "3aea6cfbf7191df221cf226316dbbc2aded6edfaeb193498c7a7a740bc73cabe",
+          "paired_comparator_campaign_id": "cmp_20260926_so2_target_isolated_geometry_modulated_nb_once_per_cell_seed0",
+          "paired_comparator_split_and_preprocessing_reused_exactly": true,
+          "prepared_artifact_observation_model_agnostic": true,
+          "prepared_artifact_reference": "data/processed/so2_nb_train12_val2_v1",
+          "preprocessing_fingerprint": "2fdebc1be6600c9ea86846c972ee2b6149c2827ade3ff5b0784ceae45001910c",
+          "preprocessing_version": "so2_train12_equal_core_log1p_metadata_nb_raw_targets_v1",
+          "protected_grouping_source_sha256": "30a1c3de1fee0d0045ac6bbfa849f9bb47de437c1b11428e6e16ac48d06fd5e0",
+          "source_cohort_artifact": "data/processed/so2_14core_relative_qkv_v1",
+          "source_graph_artifact": "data/processed/so2_14core_relative_qkv_graphs_v1",
+          "source_graph_artifact_role": "historical_reference_only_not_loaded",
+          "source_graph_cache_reused_without_copy": false,
+          "source_slide": "SO_2",
+          "split_fingerprint": "d3d5f637433a98bf48db1d079fbecfe249308638462416e6dae57ece5fffc435",
+          "split_id": "so2_donor_grouped_train12_val2_no_test_seed0_v1",
+          "target_distribution": "bernoulli_hurdle_zero_truncated_negative_binomial_nb2",
+          "target_scale": "raw_nonnegative_integer_biological_probe_counts",
+          "task": "target_isolated_local_gene_count_reconstruction",
+          "test_cells": 0,
+          "test_core_aliases": [],
+          "test_partition_present": false,
+          "total_cells": 246063,
+          "training_cells": 208696,
+          "training_core_aliases": [
+            "SO2-C15",
+            "SO2-C16",
+            "SO2-C17",
+            "SO2-C18",
+            "SO2-C19",
+            "SO2-C20",
+            "SO2-C21",
+            "SO2-C22",
+            "SO2-C23",
+            "SO2-C24",
+            "SO2-C25",
+            "SO2-C26"
+          ],
+          "validation_cells": 37367,
+          "validation_core_aliases": [
+            "SO2-C27",
+            "SO2-C28"
+          ],
+          "validation_pair_selection_digest": "0b8d6d58e4c87953425c4132b0fd8334b368e4d96dc920cdf66a0b6a2360f05d",
+          "validation_pair_selection_namespace": "bagm.so2.nb.train_validation.seed0.v1",
+          "validation_selected_without_expression_pathology_or_model_outcomes": true,
+          "validation_used_for_model_selection": true,
+          "version": "so2_nb_train12_val2_v1"
+        },
+        "evaluation": {
+          "artifact_contract": "predictive",
+          "canonical_prediction_split": "validation",
+          "primary_metric": "val/count_nll",
+          "primary_mode": "min",
+          "protocol": "local_gene_residual_counts_v1"
+        },
+        "fold": 0,
+        "graph": {
+          "kind": "fixed_local_summary",
+          "neighbor_k": 16,
+          "radius_um": 75.0,
+          "self_loops": false
+        },
+        "launcher": {
+          "requested_gpu": "0",
+          "smoke_run": null
+        },
+        "masking": {
+          "kind": "target_isolated_uniform_1_1000",
+          "training_base_seed": 2026092601,
+          "validation_namespace": "bagm.so2.target_isolated_nb.fixed_validation_masks.v1"
+        },
+        "metadata": {
+          "frozen_contract_sha256": "500863ee987c2da541ebacd6fb1dfc51c8f0dd6aa9e8660485eacdff5d78e121",
+          "profile": "smoke"
+        },
+        "model": {
+          "dropout": 0.1,
+          "family": "local_gene_residual",
+          "hidden_dim": 512,
+          "hidden_layers": 2,
+          "output_distribution": "bernoulli_hurdle_zero_truncated_nb2",
+          "use_local": true,
+          "variant": "local"
+        },
+        "seed": 0,
+        "trainer": {
+          "batch_size": 1024,
+          "epochs": 2,
+          "gradient_clip": 1.0,
+          "learning_rate": 0.001,
+          "minimum_learning_rate": 0.0001,
+          "ordering_seed": 2026100401,
+          "precision": "bfloat16_autocast_fp32_likelihood",
+          "primary_checkpoint_role": "best",
+          "restore_best": true,
+          "scheduler": "fixed_cosine",
+          "weight_decay": 1e-05
+        }
+      }
+    },
+    {
+      "run_id": "r_20261004T072106Z_dd0aa417_s000_f00_a01_e0116c2b",
+      "campaign_id": "cmp_20261004_local_gene_residual",
+      "status": "completed",
+      "seed": 0,
+      "attempt": 1,
+      "primary_metric_name": "val/count_nll",
+      "primary_metric_value": 0.32838358053233,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T072106Z_dd0aa417_s000_f00_a01_e0116c2b",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261004_local_gene_residual"
+        },
+        "classification": {
+          "lifecycle_stage": "validation_confirmation",
+          "retention_class": "validation_confirmation",
+          "study_axis": "simple_count_reconstruction",
+          "variant_label": "self"
+        },
+        "dataset": {
+          "biological_target_count": 1000,
+          "dataset_fingerprint": "206148ffc8976526118932c7fbed82674f79ff8f2326bbd2a7c54dba8540260c",
+          "dataset_fingerprint_role": "immutable_overlay_manifest_content_sha256",
+          "dataset_id": "cosmx_so2_nb_train12_val2_v1",
+          "donor_identifier_values_persisted": false,
+          "experimental_unit": "donor_group",
+          "generalization_claim_supported": false,
+          "input_scale": "train_only_equal_core_standardized_log1p_raw_biological_counts",
+          "node_covariate_count": 22,
+          "overlay_manifest_file_sha256": "3aea6cfbf7191df221cf226316dbbc2aded6edfaeb193498c7a7a740bc73cabe",
+          "paired_comparator_campaign_id": "cmp_20260926_so2_target_isolated_geometry_modulated_nb_once_per_cell_seed0",
+          "paired_comparator_split_and_preprocessing_reused_exactly": true,
+          "prepared_artifact_observation_model_agnostic": true,
+          "prepared_artifact_reference": "data/processed/so2_nb_train12_val2_v1",
+          "preprocessing_fingerprint": "2fdebc1be6600c9ea86846c972ee2b6149c2827ade3ff5b0784ceae45001910c",
+          "preprocessing_version": "so2_train12_equal_core_log1p_metadata_nb_raw_targets_v1",
+          "protected_grouping_source_sha256": "30a1c3de1fee0d0045ac6bbfa849f9bb47de437c1b11428e6e16ac48d06fd5e0",
+          "source_cohort_artifact": "data/processed/so2_14core_relative_qkv_v1",
+          "source_graph_artifact": "data/processed/so2_14core_relative_qkv_graphs_v1",
+          "source_graph_artifact_role": "historical_reference_only_not_loaded",
+          "source_graph_cache_reused_without_copy": false,
+          "source_slide": "SO_2",
+          "split_fingerprint": "d3d5f637433a98bf48db1d079fbecfe249308638462416e6dae57ece5fffc435",
+          "split_id": "so2_donor_grouped_train12_val2_no_test_seed0_v1",
+          "target_distribution": "bernoulli_hurdle_zero_truncated_negative_binomial_nb2",
+          "target_scale": "raw_nonnegative_integer_biological_probe_counts",
+          "task": "target_isolated_local_gene_count_reconstruction",
+          "test_cells": 0,
+          "test_core_aliases": [],
+          "test_partition_present": false,
+          "total_cells": 246063,
+          "training_cells": 208696,
+          "training_core_aliases": [
+            "SO2-C15",
+            "SO2-C16",
+            "SO2-C17",
+            "SO2-C18",
+            "SO2-C19",
+            "SO2-C20",
+            "SO2-C21",
+            "SO2-C22",
+            "SO2-C23",
+            "SO2-C24",
+            "SO2-C25",
+            "SO2-C26"
+          ],
+          "validation_cells": 37367,
+          "validation_core_aliases": [
+            "SO2-C27",
+            "SO2-C28"
+          ],
+          "validation_pair_selection_digest": "0b8d6d58e4c87953425c4132b0fd8334b368e4d96dc920cdf66a0b6a2360f05d",
+          "validation_pair_selection_namespace": "bagm.so2.nb.train_validation.seed0.v1",
+          "validation_selected_without_expression_pathology_or_model_outcomes": true,
+          "validation_used_for_model_selection": true,
+          "version": "so2_nb_train12_val2_v1"
+        },
+        "evaluation": {
+          "artifact_contract": "predictive",
+          "canonical_prediction_split": "validation",
+          "primary_metric": "val/count_nll",
+          "primary_mode": "min",
+          "protocol": "local_gene_residual_counts_v1"
+        },
+        "fold": 0,
+        "graph": {
+          "kind": "none",
+          "neighbor_k": 0,
+          "radius_um": 75.0,
+          "self_loops": false
+        },
+        "launcher": {
+          "pilot_receipt": {
+            "preflight_sha256": "634a660bb1f1b6da1ddb8eb0d46b6e2d69f19fdfc678d59b2e2d2f02562eeaaf",
+            "run_id": "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de"
+          },
+          "requested_gpu": "2",
+          "smoke_run": "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de"
+        },
+        "masking": {
+          "kind": "target_isolated_uniform_1_1000",
+          "training_base_seed": 2026092601,
+          "validation_namespace": "bagm.so2.target_isolated_nb.fixed_validation_masks.v1"
+        },
+        "metadata": {
+          "frozen_contract_sha256": "500863ee987c2da541ebacd6fb1dfc51c8f0dd6aa9e8660485eacdff5d78e121",
+          "profile": "full"
+        },
+        "model": {
+          "dropout": 0.1,
+          "family": "local_gene_residual",
+          "hidden_dim": 512,
+          "hidden_layers": 2,
+          "output_distribution": "bernoulli_hurdle_zero_truncated_nb2",
+          "use_local": false,
+          "variant": "self"
+        },
+        "seed": 0,
+        "trainer": {
+          "batch_size": 1024,
+          "epochs": 32,
+          "gradient_clip": 1.0,
+          "learning_rate": 0.001,
+          "minimum_learning_rate": 0.0001,
+          "ordering_seed": 2026100401,
+          "precision": "bfloat16_autocast_fp32_likelihood",
+          "primary_checkpoint_role": "best",
+          "restore_best": true,
+          "scheduler": "fixed_cosine",
+          "weight_decay": 1e-05
+        }
+      }
+    },
+    {
+      "run_id": "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+      "campaign_id": "cmp_20261004_local_gene_residual",
+      "status": "completed",
+      "seed": 1,
+      "attempt": 1,
+      "primary_metric_name": "val/count_nll",
+      "primary_metric_value": 0.32666074623693225,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261004_local_gene_residual"
+        },
+        "classification": {
+          "lifecycle_stage": "validation_confirmation",
+          "retention_class": "validation_confirmation",
+          "study_axis": "simple_count_reconstruction",
+          "variant_label": "local"
+        },
+        "dataset": {
+          "biological_target_count": 1000,
+          "dataset_fingerprint": "206148ffc8976526118932c7fbed82674f79ff8f2326bbd2a7c54dba8540260c",
+          "dataset_fingerprint_role": "immutable_overlay_manifest_content_sha256",
+          "dataset_id": "cosmx_so2_nb_train12_val2_v1",
+          "donor_identifier_values_persisted": false,
+          "experimental_unit": "donor_group",
+          "generalization_claim_supported": false,
+          "input_scale": "train_only_equal_core_standardized_log1p_raw_biological_counts",
+          "node_covariate_count": 22,
+          "overlay_manifest_file_sha256": "3aea6cfbf7191df221cf226316dbbc2aded6edfaeb193498c7a7a740bc73cabe",
+          "paired_comparator_campaign_id": "cmp_20260926_so2_target_isolated_geometry_modulated_nb_once_per_cell_seed0",
+          "paired_comparator_split_and_preprocessing_reused_exactly": true,
+          "prepared_artifact_observation_model_agnostic": true,
+          "prepared_artifact_reference": "data/processed/so2_nb_train12_val2_v1",
+          "preprocessing_fingerprint": "2fdebc1be6600c9ea86846c972ee2b6149c2827ade3ff5b0784ceae45001910c",
+          "preprocessing_version": "so2_train12_equal_core_log1p_metadata_nb_raw_targets_v1",
+          "protected_grouping_source_sha256": "30a1c3de1fee0d0045ac6bbfa849f9bb47de437c1b11428e6e16ac48d06fd5e0",
+          "source_cohort_artifact": "data/processed/so2_14core_relative_qkv_v1",
+          "source_graph_artifact": "data/processed/so2_14core_relative_qkv_graphs_v1",
+          "source_graph_artifact_role": "historical_reference_only_not_loaded",
+          "source_graph_cache_reused_without_copy": false,
+          "source_slide": "SO_2",
+          "split_fingerprint": "d3d5f637433a98bf48db1d079fbecfe249308638462416e6dae57ece5fffc435",
+          "split_id": "so2_donor_grouped_train12_val2_no_test_seed0_v1",
+          "target_distribution": "bernoulli_hurdle_zero_truncated_negative_binomial_nb2",
+          "target_scale": "raw_nonnegative_integer_biological_probe_counts",
+          "task": "target_isolated_local_gene_count_reconstruction",
+          "test_cells": 0,
+          "test_core_aliases": [],
+          "test_partition_present": false,
+          "total_cells": 246063,
+          "training_cells": 208696,
+          "training_core_aliases": [
+            "SO2-C15",
+            "SO2-C16",
+            "SO2-C17",
+            "SO2-C18",
+            "SO2-C19",
+            "SO2-C20",
+            "SO2-C21",
+            "SO2-C22",
+            "SO2-C23",
+            "SO2-C24",
+            "SO2-C25",
+            "SO2-C26"
+          ],
+          "validation_cells": 37367,
+          "validation_core_aliases": [
+            "SO2-C27",
+            "SO2-C28"
+          ],
+          "validation_pair_selection_digest": "0b8d6d58e4c87953425c4132b0fd8334b368e4d96dc920cdf66a0b6a2360f05d",
+          "validation_pair_selection_namespace": "bagm.so2.nb.train_validation.seed0.v1",
+          "validation_selected_without_expression_pathology_or_model_outcomes": true,
+          "validation_used_for_model_selection": true,
+          "version": "so2_nb_train12_val2_v1"
+        },
+        "evaluation": {
+          "artifact_contract": "predictive",
+          "canonical_prediction_split": "validation",
+          "primary_metric": "val/count_nll",
+          "primary_mode": "min",
+          "protocol": "local_gene_residual_counts_v1"
+        },
+        "fold": 0,
+        "graph": {
+          "kind": "fixed_local_summary",
+          "neighbor_k": 16,
+          "radius_um": 75.0,
+          "self_loops": false
+        },
+        "launcher": {
+          "pilot_receipt": {
+            "preflight_sha256": "634a660bb1f1b6da1ddb8eb0d46b6e2d69f19fdfc678d59b2e2d2f02562eeaaf",
+            "run_id": "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de"
+          },
+          "requested_gpu": "1",
+          "smoke_run": "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de"
+        },
+        "masking": {
+          "kind": "target_isolated_uniform_1_1000",
+          "training_base_seed": 2026092601,
+          "validation_namespace": "bagm.so2.target_isolated_nb.fixed_validation_masks.v1"
+        },
+        "metadata": {
+          "frozen_contract_sha256": "500863ee987c2da541ebacd6fb1dfc51c8f0dd6aa9e8660485eacdff5d78e121",
+          "profile": "full"
+        },
+        "model": {
+          "dropout": 0.1,
+          "family": "local_gene_residual",
+          "hidden_dim": 512,
+          "hidden_layers": 2,
+          "output_distribution": "bernoulli_hurdle_zero_truncated_nb2",
+          "use_local": true,
+          "variant": "local"
+        },
+        "seed": 1,
+        "trainer": {
+          "batch_size": 1024,
+          "epochs": 32,
+          "gradient_clip": 1.0,
+          "learning_rate": 0.001,
+          "minimum_learning_rate": 0.0001,
+          "ordering_seed": 2026100401,
+          "precision": "bfloat16_autocast_fp32_likelihood",
+          "primary_checkpoint_role": "best",
+          "restore_best": true,
+          "scheduler": "fixed_cosine",
+          "weight_decay": 1e-05
+        }
+      }
+    },
+    {
+      "run_id": "r_20261004T072107Z_dd0aa417_s001_f00_a01_ea627eca",
+      "campaign_id": "cmp_20261004_local_gene_residual",
+      "status": "completed",
+      "seed": 1,
+      "attempt": 1,
+      "primary_metric_name": "val/count_nll",
+      "primary_metric_value": 0.3283695183549658,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T072107Z_dd0aa417_s001_f00_a01_ea627eca",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261004_local_gene_residual"
+        },
+        "classification": {
+          "lifecycle_stage": "validation_confirmation",
+          "retention_class": "validation_confirmation",
+          "study_axis": "simple_count_reconstruction",
+          "variant_label": "self"
+        },
+        "dataset": {
+          "biological_target_count": 1000,
+          "dataset_fingerprint": "206148ffc8976526118932c7fbed82674f79ff8f2326bbd2a7c54dba8540260c",
+          "dataset_fingerprint_role": "immutable_overlay_manifest_content_sha256",
+          "dataset_id": "cosmx_so2_nb_train12_val2_v1",
+          "donor_identifier_values_persisted": false,
+          "experimental_unit": "donor_group",
+          "generalization_claim_supported": false,
+          "input_scale": "train_only_equal_core_standardized_log1p_raw_biological_counts",
+          "node_covariate_count": 22,
+          "overlay_manifest_file_sha256": "3aea6cfbf7191df221cf226316dbbc2aded6edfaeb193498c7a7a740bc73cabe",
+          "paired_comparator_campaign_id": "cmp_20260926_so2_target_isolated_geometry_modulated_nb_once_per_cell_seed0",
+          "paired_comparator_split_and_preprocessing_reused_exactly": true,
+          "prepared_artifact_observation_model_agnostic": true,
+          "prepared_artifact_reference": "data/processed/so2_nb_train12_val2_v1",
+          "preprocessing_fingerprint": "2fdebc1be6600c9ea86846c972ee2b6149c2827ade3ff5b0784ceae45001910c",
+          "preprocessing_version": "so2_train12_equal_core_log1p_metadata_nb_raw_targets_v1",
+          "protected_grouping_source_sha256": "30a1c3de1fee0d0045ac6bbfa849f9bb47de437c1b11428e6e16ac48d06fd5e0",
+          "source_cohort_artifact": "data/processed/so2_14core_relative_qkv_v1",
+          "source_graph_artifact": "data/processed/so2_14core_relative_qkv_graphs_v1",
+          "source_graph_artifact_role": "historical_reference_only_not_loaded",
+          "source_graph_cache_reused_without_copy": false,
+          "source_slide": "SO_2",
+          "split_fingerprint": "d3d5f637433a98bf48db1d079fbecfe249308638462416e6dae57ece5fffc435",
+          "split_id": "so2_donor_grouped_train12_val2_no_test_seed0_v1",
+          "target_distribution": "bernoulli_hurdle_zero_truncated_negative_binomial_nb2",
+          "target_scale": "raw_nonnegative_integer_biological_probe_counts",
+          "task": "target_isolated_local_gene_count_reconstruction",
+          "test_cells": 0,
+          "test_core_aliases": [],
+          "test_partition_present": false,
+          "total_cells": 246063,
+          "training_cells": 208696,
+          "training_core_aliases": [
+            "SO2-C15",
+            "SO2-C16",
+            "SO2-C17",
+            "SO2-C18",
+            "SO2-C19",
+            "SO2-C20",
+            "SO2-C21",
+            "SO2-C22",
+            "SO2-C23",
+            "SO2-C24",
+            "SO2-C25",
+            "SO2-C26"
+          ],
+          "validation_cells": 37367,
+          "validation_core_aliases": [
+            "SO2-C27",
+            "SO2-C28"
+          ],
+          "validation_pair_selection_digest": "0b8d6d58e4c87953425c4132b0fd8334b368e4d96dc920cdf66a0b6a2360f05d",
+          "validation_pair_selection_namespace": "bagm.so2.nb.train_validation.seed0.v1",
+          "validation_selected_without_expression_pathology_or_model_outcomes": true,
+          "validation_used_for_model_selection": true,
+          "version": "so2_nb_train12_val2_v1"
+        },
+        "evaluation": {
+          "artifact_contract": "predictive",
+          "canonical_prediction_split": "validation",
+          "primary_metric": "val/count_nll",
+          "primary_mode": "min",
+          "protocol": "local_gene_residual_counts_v1"
+        },
+        "fold": 0,
+        "graph": {
+          "kind": "none",
+          "neighbor_k": 0,
+          "radius_um": 75.0,
+          "self_loops": false
+        },
+        "launcher": {
+          "pilot_receipt": {
+            "preflight_sha256": "634a660bb1f1b6da1ddb8eb0d46b6e2d69f19fdfc678d59b2e2d2f02562eeaaf",
+            "run_id": "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de"
+          },
+          "requested_gpu": "3",
+          "smoke_run": "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de"
+        },
+        "masking": {
+          "kind": "target_isolated_uniform_1_1000",
+          "training_base_seed": 2026092601,
+          "validation_namespace": "bagm.so2.target_isolated_nb.fixed_validation_masks.v1"
+        },
+        "metadata": {
+          "frozen_contract_sha256": "500863ee987c2da541ebacd6fb1dfc51c8f0dd6aa9e8660485eacdff5d78e121",
+          "profile": "full"
+        },
+        "model": {
+          "dropout": 0.1,
+          "family": "local_gene_residual",
+          "hidden_dim": 512,
+          "hidden_layers": 2,
+          "output_distribution": "bernoulli_hurdle_zero_truncated_nb2",
+          "use_local": false,
+          "variant": "self"
+        },
+        "seed": 1,
+        "trainer": {
+          "batch_size": 1024,
+          "epochs": 32,
+          "gradient_clip": 1.0,
+          "learning_rate": 0.001,
+          "minimum_learning_rate": 0.0001,
+          "ordering_seed": 2026100401,
+          "precision": "bfloat16_autocast_fp32_likelihood",
+          "primary_checkpoint_role": "best",
+          "restore_best": true,
+          "scheduler": "fixed_cosine",
+          "weight_decay": 1e-05
+        }
+      }
+    },
+    {
+      "run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+      "campaign_id": "cmp_20261004_local_gene_residual",
+      "status": "completed",
+      "seed": 0,
+      "attempt": 1,
+      "primary_metric_name": "val/count_nll",
+      "primary_metric_value": 0.3266412828538299,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261004_local_gene_residual"
+        },
+        "classification": {
+          "lifecycle_stage": "validation_confirmation",
+          "retention_class": "validation_confirmation",
+          "study_axis": "simple_count_reconstruction",
+          "variant_label": "local"
+        },
+        "dataset": {
+          "biological_target_count": 1000,
+          "dataset_fingerprint": "206148ffc8976526118932c7fbed82674f79ff8f2326bbd2a7c54dba8540260c",
+          "dataset_fingerprint_role": "immutable_overlay_manifest_content_sha256",
+          "dataset_id": "cosmx_so2_nb_train12_val2_v1",
+          "donor_identifier_values_persisted": false,
+          "experimental_unit": "donor_group",
+          "generalization_claim_supported": false,
+          "input_scale": "train_only_equal_core_standardized_log1p_raw_biological_counts",
+          "node_covariate_count": 22,
+          "overlay_manifest_file_sha256": "3aea6cfbf7191df221cf226316dbbc2aded6edfaeb193498c7a7a740bc73cabe",
+          "paired_comparator_campaign_id": "cmp_20260926_so2_target_isolated_geometry_modulated_nb_once_per_cell_seed0",
+          "paired_comparator_split_and_preprocessing_reused_exactly": true,
+          "prepared_artifact_observation_model_agnostic": true,
+          "prepared_artifact_reference": "data/processed/so2_nb_train12_val2_v1",
+          "preprocessing_fingerprint": "2fdebc1be6600c9ea86846c972ee2b6149c2827ade3ff5b0784ceae45001910c",
+          "preprocessing_version": "so2_train12_equal_core_log1p_metadata_nb_raw_targets_v1",
+          "protected_grouping_source_sha256": "30a1c3de1fee0d0045ac6bbfa849f9bb47de437c1b11428e6e16ac48d06fd5e0",
+          "source_cohort_artifact": "data/processed/so2_14core_relative_qkv_v1",
+          "source_graph_artifact": "data/processed/so2_14core_relative_qkv_graphs_v1",
+          "source_graph_artifact_role": "historical_reference_only_not_loaded",
+          "source_graph_cache_reused_without_copy": false,
+          "source_slide": "SO_2",
+          "split_fingerprint": "d3d5f637433a98bf48db1d079fbecfe249308638462416e6dae57ece5fffc435",
+          "split_id": "so2_donor_grouped_train12_val2_no_test_seed0_v1",
+          "target_distribution": "bernoulli_hurdle_zero_truncated_negative_binomial_nb2",
+          "target_scale": "raw_nonnegative_integer_biological_probe_counts",
+          "task": "target_isolated_local_gene_count_reconstruction",
+          "test_cells": 0,
+          "test_core_aliases": [],
+          "test_partition_present": false,
+          "total_cells": 246063,
+          "training_cells": 208696,
+          "training_core_aliases": [
+            "SO2-C15",
+            "SO2-C16",
+            "SO2-C17",
+            "SO2-C18",
+            "SO2-C19",
+            "SO2-C20",
+            "SO2-C21",
+            "SO2-C22",
+            "SO2-C23",
+            "SO2-C24",
+            "SO2-C25",
+            "SO2-C26"
+          ],
+          "validation_cells": 37367,
+          "validation_core_aliases": [
+            "SO2-C27",
+            "SO2-C28"
+          ],
+          "validation_pair_selection_digest": "0b8d6d58e4c87953425c4132b0fd8334b368e4d96dc920cdf66a0b6a2360f05d",
+          "validation_pair_selection_namespace": "bagm.so2.nb.train_validation.seed0.v1",
+          "validation_selected_without_expression_pathology_or_model_outcomes": true,
+          "validation_used_for_model_selection": true,
+          "version": "so2_nb_train12_val2_v1"
+        },
+        "evaluation": {
+          "artifact_contract": "predictive",
+          "canonical_prediction_split": "validation",
+          "primary_metric": "val/count_nll",
+          "primary_mode": "min",
+          "protocol": "local_gene_residual_counts_v1"
+        },
+        "fold": 0,
+        "graph": {
+          "kind": "fixed_local_summary",
+          "neighbor_k": 16,
+          "radius_um": 75.0,
+          "self_loops": false
+        },
+        "launcher": {
+          "pilot_receipt": {
+            "preflight_sha256": "634a660bb1f1b6da1ddb8eb0d46b6e2d69f19fdfc678d59b2e2d2f02562eeaaf",
+            "run_id": "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de"
+          },
+          "requested_gpu": "0",
+          "smoke_run": "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de"
+        },
+        "masking": {
+          "kind": "target_isolated_uniform_1_1000",
+          "training_base_seed": 2026092601,
+          "validation_namespace": "bagm.so2.target_isolated_nb.fixed_validation_masks.v1"
+        },
+        "metadata": {
+          "frozen_contract_sha256": "500863ee987c2da541ebacd6fb1dfc51c8f0dd6aa9e8660485eacdff5d78e121",
+          "profile": "full"
+        },
+        "model": {
+          "dropout": 0.1,
+          "family": "local_gene_residual",
+          "hidden_dim": 512,
+          "hidden_layers": 2,
+          "output_distribution": "bernoulli_hurdle_zero_truncated_nb2",
+          "use_local": true,
+          "variant": "local"
+        },
+        "seed": 0,
+        "trainer": {
+          "batch_size": 1024,
+          "epochs": 32,
+          "gradient_clip": 1.0,
+          "learning_rate": 0.001,
+          "minimum_learning_rate": 0.0001,
+          "ordering_seed": 2026100401,
+          "precision": "bfloat16_autocast_fp32_likelihood",
+          "primary_checkpoint_role": "best",
+          "restore_best": true,
+          "scheduler": "fixed_cosine",
+          "weight_decay": 1e-05
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T064812Z_79664b14_s000_f00_a01_e8cf9d38",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "failed",
+      "seed": 0,
+      "attempt": 1,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": null,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T064812Z_79664b14_s000_f00_a01_e8cf9d38",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "diagnostic",
+          "retention_class": "diagnostic",
+          "schema_version": 1,
+          "scientific_variant": "whole_cell_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": true,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "whole_cell",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "resource_pilot",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "59c98c9df9bc507750747c17baedfd46842835afa0db4ec749002427b32a3c7b",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "e1e2fbb01ee6f411a28e7b1d85f6d7709ae4c4012375d569cc64f1bf2d7bfe48"
+          },
+          "pilot": null,
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 0,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 2,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "completed",
+      "seed": 0,
+      "attempt": 1,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": 0.044818221169433785,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "diagnostic",
+          "retention_class": "diagnostic",
+          "schema_version": 1,
+          "scientific_variant": "whole_cell_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": true,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "whole_cell",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "resource_pilot",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": null,
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 0,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 2,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "completed",
+      "seed": 0,
+      "attempt": 1,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": 0.03869772616736129,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "whole_cell_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "whole_cell",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 0,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "completed",
+      "seed": 0,
+      "attempt": 1,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": 0.043527215985281684,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "spatial_block_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "spatial_block",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 0,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "completed",
+      "seed": 0,
+      "attempt": 1,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": 0.04966892458266322,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "partial_gene_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "partial_gene",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 0,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "completed",
+      "seed": 1,
+      "attempt": 1,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": 0.03873327300494927,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "whole_cell_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "whole_cell",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 1,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "failed",
+      "seed": 1,
+      "attempt": 1,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": null,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "partial_gene_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "partial_gene",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 1,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "failed",
+      "seed": 2,
+      "attempt": 1,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": null,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "partial_gene_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "partial_gene",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 2,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "completed",
+      "seed": 2,
+      "attempt": 1,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": 0.03868309054810052,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "whole_cell_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "whole_cell",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 2,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "completed",
+      "seed": 1,
+      "attempt": 1,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": 0.04352989975219573,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T080924Z_eb047e27_s001_f00_a01_8934164f",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "spatial_block_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "spatial_block",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 1,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "completed",
+      "seed": 2,
+      "attempt": 1,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": 0.04352769498591001,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T082957Z_eb047e27_s002_f00_a01_3601f656",
+      "config": {
+        "attempt": 1,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "spatial_block_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "spatial_block",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 2,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T084509Z_b35cac84_s001_f00_a02_a66df110",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "failed",
+      "seed": 1,
+      "attempt": 2,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": null,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T084509Z_b35cac84_s001_f00_a02_a66df110",
+      "config": {
+        "attempt": 2,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "partial_gene_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "partial_gene",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "runtime": {
+          "checkpoint_recovery": {
+            "checkpoint_sha256": "7d389835911827299f3e31e9012e291b02bb832075cd1814a405a38aa431223c",
+            "failed_marker_sha256": "da5edf727b6b9a3d8c07b76e872561c4fd233315e70b8a64577a07907a9dde56",
+            "recovery_script_sha256": "9ba859fb0d8e8a8ae5b5755d68dc2579b9d554dd09eacf3c6f30abeaedb3c2aa",
+            "source_path": "artifacts/runs/2026/10/r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+            "source_run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+            "source_runtime_seconds": 3354.309329
+          }
+        },
+        "schema_version": 1,
+        "seed": 1,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T084829Z_b35cac84_s001_f00_a03_8bd59a60",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "failed",
+      "seed": 1,
+      "attempt": 3,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": null,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T084829Z_b35cac84_s001_f00_a03_8bd59a60",
+      "config": {
+        "attempt": 3,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "partial_gene_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "partial_gene",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "runtime": {
+            "checkpoint_recovery": {
+              "checkpoint_sha256": "7d389835911827299f3e31e9012e291b02bb832075cd1814a405a38aa431223c",
+              "failed_marker_sha256": "da5edf727b6b9a3d8c07b76e872561c4fd233315e70b8a64577a07907a9dde56",
+              "recovery_script_sha256": "986d18f6ee04f678fa8381b8db8e5302b75fadb2675e8d2cfd449ce276909451",
+              "source_path": "artifacts/runs/2026/10/r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+              "source_run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+              "source_runtime_seconds": 3354.309329
+            }
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 1,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    },
+    {
+      "run_id": "r_20261005T085114Z_b35cac84_s002_f00_a02_fbab1145",
+      "campaign_id": "cmp_20261005_so2_genemae_masking",
+      "status": "failed",
+      "seed": 2,
+      "attempt": 2,
+      "primary_metric_name": "fit/whole_node/masked_huber",
+      "primary_metric_value": null,
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261005T085114Z_b35cac84_s002_f00_a02_fbab1145",
+      "config": {
+        "attempt": 2,
+        "campaign": {
+          "campaign_id": "cmp_20261005_so2_genemae_masking"
+        },
+        "classification": {
+          "classification_confidence": "high",
+          "lifecycle_stage": "exploratory_screen",
+          "retention_class": "exploratory_screen",
+          "schema_version": 1,
+          "scientific_variant": "partial_gene_10pct",
+          "study_axis": "so2_masking_comparison"
+        },
+        "dataset": {
+          "dataset_fingerprint": "69efdf5e3d1d816ab98e52e2734c51434e3dd95968021c0867c11f4d804bc158",
+          "dataset_id": "so2_genemae_log1p_v1",
+          "generalization_scope": "fit_only_transductive",
+          "prepared_artifact_reference": "data/processed/so2_14core_relative_qkv_v1",
+          "preprocessing_version": "elementwise_log1p_counts_v1",
+          "split_fingerprint": "3e22b9c3e1d79e1bf18f40f66c10ff8c48cc2d14745a177813390680548d45b2",
+          "split_id": "so2_genemae_all_fit_v1",
+          "target_scale": "log1p_raw_counts",
+          "task": "masked_expression_regression",
+          "total_fit_cells": 246063,
+          "version": "v1"
+        },
+        "evaluation": {
+          "canonical_prediction_split": "fit",
+          "diagnostic_only": false,
+          "expected_folds": [
+            0
+          ],
+          "expected_seeds": [
+            0,
+            1,
+            2
+          ],
+          "mask_seed_namespace": "evaluation-v1",
+          "methods": [
+            "whole_cell",
+            "partial_gene",
+            "spatial_block"
+          ],
+          "primary_direction": "minimize",
+          "primary_metric": "fit/whole_node/masked_huber",
+          "protocol": "held_in_so2_genemae_masking_v1",
+          "replicates": 3,
+          "splits": [
+            "fit"
+          ]
+        },
+        "features": {
+          "edge_features": [
+            "gaussian_distance_kernel"
+          ],
+          "node_features": [
+            "visible_expression",
+            "mask_token"
+          ],
+          "use_edge_features": true
+        },
+        "fold": 0,
+        "graph": {
+          "constructed_graph_self_loops": false,
+          "convolution_add_self_loops": true,
+          "coordinates_are_node_covariates": false,
+          "cross_core_edges": false,
+          "cross_tile_edges": false,
+          "edge_dropout": 0.2,
+          "edge_feature": "gaussian_distance_kernel",
+          "edge_scale": "within_tile_median_edge_length",
+          "k": 15,
+          "kind": "symmetric_spatial_knn_tiled",
+          "maximum_tile_nodes": 7000,
+          "neighbor_k": 15,
+          "neighbor_sampling": false,
+          "radius_applied": false,
+          "radius_role": "schema_required_not_applied",
+          "radius_um": 1.0,
+          "symmetry": "union",
+          "tiling": "recursive_median_longest_axis"
+        },
+        "masking": {
+          "method": "partial_gene",
+          "model_seed_in_masks": false,
+          "rate": 0.1,
+          "train_seed_namespace": "train-v1",
+          "type": "expression_masking"
+        },
+        "metadata": {
+          "execution_role": "production",
+          "fold_meaning": "one_fitted_cohort_not_cv",
+          "implementation_sha256": {
+            "scripts/train/run_so2_genemae_masking.py": "f267de2a6debce969b3ddd458af073e02e035519ecdff600218102d7430f0df7",
+            "src/spatial_benchmark/myjju_genemae.py": "3348fdfb989fb85ad3598aae2b0bd3d9faf0b62aebdfa30aa6b4b1dc16d8b6a7",
+            "src/spatial_benchmark/so2_genemae_masking.py": "ae02b00e287352ce7427a79efd5b1844cb031160b2e2f9d0f4cce90c0252dac1"
+          },
+          "pilot": {
+            "path": "artifacts/runs/2026/10/r_20261005T070204Z_bd6488a7_s000_f00_a01_a5ca1063",
+            "success_sha256": "0ff189e2b10f6cf04b5e1e879fbd3dc79a1b06d30a49dde5e9abb37ed17619dd"
+          },
+          "runtime": {
+            "checkpoint_recovery": {
+              "checkpoint_sha256": "78158bd0473faf7380eb9d2abf38ce554d6b928cf726e904f28af438828883c2",
+              "failed_marker_sha256": "e8da4be1f154b547423e97770d8ace3ae7d127cef0528648d5932daa8aeed42c",
+              "recovery_script_sha256": "986d18f6ee04f678fa8381b8db8e5302b75fadb2675e8d2cfd449ce276909451",
+              "source_path": "artifacts/runs/2026/10/r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+              "source_run_id": "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+              "source_runtime_seconds": 3333.137607
+            }
+          },
+          "selection_policy": "final_epoch_only"
+        },
+        "model": {
+          "attention_concat": false,
+          "attention_heads": 6,
+          "decoder": "mlp",
+          "drop_edge": 0.2,
+          "dropout": 0.2,
+          "embedding_dim": 192,
+          "expected_trainable_parameters": 6888016,
+          "family": "myjju_dual_path_genemae",
+          "fusion_hidden_dim": 256,
+          "graph_hidden_dim": 256,
+          "graph_layers": 4,
+          "input_genes": 1000,
+          "learned_per_gene_mask_token": true,
+          "name": "myjju-genemae",
+          "output_genes": 1000,
+          "self_hidden_dim": 512,
+          "self_hidden_layers": 2,
+          "source_architecture": "dual_path_genemae_sb50",
+          "source_fidelity_repair": "assign_self_hidden_constructor_attribute",
+          "trainable_edge_identifiers": false,
+          "trainable_node_identifiers": false,
+          "uses_edge_inputs": true,
+          "uses_graph_inputs": true
+        },
+        "schema_version": 1,
+        "seed": 2,
+        "trainer": {
+          "batch_size": 1,
+          "checkpoint_policy": "last_only",
+          "early_stopping": false,
+          "gradient_clip_norm": 5.0,
+          "learning_rate": 0.0015,
+          "max_epochs": 200,
+          "optimizer": "AdamW",
+          "precision": "fp32",
+          "primary_checkpoint_role": "last",
+          "restore_best": false,
+          "scheduler": "cosine",
+          "weight_decay": 0.0001
+        }
+      }
+    }
+  ],
+  "notes": [
+    "No repo files changed by this audit.",
+    "Model variants, training runs, pilot runs, and evaluation-only retries are intentionally distinct.",
+    "Missing frozen local campaign task contract in main checkout is acknowledged in existing GeneMAE campaign README."
+  ]
+}

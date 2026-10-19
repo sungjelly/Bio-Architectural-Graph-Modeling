@@ -1,0 +1,12 @@
+{
+  "files": {
+    "constant_classifier_references.csv": "9252f0b4ea5e51c78e43dffc6c949e576c8891aefa85f3150a7d3d17f9d14b7b",
+    "report.html": "ef1240c1692813bb981de9dddc1efff6be37327e564290c8a4e31f3997730d83",
+    "report.md": "b5c4f4bb80e75918f504b0f7a9d4929ab90e5d626254c84616f8380cfb0c9813",
+    "report_builder.py": "d699f1b7e031d787940241b2912c1a8d655618547ea785c814573497072bbc1e",
+    "summary.json": "6341a57a78af02b7f888ee0871a18340a5d587ccff275b418dfc30e5b7bc48de",
+    "threshold_sensitivity.png": "7b5498e079561e6e55ae386081d5add9fd63b44f7e998a3c4655d8eef907f7b7",
+    "thresholds.csv": "4fbdd4f7937659ee240e11994dbb05677865ed2844383996e4639d7c8c25bb29"
+  },
+  "schema": "checksummed_local_report_v1"
+}

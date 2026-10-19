@@ -1,0 +1,14 @@
+{
+  "audit_sha256": "9d5c2b0c877b8f6163dc76c7c7afe7cd4b62bf72aa3ee78829e50dfd3b28eb59",
+  "deleted_file_count": 184,
+  "deleted_bytes": 2993643086,
+  "registered_artifacts_tombstoned": 32,
+  "before_free_bytes": 8949530624,
+  "after_free_bytes": 11943559168,
+  "sqlite_backup": "/workspace/BAGM/reports/retention/so12_embeddings_cleanup_20261016/registry_before.sqlite3",
+  "sqlite_integrity": "ok",
+  "training_service": "bagm_so12_relative_qkv_worker    RUNNING   pid 154891, uptime 9:00:24",
+  "active_checkpoint_files_preserved": 2,
+  "all_scoped_deletions_verified": true,
+  "completed_at": "2026-10-16T18:08:38.524100+00:00"
+}

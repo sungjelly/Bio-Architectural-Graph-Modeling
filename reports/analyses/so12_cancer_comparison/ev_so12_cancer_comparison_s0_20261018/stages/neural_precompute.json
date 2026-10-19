@@ -1,0 +1,10 @@
+{
+  "free_bytes": 6573821952,
+  "gpu_released": true,
+  "partial_summary": "clustering/partial_summary_h0_h1_h2_h3_h4.json",
+  "partial_summary_sha256": "a4a59fff062ec29de5e353b952f8b7e9e4982ad8d151c6da6caa05cdf7bfbd2a",
+  "partitions": 40,
+  "stage": "neural_precompute",
+  "status": "complete",
+  "time": "2026-10-18T05:55:37.034065+00:00"
+}

@@ -1,0 +1,68 @@
+{
+  "schema": "so12_presentation_delivery_v1",
+  "status": "complete",
+  "created_at": "2026-10-18T08:25:35.555258+00:00",
+  "presentation_only": true,
+  "files": {
+    "figures/cluster_color_keys.csv": {
+      "sha256": "fa2a6b54644c0b678c6f59c984942d5b35c32f9cb46ff6b3bda639548d8f0e44",
+      "size_bytes": 2000
+    },
+    "figures/combined_five_panel.pdf": {
+      "sha256": "c0d339fc800a5fd3803855acfba155a98ad44239f544db461e190bab1e89ddec",
+      "size_bytes": 2358183
+    },
+    "figures/combined_five_panel.png": {
+      "sha256": "4f048e9e7ef69b2c81bea6c7db66341795da63bec3084a2c5642d04d6f0330de",
+      "size_bytes": 3008567
+    },
+    "figures/core_15_five_panel.pdf": {
+      "sha256": "d3c7abacd4e3cf86a2a1748ecb883afa8636e76fe51fac088789a76c438483aa",
+      "size_bytes": 802702
+    },
+    "figures/core_15_five_panel.png": {
+      "sha256": "5bff59acdc6156bde39d2dc5f3cf0100563b47940d94095126cd21ff6904383e",
+      "size_bytes": 1113979
+    },
+    "figures/core_23_five_panel.pdf": {
+      "sha256": "c2e1567f3d7d3b941d75d522708e86ca515cfa679ff502c6cbb42ba9feca881f",
+      "size_bytes": 1349004
+    },
+    "figures/core_23_five_panel.png": {
+      "sha256": "e4832701c34a426683a3b16dd1798e9d1906b20be46231d5992bff629b1b8f12",
+      "size_bytes": 1524721
+    },
+    "figures/figure_manifest.json": {
+      "sha256": "166714fdc5e6140b62c74b5d3f031723f9d31b4361fd9bfa345b8ca80423ac0c",
+      "size_bytes": 5056
+    },
+    "provenance/environment.json": {
+      "sha256": "a0d67b6084cf17e5efaf24b995431aa03272df6b2c1e1d1763d73f7e06c87210",
+      "size_bytes": 92
+    },
+    "provenance/experiments/campaigns/cmp_20261018_so12_cancer_comparison/README.md": {
+      "sha256": "83d4921492c43c1088aa870da632927aadd817e4bc18770e5eae3fa154e8c923",
+      "size_bytes": 18152
+    },
+    "provenance/scripts/analysis/restyle_so12_cancer_figures.py": {
+      "sha256": "00bda6e9ce5e5be2537dab208b811f9b1f9edacbe6e7a8ca83a2924135c49936",
+      "size_bytes": 8102
+    },
+    "provenance/scripts/analysis/so12_cancer_figures.py": {
+      "sha256": "717224f3c0800861a1db3a96efd8f32533023b651203b4fc8c0f0d5632dfc491",
+      "size_bytes": 9000
+    },
+    "provenance/scripts/analysis/so12_cancer_registration.py": {
+      "sha256": "65774f403e62852f5947abec7bc8ae2c7b0d45bc57f103d77fbb7091487029b3",
+      "size_bytes": 22878
+    },
+    "provenance/src/spatial_benchmark/paths.py": {
+      "sha256": "46dd8a02acdc8e5c0169f7ff72180c17b55f7fd64f155d27209717c89e9a09f7",
+      "size_bytes": 6869
+    },
+    "verification.json": {
+      "sha256": "b0d389911adfab7f3180478f91f60da1064424dcf70d4e610ca97849d2613bcc",
+      "size_bytes": 706
+    }
+  }
+}

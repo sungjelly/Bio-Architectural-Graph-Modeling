@@ -1,0 +1,3 @@
+{"time": "2026-10-15T07:13:15.948604+00:00", "phase": "prepared", "model": "local_s1", "source_run_id": "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983", "evaluation_id": "ev_so2_prediction_pearson_v1_r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983"}
+{"time": "2026-10-15T07:13:27.536224+00:00", "phase": "started", "model": "local_s1", "command": ["scripts/analysis/run_so2_prediction_pearson.py", "--model", "local_s1"]}
+{"time": "2026-10-15T07:15:36.848200+00:00", "phase": "evaluation_complete", "model": "local_s1", "evaluation_id": "ev_so2_prediction_pearson_v1_r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983"}

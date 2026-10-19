@@ -1,0 +1,289 @@
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/attempt_inventory.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/categorical_descriptive_comparison.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/comparison.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/ensemble_core_mode_metrics.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/ensemble_equal_core_aggregates.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/ensemble_member_comparison.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/ensemble_replicate_metrics.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/gate_results.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/graph_core_comparison.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/manifest.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/member_core_mode_metrics.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/member_replicate_metrics.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/pooled_seed0_vs_prior.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/prior_independent_seed0_core_mode_metrics.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/prior_independent_seed0_replicate_metrics.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/provenance.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/registered_failures.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/report.md
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/representation_core_comparison.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/run_audit.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/run_resources_and_convergence.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/comparison/seed_pair_comparison.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/registry_reconciliation/campaign_finalization_20260730T090842737296Z.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/registry_reconciliation/peak_vram_application_20260730T075908338478Z.json
+ D reports/analyses/adjacent_normal_10core_pooled_hybrid_ensemble/registry_reconciliation/peak_vram_plan_20260730T075315004454Z.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/README.md
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/TASK_CONTRACT.md
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/_SUCCESS
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/clustering/clustering_manifest.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/clustering/contextual_clustering_parameters.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/clustering/contextual_palette.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/config.resolved.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/dependencies.txt
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/diagnostics/implementation_validation.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/diagnostics/independent_clustering_audit.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/diagnostics/independent_extraction_audit.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/diagnostics/leiden_determinism.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/diagnostics/restart_regression_tests.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/diagnostics/visual_review.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_15_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_16_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_17_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_18_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_19_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_20_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_21_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_22_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_23_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_24_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_25_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_26_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_27_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/core_28_receipt.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/embeddings/extraction_manifest.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/environment.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/events.jsonl
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/figures/figure_manifest.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/manifest.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/nvidia-smi.txt
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/nvidia-topology.txt
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/provenance.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/schedule.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/source/scripts/analysis/create_so2_geometry_hl_map.py
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/source/src/spatial_benchmark/geometry_modulated_relative_qkv_graph_transformer.py
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/source/src/spatial_benchmark/relative_qkv_embedding_clustering.py
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/source/src/spatial_benchmark/relative_qkv_graph_transformer.py
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/source/src/spatial_benchmark/so2_geometry_hl_figures.py
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/source/src/spatial_benchmark/so2_hl_clustering.py
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/source/src/spatial_benchmark/so2_recurrent_hl_clustering.py
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/source/src/spatial_benchmark/so2_relative_graphs.py
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/source_bundle_verification.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/status.json
+ D reports/analyses/so2_14core_geometry_modulated_hl/r_20260903T073353Z_ed491664_s000_f00_a01_c6362abf/v1/training_verifier/src/spatial_benchmark/run_archive.py
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/README.md
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/clustering/clustering_manifest.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/clustering/contextual_clustering_parameters.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/clustering/contextual_palette.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/diagnostics/leiden_determinism.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_15_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_16_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_17_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_18_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_19_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_20_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_21_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_22_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_23_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_24_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_25_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_26_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_27_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/core_28_receipt.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/embeddings/extraction_manifest.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/figures/figure_manifest.json
+ D reports/analyses/so2_14core_recurrent_contextual_embedding_clustering/r_20260831T100221Z_a33f1888_s000_f00_a01_bdbebeaf/manifest.json
+ M results/CATALOG.md
+ M results/catalog.json
+ M src/spatial_benchmark/checkpoint_catalog.py
+ M src/spatial_benchmark/configuration.py
+ M src/spatial_benchmark/queueing.py
+ M src/spatial_benchmark/run_archive.py
+ M tests/test_checkpoint_catalog.py
+?? experiments/campaigns/cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2/campaign.yaml
+?? experiments/campaigns/cmp_20261005_so2_genemae_masking/
+?? experiments/campaigns/cmp_20261015_so2_prediction_pearson/
+?? experiments/campaigns/cmp_20261016_so12_embeddings_leiden/
+?? experiments/campaigns/cmp_20261016_so12_pearson_preprocessing/
+?? experiments/campaigns/cmp_20261016_so12_pearson_relative_qkv_train_validation/
+?? experiments/campaigns/cmp_20261017_so12_h0_hl_leiden_segmentation/
+?? experiments/campaigns/cmp_20261017_so12_paper_core_split/
+?? experiments/campaigns/cmp_20261017_so12_paper_test_leiden/
+?? experiments/campaigns/cmp_20261018_so12_cancer_backward_union/
+?? experiments/campaigns/cmp_20261018_so12_cancer_comparison/
+?? experiments/campaigns/cmp_20261018_so12_cancer_limited_union/
+?? experiments/campaigns/cmp_20261018_so12_paper_test_h0_leiden/
+?? ops/supervisor/bagm-prediction-pearson.conf
+?? ops/supervisor/bagm-prediction-pearson.sh
+?? ops/supervisor/bagm-so12-cancer-backward-union.conf
+?? ops/supervisor/bagm-so12-cancer-backward-union.sh
+?? ops/supervisor/bagm-so12-cancer-baseline-leiden.conf
+?? ops/supervisor/bagm-so12-cancer-baseline-leiden.sh
+?? ops/supervisor/bagm-so12-cancer-comparison.sh
+?? ops/supervisor/bagm-so12-cancer-delivery.conf
+?? ops/supervisor/bagm-so12-cancer-delivery.sh
+?? ops/supervisor/bagm-so12-cancer-graphs.conf
+?? ops/supervisor/bagm-so12-cancer-layers.conf
+?? ops/supervisor/bagm-so12-cancer-leiden.conf
+?? ops/supervisor/bagm-so12-cancer-limited-union.conf
+?? ops/supervisor/bagm-so12-cancer-limited-union.sh
+?? ops/supervisor/bagm-so12-cancer-neural.conf
+?? ops/supervisor/bagm-so12-cancer-neural.sh
+?? ops/supervisor/bagm-so12-cancer-pca.conf
+?? ops/supervisor/bagm-so12-cancer-scvi.conf
+?? ops/supervisor/bagm-so12-completion-notifier.conf
+?? ops/supervisor/bagm-so12-completion-notifier.sh
+?? ops/supervisor/bagm-so12-embeddings.conf
+?? ops/supervisor/bagm-so12-embeddings.sh
+?? ops/supervisor/bagm-so12-paper-split.conf
+?? ops/supervisor/bagm-so12-paper-split.sh
+?? ops/supervisor/bagm-so12-paper-test-h0-leiden.conf
+?? ops/supervisor/bagm-so12-paper-test-h0-leiden.sh
+?? ops/supervisor/bagm-so12-paper-test-leiden.conf
+?? ops/supervisor/bagm-so12-paper-test-leiden.sh
+?? ops/supervisor/bagm-so12-preprocessing.conf
+?? ops/supervisor/bagm-so12-preprocessing.sh
+?? ops/supervisor/bagm-so12-relative-qkv-preflight.conf
+?? ops/supervisor/bagm-so12-relative-qkv-preflight.sh
+?? ops/supervisor/bagm-so12-relative-qkv-worker.conf
+?? ops/supervisor/bagm-so12-relative-qkv-worker.sh
+?? reports/analyses/so12_cancer_comparison/
+?? reports/analyses/so12_cancer_limited_union/
+?? reports/analyses/so12_embeddings_leiden/
+?? reports/analyses/so12_hidden_leiden/
+?? reports/analyses/so12_paper_test_h0_leiden/
+?? reports/analyses/so12_paper_test_leiden/
+?? reports/analyses/so12_pearson_preprocessing/
+?? reports/analyses/so12_zero_mean/
+?? reports/analyses/so2_bce_optimization_audit/
+?? reports/analyses/so2_bce_threshold_sensitivity/
+?? reports/analyses/so2_binary_expression_bce/
+?? reports/analyses/so2_genemae_masking/
+?? reports/analyses/so2_prediction_pearson/
+?? reports/local_gene_early_stopping/
+?? reports/local_gene_residual/
+?? reports/paper_draft_20261016/
+?? reports/paper_review_20261017/
+?? reports/retention/so12_embeddings_cleanup_20261016/
+?? reports/runtime/
+?? reports/tables/
+?? results/data_qc/
+?? results/descriptive_analysis/classical_encoders/
+?? results/descriptive_analysis/genemae/
+?? results/descriptive_analysis/relative_qkv/res_so12_hidden_states_leiden_comparison/
+?? results/descriptive_analysis/relative_qkv/res_so2_binary_occurrence_hurdle_comparison/
+?? results/descriptive_analysis/representation_comparison/
+?? results/descriptive_analysis/spatial_reconstruction/
+?? results/predictive_benchmark/
+?? scripts/analysis/audit_so12_cancer_backward_union.py
+?? scripts/analysis/audit_so12_cancer_limited_union.py
+?? scripts/analysis/audit_so12_hidden_leiden.py
+?? scripts/analysis/audit_so12_hidden_leiden_v2.py
+?? scripts/analysis/compare_so12_zero_mean.py
+?? scripts/analysis/curate_so12_pearson_preprocessing.py
+?? scripts/analysis/package_so12_primary_delivery.py
+?? scripts/analysis/pearson_historical_replay.py
+?? scripts/analysis/pearson_local_replay.py
+?? scripts/analysis/plot_so12_paper_training_loss.py
+?? scripts/analysis/promote_so12_cancer_comparison_result.py
+?? scripts/analysis/promote_so12_cancer_limited_union_result.py
+?? scripts/analysis/publish_so12_cancer_comparison.py
+?? scripts/analysis/register_so12_scvi_run.py
+?? scripts/analysis/render_so12_primary_preview.py
+?? scripts/analysis/report_so12_pearson_preprocessing.py
+?? scripts/analysis/report_so2_binary_expression_bce.py
+?? scripts/analysis/report_so2_genemae_masking.py
+?? scripts/analysis/report_so2_prediction_pearson.py
+?? scripts/analysis/restyle_so12_cancer_figures.py
+?? scripts/analysis/run_so12_cancer_backward_union.py
+?? scripts/analysis/run_so12_cancer_baseline_leiden.py
+?? scripts/analysis/run_so12_cancer_comparison.py
+?? scripts/analysis/run_so12_cancer_delivery.py
+?? scripts/analysis/run_so12_cancer_limited_union.py
+?? scripts/analysis/run_so12_cancer_neural.py
+?? scripts/analysis/run_so12_embeddings.py
+?? scripts/analysis/run_so12_hidden_leiden.py
+?? scripts/analysis/run_so12_paper_test_h0_leiden.py
+?? scripts/analysis/run_so12_paper_test_leiden.py
+?? scripts/analysis/run_so12_pearson_preprocessing.py
+?? scripts/analysis/run_so2_prediction_pearson.py
+?? scripts/analysis/so12_cancer_backward_metrics.py
+?? scripts/analysis/so12_cancer_baselines.py
+?? scripts/analysis/so12_cancer_clustering.py
+?? scripts/analysis/so12_cancer_core_mixing.py
+?? scripts/analysis/so12_cancer_figures.py
+?? scripts/analysis/so12_cancer_layers.py
+?? scripts/analysis/so12_cancer_limited_figures.py
+?? scripts/analysis/so12_cancer_limited_metrics.py
+?? scripts/analysis/so12_cancer_limited_report.py
+?? scripts/analysis/so12_cancer_metrics.py
+?? scripts/analysis/so12_cancer_registration.py
+?? scripts/analysis/so12_cancer_report.py
+?? scripts/analysis/so12_embedding_methods.py
+?? scripts/analysis/so12_embedding_report.py
+?? scripts/analysis/so12_hidden_clustering.py
+?? scripts/analysis/so12_hidden_extraction.py
+?? scripts/analysis/so12_hidden_maps.py
+?? scripts/analysis/so12_paper_test_clustering.py
+?? scripts/analysis/so12_paper_test_extraction.py
+?? scripts/analysis/so12_paper_test_h0_clustering.py
+?? scripts/analysis/so12_paper_test_h0_extraction.py
+?? scripts/analysis/so12_preprocessing_data.py
+?? scripts/analysis/so12_preprocessing_metrics.py
+?? scripts/diagnostics/watch_run_notification.py
+?? scripts/train/execute_so12_paper_split.py
+?? scripts/train/execute_so2_genemae_masking.py
+?? scripts/train/prepare_so12_paper_data.py
+?? scripts/train/prepare_so12_paper_split.py
+?? scripts/train/prepare_so12_relative_qkv.py
+?? scripts/train/prepare_so2_genemae_masking.py
+?? scripts/train/prepare_so2_genemae_recovery.py
+?? scripts/train/recover_so2_genemae_masking.py
+?? scripts/train/run_so12_paper_split.py
+?? scripts/train/run_so12_relative_qkv.py
+?? scripts/train/run_so2_genemae_masking.py
+?? src/spatial_benchmark/geometry_modulated_relative_qkv_graph_transformer.py
+?? src/spatial_benchmark/so12_paper_split_data.py
+?? src/spatial_benchmark/so12_paper_split_training.py
+?? src/spatial_benchmark/so12_relative_qkv_data.py
+?? src/spatial_benchmark/so12_relative_qkv_training.py
+?? src/spatial_benchmark/so2_genemae_masking.py
+?? state/
+?? tests/unit/infrastructure/test_run_notification.py
+?? tests/unit/infrastructure/test_so12_paper_split_controller.py
+?? tests/unit/infrastructure/test_so12_paper_split_protocol.py
+?? tests/unit/infrastructure/test_so12_paper_test_h0_leiden_controller.py
+?? tests/unit/infrastructure/test_so12_paper_test_leiden_controller.py
+?? tests/unit/infrastructure/test_so12_train_validation_archive.py
+?? tests/unit/infrastructure/test_so12_train_validation_protocol.py
+?? tests/unit/spatial_benchmark/test_geometry_modulated_relative_qkv_graph_transformer.py
+?? tests/unit/spatial_benchmark/test_report_so2_binary_expression_bce.py
+?? tests/unit/spatial_benchmark/test_so12_cancer_clustering.py
+?? tests/unit/spatial_benchmark/test_so12_cancer_figures.py
+?? tests/unit/spatial_benchmark/test_so12_cancer_layers.py
+?? tests/unit/spatial_benchmark/test_so12_cancer_limited_metrics.py
+?? tests/unit/spatial_benchmark/test_so12_cancer_metrics.py
+?? tests/unit/spatial_benchmark/test_so12_cancer_registration.py
+?? tests/unit/spatial_benchmark/test_so12_embedding_methods.py
+?? tests/unit/spatial_benchmark/test_so12_hidden_clustering.py
+?? tests/unit/spatial_benchmark/test_so12_hidden_extraction.py
+?? tests/unit/spatial_benchmark/test_so12_hidden_maps.py
+?? tests/unit/spatial_benchmark/test_so12_hidden_orchestration.py
+?? tests/unit/spatial_benchmark/test_so12_paper_split_data.py
+?? tests/unit/spatial_benchmark/test_so12_paper_split_training.py
+?? tests/unit/spatial_benchmark/test_so12_paper_test_clustering.py
+?? tests/unit/spatial_benchmark/test_so12_paper_test_extraction.py
+?? tests/unit/spatial_benchmark/test_so12_paper_test_h0_clustering.py
+?? tests/unit/spatial_benchmark/test_so12_paper_test_h0_extraction.py
+?? tests/unit/spatial_benchmark/test_so12_primary_preview.py
+?? tests/unit/spatial_benchmark/test_so12_relative_qkv_data.py
+?? tests/unit/spatial_benchmark/test_so12_relative_qkv_training.py
+?? tests/unit/spatial_benchmark/test_so12_zero_mean.py
+?? tests/unit/spatial_benchmark/test_so2_genemae_masking.py
+?? tests/unit/test_so12_cancer_baselines.py
+?? tests/unit/test_so12_cancer_core_mixing.py
+?? tests/unit/test_so12_cancer_limited_figures.py
+?? tests/unit/test_so12_cancer_limited_publication.py
+?? tests/unit/test_so12_cancer_publication.py
+?? tests/unit/test_so12_cancer_reporting.py
+?? tests/unit/test_so12_scvi_run_registration.py

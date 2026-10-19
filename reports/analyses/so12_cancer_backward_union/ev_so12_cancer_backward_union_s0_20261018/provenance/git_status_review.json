@@ -1,0 +1,16 @@
+{
+  "new_entries": [
+    "?? experiments/campaigns/cmp_20261018_so12_cancer_backward_union/",
+    "?? ops/supervisor/bagm-so12-cancer-backward-union.conf",
+    "?? ops/supervisor/bagm-so12-cancer-backward-union.sh",
+    "?? scripts/analysis/audit_so12_cancer_backward_union.py",
+    "?? scripts/analysis/promote_so12_cancer_backward_union_result.py",
+    "?? scripts/analysis/restyle_so12_cancer_figures.py",
+    "?? scripts/analysis/run_so12_cancer_backward_union.py",
+    "?? scripts/analysis/so12_cancer_backward_metrics.py",
+    "?? scripts/analysis/so12_cancer_backward_report.py",
+    "?? tests/unit/spatial_benchmark/test_so12_cancer_backward_metrics.py"
+  ],
+  "passed": true,
+  "preexisting_status_lines_removed": []
+}

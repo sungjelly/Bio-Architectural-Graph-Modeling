@@ -1,0 +1,53 @@
+{
+  "doctor": {
+    "campaign_disk_gate_gib": 5,
+    "issues": [
+      "one pre-existing unindexed historical checkpoint",
+      "two pre-existing six-core paths refer into source worktree",
+      "generic 25 GiB disk threshold exceeds available approximately 18 GiB"
+    ],
+    "ok": false,
+    "sqlite_integrity": "ok"
+  },
+  "focused": {
+    "failed": 0,
+    "passed": 60,
+    "seconds": 6.96,
+    "warnings": 2
+  },
+  "focused_command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=4 MKL_NUM_THREADS=4 OPENBLAS_NUM_THREADS=4 /venv/main/bin/python -m pytest -q -p no:cacheprovider tests/unit/spatial_benchmark/test_local_gene_residual.py tests/unit/spatial_benchmark/test_local_gene_data.py tests/unit/spatial_benchmark/test_local_gene_metrics.py tests/unit/spatial_benchmark/test_hurdle_negative_binomial.py tests/unit/spatial_benchmark/test_local_gene_runner_review.py tests/unit/spatial_benchmark/test_report_local_gene_residual.py",
+  "pilot_run_id": "r_20261004T071603Z_178fc589_s000_f00_a01_254a98de",
+  "preexisting_tracked_diff_unchanged_since_pilot": true,
+  "repository": {
+    "failed": 35,
+    "failure_scope": "Missing pre-existing adjacency/MyJJu materializations, clinical mapping, stage-zero geometry, and external MyJJu source script.",
+    "passed": 2109,
+    "seconds": 467.39,
+    "skipped": 4,
+    "warnings": 2
+  },
+  "repository_command": "CUDA_VISIBLE_DEVICES='' PYTHONDONTWRITEBYTECODE=1 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 /venv/main/bin/python -m pytest -q -p no:cacheprovider",
+  "schema": "local_gene_verification_v1",
+  "source_hashes": {
+    "ops/supervisor/bagm-local-gene-residual.sh": "fa02b6717a541346c16e73ea826d4cfe40ff0779c40d7e86d9b0a37f3caeb483",
+    "scripts/diagnostics/run_so2_hurdle_gpu_trial.py": "70d0634175955b1487748fcf4e6669ec457f6c4dcc8fc14a8899befdd1b18578",
+    "scripts/train/run_local_gene_residual.py": "35b7dfa097085a9239066c8e33a4c82eb9803c7193d698e393d6235eb9b9d756",
+    "src/spatial_benchmark/fingerprints.py": "361ecd492c46b705b8bbaf488c5d5f23167ced07b8353172a1d914ef6acf2df8",
+    "src/spatial_benchmark/hurdle_negative_binomial.py": "1bf51e2654153ee13ab071cdb920c7f097f73bbbc39eb37bac22ee55bfec60a1",
+    "src/spatial_benchmark/identifiers.py": "224e39656611414135fabd2da60e977c87fa892322bedeec6c79b995fb7367b6",
+    "src/spatial_benchmark/local_gene_data.py": "6fdc17b80f2f44a1ace34b47859207c445e7cf0a9fdbbab188d8e24b3c28222c",
+    "src/spatial_benchmark/local_gene_metrics.py": "25685edb262543d1b24c6047c8f989077c667ac0d6b0066905711591c24b2271",
+    "src/spatial_benchmark/local_gene_residual.py": "ff2016b76cc62b56c7ff6df99f1af5b43d7b723584171dd05ab0402a091d9361",
+    "src/spatial_benchmark/negative_binomial.py": "9facdc00cc1bb402fe10ac6bd04fcbc1bb662b6cf2896f8162ba7e7b27f09905",
+    "src/spatial_benchmark/paths.py": "46dd8a02acdc8e5c0169f7ff72180c17b55f7fd64f155d27209717c89e9a09f7",
+    "src/spatial_benchmark/queueing.py": "e6b4f067342eb62f89779caad503dc5a36f2daba469bb6602db8f6581a4f5718",
+    "src/spatial_benchmark/registry.py": "982ddb4da513588d8598b586802bb40003722506f838bcc8f702a239cc40443b",
+    "src/spatial_benchmark/run_archive.py": "1eb99a69031df56f587602b537c533cbf303bf6d955aa0303c6fc1226230e99b",
+    "src/spatial_benchmark/so2_nb_data.py": "bbd2e18e423cac49a4021db11b7906ac36dc14b6e0acad9a06d70ee430bd21ac",
+    "src/spatial_benchmark/so2_pooled_full_core.py": "52c8a2d8cbeec8eedec46e7badfa8d305e764722627aff1546579e7f073d47e8",
+    "src/spatial_benchmark/so2_relative_graphs.py": "618c7c57e0370c2ef85e93d1b1c1164d1bb58d37b04b8ef68cc6b31752a4da77",
+    "src/spatial_benchmark/target_cell_masking.py": "81d090223dd6e9a08390202e527f1abee4f18a7db91494ed1407f981a652be02"
+  },
+  "training_source_hashes_match_pilot": true,
+  "working_directory": "/workspace/BAGM-relative-qkv-analysis"
+}

@@ -1,0 +1,62 @@
+BAGM scientific language and reference review — 17 October 2026
+Scope: attached three-page manuscript, repository scientific guidance, and primary cited literature. No source data accessed. Repository implementation facts below are from the independent current-work audit.
+
+ASSESSMENT
+The overall motivation is compatible with BAGM: conditional prediction, spatial representations, and hypotheses for later validation. The existing caution against treating clustering as proof of reliable expression prediction is appropriate. However, current-work alignment requires changes beyond copy editing: the model version, modeled expression scale, evaluation endpoint, split scope, and strength of cancer-region claims must be corrected (see current_work_audit.txt).
+
+CONCRETE WORDING REPLACEMENTS
+1. Replace "reconstructing randomly masked RNA expression" with "predicting masked, standardized Pearson-residual expression features from visible RNA measurements, morphology/image covariates, and spatial context". This names the actual response scale and other inputs.
+
+2. Replace "Raw RNA counts were normalized using Pearson residuals [8] to support joint analysis across slides (batches) assayed under different conditions" with "RNA counts were transformed using a training-fitted quasi-Poisson Pearson-residual procedure (variance phi times the expected count; phi = 1.01), followed by gene-wise standardization and upper clipping at 10. The current procedure is related to Pearson-residual normalization [8] but is not the negative-binomial implementation in that reference. Joint-slide analysis does not itself demonstrate removal of batch effects." Methods must also explain visible-count exposure for inputs and full-count residual targets, as in the code audit. Cite [8] as methodological background, not as validation of this exact CosMx procedure.
+
+3. Replace "integrates neighboring representations according to their relevance to the prediction" with "aggregates neighboring latent representations using learned, normalized attention weights". Relevance is an interpretive conclusion requiring faithfulness evidence; a softmax coefficient alone does not establish it.
+
+4. Replace "The encoded cell profiles supply the molecular content exchanged through attention" with "Projected latent features combine visible expression, mask indicators, morphology/image covariates, and, in later layers, prior neighborhood context". Latent values are not exclusively molecular content.
+
+5. Replace "improved delineation" / "clearer correspondence with clinician-identified cancer regions than PCA" with "different spatial cluster patterns in exploratory visual comparisons" unless the paper explicitly attributes the more specific impression to its authors and states that pathology annotations and quantitative boundary scoring were unavailable for this audit. The independent current-work audit found no verified clinician-region masks. Current results do not demonstrate cancer-boundary superiority.
+
+6. Replace the current-model sentence about limited "precision, recall, and AUPRC" with actual, verified regression metrics and explicitly label the completed predecessor run as exploratory. These classification/ranking endpoints require a defined binary target, score scale, prevalence, thresholds for precision/recall, evaluation masks/split, and AP versus trapezoidal PR-AUC definition. They cannot simply be transferred from a historical raw-count/nonzero task to standardized residual regression.
+
+7. Replace "Controlled comparisons are needed to assess binary cross-entropy or hurdle formulations" with "Alternative objectives require matched experiments with explicit response scales: a binary detection component can be evaluated for observed nonzero counts, whereas residual regression and conditional count abundance answer different questions." Do not imply that BCE directly models signed continuous residuals or that a loss change alone resolves limited predictive performance.
+
+8. Suggested interpretation paragraph: "Attention weights describe computational routing. Jacobians or bounded finite differences can quantify local, scale-dependent sensitivities of specified receiver outputs to sender inputs, with masks and graph structure fixed. Partial-gene prediction can be dominated by within-cell co-expression, morphology, or shared tissue context. Such analyses should follow demonstrated graph-specific gain over matched self-only and context baselines and require stability, ablation/faithfulness, realistic-null, and independent-patient evaluation. They generate candidate predictive dependencies; causal effects require controlled perturbational evidence." Distinguish direct one-hop contributions from multihop or regional context. A derivative with respect to raw counts also differentiates through exposure normalization.
+
+9. Replace generic "evaluation on larger datasets" as the main remedy with "patient-held-out evaluation, matched baselines and ablations, realistic spatial nulls, and replication across independent patients". Additional cells from the same patients do not establish biological replication.
+
+10. If comparing h0 with h4, state that all four graph blocks include residual and feed-forward transformations, so the contrast does not isolate geometry or message passing; smoother maps can reflect regional similarity rather than communication.
+
+REFERENCE VERIFICATION
+[1] He S., Bhatt R., Brown C., et al. Title, journal, volume 40, pages 1794-1806, and 2022 are correct. The platform supports RNA/protein imaging, but that does not establish that BAGM models a full protein panel.
+https://www.nature.com/articles/s41587-022-01483-z
+
+[2] He K., Chen X., Xie S., et al. CVPR 2022, pages 16000-16009 is correct; the masked-image reconstruction comparison is appropriate background.
+https://openaccess.thecvf.com/content/CVPR2022/html/He_Masked_Autoencoders_Are_Scalable_Vision_Learners_CVPR_2022_paper.html
+
+[3] scGPT citation metadata matches the article citation; no correction identified. The Nature page itself did not load in this browsing session; keep its DOI rather than inventing a replacement.
+https://doi.org/10.1038/s41592-024-02201-0
+
+[4] GraphST authors, Nature Communications 14:1155 (2023), and contrastive/reconstruction summary are correct.
+https://doi.org/10.1038/s41467-023-36796-3
+
+[5] SpaMask authors are Wenwen Min, Donghai Fang, Jinyu Chen, Shihua Zhang. PLoS Computational Biology 21(4):e1012881, published 3 April 2025. It combines node-feature masking/reconstruction with edge-masking contrastive learning. Current broad summary is acceptable; it does not establish equivalence to BAGM's partial-gene masking law.
+https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1012881
+
+[6] SAGE-FM is genuine and the manuscript's initials are correct: Xianghao Zhan, Jingyu Xu, Yuanning Zheng, Zinaida Good, Olivier Gevaert. arXiv:2601.15504, submitted 21 January 2026; accessible record is v1 preprint. Uses GCNs and masked central-spot prediction on Visium. Keep "preprint"; do not transfer claims of biological causality from its interpretation language.
+https://arxiv.org/abs/2601.15504
+
+[7] MISTy citation is correct: Jovan Tanevski, Ricardo Omar Ramirez Flores, Attila Gabor, et al.; Genome Biology 23:97 (2022). Its views compare same-location and surrounding-context predictive information. The article expressly warns that marker-importance relations are not automatically causal or directional. The manuscript's phrase "conditional molecular associations" is suitably cautious.
+https://link.springer.com/article/10.1186/s13059-022-02663-5
+
+[8] Lause J., Berens P., Kobak D.; Genome Biology 22:258 (2021), title correct. The analytic residual in its Eq. 4 has denominator sqrt(mu + mu^2/theta), with a Poisson limit; BAGM currently uses sqrt(phi*mu) and further standardization. The article studies UMI counts; it does not directly validate this adaptation to CosMx or guarantee batch correction.
+https://link.springer.com/article/10.1186/s13059-021-02451-7
+
+[9] Graph Attention Networks authors/ICLR 2018 correct.
+https://arxiv.org/abs/1710.10903
+
+[10] Attention Is All You Need authors/2017 correct.
+https://arxiv.org/abs/1706.03762
+
+[11] Traag V. A., Waltman L., van Eck N. J.; Scientific Reports 9:5233 (2019), title correct. Graph-community guarantees are mathematical properties and do not validate cancer boundaries.
+https://www.nature.com/articles/s41598-019-41695-z
+
+No verified bibliographic error was found. The main citation-related correction is distinguishing current quasi-Poisson preprocessing from the specific method in [8].

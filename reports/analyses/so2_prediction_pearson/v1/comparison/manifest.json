@@ -1,0 +1,30 @@
+{
+  "schema": "so2_prediction_pearson_comparison_v1",
+  "files": {
+    "execution.json": {
+      "sha256": "f78ffde55b0ab6076a79199d6ac8848f83d046b6e1738c2e42ee1a638342af9e",
+      "size_bytes": 508
+    },
+    "input_provenance.json": {
+      "sha256": "882ce8fd3c36563749a4318f1ffd2ee713498a826b4f79484b735b7590e15c45",
+      "size_bytes": 1379
+    },
+    "report.md": {
+      "sha256": "c121a7db6bc686b0ca06d47355e95eb4cc67a7634d4b6cde5dae83cb3556dac7",
+      "size_bytes": 8600
+    },
+    "report_builder.py": {
+      "sha256": "af53242d5852c04cdc98e977057312a9adc593c6db3c2298b162922bc6bca0a2",
+      "size_bytes": 19176
+    },
+    "summary.csv": {
+      "sha256": "efb5e7d4e4a98aaba2e30c280e996b54009fdc2e2d7d87f370da4841d0db3b21",
+      "size_bytes": 4734
+    }
+  },
+  "input_manifest_sha256": {
+    "local_s0": "9aa0c34a9e68bac5b61b9f23c4d58479b148266972dea43aa3a1aa3acb8d1bc0",
+    "local_s1": "bd22c08dc58592b57427dfc55c2ca8b865005589894a76aff87414b0d228987c",
+    "historical_e300": "41c382e7b99382183bc76320c3e8d4668c8264691448bbc9ee7225c46a5adbe1"
+  }
+}

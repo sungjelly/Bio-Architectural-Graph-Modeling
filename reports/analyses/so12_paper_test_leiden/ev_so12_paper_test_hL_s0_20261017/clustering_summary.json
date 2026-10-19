@@ -1,0 +1,57 @@
+{
+  "cells_per_core": {
+    "15": 38145,
+    "23": 43462
+  },
+  "manifest_path": "clustering/clustering_manifest.json",
+  "manifest_sha256": "973f6a823511df6851caacd1135f5002d2026aee9c9b8adfb3a12b696d553d04",
+  "metrics": {
+    "cluster_count_by_seed": {
+      "0": 16,
+      "1": 17
+    },
+    "clusters_over_90_percent_one_core": [
+      0,
+      1,
+      2,
+      4,
+      5,
+      6,
+      7,
+      9,
+      10,
+      11,
+      15
+    ],
+    "cross_core_undirected_edge_fraction": 0.04318828051915688,
+    "interpretation": "Exploratory transductive grouping of the two test cores under a frozen model. Clusters are not validated cell types, cancer regions, independent donor replication, or causal interactions. Training permits donor overlap and historical sample exposure. Seed 0 is displayed; seed 1 only measures stability.",
+    "seed0_cluster_vs_core_ari_descriptive": 0.1352042122188784,
+    "seed0_seed1_ari": 0.5373019271767611,
+    "seed0_seed1_ari_per_core": {
+      "15": 0.46518306651356534,
+      "23": 0.5341016444251422
+    }
+  },
+  "n_cells": 81607,
+  "output_sha256": {
+    "clustering/cluster_sizes.csv": "823685a01b835cb171c6a316b001faf87edba0b08f9b16a920e1e33ae16837bb",
+    "clustering/clusters.csv.gz": "be7a4cf0c4ac9377b3bdc2d787f6f6c881835a554c75c0d77e71f7a48994ae16",
+    "clustering/core_composition.csv": "b1c232a1cab739928b272b3165e1f15866b55c2e75656e4b8e2d494d771ef724",
+    "clustering/cpu_neighbor_audit.json": "36a7663ce573238b3f46746dd10439fcc00fe138b7f20a4fc0b75d61323cb9f2",
+    "clustering/hL_knn_cosine_distances.npy": "4753e99b1ed16d8728b3bd351d48f5f50d98588cf0821f5574b6dc7acf51049e",
+    "clustering/hL_knn_indices.npy": "b3e07fb320b3daecd6851243cf571ac41ee9f6e770c94203b3aeb7de4d216341",
+    "clustering/hL_labels_seed0.npy": "01c228958c2e2eb0c2d8756d68490e5b68dcca49cc7d28a00388ba669bf886fe",
+    "clustering/hL_labels_seed1.npy": "ab6c7421a6373d43c199b17de0fde51705e1c7a453de1181674601f69cf41e0c",
+    "clustering/hL_undirected_edges.npy": "0c7170c3c46796a41946f4628121f177e8080ccf2dc3ac6f37f861a12b6ac04e",
+    "clustering/input_binding.json": "3c28b046f4743f0879bd37e41bfdc06ab73691558f7b0fc680ab39f44d63ab35",
+    "clustering/metrics.json": "fd63473f628cacea8553f9c05d39020c8f43acc06e1c553096f3a7b5d11491da",
+    "clustering/neighbor_pilot.json": "fed0321d0b10a5a933312ceb826745c8b6036d68e31d149f83813c454ee3391a"
+  },
+  "passed": true,
+  "schema": "so12_paper_test_hL_leiden_v1",
+  "status": "complete",
+  "test_core_numbers": [
+    15,
+    23
+  ]
+}

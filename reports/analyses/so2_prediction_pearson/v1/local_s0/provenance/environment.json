@@ -1,0 +1,19 @@
+{
+  "python": "3.12.13 | packaged by conda-forge | (main, Aug 11 2026, 10:27:28) [GCC 14.4.0]",
+  "executable": "/venv/main/bin/python",
+  "platform": "Linux-6.8.0-117-generic-x86_64-with-glibc2.39",
+  "cwd": "/workspace/BAGM",
+  "sys_path": [
+    "/workspace/BAGM/scripts/analysis",
+    "/workspace/BAGM-relative-qkv-analysis/src",
+    "/workspace/BAGM/scripts/analysis",
+    "/venv/main/lib/python312.zip",
+    "/venv/main/lib/python3.12",
+    "/venv/main/lib/python3.12/lib-dynload",
+    "/venv/main/lib/python3.12/site-packages",
+    "/workspace/BAGM/src"
+  ],
+  "prepared_at": "2026-10-15T07:13:13.510934+00:00",
+  "cuda_visible_devices": null,
+  "omp_num_threads": null
+}

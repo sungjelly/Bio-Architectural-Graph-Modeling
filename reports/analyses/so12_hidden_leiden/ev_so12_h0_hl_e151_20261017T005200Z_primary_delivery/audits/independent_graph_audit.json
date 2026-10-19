@@ -1,0 +1,55 @@
+{
+  "status": "passed",
+  "representations": {
+    "h0": {
+      "n_cells": 407659,
+      "k": 30,
+      "directed_entries": 12229770,
+      "undirected_edges": 11298105,
+      "degree_min": 30,
+      "degree_max": 2828,
+      "degree_mean": 55.42919449834298,
+      "all_neighbor_rows_unique_and_self_free": true,
+      "union_exact": true,
+      "files": {
+        "clustering/h0/indices.npy": {
+          "sha256": "4b344b8f896bfad7b325f3245c3dab7a1d7e870463978d62861ccb3b13092e1b",
+          "size_bytes": 48919208
+        },
+        "clustering/h0/cosine_distances.npy": {
+          "sha256": "1f8a702cfd5c390f0a081ca66e04569c9fb86bccc3e844271283af7d122e1071",
+          "size_bytes": 48919208
+        },
+        "clustering/h0/undirected_edges.npy": {
+          "sha256": "ba33b22e137bea8cf56e8eef8d14849e1d903ac7c82a82a090cf09c4084e03a1",
+          "size_bytes": 90384968
+        }
+      }
+    },
+    "hL": {
+      "n_cells": 407659,
+      "k": 30,
+      "directed_entries": 12229770,
+      "undirected_edges": 10786423,
+      "degree_min": 30,
+      "degree_max": 1104,
+      "degree_mean": 52.9188512948322,
+      "all_neighbor_rows_unique_and_self_free": true,
+      "union_exact": true,
+      "files": {
+        "clustering/hL/indices.npy": {
+          "sha256": "7f26db6cb29fd028a7f2b3b041441d562daf894cd2c643ebdd04d8f89b17cbe1",
+          "size_bytes": 48919208
+        },
+        "clustering/hL/cosine_distances.npy": {
+          "sha256": "5ac273ee041cb373580dc9d9dbec202cba7ac9cb57409b038df4a724035662ed",
+          "size_bytes": 48919208
+        },
+        "clustering/hL/undirected_edges.npy": {
+          "sha256": "3df3bb5a081f7b67902a9def70bd0cdca5bb41965ac88763dd128524811484f3",
+          "size_bytes": 86291512
+        }
+      }
+    }
+  }
+}

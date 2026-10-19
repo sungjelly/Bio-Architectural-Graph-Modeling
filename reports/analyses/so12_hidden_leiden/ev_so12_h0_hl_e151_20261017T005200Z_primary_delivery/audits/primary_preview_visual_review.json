@@ -1,0 +1,69 @@
+{
+  "schema": "so12_primary_preview_visual_review_v1",
+  "status": "passed",
+  "scope": "primary_preview_only",
+  "reviewer": "segmentation_workflow_agent",
+  "reviewed_at": "2026-10-17T02:16:01.826699+00:00",
+  "reviewed_files": [
+    {
+      "path": "primary_preview/six_core_primary_preview.png",
+      "sha256": "2319d19dd78f5e9d23b3497fcd50e65cc92e4308491cedbd09b23116350658d2"
+    },
+    {
+      "path": "primary_preview/core_13_primary_preview.png",
+      "sha256": "ec45e55fb6b1ecde44edea3834e1be41e97862fe16014f7cb9a29980ef36c874"
+    },
+    {
+      "path": "primary_preview/core_23_primary_preview.png",
+      "sha256": "06586bfc7a5749ebd67e3f3fa76d6cdf98c31aca5b5e0a031e837a26ca1cc01a"
+    }
+  ],
+  "overview_core_order": [
+    1,
+    9,
+    13,
+    15,
+    21,
+    23
+  ],
+  "individual_cores_visually_reviewed": [
+    13,
+    23
+  ],
+  "receipt_sha256": "51a71be945c260fd78c2ea57f4b68919ab57545d6990a8dc2be02bdc68c93df2",
+  "receipt_hash_audit": {
+    "file_records_verified": 29,
+    "failures": 0,
+    "pngs_reopened_successfully": 7
+  },
+  "polygon_qc": {
+    "alignment_mismatches": 0,
+    "alignment_rule": "centroid_tolerance_or_polygon_covers_coordinate",
+    "centroid_tolerance_exceeded": 1,
+    "centroid_tolerance_um": 5.0,
+    "containment_accepted": 1,
+    "coordinate_outside_polygon_count": 8,
+    "covered_cells": 117996,
+    "maximum_centroid_distance_um": 6.798546332601801,
+    "median_centroid_distance_um": 0.39748949765896224,
+    "pixel_size_um": 0.120281,
+    "repaired_cells": 0,
+    "source_rows_scanned": 9930213,
+    "vertices": 2699846
+  },
+  "observations": [
+    "All six overview rows and five representation columns are present in the requested order.",
+    "Core 13 and core 23 preserve matching tissue outlines, disconnected tissue pieces, empty gaps and orientation across all five methods.",
+    "Actual polygon fills, equal-aspect matched bounds and 100-micrometre scale bars are visible; no missing panel, clipping of tissue, title overlap or display corruption was observed.",
+    "Primary-preview and stability-pending labels are readable. Method-specific color/ID disclaimer is explicit.",
+    "The overview is suitable for broad comparison; individual images retain more detail. No biological interpretation is assigned to apparent color domains."
+  ],
+  "issues": [],
+  "presentation_notes": [
+    "Panel-title cluster counts are global across all 28 cores, not a within-core cluster count; state this when presenting the preview.",
+    "Detailed cluster color-key legends are part of the pending full report, not these interim PNGs."
+  ],
+  "stability_validation": "pending",
+  "full_report_complete": false,
+  "final_publication_gate_passed": false
+}

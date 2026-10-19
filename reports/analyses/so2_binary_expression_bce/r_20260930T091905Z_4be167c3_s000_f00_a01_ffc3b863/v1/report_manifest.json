@@ -1,0 +1,36 @@
+{
+  "files": {
+    "comparison.csv": {
+      "sha256": "124dc7b11b6c9f39f978fe11a1548212550418178291a2744147ab02682060a8",
+      "size_bytes": 1580
+    },
+    "detection.png": {
+      "sha256": "5cb098fe09cf530ac55785f98fd5238747f19d438760e4e7d526596a02caa29f",
+      "size_bytes": 108939
+    },
+    "learning.png": {
+      "sha256": "a441503ecaaaa55b2da2bb2f65b4730dd2d1a22ff68bbbf37e6ceda0b7050ba8",
+      "size_bytes": 219135
+    },
+    "report.html": {
+      "sha256": "7df4ab677858af4c46ffb69fd0020deeecf44b7cf1264e9ff450b4d08f63804b",
+      "size_bytes": 446976
+    },
+    "report.md": {
+      "sha256": "3d21e0220f346ef8b9142f3c09128691d9e85e083f0d872d34ed2ed0a2012960",
+      "size_bytes": 7655
+    },
+    "report_builder.py": {
+      "sha256": "f26c6fc9ea88b9479f3f4fdb0ae5e8dd002048a95fda96dd5ba753f56ff7b2f4",
+      "size_bytes": 43440
+    },
+    "summary.json": {
+      "sha256": "8b73375fde0953a942997a8b199e5a2ca8a865367476c4522bf979ac808fcb89",
+      "size_bytes": 20784
+    }
+  },
+  "run_id": "r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863",
+  "schema": "so2_binary_expression_bce_report_manifest_v1",
+  "status": "complete",
+  "version": "v1"
+}

@@ -1,0 +1,123 @@
+{
+  "interpretation": "The B512 device ordering reverses between epochs1 and2; timing is not a stable hyperparameter effect. No physical disk reads were added during observed training. Shared CPU quota and thermal observations are recorded separately; CPU serial work/synchronization and transient contention remain plausible.",
+  "model_score_selection_performed": false,
+  "observed_at": "2026-10-01T08:02:55.482471+00:00",
+  "runs": [
+    {
+      "batch_size": 512,
+      "epochs": [
+        {
+          "epoch": 1,
+          "training_seconds": 269.2043579559977,
+          "validation_seconds": 12.004197173999273
+        },
+        {
+          "epoch": 2,
+          "training_seconds": 274.3084031489998,
+          "validation_seconds": 12.606268193005235
+        }
+      ],
+      "gpu": "0",
+      "gpu_utilization_mean_percent": 23.99310344827586,
+      "gpu_utilization_median_percent": 28.0,
+      "gpu_utilization_sample_count": 145,
+      "observed_log_sha256": {
+        "diagnostics/optimization_audit_resource_samples.jsonl": "5252538680c3f821eb8957afd6ddf03f694d5d6aea1d68c07a04c22ebcb120e5",
+        "metrics/target_minibatch_resources.jsonl": "57f26c585884808b47a6c9894ed055a7e70cfca0b68063d33d1749919ff94ab9"
+      },
+      "physical_disk_read_bytes_delta_since_sampler_start": 0,
+      "process_cpu_seconds_delta_since_sampler_start": 1134.093652,
+      "run_id": "r_20261001T074811Z_97513f17_s000_f00_a01_bfa65cb7"
+    },
+    {
+      "batch_size": 1024,
+      "epochs": [
+        {
+          "epoch": 1,
+          "training_seconds": 210.6210309540038,
+          "validation_seconds": 11.617145513009746
+        },
+        {
+          "epoch": 2,
+          "training_seconds": 210.70493522600736,
+          "validation_seconds": 12.132500099003664
+        },
+        {
+          "epoch": 3,
+          "training_seconds": 208.95840807999775,
+          "validation_seconds": 12.056351728009759
+        }
+      ],
+      "gpu": "1",
+      "gpu_utilization_mean_percent": 31.52054794520548,
+      "gpu_utilization_median_percent": 39.0,
+      "gpu_utilization_sample_count": 146,
+      "observed_log_sha256": {
+        "diagnostics/optimization_audit_resource_samples.jsonl": "29063708c7f71c280b9442cd7d8d7855c5179ecc1d57b0825aa00615b7e4f65d",
+        "metrics/target_minibatch_resources.jsonl": "8e2e39712617448650ee3e771539413b87475eca0eed5bedd9a3651b996aec5c"
+      },
+      "physical_disk_read_bytes_delta_since_sampler_start": 0,
+      "process_cpu_seconds_delta_since_sampler_start": 997.7655050000001,
+      "run_id": "r_20261001T074811Z_10be86dd_s000_f00_a01_ec605202"
+    },
+    {
+      "batch_size": 2048,
+      "epochs": [
+        {
+          "epoch": 1,
+          "training_seconds": 204.502536977001,
+          "validation_seconds": 12.283058719986002
+        },
+        {
+          "epoch": 2,
+          "training_seconds": 225.11726220700075,
+          "validation_seconds": 12.799188927994692
+        },
+        {
+          "epoch": 3,
+          "training_seconds": 198.54626859299606,
+          "validation_seconds": 12.736169417999918
+        }
+      ],
+      "gpu": "2",
+      "gpu_utilization_mean_percent": 25.835616438356166,
+      "gpu_utilization_median_percent": 33.0,
+      "gpu_utilization_sample_count": 146,
+      "observed_log_sha256": {
+        "diagnostics/optimization_audit_resource_samples.jsonl": "2c8834f53b250cde4a6b4d5f1380376ba910fa29a2031e1d86786f0f5871ffb5",
+        "metrics/target_minibatch_resources.jsonl": "d59f297e214f0abb4c2b1642133ac4e18ae6a909984db32f75f853f2d87e850a"
+      },
+      "physical_disk_read_bytes_delta_since_sampler_start": 0,
+      "process_cpu_seconds_delta_since_sampler_start": 878.9481210000001,
+      "run_id": "r_20261001T074811Z_06acf7a5_s000_f00_a01_2aa32391"
+    },
+    {
+      "batch_size": 512,
+      "epochs": [
+        {
+          "epoch": 1,
+          "training_seconds": 309.24641827499727,
+          "validation_seconds": 12.528629392007133
+        },
+        {
+          "epoch": 2,
+          "training_seconds": 256.1198724970018,
+          "validation_seconds": 12.867329760003486
+        }
+      ],
+      "gpu": "3",
+      "gpu_utilization_mean_percent": 24.317241379310346,
+      "gpu_utilization_median_percent": 26.0,
+      "gpu_utilization_sample_count": 145,
+      "observed_log_sha256": {
+        "diagnostics/optimization_audit_resource_samples.jsonl": "780dd633846d8e64135745a7b68bfeb842245b23d006a185309ef7a80e917b89",
+        "metrics/target_minibatch_resources.jsonl": "22577b5ce517099b28dfd198708d5f5313ced9ae386792320d6c1ef25652d9e7"
+      },
+      "physical_disk_read_bytes_delta_since_sampler_start": 0,
+      "process_cpu_seconds_delta_since_sampler_start": 1147.503091,
+      "run_id": "r_20261001T074811Z_425c1faf_s000_f00_a01_65533cf1"
+    }
+  ],
+  "schema": "so2_bce_audit_active_runtime_snapshot_v1",
+  "source_was_mutable_at_observation": true
+}

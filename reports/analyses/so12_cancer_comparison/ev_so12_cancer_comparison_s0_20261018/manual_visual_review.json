@@ -1,0 +1,26 @@
+{
+  "status": "complete",
+  "passed": true,
+  "reviewed_at": "2026-10-18T06:48:57.206213+00:00",
+  "reviewer": "root",
+  "reviewed_png_sha256": {
+    "figures/core_15_five_panel.png": "beba63ef2291facd271cd2a51abef70b66640d418df977bbd2c3faf8e33daba5",
+    "figures/core_23_five_panel.png": "ca353bc486624fc8c5bd346cd1075cd65d866a22b488b27948c688a37293bf2c",
+    "figures/combined_five_panel.png": "334c2ba143da2f62d122da814e6dabba4fd9392136f0cef8f680f30b8ca61493",
+    "figures/all_representations_2x7.png": "85a6ba4ebfbab5fb4f6d7764636af5333e5290a1c4c3eb369252ea693b8c2e7a",
+    "figures/resolution_agreement.png": "e6dccf0992e0ef49017caf97ed17cc795e3a096faf2112ae2fba29b245f5ee61",
+    "figures/oracle_union_errors.png": "1d798a39515477ccb4fa2de1ad6e017346b788955eb2413098732e14ac3f9dc6"
+  },
+  "checks": [
+    "Both requested five-panel layouts have correct methods, core IDs, fixed resolution1 seed0 and 500um scale bars.",
+    "Cell maps share reviewed geometry and annotation outlines. Independent cluster colors across methods are disclosed.",
+    "All h0-h4 layers and both baselines appear in the supplementary figure.",
+    "Resolution curves include both seeds and all-positive controls; axis/legend labels are readable.",
+    "Error maps have TP green, FP red, FN blue and TN gray with scores matching independently audited metrics.",
+    "No clipping, swapped cores, blank panels, or misleading shared cluster IDs across methods were observed."
+  ],
+  "limitations": [
+    "Approximate geometry-only section alignment; core23 internal gap mismatch remains visible and disclosed.",
+    "Oracle union maps select and score using the same annotation; two-core transfer remains transductive."
+  ]
+}

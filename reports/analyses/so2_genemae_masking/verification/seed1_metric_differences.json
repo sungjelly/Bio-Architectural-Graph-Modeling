@@ -1,0 +1,100 @@
+{
+  "n_masked": {
+    "mismatch_count": 0,
+    "max_abs": 0.0,
+    "conditions": []
+  },
+  "masked_huber": {
+    "mismatch_count": 0,
+    "max_abs": 6.7894349864428e-11,
+    "conditions": []
+  },
+  "masked_mse": {
+    "mismatch_count": 0,
+    "max_abs": 1.7164834831273623e-10,
+    "conditions": []
+  },
+  "masked_mae": {
+    "mismatch_count": 0,
+    "max_abs": 2.0432266989445225e-10,
+    "conditions": []
+  },
+  "pooled_pearson": {
+    "mismatch_count": 0,
+    "max_abs": 4.433026334904611e-09,
+    "conditions": []
+  },
+  "masked_r2": {
+    "mismatch_count": 0,
+    "max_abs": 1.8017396463676505e-09,
+    "conditions": []
+  },
+  "gene_pearson_mean": {
+    "mismatch_count": 0,
+    "max_abs": 3.020024060343407e-08,
+    "conditions": []
+  },
+  "gene_pearson_median": {
+    "mismatch_count": 43,
+    "max_abs": 6.237103058253854e-07,
+    "conditions": [
+      "node_label_permuted",
+      "observed"
+    ]
+  },
+  "cell_pearson_mean": {
+    "mismatch_count": 0,
+    "max_abs": 4.227224487118875e-09,
+    "conditions": []
+  },
+  "n_valid_genes": {
+    "mismatch_count": 0,
+    "max_abs": 0.0,
+    "conditions": []
+  },
+  "n_valid_cells": {
+    "mismatch_count": 0,
+    "max_abs": 0.0,
+    "conditions": []
+  },
+  "positive_count": {
+    "mismatch_count": 0,
+    "max_abs": 0.0,
+    "conditions": []
+  },
+  "positive_huber": {
+    "mismatch_count": 0,
+    "max_abs": 6.443219291440982e-10,
+    "conditions": []
+  },
+  "positive_mse": {
+    "mismatch_count": 0,
+    "max_abs": 2.0194550476304585e-09,
+    "conditions": []
+  },
+  "positive_mae": {
+    "mismatch_count": 0,
+    "max_abs": 8.001670437352004e-10,
+    "conditions": []
+  },
+  "zero_count": {
+    "mismatch_count": 0,
+    "max_abs": 0.0,
+    "conditions": []
+  },
+  "zero_huber": {
+    "mismatch_count": 0,
+    "max_abs": 1.300991432640064e-11,
+    "conditions": []
+  },
+  "zero_mse": {
+    "mismatch_count": 0,
+    "max_abs": 3.1370340353165105e-11,
+    "conditions": []
+  },
+  "zero_mae": {
+    "mismatch_count": 0,
+    "max_abs": 1.592670682837305e-10,
+    "conditions": []
+  }
+}

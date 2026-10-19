@@ -1,0 +1,49 @@
+{
+  "schema": "so12_presentation_delivery_v1",
+  "status": "complete",
+  "created_at": "2026-10-18T11:33:24.605497+00:00",
+  "presentation_only": true,
+  "figure_description": "Spatial cluster maps for core 15 (top; 38,145 cells) and core 23 (bottom; 43,462 cells). Columns show annotated histology, BAGM h4 (block 4), BAGM h0 (encoder), PCA (50 dimensions), and scVI (50 dimensions). Leiden clustering used resolution 1 and seed 0. Thick black outlines mark the supplied reference regions. Cluster colors and IDs are method-specific and consistent across cores within each method. Histology-to-cell registration is approximate. Scale bars: 500 \u00b5m.",
+  "files": {
+    "figures/cluster_color_keys.csv": {
+      "sha256": "2cf9a3f0f1d0a4bb1e47da457fc21609838dfe53ba3e2c3bdf70ffbd6725b075",
+      "size_bytes": 2000
+    },
+    "figures/cores_15_23_five_panel.pdf": {
+      "sha256": "26f94b877d40943712388251f00df520af52182a9675b176c7311cea76cf9b24",
+      "size_bytes": 4637049
+    },
+    "figures/cores_15_23_five_panel.png": {
+      "sha256": "d1a3ef5ecfd241c50e3a081d87983a77bae8ee9b8b6b70fd62521f7a7cdc5a5f",
+      "size_bytes": 7092877
+    },
+    "figures/figure_manifest.json": {
+      "sha256": "e88905ddddd14052489ba96e6bf4c094b92c37c08a299635deef3adfc90813a6",
+      "size_bytes": 4260
+    },
+    "provenance/experiments/campaigns/cmp_20261018_so12_cancer_comparison/README.md": {
+      "sha256": "5cb14988e22998f57a3b090eab5ebaa62082d92044704c507b5aba0a353df070",
+      "size_bytes": 20627
+    },
+    "provenance/scripts/analysis/restyle_so12_cancer_figures.py": {
+      "sha256": "8613bfb9a422c31ac0ef0689fdf640117884fe1c848dce16da46b083c8442887",
+      "size_bytes": 11835
+    },
+    "provenance/scripts/analysis/so12_cancer_figures.py": {
+      "sha256": "717224f3c0800861a1db3a96efd8f32533023b651203b4fc8c0f0d5632dfc491",
+      "size_bytes": 9000
+    },
+    "provenance/scripts/analysis/so12_cancer_registration.py": {
+      "sha256": "65774f403e62852f5947abec7bc8ae2c7b0d45bc57f103d77fbb7091487029b3",
+      "size_bytes": 22878
+    },
+    "provenance/src/spatial_benchmark/paths.py": {
+      "sha256": "46dd8a02acdc8e5c0169f7ff72180c17b55f7fd64f155d27209717c89e9a09f7",
+      "size_bytes": 6869
+    },
+    "verification.json": {
+      "sha256": "ff81912dd2819e0f22be01890a61d932cc43b52cf789eb927094af03bccf06de",
+      "size_bytes": 403
+    }
+  }
+}

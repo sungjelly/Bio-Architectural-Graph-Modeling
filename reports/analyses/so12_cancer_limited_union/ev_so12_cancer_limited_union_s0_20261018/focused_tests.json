@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/venv/main/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/unit/test_so12_cancer_limited_publication.py",
+    "tests/unit/test_so12_cancer_limited_figures.py",
+    "tests/unit/spatial_benchmark/test_so12_cancer_limited_metrics.py"
+  ],
+  "exit_code": 0,
+  "passed": true,
+  "runtime_seconds": 3.8914394550956786,
+  "source_files": {
+    "tests/unit/spatial_benchmark/test_so12_cancer_limited_metrics.py": {
+      "sha256": "30358960bddce83c6db050636acf4f2974d2b53a670ad3a4f46e934699c26e34",
+      "size_bytes": 9487
+    },
+    "tests/unit/test_so12_cancer_limited_figures.py": {
+      "sha256": "db91029994d2d7ed12d89c3ccfb2c33a7a51350cf97afb17d97b40b8302afbfb",
+      "size_bytes": 1364
+    },
+    "tests/unit/test_so12_cancer_limited_publication.py": {
+      "sha256": "4078f8a99f737929240f078e489d06d12ca208a72cb1a9596293931b432f6e6e",
+      "size_bytes": 1684
+    }
+  }
+}

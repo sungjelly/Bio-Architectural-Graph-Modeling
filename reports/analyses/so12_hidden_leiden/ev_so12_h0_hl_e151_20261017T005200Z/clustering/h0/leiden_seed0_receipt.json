@@ -1,0 +1,40 @@
+{
+  "graph_receipt_sha256": "ed323f1e19abfeb340f424f3820ea2dc66e9dfaa9e8a17b11d1da523a64b65d0",
+  "labels_sha256": "9ca66fd2c0c9aed384535ba6aace269839b7767b23e26a88c77a146256d93afa",
+  "leiden": {
+    "cluster_count": 16,
+    "cluster_size_max": 65607,
+    "cluster_size_min": 7897,
+    "cluster_sort": "descending_size_then_minimum_global_cell_index_then_raw_id",
+    "igraph_version": "1.0.0",
+    "implementation": "leidenalg.RBConfigurationVertexPartition",
+    "labels_sha256": "29087517efea96fc2926a649aa6419e186992ab96366d640b9eb8349033aa71d",
+    "largest_graph_component_proportion": 1.0,
+    "largest_graph_component_size": 407659,
+    "leidenalg_version": "0.12.0",
+    "modularity": 0.7573038596174425,
+    "n_iterations": -1,
+    "number_of_graph_components": 1,
+    "quality": 17112197.04572625,
+    "random_seed": 0,
+    "raw_to_sorted_cluster": {
+      "0": 0,
+      "1": 1,
+      "10": 10,
+      "11": 11,
+      "12": 12,
+      "13": 13,
+      "14": 14,
+      "15": 15,
+      "2": 2,
+      "3": 3,
+      "4": 4,
+      "5": 5,
+      "6": 6,
+      "7": 7,
+      "8": 8,
+      "9": 9
+    },
+    "resolution": 1.0
+  }
+}

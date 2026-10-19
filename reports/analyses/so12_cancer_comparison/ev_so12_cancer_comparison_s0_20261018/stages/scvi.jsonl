@@ -1,0 +1,2 @@
+{"stage": "scvi", "status": "running", "time": "2026-10-18T05:20:52.955206+00:00", "gpu": 1}
+{"stage": "scvi", "status": "complete", "time": "2026-10-18T05:30:41.529745+00:00", "free_bytes": 6672416768}

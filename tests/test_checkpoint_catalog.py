@@ -10,11 +10,13 @@ import sqlite3
 import pytest
 
 from spatial_benchmark.checkpoint_catalog import (
+    CheckpointCatalogError,
     CheckpointVerificationError,
     build_checkpoint_catalog,
     checkpoint_catalog_summary,
     export_checkpoint_catalog,
     filter_checkpoint_records,
+    index_checkpoint_catalog,
     resolve_checkpoint,
     run_semantics_from_configuration,
     show_checkpoint,
@@ -466,6 +468,86 @@ def test_exact_sha_duplicates_are_annotated_not_collapsed(
     assert summary["exact_duplicate_group_count"] == 1
     assert summary["exact_duplicate_record_count"] == 2
     assert summary["exact_duplicate_redundant_bytes"] == expected_redundant
+
+
+def test_per_checkpoint_summary_indexes_distinct_best_and_last_results(
+    catalog_fixture: tuple[Registry, ProjectPaths, dict[str, Path]],
+) -> None:
+    registry, paths, values = catalog_fixture
+    run_id = str(values["future_run_id"])
+    best_path = values["future_checkpoint"]
+    last_path = best_path.with_name("last.ckpt")
+    last_path.write_bytes(b"final-epoch-checkpoint")
+    registry.record_artifact(
+        run_id,
+        kind="checkpoints",
+        path=last_path,
+        sha256=_sha(last_path),
+        size_bytes=last_path.stat().st_size,
+    )
+    summary = {
+        "best_epoch": 3,
+        "final_epoch": 9,
+        "primary_metric_name": "val/masked_huber",
+        "primary_metric_value": 0.2,
+        "checkpoints": {
+            role: {
+                "path": f"checkpoints/{role}.ckpt",
+                "epoch": epoch,
+                "monitored_metric": "val/masked_huber",
+                "monitored_mode": "min",
+                "monitored_value": metric,
+            }
+            for role, epoch, metric in [("best", 3, 0.2), ("last", 9, 0.35)]
+        },
+    }
+    (best_path.parents[1] / "summary.json").write_text(json.dumps(summary))
+
+    # Repeated indexing must retain each artifact's own result, even though
+    # the run primary metric records only the selected best checkpoint.
+    for _ in range(2):
+        index_checkpoint_catalog(registry, paths, run_reference=run_id)
+        best = show_checkpoint(registry, run_id, paths, role="best", verify=True)
+        last = show_checkpoint(registry, run_id, paths, role="last", verify=True)
+        assert (best["best_epoch"], best["monitored_value"]) == (3, 0.2)
+        assert (last["best_epoch"], last["monitored_value"]) == (9, 0.35)
+        assert last["monitored_metric"] == "val/masked_huber"
+        assert last["monitored_mode"] == "min"
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "error"),
+    [
+        ("path", "checkpoints/last.ckpt", "does not match checkpoint"),
+        ("path", "../checkpoints/best.ckpt", "bundle-relative"),
+        ("path", "/tmp/best.ckpt", "bundle-relative"),
+        ("epoch", -1, "nonnegative integer"),
+        ("epoch", 1.5, "nonnegative integer"),
+        ("monitored_metric", "", "must be nonempty"),
+        ("monitored_mode", "minimize", "must be min or max"),
+        ("monitored_value", float("nan"), "must be finite"),
+    ],
+)
+def test_per_checkpoint_summary_rejects_invalid_or_unbound_metadata(
+    catalog_fixture: tuple[Registry, ProjectPaths, dict[str, Path]],
+    field: str,
+    value: object,
+    error: str,
+) -> None:
+    registry, paths, values = catalog_fixture
+    metadata = {
+        "path": "checkpoints/best.ckpt",
+        "epoch": 3,
+        "monitored_metric": "val/masked_huber",
+        "monitored_mode": "min",
+        "monitored_value": 0.2,
+    }
+    metadata[field] = value
+    (values["future_checkpoint"].parents[1] / "summary.json").write_text(
+        json.dumps({"checkpoints": {"best": metadata}})
+    )
+    with pytest.raises(CheckpointCatalogError, match=error):
+        build_checkpoint_catalog(registry, paths)
 
 
 def test_filter_show_resolve_and_checksum_refusal(

@@ -1,0 +1,59 @@
+BAGM draft: model and evidence provenance
+Read-only scientific audit, 2026-10-16. No training, data, or archived outputs changed.
+
+SELECTED MODEL
+The paper describes the currently training original Relative-Geometric QKV Graph Transformer, not the historical geometry-modulated cosine variant.
+Configured name: relative-qkv-gat.
+Configured family: relative_geometry_qkv_graph_transformer.
+Current run: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b.
+Authoritative configuration: experiments/campaigns/cmp_20261016_so12_pearson_relative_qkv_train_validation/configs/seed0_attempt2.yaml.
+Current scientific contract: experiments/campaigns/cmp_20261016_so12_pearson_relative_qkv_train_validation/README.md, lines 9-90.
+
+INPUTS AND COHORT
+407,659 cells across 28 tissue cores and two slides; 1,000 biological genes; 22 morphology/imaging covariates. Training: 301,198 cells, 20 cores, 10 donor groups. Validation: 106,461 cells, 8 cores, 4 separate donor groups. No donor or graph crosses the split. Validation was previously examined for preprocessing diagnostics, and is not an untouched test cohort. This is a single-seed exploratory validation study.
+The 22 covariates are morphology/imaging measurements, not a jointly modeled protein-expression panel. Their preprocessing is fitted on training cells only; the adapter rejects missingness that would add channels beyond the fixed 22.
+Sources: current README lines 27-46; src/spatial_benchmark/so12_relative_qkv_data.py lines 189-224.
+
+GRAPH
+Deterministic coordinate-only radial-stratified neighbor selection within each core, maximum 500 micrometers, nominal 200 neighbors before bidirectional union. Radial shell quotas: 48 in 0-50, 64 in 50-150, 48 in 150-300, and 40 in 300-500 micrometers. Final degree may exceed 200 after union. There are no self-loops or cross-core edges and no learned node/edge identifiers. Absolute coordinates are not node covariates. The spatial graph is distinct from the embedding-neighbor graph used for Leiden analysis.
+Each edge has 70 relative-geometry features: 64 distance radial basis functions plus receiver/source axial alignment, orientation-tensor alignment, receiver/source anisotropy, and normalized distance. Consistent translation, rotation, and reflection leave these scalar features unchanged. The graph spans broad neighborhood context and must not be equated with direct cell contact or measured communication.
+Sources: current configuration graph/features sections; src/spatial_benchmark/relative_geometry.py lines 1-46; experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/README.md lines 126-224.
+
+MASKING AND NORMALIZATION
+Each cell independently draws a masked-gene count uniformly from integers 0 through 1,000 inclusive, then selects that many genes uniformly without replacement. Ten views per training core per epoch; three fixed views per validation core. Metadata remains visible. Neighbor and receiver cells follow the same masking rule. This is a broad partial-gene-mask distribution that includes rare whole-cell and zero-mask endpoints, not a dedicated whole-node-mask experiment.
+Current input views are recomputed from visible raw counts only. With training gene frequencies p and mask M, exposure = max(1, sum_g[(1-M_g)c_g] / sum_g[(1-M_g)p_g]); fully masked cells use exposure one. mu_g = exposure*p_g. Pearson residuals are (visible_count_g-mu_g)/sqrt(1.01*mu_g), standardized by frozen training residual mean/SD, upper-clipped at ten, then masked entries set exactly to zero. Hidden raw counts cannot influence these inputs. Fully observed frozen transformed Pearson arrays serve as supervised targets only.
+This estimates masked expression features, not raw-count likelihood or absolute count recovery. Historical SO2 layer analyses used standardized log1p counts. Their masking distribution was the same uniform-count law; preprocessing, random namespaces, and validation design differ.
+Sources: current README lines 48-70; src/spatial_benchmark/so12_relative_qkv_data.py lines 122-171; src/spatial_benchmark/so12_relative_qkv_training.py lines 142-163 and 185-199.
+
+ARCHITECTURE
+h_i^0 = Dropout(GELU(LN(W_x*x_visible_i + W_m*M_i + W_c*C_i + b))).
+Four independent graph Transformer blocks, hidden width 256, 8 heads of dimension 32, feed-forward width 1,024, dropout 0.1, attention dropout 0.0.
+For each block/head, q_i = W_Q*LN(h_i), k_j = W_K*LN(h_j), v_j = W_V*LN(h_j).
+s_ij = q_i^T*k_j/sqrt(32) + f(rho_ij).
+alpha_ij = softmax over all incoming neighbors j of receiver i.
+z_i = sum_j alpha_ij*v_j.
+u_i = h_i + Dropout(W_O*concat_heads(z_i)).
+h_i_next = u_i + Dropout(W_2*Dropout(GELU(W_1*LN(u_i)))).
+Geometry bias network: 70 -> 128 -> LayerNorm -> GELU -> 8, final projection zero-initialized. Geometry is supplied directly only to attention logits, not to keys, values, or value gates. Values derive from cell states, which include morphology/mask information and, after the first block, prior graph context; they are not RNA-only values. Self-cell information persists through residual paths, not a self-edge attention coefficient.
+Decoder: 256 -> 1,024 -> GELU -> Dropout -> 1,000.
+Receiver chunking retains each receiver's complete incoming-neighbor softmax and changes memory usage without changing the attention operator.
+Sources: src/spatial_benchmark/models.py lines 192-320 and 348-367; src/spatial_benchmark/relative_qkv_graph_transformer.py lines 1-36, 168-208, 211-315; src/spatial_benchmark/so12_relative_qkv_training.py lines 130-139.
+
+OBJECTIVE AND OPTIMIZATION
+Per view: sum_ig M_ig*Huber_delta1(pred_ig-target_ig) / sum_ig M_ig.
+Average equally over cores and mask views. AdamW learning rate 0.0001; weight decay 0.00001; gradient clipping at norm 1. Fixed learning rate. Two complete cores and ten views each per optimizer update. Four GPU ranks average equivalent gradients. Current maximum 300 epochs; earliest stopping after 50 epochs, patience 25 validations without improvement exceeding 0.0001. Best-checkpoint selection tracks strict validation-Huber improvement separately from the patience threshold. No final result from an active checkpoint should be represented as completed performance.
+Sources: current configuration trainer/evaluation sections; current README lines 72-90; src/spatial_benchmark/so12_relative_qkv_training.py lines 115-127 and 196-199.
+
+HISTORICAL REPRESENTATION EVIDENCE AND LIMITS
+The original SO2 layer-analysis run is r_20260825T155601Z_e56532d1_s000_f00_a01_e05918a6. It fitted all 246,063 cells across 14 cores, used standardized log1p counts, and had no held-out patient evaluation. h0 and h1-h4 were extracted with fully observed expression, then clustered independently under matched PCA-50 / cosine kNN-30 / Leiden-resolution-1 settings. Partition sizes were 16/20/19/19/19 clusters. Adjacent-layer adjusted Rand indices were 0.515866, 0.656866, 0.577895, 0.670017. This verifies changing representation partitions and continuity, not exclusive usefulness of the final layer or biologically validated tumor boundaries.
+No archived matched scVI segmentation comparison was found. The classical SO2 baseline used PCA and explicitly did not run scVI. Neither that baseline nor the layer report establishes pathology-grounded accuracy, Dice/IoU, or superiority to scVI. The user's visual observations can be retained as preliminary author impressions, distinctly identified as awaiting quantitative verification.
+Sources: experiments/campaigns/cmp_20260825_so2_14core_relative_qkv_seed0_batch2/HIDDEN_LAYER_PROGRESSION_CLUSTERING.md lines 32-43, 65-87, and 121-168; RAW_EXPRESSION_CLUSTERING_BASELINE.md lines 45-77 and 134-149.
+
+DISTINCT HISTORICAL VARIANT
+The geometry-modulated cosine Relative-QKV model completed on 2026-09-04 at epoch 200 and is not the currently training architecture. Its modulation/cosine-normalization/logit-scale formula must not be used in the selected paper diagram. Its 20-cluster result and unfavorable nonzero-reconstruction comparison also must not be assigned to the current original model. Source: experiments/campaigns/cmp_20260903_so2_14core_geometry_modulated_relative_qkv_seed0_batch2/README.md lines 3-14, 28-48, and 62-72.
+
+INTERPRETATION
+Attention is normalized computational routing, not direct biological importance. A Jacobian is a local model sensitivity and its input scale must be specified. Derivatives with respect to raw counts include the cross-gene exposure-normalization pathway; derivatives with respect to normalized visible input features are a different estimand. Hold mask and graph fixed and distinguish one-hop from multihop dependencies. Biological mechanism and causal-effect claims require independent and perturbational evidence, respectively.
+
+MANUSCRIPT REVIEW
+Reviewed reports/paper_draft_20261016/manuscript_content.json without changing it. The current model equation, counts, split, masking law, loss, geometry role, and no-self-loop description agree with source. Material clarification requests sent to the parent: explicitly distinguish author-reported scVI visual impressions from archived benchmark evidence, and define the Jacobian input scale. Historical masking law itself is unchanged.

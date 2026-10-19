@@ -1,0 +1,196 @@
+{
+  "core_sizes": {
+    "SO2-C15": 38145,
+    "SO2-C23": 43462
+  },
+  "dataset_fingerprint": "e976f5fa6efe76be97a31ce14e0c4d457502fe35a66216a8deffefb95b476035",
+  "direct_donor_identifiers_returned": false,
+  "excluded_unmapped_cells": 340,
+  "fitted_parameters_sha256": "2770f5bbc469ba17ef9c6399b4c4803619d99f15669e4a608573bc68a4a1fafc",
+  "graph_arrays_loaded": true,
+  "loaded_roles": [
+    "test"
+  ],
+  "opened_core_aliases": [
+    "SO2-C15",
+    "SO2-C23"
+  ],
+  "preprocessing": {
+    "constant_baseline": "equal_core_training_target_mean_per_gene",
+    "fit_scope": "pooled_training_cells_only",
+    "fitted_parameters_sha256": "2770f5bbc469ba17ef9c6399b4c4803619d99f15669e4a608573bc68a4a1fafc",
+    "input": "visible_count_over_visible_training_frequency_mass_pearson",
+    "metadata_statistics_sha256": "65899760bb2e87ba4d91a3b027a4b8d47eeb68daf4982229f034d5771d9185e2",
+    "old_fitted_parameters_used": false,
+    "old_normalized_targets_used": false,
+    "phi": 1.01,
+    "residual_moment_precision": "float64",
+    "sample_sd_ddof": 1,
+    "saved_parameter_dtype": "float32",
+    "target": "frozen_train_standardized_full_observation_pearson_upper_clip10",
+    "target_dtype": "float32",
+    "training_cells": 264491,
+    "training_core_numbers": [
+      1,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      14,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      24,
+      25,
+      26
+    ],
+    "upper_clip": 10.0
+  },
+  "preprocessing_fingerprint": "4fcce9791bed083a9592b6c1a1ee32020fcec9ca03ca4477e3f1a87a64bd64f2",
+  "row_alignment_verified": true,
+  "schema": "so12_paper_training_data_v1",
+  "source_file_checksums_verified": true,
+  "source_files": [
+    {
+      "graph": {
+        "edge_index.npy": {
+          "checksum_verified": true,
+          "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C15/edge_index.npy",
+          "sha256": "687ac4de2e8c1f8c9872d8b89f88d3e961f15122c80b586f9a85df41040b5242",
+          "size_bytes": 137719520
+        },
+        "orientation.npz": {
+          "checksum_verified": true,
+          "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C15/orientation.npz",
+          "sha256": "6e32dc8214bfc5472d21cc4922af26f3bd8c0be2f1236378e279269c4695279f",
+          "size_bytes": 1037034
+        },
+        "relative_geometry.npy": {
+          "checksum_verified": true,
+          "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C15/relative_geometry.npy",
+          "sha256": "c1d9bbb1a3cb887e97214f9bc3e48d671755bb8b99c32248bfeeda1a836a2cd7",
+          "size_bytes": 2410089488
+        }
+      },
+      "graph_record_sha256": "161cfed03d9ee0a5c7ea70d9d85072a376779ee8b3b6d7a45a61571c716db50a",
+      "raw_counts": {
+        "checksum_verified": true,
+        "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C15.npz",
+        "sha256": "29d7840a6786a4a685f35ca55b9d3a7e65a559d161eb83d6fbfa6dbb6b0b4ebd",
+        "size_bytes": 37354157
+      },
+      "raw_morphology": {
+        "checksum_verified": true,
+        "path": "/workspace/BAGM/data/raw/26040302SO_2_metadata_file.csv/26040302SO_2_metadata_file.csv",
+        "sha256": "2c970dfbd935faf4e6dc0e1068aef0a5fa4ae783c204244ec5f203b89c82d798",
+        "size_bytes": 185403684
+      },
+      "target": {
+        "fitted_parameters_sha256": "2770f5bbc469ba17ef9c6399b4c4803619d99f15669e4a608573bc68a4a1fafc",
+        "storage": "memory_only"
+      }
+    },
+    {
+      "graph": {
+        "edge_index.npy": {
+          "checksum_verified": true,
+          "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C23/edge_index.npy",
+          "sha256": "e60ef66b9673bb0227eda10cff63e19bacae72577ca83f7b98724ed15f0674f3",
+          "size_bytes": 159556928
+        },
+        "orientation.npz": {
+          "checksum_verified": true,
+          "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C23/orientation.npz",
+          "sha256": "aeb28b12203b8c56c5130cd19ce0d98f7e9e497a859fdb2158a27f2bf6b76bf3",
+          "size_bytes": 1187841
+        },
+        "relative_geometry.npy": {
+          "checksum_verified": true,
+          "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_graphs_v1/cores/SO2-C23/relative_geometry.npy",
+          "sha256": "147ad19008ada2d3875e5915cbe3e80cfdeb92da9954a8c06dd9b9cac109f211",
+          "size_bytes": 2792244128
+        }
+      },
+      "graph_record_sha256": "b2a252205861bb939f459a0c3076e62ff2cd9f5ff80154a8f71556ce0078ad8d",
+      "raw_counts": {
+        "checksum_verified": true,
+        "path": "/workspace/BAGM/data/processed/so2_14core_relative_qkv_v1/cores/SO2-C23.npz",
+        "sha256": "fdb4a6f6c607ddb650afef9f1f93fb8eecb0be4c1ae593f6f59c4dbf4402c837",
+        "size_bytes": 42678236
+      },
+      "raw_morphology": {
+        "checksum_verified": true,
+        "path": "/workspace/BAGM/data/raw/26040302SO_2_metadata_file.csv/26040302SO_2_metadata_file.csv",
+        "sha256": "2c970dfbd935faf4e6dc0e1068aef0a5fa4ae783c204244ec5f203b89c82d798",
+        "size_bytes": 185403684
+      },
+      "target": {
+        "fitted_parameters_sha256": "2770f5bbc469ba17ef9c6399b4c4803619d99f15669e4a608573bc68a4a1fafc",
+        "storage": "memory_only"
+      }
+    }
+  ],
+  "source_manifest": "/workspace/BAGM/data/processed/so12_paper_core_split_v1/manifest.json",
+  "source_manifest_sha256": "44e349940908b73c6e21e41283ae245ccebc87fa577bd0a295a092b547c92284",
+  "split": {
+    "donor_overlap": true,
+    "donor_overlap_authorized": true,
+    "historically_untouched_test": false,
+    "scope": "exploratory_core_section_holdout",
+    "split_id": "so12_paper_21train_5val_2test_v1",
+    "test_cells": 81607,
+    "test_core_numbers": [
+      15,
+      23
+    ],
+    "test_slides": [
+      2
+    ],
+    "test_used_for_selection": false,
+    "training_cells": 264491,
+    "training_core_numbers": [
+      1,
+      3,
+      4,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      14,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      24,
+      25,
+      26
+    ],
+    "validation_cells": 61561,
+    "validation_core_numbers": [
+      2,
+      5,
+      13,
+      27,
+      28
+    ]
+  },
+  "split_fingerprint": "cc641f1f9abba5c36b6ec89269c41527696b80a57546a2788ccffd12e6f24154",
+  "target_normalization_uses_full_counts_but_inputs_do_not": true,
+  "test_arrays_opened": true,
+  "upstream_alignment_run": "r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410"
+}

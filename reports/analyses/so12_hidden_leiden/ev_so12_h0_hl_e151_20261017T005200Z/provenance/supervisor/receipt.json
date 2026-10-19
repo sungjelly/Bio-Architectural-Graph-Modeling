@@ -1,0 +1,19 @@
+{
+  "captured_at": "2026-10-17T02:22:13.717192+00:00",
+  "capture_stage": "seed1_stability_running",
+  "service_changed": false,
+  "autostart": false,
+  "autorestart": false,
+  "files": {
+    "bagm-so12-hidden-leiden.conf": {
+      "source_path": "/etc/supervisor/conf.d/bagm-so12-hidden-leiden.conf",
+      "sha256": "94ceb43ab03c2f5cc30c2f08d2af256c34aa6d6dbdbde53e724b646c84a794d2",
+      "size_bytes": 387
+    },
+    "bagm-so12-hidden-leiden.sh": {
+      "source_path": "/opt/supervisor-scripts/bagm-so12-hidden-leiden.sh",
+      "sha256": "2863ae2db208573318bba563a43a623dcba768137c2409e7e467fc98bbdcfa93",
+      "size_bytes": 514
+    }
+  }
+}

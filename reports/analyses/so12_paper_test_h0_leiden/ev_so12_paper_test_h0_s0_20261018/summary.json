@@ -1,0 +1,354 @@
+{
+  "campaign_id": "cmp_20261018_so12_paper_test_h0_leiden",
+  "clustering": {
+    "cells_per_core": {
+      "15": 38145,
+      "23": 43462
+    },
+    "manifest_path": "clustering/clustering_manifest.json",
+    "manifest_sha256": "a331608fc30cb8b2746d6122f57631aabcc55019cd5758d38ffb8f100cda2755",
+    "metrics": {
+      "cluster_count_by_seed": {
+        "0": 14,
+        "1": 14
+      },
+      "clusters_over_90_percent_one_core": [
+        1,
+        6,
+        8,
+        9
+      ],
+      "cross_core_undirected_edge_fraction": 0.14980219520078666,
+      "interpretation": "h0 is the trained node encoder output before graph message passing. The h0 partition is independent of hL: matching cluster IDs or colors do not indicate matching cell groups across representations. Exploratory transductive grouping of the two test cores under a frozen model. Clusters are not validated cell types, cancer regions, independent donor replication, or causal interactions. Training permits donor overlap and historical sample exposure. Seed 0 is displayed; seed 1 only measures stability.",
+      "seed0_cluster_vs_core_ari_descriptive": 0.06880232603894448,
+      "seed0_seed1_ari": 0.7317281068677163,
+      "seed0_seed1_ari_per_core": {
+        "15": 0.7386996527683357,
+        "23": 0.7354201309277071
+      }
+    },
+    "n_cells": 81607,
+    "output_sha256": {
+      "clustering/cluster_sizes.csv": "d0bd4f75de416943eb5a936df5a27ea78e4c43d575cf17de5f3a52e71ef42e8c",
+      "clustering/clusters.csv.gz": "37282731d0e7cb4255ab1ff36e13d3f4f659fa835e144d2930f2851db74e752a",
+      "clustering/core_composition.csv": "a8c29f673af2f67224bc014e410d5138f486ad0dafba657326b3765ec333725a",
+      "clustering/cpu_neighbor_audit.json": "41cbd26e96847435d81c1b5484619e155701c13500469db87e41e1f2bb34cb57",
+      "clustering/h0_knn_cosine_distances.npy": "86bae0962603d23c466db07b609432848c9afe18e9bbe53c468974359556a4eb",
+      "clustering/h0_knn_indices.npy": "c21598efcf73d14edbcdc5877ac8edd6c42f830a70f259442cc563693ce8c6e6",
+      "clustering/h0_labels_seed0.npy": "d3b1581922febc8e3a380a7c7422e97bbfd875c232f85ce878c4ebae9a0fcfea",
+      "clustering/h0_labels_seed1.npy": "0c6440ce8b1f42b37c068163ed9fa074e8e9b8f454b7a1419c8d680c6a2eaaca",
+      "clustering/h0_undirected_edges.npy": "cb4591735de2ad0ad835e0b32924ea3894d667da70b561ef60ba500fcfc328b5",
+      "clustering/input_binding.json": "30a03dcd8cb6df27bb84f47dae9ae0c1eb0d5e4ddcda846303d50779dd1ff4eb",
+      "clustering/metrics.json": "118d0d5d169e2dfe5b05b6b902787cb6b603fd3642f66ad06004c949847611d6",
+      "clustering/neighbor_pilot.json": "25452e257c9fd729e99db632f67344d6761ec8bb36f176e01e01c5e17668d61f"
+    },
+    "passed": true,
+    "representation": "trained_node_encoder_output_before_graph_blocks",
+    "representation_name": "h0",
+    "schema": "so12_paper_test_h0_leiden_v1",
+    "status": "complete",
+    "test_core_numbers": [
+      15,
+      23
+    ]
+  },
+  "extraction": {
+    "all_observed": true,
+    "analysis_source_sha256": {
+      "scripts/analysis/run_so12_paper_test_leiden.py": "03fae846dd3a6b7142ab733f8f8420fb146e9872743120b6c02fa938bff9409b",
+      "scripts/analysis/so12_paper_test_extraction.py": "63fcd4925d36f1934ba6151e1789bddb1d36dd4396aa7fec43dd186d10e5da26",
+      "scripts/analysis/so12_paper_test_h0_extraction.py": "77da0561ff6dad2990cf38a52db149355c0a614bc6c412bca412b6fbbbe8dbc8"
+    },
+    "audit": {
+      "h0_equals_direct_encoder": true,
+      "predictions_exact": true,
+      "published_hL_exact": true
+    },
+    "cell_rows_sha256": "a8d320f2fada025851e9536faca70876daf000451646d0510efa56317e105352",
+    "cells_path": "cells.csv.gz",
+    "cells_per_core": {
+      "15": 38145,
+      "23": 43462
+    },
+    "cells_sha256": "d68ee95082b948b6a3a87ce01ee5148582e012f3e037ada6d58ee3bac7529cb1",
+    "checkpoint_epoch": 194,
+    "checkpoint_sha256": "8d93aca7f24cd5d7bb2308b0361e8b13ea9b17d1719c4aea0159c1e0e277bd64",
+    "core_numbers": [
+      15,
+      23
+    ],
+    "cores": [
+      {
+        "alias": "SO2-C15",
+        "audit": {
+          "all_observed": true,
+          "complete_core_graph": true,
+          "direct_fourth_block_exact": true,
+          "graph_blocks": 4,
+          "h0_equals_direct_encoder": true,
+          "hL_equals_full_node_embedding": true,
+          "masked_entries": 0,
+          "maximum_absolute_prediction_difference": 0.0,
+          "maximum_absolute_reference_hL_difference": 0.0,
+          "ordinary_hL_exact": true,
+          "prediction_invariance_checked": true,
+          "predictions_exact": true,
+          "published_hL_exact": true,
+          "representation": "trained_node_encoder_output_before_graph_blocks",
+          "representation_name": "h0"
+        },
+        "cell_rows_sha256": "a51a84f45d08a34237b2d463772c054567ada5af2b9497aba00126288f0c2c44",
+        "checkpoint_sha256": "8d93aca7f24cd5d7bb2308b0361e8b13ea9b17d1719c4aea0159c1e0e277bd64",
+        "core_number": 15,
+        "dimensions": 256,
+        "edges": 8607462,
+        "elapsed_seconds": 6.2066126968711615,
+        "embedding_slice_sha256": "cc160bd48b429a0178b44f5dfd6b5da457adebfbbea7b2ad92bc9de103ce69e1",
+        "execution": {
+          "cublas_workspace_config": ":4096:8",
+          "cudnn_deterministic": true,
+          "deterministic_algorithms": true,
+          "dtype": "float32",
+          "tf32": false
+        },
+        "n_cells": 38145,
+        "preprocessing_fingerprint": "4fcce9791bed083a9592b6c1a1ee32020fcec9ca03ca4477e3f1a87a64bd64f2",
+        "receipt_path": "embeddings/core_15_receipt.json",
+        "receipt_sha256": "ac6e519e60d94db95154fed6020fa545e2e83edd3134627883fd59185518bce8",
+        "reference_hl_manifest_sha256": "872ba556648f9570d273f920c20947b898f50a8f177427c4b61dbe1ad1730c2a",
+        "reference_hl_slice_sha256": "1de7f121b7238e5f7fa2faf909b4b78e2de055589fe00882f0d4013d5443ed48",
+        "representation": "trained_node_encoder_output_before_graph_blocks",
+        "representation_name": "h0",
+        "row_start": 0,
+        "row_stop": 38145,
+        "schema": "so12_paper_test_h0_extraction_v1"
+      },
+      {
+        "alias": "SO2-C23",
+        "audit": {
+          "all_observed": true,
+          "complete_core_graph": true,
+          "direct_fourth_block_exact": true,
+          "graph_blocks": 4,
+          "h0_equals_direct_encoder": true,
+          "hL_equals_full_node_embedding": true,
+          "masked_entries": 0,
+          "maximum_absolute_prediction_difference": 0.0,
+          "maximum_absolute_reference_hL_difference": 0.0,
+          "ordinary_hL_exact": true,
+          "prediction_invariance_checked": true,
+          "predictions_exact": true,
+          "published_hL_exact": true,
+          "representation": "trained_node_encoder_output_before_graph_blocks",
+          "representation_name": "h0"
+        },
+        "cell_rows_sha256": "f6416db12ef0000f875b29901784c6a4964f8f5598bc95ee355adcafb41852fc",
+        "checkpoint_sha256": "8d93aca7f24cd5d7bb2308b0361e8b13ea9b17d1719c4aea0159c1e0e277bd64",
+        "core_number": 23,
+        "dimensions": 256,
+        "edges": 9972300,
+        "elapsed_seconds": 7.267395913833752,
+        "embedding_slice_sha256": "4f41dfde263c53908e143a37b00ec2c99d270194ec9a74250dd3bf3a8a39474d",
+        "execution": {
+          "cublas_workspace_config": ":4096:8",
+          "cudnn_deterministic": true,
+          "deterministic_algorithms": true,
+          "dtype": "float32",
+          "tf32": false
+        },
+        "n_cells": 43462,
+        "preprocessing_fingerprint": "4fcce9791bed083a9592b6c1a1ee32020fcec9ca03ca4477e3f1a87a64bd64f2",
+        "receipt_path": "embeddings/core_23_receipt.json",
+        "receipt_sha256": "8e32382b703fc607699558bbebf10c6126a93ce97cf744a6ce074f4b70b6a096",
+        "reference_hl_manifest_sha256": "872ba556648f9570d273f920c20947b898f50a8f177427c4b61dbe1ad1730c2a",
+        "reference_hl_slice_sha256": "d8a5336cd4bdbf832cb9dcc9fc6765fa6b2f93c003438415c911990ec8457565",
+        "representation": "trained_node_encoder_output_before_graph_blocks",
+        "representation_name": "h0",
+        "row_start": 38145,
+        "row_stop": 81607,
+        "schema": "so12_paper_test_h0_extraction_v1"
+      }
+    ],
+    "created_at": "2026-10-18T03:16:56.936333+00:00",
+    "dimensions": 256,
+    "elapsed_seconds": 79.89157386403531,
+    "embedding_sha256": "003041285b8a06e2d1be2a6a4fb8c31b9b2d8ffe46be0f6d0c0a882d864755a9",
+    "execution": {
+      "cublas_workspace_config": ":4096:8",
+      "cudnn_deterministic": true,
+      "deterministic_algorithms": true,
+      "dtype": "float32",
+      "tf32": false
+    },
+    "fitted_parameters_sha256": "2770f5bbc469ba17ef9c6399b4c4803619d99f15669e4a608573bc68a4a1fafc",
+    "h0_path": "embeddings/h0.npy",
+    "h0_sha256": "003041285b8a06e2d1be2a6a4fb8c31b9b2d8ffe46be0f6d0c0a882d864755a9",
+    "n_cells": 81607,
+    "normalization_refit": false,
+    "passed": true,
+    "peak_allocated_bytes": 4727748096,
+    "preprocessing_fingerprint": "4fcce9791bed083a9592b6c1a1ee32020fcec9ca03ca4477e3f1a87a64bd64f2",
+    "reference_hl": {
+      "cell_rows_sha256": "a8d320f2fada025851e9536faca70876daf000451646d0510efa56317e105352",
+      "cells_sha256": "d68ee95082b948b6a3a87ce01ee5148582e012f3e037ada6d58ee3bac7529cb1",
+      "checkpoint_epoch": 194,
+      "checkpoint_sha256": "8d93aca7f24cd5d7bb2308b0361e8b13ea9b17d1719c4aea0159c1e0e277bd64",
+      "config_sha256": "db5baf007b808091f7e1f865d2f245197567c5865417abe02542c73c95bfb53f",
+      "embedding_sha256": "27a6532b6d24d207361360faa521da5a46a587adc0c402deb05f0cf647315c61",
+      "evaluation_id": "ev_so12_paper_test_hL_s0_20261017",
+      "extraction_manifest_sha256": "540ac19c2a8681a11d1243633acdf45cba9561116e28b55e7a453161d8cc9e45",
+      "fitted_parameters_sha256": "2770f5bbc469ba17ef9c6399b4c4803619d99f15669e4a608573bc68a4a1fafc",
+      "manifest_sha256": "872ba556648f9570d273f920c20947b898f50a8f177427c4b61dbe1ad1730c2a",
+      "path": "/workspace/BAGM/reports/analyses/so12_paper_test_leiden/ev_so12_paper_test_hL_s0_20261017",
+      "preprocessing_fingerprint": "4fcce9791bed083a9592b6c1a1ee32020fcec9ca03ca4477e3f1a87a64bd64f2",
+      "verified": true
+    },
+    "representation": "trained_node_encoder_output_before_graph_blocks",
+    "representation_name": "h0",
+    "schema": "so12_paper_test_h0_extraction_v1",
+    "source_code_sha256": {
+      "adjacency_ablation.py": "f1e2d0aa76613dd5a71e6a94d79f12b691dd4541d1eef3843d153bb662457b67",
+      "configuration.py": "fce96738bcbe6511c56187c98ed7d86f217a1ac6a804a124a023b48332c43ebd",
+      "data.py": "85f4ac46e89fbb5823d9d30c758aa8fd831d56a160fa6b9e15ace29a68f2fd74",
+      "expression_tokens.py": "7efad5bda953d20f92564e69d2756518510cf608934aea6b45d57cfff0d41d60",
+      "fingerprints.py": "361ecd492c46b705b8bbaf488c5d5f23167ced07b8353172a1d914ef6acf2df8",
+      "graphs.py": "18f918878e91155c40a2a068aa1ac2b354d2107a2b2a7bb140dd144fb597ee3b",
+      "identifiers.py": "224e39656611414135fabd2da60e977c87fa892322bedeec6c79b995fb7367b6",
+      "masking.py": "a86d7f16397a84da6fe3db71bfed0337e94d15c57169d8cae6f5ce8cdedb52da",
+      "metrics.py": "fdc884e7e75d9c3a86f61be8d4d3259345ea4d76eec2601ed3829de3f919e6ae",
+      "models.py": "60f70bf9e91e7ba72289e539cfa607ae05901e5785f361de77b77c916869f969",
+      "paths.py": "46dd8a02acdc8e5c0169f7ff72180c17b55f7fd64f155d27209717c89e9a09f7",
+      "pooled_relative_qkv_training.py": "fc4c58f9ee4fc21529e089094cc2dbfd82e3e6c1c04e58bf9b901c93252eba7b",
+      "pooled_relative_qkv_training_v2.py": "0eb75849b42aa48d0727b5fea2d3f1e381767720c0d251cdbe4d5dd0b0c7fc3b",
+      "relative_geometry.py": "4c40003056eb1c5dcd41494658321cfdca3addea46b11964c7c5dd4d22b9a798",
+      "relative_qkv_graph_transformer.py": "b6f54251da687704b9e2779ec0868142b52f516ae647dda53e97baf1c00ee511",
+      "run_archive.py": "950894baf093e8149a7a0235a7ec0d0b952c57a26ce30fd40d67c3e1944dd00b",
+      "scripts/train/run_so12_paper_split.py": "6d502f1a55868feea727980c88b444b19747b45dae8d4c42cb7f6937968c5f22",
+      "so12_paper_split_data.py": "fcb1fc3f020e3ba33084d299d5d1dae376ddb9208fe8c2498120a78ccc02b1f7",
+      "so12_paper_split_training.py": "6c4188b7ecc33913cc82d5ba8d0c3278195062b868bb54f2ccafad3b95450eb3",
+      "so12_relative_qkv_data.py": "224a93215ebe1e7ee27756e0823d267f23c3a96e5feb29f3a853d8561c6e174c",
+      "spatial_field.py": "9566680f4123d01c70e1477e7a886e4adbf959baf9f431ababc28926721efb6c",
+      "splits.py": "a4dfe8cfa712261b72ca53cf11b4570528f50456a0f21dfb36626a3177dbc696",
+      "training.py": "c781e145a434f633c488997cf1d875a3ef933e02c495d1e0bf4af8ecf3a87bfc"
+    },
+    "source_identity_sha256": "b5045b4b8266b433296251fa2e6f874074152e83c5edf8769fe2c9293a8362a7",
+    "source_modified": false,
+    "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+    "status": "complete",
+    "test_core_numbers": [
+      15,
+      23
+    ],
+    "test_only": true,
+    "verified": true
+  },
+  "manual_visual_review": "not_performed",
+  "reference_hl": {
+    "evaluation_id": "ev_so12_paper_test_hL_s0_20261017",
+    "manifest_sha256": "872ba556648f9570d273f920c20947b898f50a8f177427c4b61dbe1ad1730c2a",
+    "path": "/workspace/BAGM/reports/analyses/so12_paper_test_leiden/ev_so12_paper_test_hL_s0_20261017"
+  },
+  "rendering": {
+    "cells_per_core": {
+      "15": 38145,
+      "23": 43462
+    },
+    "manifest_path": "report/figure_manifest.json",
+    "manifest_sha256": "42b3a4c80dad043a687090d9ef5859065c2f739e10eb04c49f564be73f5672c3",
+    "n_cells": 81607,
+    "output_sha256": {
+      "figures/core_15_h0_leiden_segmentation.pdf": "054c9befd9b328326fcdc3bd959db2da03a5f471b45ce7233d132af9de2855db",
+      "figures/core_15_h0_leiden_segmentation.png": "7b3378955d18aeb78a4b75b7fb9fe8590d63fe3ed7bc72aaa726e41e5ac4960a",
+      "figures/core_23_h0_leiden_segmentation.pdf": "e91db3600dabcf433f1b18514a8d75addb09310b4fd9729e0e6c70bcd6e3584f",
+      "figures/core_23_h0_leiden_segmentation.png": "ff276bbc8f2b9c79e8c23e05e9b15640bea16fb9d40cffd965ed1e66382b290a",
+      "figures/shared_cluster_color_key.pdf": "57c3cd2f8ea2dced89810b5c88db50d4af6c1ee6ab1e04def26bae2e3a8bb478",
+      "figures/shared_cluster_color_key.png": "392db0e774dcb91d17ad62ab457d34a5e469cb2a7c04d8c61f722daba126d193",
+      "figures/test_cores_h0_leiden.pdf": "a9719a0b8f498944483e81858b411c04a1f003eef6e83c0418da4b6b5582771e",
+      "figures/test_cores_h0_leiden.png": "9d98012458500fd44ec129a98f5a9b58b9480020773508ae82fb20c605a8a605",
+      "report/cluster_color_keys.csv": "26954dd6a718fa55cff57657fb49256fab0423dbc1f8f455fd706fed9c7c2603",
+      "report/index.html": "bc95b9071f1290ac7baf8d844794ddad35d3df17f0315c39a71184fdb9c89849",
+      "report/segmentation_qc.json": "49583634884ad91dfec9e399edb1e3c8947e24527cf043be39fa50a1df005ed3"
+    },
+    "passed": true,
+    "qc": {
+      "actual_cell_polygons": true,
+      "cells": 81607,
+      "centroid_alignment_rule": "centroid_tolerance_or_polygon_covers_coordinate",
+      "centroid_mismatch_count": 0,
+      "centroid_tolerance_exceeded_count": 0,
+      "centroid_tolerance_um": 5.0,
+      "containment_accepted_count": 0,
+      "coordinate_outside_polygon_count": 6,
+      "covered_cells_per_core": {
+        "15": 38145,
+        "23": 43462
+      },
+      "cross_representation_label_alignment": false,
+      "export_checks": {
+        "core_15": {
+          "pdf_bytes": 156904,
+          "png_bytes": 267873,
+          "png_dimensions": [
+            1406,
+            1436
+          ],
+          "verified": true
+        },
+        "core_23": {
+          "pdf_bytes": 161799,
+          "png_bytes": 295959,
+          "png_dimensions": [
+            1406,
+            1379
+          ],
+          "verified": true
+        },
+        "legend": {
+          "pdf_bytes": 7896,
+          "png_bytes": 39431,
+          "png_dimensions": [
+            1821,
+            296
+          ],
+          "verified": true
+        },
+        "overview": {
+          "pdf_bytes": 352399,
+          "png_bytes": 649388,
+          "png_dimensions": [
+            3058,
+            1544
+          ],
+          "verified": true
+        }
+      },
+      "manual_visual_review": "not_performed",
+      "maximum_centroid_distance_um": 4.032010271222432,
+      "median_centroid_distance_um": 0.4025034538190281,
+      "palette_scope": "h0_only_shared_across_test_cores",
+      "palette_source": "deterministic_turbo_0.04_to_0.96",
+      "pixel_size_um": 0.120281,
+      "polygons_sampled": false,
+      "repaired_cells": 0,
+      "selected_vertex_rows": 1723887,
+      "shared_palette": true,
+      "slide_qualified_key_order_verified": true,
+      "source_rows_scanned": 5731515
+    },
+    "representation": "trained_node_encoder_output_before_graph_blocks",
+    "representation_name": "h0",
+    "schema": "so12_paper_test_h0_leiden_v1",
+    "status": "complete",
+    "test_core_numbers": [
+      15,
+      23
+    ]
+  },
+  "representation": "h0",
+  "scope": "descriptive_transductive_clustering_of_reserved_test_embeddings",
+  "test_cells": 81607,
+  "test_cores": [
+    15,
+    23
+  ]
+}

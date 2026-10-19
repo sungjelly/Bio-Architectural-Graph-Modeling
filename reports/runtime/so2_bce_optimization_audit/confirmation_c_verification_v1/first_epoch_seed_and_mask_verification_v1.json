@@ -1,0 +1,39 @@
+{
+  "code_contract_source_prior_world_size_parameter_count_identical": true,
+  "comparator_seed0_matches_selected_screen_first_epoch_exactly": true,
+  "predictive_score_selection_performed": false,
+  "runs": [
+    {
+      "label": "incumbent_seed0",
+      "model_seed": 0,
+      "optimizer_updates_per_epoch": 209,
+      "run_id": "r_20261001T092859Z_5cb93f7c_s000_f00_a01_0fb40980"
+    },
+    {
+      "label": "comparator_seed0",
+      "model_seed": 0,
+      "optimizer_updates_per_epoch": 413,
+      "run_id": "r_20261001T101202Z_f8197b29_s000_f00_a01_ed00c19e"
+    },
+    {
+      "label": "comparator_seed1",
+      "model_seed": 1,
+      "optimizer_updates_per_epoch": 413,
+      "run_id": "r_20261001T101202Z_a32d61e8_s001_f00_a01_8332ee26"
+    },
+    {
+      "label": "incumbent_seed1",
+      "model_seed": 1,
+      "optimizer_updates_per_epoch": 209,
+      "run_id": "r_20261001T101202Z_15baf65c_s001_f00_a01_6427735a"
+    }
+  ],
+  "schema": "so2_confirmation_first_epoch_seed_mask_verification_v1",
+  "scope": "Completed first-epoch operational reproducibility check only; all four 32-epoch runs remain active.",
+  "training_and_validation_masks_identical_across_all_four": true,
+  "verified_at": "2026-10-01T10:20:43.261521+00:00",
+  "within_variant_seed1_training_loss_differs_from_seed0": {
+    "comparator": true,
+    "incumbent": true
+  }
+}

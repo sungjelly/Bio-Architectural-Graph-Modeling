@@ -1,0 +1,5 @@
+{
+  "time": "2026-10-17T00:49:00.143732+00:00",
+  "error": "extraction_pilot failed with 1; inspect logs/extraction_pilot.log",
+  "traceback": "Traceback (most recent call last):\n  File \"/workspace/BAGM/scripts/analysis/run_so12_hidden_leiden.py\", line 215, in execute\n    jobs(out, [(\"extraction_pilot\", base + [\"--device\", \"cuda:0\", \"--cores\", \"23\", \"--pilot\"])])\n  File \"/workspace/BAGM/scripts/analysis/run_so12_hidden_leiden.py\", line 117, in jobs\n    require(code == 0, f\"{name} failed with {code}; inspect logs/{name}.log\")\n  File \"/workspace/BAGM/scripts/analysis/run_so12_hidden_leiden.py\", line 50, in require\n    raise RuntimeError(message)\nRuntimeError: extraction_pilot failed with 1; inspect logs/extraction_pilot.log\n"
+}

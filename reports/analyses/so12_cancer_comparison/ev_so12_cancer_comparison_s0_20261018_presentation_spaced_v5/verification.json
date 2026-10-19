@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "source_inputs_and_style_unchanged": true,
+  "palette_identical": true,
+  "panel_slot_width_preserved": true,
+  "previous_dimensions": [
+    6528,
+    3721
+  ],
+  "new_dimensions": [
+    7162,
+    3721
+  ],
+  "visual_review": {
+    "reviewers": [
+      "root",
+      "figure_review"
+    ],
+    "passed": true,
+    "notes": "Wider gaps; all ten panels, titles, scale bars and boundaries visible without clipping."
+  }
+}

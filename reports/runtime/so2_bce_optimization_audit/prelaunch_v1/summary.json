@@ -1,0 +1,23 @@
+{
+  "repository_tests": {
+    "passed": 1929,
+    "failed": 35,
+    "skipped": 4,
+    "duration_seconds": 530.38,
+    "failure_scope": "Unchanged legacy configs/materialization receipts, absent clinical map in source worktree, missing prepared synthetic geometry, external MyJJu script."
+  },
+  "audit_tests": {
+    "runner_and_diagnostics": 41,
+    "configuration_launcher_archive": 38
+  },
+  "doctor": {
+    "sqlite_integrity": "ok",
+    "minimum_free_disk_gib": 5,
+    "free_disk_gib": 21.072,
+    "remaining_issues": [
+      "preexisting catalog index gap 49 artifacts/48 indexed",
+      "two preexisting six-core dataset/split paths absent"
+    ]
+  },
+  "git_diff_check": "passed"
+}

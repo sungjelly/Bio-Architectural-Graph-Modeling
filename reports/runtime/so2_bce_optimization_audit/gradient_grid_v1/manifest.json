@@ -1,0 +1,11 @@
+{
+  "files": {
+    "README.md": "8340f819b340f87d35022b3583b1a716cf2170eb8146818904d1f57a7589a587",
+    "receipt_builder.py": "23233752b94adce2cae4db787e23d8ce35c15a591312ecdbffd9efb08a416afc",
+    "scope_epochs.csv": "6fe875fb7a704851f363cd9c5ac59eef08bc7cd831de46c7ce5600da9ad205d9",
+    "stage_plan.json": "0f8d0ce2b41a003de766747875cd57e32627e6e9d91eb2e6b77dc7368f0c9338",
+    "stage_state.json": "a19c73cf73a5d1c13c554e21751b46411e0a95048fe8bb7229d332284163466e",
+    "summary.json": "f7ad17425bc050b1393b46dd60213bdb918c2fb4f674b9becf55c5b47eb04523"
+  },
+  "schema": "checksummed_local_report_v1"
+}

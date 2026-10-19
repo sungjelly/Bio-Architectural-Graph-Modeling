@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "reported_by": "representation_workflow independent reviewer",
+  "source": "actual epoch151 checkpoint; synthetic graph inputs",
+  "n_nodes": 128,
+  "incoming_neighbors_per_node": 32,
+  "edges": 4096,
+  "dtype": "float32",
+  "tf32": false,
+  "deterministic_algorithms": true,
+  "cudnn_deterministic": true,
+  "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+  "checkpoint_sha256": "6b4526508d223fb8a286084f57fc5f4b36129db6afeffaa328672d2c06226af4",
+  "predictions_exact": true,
+  "h0_equals_direct_encoder": true,
+  "hL_equals_ordinary_full": true,
+  "ordinary_repeat_exact": true,
+  "max_prediction_difference": 0.0,
+  "elapsed_seconds": 0.8,
+  "peak_allocated_bytes": 80426496,
+  "gpu_name": "NVIDIA GeForce RTX 3090"
+}

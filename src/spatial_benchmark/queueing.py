@@ -287,6 +287,30 @@ def command_for_config(
 
     evaluation = _section(configuration, "evaluation")
     protocol = str(evaluation.get("protocol", "")).strip().lower()
+    if protocol in {
+        "so12_pearson_relative_qkv_train_validation_v1",
+        "so12_pearson_relative_qkv_paper_core_split_v1",
+    }:
+        validate_experiment_config(configuration)
+        script = (
+            "run_so12_paper_split.py"
+            if protocol == "so12_pearson_relative_qkv_paper_core_split_v1"
+            else "run_so12_relative_qkv.py"
+        )
+        return [
+            sys.executable,
+            "-m",
+            "torch.distributed.run",
+            "--standalone",
+            "--nnodes=1",
+            "--nproc-per-node=4",
+            "--max-restarts=0",
+            str(selected_paths.project_root / "scripts/train" / script),
+            "--config",
+            "{run_scratch}/config.resolved.yaml",
+            "--run-scratch",
+            "{run_scratch}",
+        ]
     if protocol == "posthoc_attention_routing_niche_v1":
         model = _section(configuration, "model")
         campaign = _section(configuration, "campaign")
@@ -333,6 +357,23 @@ def command_for_config(
             "{run_scratch}/config.resolved.yaml",
             "--run-scratch",
             "{run_scratch}",
+        ]
+    if protocol == "held_in_so2_genemae_masking_v1":
+        if _section(configuration, "model").get("name") != "myjju-genemae":
+            raise ConfigurationError("SO2 GeneMAE masking requires myjju-genemae.")
+        runtime = _section(configuration, "metadata").get("runtime", {})
+        if not isinstance(runtime, Mapping):
+            raise ConfigurationError("runtime must be a mapping when supplied.")
+        script_name = (
+            "recover_so2_genemae_masking.py"
+            if runtime.get("checkpoint_recovery")
+            else "run_so2_genemae_masking.py"
+        )
+        return [
+            sys.executable,
+            str(selected_paths.project_root / "scripts/train" / script_name),
+            "--config", "{run_scratch}/config.resolved.yaml",
+            "--run-scratch", "{run_scratch}",
         ]
     if protocol == "held_in_pooled_10core_fixed_budget":
         model = _section(configuration, "model")

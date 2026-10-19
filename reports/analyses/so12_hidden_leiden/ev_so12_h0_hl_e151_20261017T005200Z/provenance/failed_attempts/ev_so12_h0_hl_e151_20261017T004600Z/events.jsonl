@@ -1,0 +1,5 @@
+{"time": "2026-10-17T00:46:02.607382+00:00", "event": "preparation_started"}
+{"time": "2026-10-17T00:48:30.127753+00:00", "event": "preparation_complete", "cells": 407659}
+{"time": "2026-10-17T00:48:30.135180+00:00", "event": "job_started", "name": "extraction_pilot", "command": ["/venv/main/bin/python", "-u", "scripts/analysis/so12_hidden_extraction.py", "--source-run-dir", "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b", "--output", "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T004600Z", "--device", "cuda:0", "--cores", "23", "--pilot"]}
+{"time": "2026-10-17T00:49:00.140688+00:00", "event": "job_finished", "name": "extraction_pilot", "exit_code": 1}
+{"time": "2026-10-17T00:49:00.145933+00:00", "event": "failed", "error": "extraction_pilot failed with 1; inspect logs/extraction_pilot.log"}

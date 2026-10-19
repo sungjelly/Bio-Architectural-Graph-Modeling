@@ -1,0 +1,167 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so12_pearson_preprocessing_plausibility
+title: Pearson preprocessing passes a joint-slide donor-separated plausibility pilot
+status: verified
+outcome: supported
+experiment_type: data_qc
+method_family: pearson_preprocessing
+lifecycle_stage: pilot
+study_axis: preprocessing
+campaign_ids:
+- cmp_20261016_so12_pearson_preprocessing
+method:
+  name: Pooled training-fitted quasi-Poisson Pearson preprocessing comparison
+  model_family: No neural model; fixed preprocessing, PCA and diagnostic logistic
+    classifiers
+  graph_context: No new graph or cross-core edges; source independent core graphs
+    referenced
+  masking_or_perturbation: Fully observed expression; synthetic heldout and hidden-gene
+    perturbation checks only
+  evaluation_design: 10 training donors, 4 diagnostic donors, 28 cores; 1000 sampled
+    cells/core; all training cells fit transforms/PCA; one seed and one split
+  implementation_version: so12_quasipoisson_v1; vendor-source pin 41c499026d789ff35288de2ddc62f506a9d51cf0;
+    common PCA recentered after clipping
+conclusion:
+  question: Is pooled Pearson, with or without signed log, plausible shared preprocessing
+    for SO1 and SO2?
+  estimand: Descriptive depth association and circular vendor-annotation consistency
+    in heldout donors
+  observed_result: 'Heldout-core median variance-weighted PC/depth R²: raw log 0.3720763,
+    CP10k log 0.3260569, Pearson 0.0330754, signed-log Pearson 0.0307229. Pearson
+    improves all eight heldout cores. SO1/SO2 balanced annotation accuracy: raw log
+    0.706224/0.734916, CP10k log 0.678751/0.729620, Pearson 0.716627/0.760118, signed-log
+    Pearson 0.736762/0.726686. Both Pearson variants pass the fixed no-more-than-0.05
+    within-slide loss criterion. Extra signed log improves depth in only four of eight
+    cores relative to Pearson. All output features finite.'
+  strongest_alternative_explanation: Depth can encode biology; compression changes
+    PC variance weighting; vendor labels derive from expression; slide and disease
+    composition are confounded.
+  controls:
+  - Training-only pooled fitting; verified donor-disjoint split; all 28 core count/metadata
+    alignment checks.
+  - Raw-log and CP10k-log baselines; nonstandard signed-log ablation; same balanced
+    per-core sample and 32-PC protocol.
+  - Independent CPU formula and GPU comparison, heldout perturbation fit invariance,
+    synthetic class/depth recovery.
+  - Within-training-core annotation permutation null; QC-pass depth sensitivity; independent
+    exported-array replay and checksums.
+  remaining_uncertainty: No neural training or batch-removal validation; only four
+    diagnostic donors, one split/seed; vendor letters have unverified biological meanings;
+    no external or independent biological validation. Full-cell totals leak hidden
+    counts if masking is applied afterward.
+  maximum_defensible_claim: Both Pearson variants are plausible fully observed shared
+    preprocessing candidates; prefer plain Pearson as the next training baseline and
+    retain signed log as an ablation. This does not establish batch correction, improved
+    masked prediction or preserved biological mechanisms.
+evidence:
+  predictive_gain:
+    status: not_tested
+    summary: No masked-expression or neural graph model comparison.
+  stability:
+    status: mixed
+    summary: Pearson versus raw log improves depth in all eight cores and QC-pass
+      subset; extra signed-log benefit occurs in four of eight cores; no split/seed
+      replication.
+  faithfulness:
+    status: not_applicable
+    summary: No model attribution or inferred interaction tested.
+  null_calibration:
+    status: mixed
+    summary: One within-training-core label permutation produces lower agreement than
+      observed labels, but is not a calibrated significance test.
+  patient_replication:
+    status: not_tested
+    summary: Four heldout donor groups provide descriptive consistency only; no independent
+      cohort or confirmatory replication.
+  external_support:
+    status: not_tested
+    summary: Vendor method source supports implementation, not independent biological
+      validation.
+  perturbation_support:
+    status: not_tested
+    summary: Synthetic numerical controls only; no biological intervention.
+provenance:
+  created_at_utc: '2026-10-16T08:31:49Z'
+  updated_at_utc: '2026-10-16T08:31:49Z'
+  git_commit: f2776df3769620e7c2b1728116a71ca086c7e3b4
+  run_ids:
+  - r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410
+  - r_20261016T082320Z_660b87cb_s000_f00_a01_cd1c1544
+  expected_seeds:
+  - 0
+  included_seeds:
+  - 0
+  expected_folds:
+  - 0
+  included_folds:
+  - 0
+  failed_or_excluded_runs:
+  - run_id: r_20261016T082320Z_660b87cb_s000_f00_a01_cd1c1544
+    reason: Concurrent CUDA eigensolver lazy-initialization failure; retried with
+      serial initialization and unchanged scientific protocol; no failed-attempt metrics
+      used.
+  sources:
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410/metrics.json
+    sha256: f94d2c2edd7a1a3620a1ed4bbd4d87a274fb4e4b0d4c2007480ed35ddddbe173
+    verification_status: verified
+    run_id: r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410/verification.json
+    sha256: 3d9f6141ee45b856e94251dc2d0cd5800a3278468ce9726bcc2159812e0e17ac
+    verification_status: verified
+    run_id: r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410/resolved_config.json
+    sha256: 68d554032e20057a4ca3361379ab01727ee1be277a665cefb31572b2f0d87de2
+    verification_status: verified
+    run_id: r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410/smoke_checks.json
+    sha256: b2fec129ae85343179c5202da3a3898e1ff185ede0273eeec77bd6696e68594f
+    verification_status: verified
+    run_id: r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410/input_provenance.json
+    sha256: 37577e11496d03ed518b7db74b1694680e0160971f7c480f616f4789b17590fc
+    verification_status: verified
+    run_id: r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410/transform_diagnostics.json
+    sha256: 3bd0d9579e0e22fa4cf08741e39e9bbd74b9e249b004722de2333ad87ccde222
+    verification_status: verified
+    run_id: r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410
+  - kind: report
+    root: report
+    path: analyses/so12_pearson_preprocessing/README.md
+    sha256: 45ce50e30ef723ff0fc75bb19cdc008f79aa1c61205c6fdad2cdc60ae4aee7f6
+    verification_status: verified
+  - kind: report
+    root: report
+    path: analyses/so12_pearson_preprocessing/report.html
+    sha256: 095ee924681236b2b3d3a83adb159a10d72fd396f3b100f2b77682a876c4ea60
+    verification_status: verified
+  - kind: report
+    root: report
+    path: analyses/so12_pearson_preprocessing/independent_verification.json
+    sha256: 699940bbc81209bb3c3b3b30ea3fb021e1dd032d487df47bdefd026f2f8b60bb
+    verification_status: verified
+  - kind: report
+    root: report
+    path: analyses/so12_pearson_preprocessing/attempt1_failure.log
+    sha256: 1891434115eece0dd4f970e46d20286aebe4592d760ba919373074c5e42e28bf
+    verification_status: verified
+  - kind: report
+    root: report
+    path: analyses/so12_pearson_preprocessing/attempt2_execution.log
+    sha256: 5ca1a396893323c092dcddfe72eebb5f080e3fc6002fa30031b6bd17cde98b22
+    verification_status: verified
+files: []

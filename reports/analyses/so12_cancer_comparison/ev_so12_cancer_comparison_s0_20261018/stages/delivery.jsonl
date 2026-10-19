@@ -1,0 +1,9 @@
+{"status": "running", "time": "2026-10-18T06:42:10.223134+00:00", "script": "so12_cancer_metrics.py"}
+{"status": "script_complete", "time": "2026-10-18T06:42:15.946702+00:00", "script": "so12_cancer_metrics.py"}
+{"status": "running", "time": "2026-10-18T06:42:15.952241+00:00", "script": "so12_cancer_core_mixing.py"}
+{"status": "script_complete", "time": "2026-10-18T06:42:19.274562+00:00", "script": "so12_cancer_core_mixing.py"}
+{"status": "running", "time": "2026-10-18T06:42:19.279386+00:00", "script": "so12_cancer_figures.py"}
+{"status": "script_complete", "time": "2026-10-18T06:44:51.811190+00:00", "script": "so12_cancer_figures.py"}
+{"status": "running", "time": "2026-10-18T06:44:51.816396+00:00", "script": "so12_cancer_report.py"}
+{"status": "script_complete", "time": "2026-10-18T06:45:43.491088+00:00", "script": "so12_cancer_report.py"}
+{"status": "complete", "time": "2026-10-18T06:45:43.495163+00:00"}

@@ -5,7 +5,20 @@ by hand; run `scripts/results/manage_results.py catalog`.
 
 | Experiment type | Method | Result | Outcome | Status | Stage |
 |---|---|---|---|---|---|
+| data_qc | pearson_preprocessing | [res_so12_pearson_preprocessing_plausibility](data_qc/pearson_preprocessing/res_so12_pearson_preprocessing_plausibility/README.md) | supported | verified | pilot |
+| descriptive_analysis | classical_encoders | [res_so12_normalized_embeddings_leiden](descriptive_analysis/classical_encoders/res_so12_normalized_embeddings_leiden/README.md) | inconclusive | verified | exploratory_screen |
+| descriptive_analysis | genemae | [res_so2_genemae_ten_percent_masking](descriptive_analysis/genemae/res_so2_genemae_ten_percent_masking/README.md) | inconclusive | verified | exploratory_screen |
+| descriptive_analysis | relative_qkv | [res_so12_hidden_states_leiden_comparison](descriptive_analysis/relative_qkv/res_so12_hidden_states_leiden_comparison/README.md) | inconclusive | verified | exploratory_screen |
+| descriptive_analysis | relative_qkv | [res_so2_binary_occurrence_hurdle_comparison](descriptive_analysis/relative_qkv/res_so2_binary_occurrence_hurdle_comparison/README.md) | negative | verified | exploratory_screen |
 | descriptive_analysis | relative_qkv | [res_so2_nonzero_reconstruction_comparison](descriptive_analysis/relative_qkv/res_so2_nonzero_reconstruction_comparison/README.md) | negative | verified | exploratory_screen |
 | descriptive_analysis | relative_qkv | [res_so2_reconstruction_failure_diagnosis](descriptive_analysis/relative_qkv/res_so2_reconstruction_failure_diagnosis/README.md) | inconclusive | verified | exploratory_screen |
+| descriptive_analysis | representation_comparison | [res_so12_test_cancer_backward_retention](descriptive_analysis/representation_comparison/res_so12_test_cancer_backward_retention/README.md) | inconclusive | verified | exploratory_screen |
+| descriptive_analysis | representation_comparison | [res_so12_test_cancer_limited_cluster_agreement](descriptive_analysis/representation_comparison/res_so12_test_cancer_limited_cluster_agreement/README.md) | inconclusive | verified | exploratory_screen |
+| descriptive_analysis | representation_comparison | [res_so12_test_cancer_pooled_retention](descriptive_analysis/representation_comparison/res_so12_test_cancer_pooled_retention/README.md) | inconclusive | verified | exploratory_screen |
+| descriptive_analysis | representation_comparison | [res_so12_test_cancer_representation_agreement](descriptive_analysis/representation_comparison/res_so12_test_cancer_representation_agreement/README.md) | inconclusive | verified | exploratory_screen |
+| descriptive_analysis | spatial_reconstruction | [res_so2_prediction_pearson](descriptive_analysis/spatial_reconstruction/res_so2_prediction_pearson/README.md) | supported | verified | exploratory_posthoc |
+| predictive_benchmark | local_gene_residual | [res_so2_local_gene_count_reconstruction](predictive_benchmark/local_gene_residual/res_so2_local_gene_count_reconstruction/README.md) | negative | verified | exploratory_validation |
+| predictive_benchmark | relative_qkv | [res_so12_pearson_random_mask_validation](predictive_benchmark/relative_qkv/res_so12_pearson_random_mask_validation/README.md) | inconclusive | verified | exploratory_screen |
+| predictive_benchmark | relative_qkv | [res_so2_bce_optimization_audit](predictive_benchmark/relative_qkv/res_so2_bce_optimization_audit/README.md) | negative | verified | validation_confirmation |
 
-Catalog content SHA-256: `31252cedd68ff4955b09020ebce20d29a67e4a621f50eda5360ebe619cb29d74`
+Catalog content SHA-256: `b9358dc1999e9ccf251725e96d35a77ccb830fefc14efa4701f24023fffcf1df`

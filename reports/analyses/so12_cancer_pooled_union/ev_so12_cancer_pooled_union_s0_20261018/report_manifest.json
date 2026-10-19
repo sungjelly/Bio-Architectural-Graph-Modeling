@@ -1,0 +1,64 @@
+{
+  "embedded_pngs": 3,
+  "figures": {
+    "pooled_f1_bar": {
+      "pdf": {
+        "path": "figures/pooled_f1_bar.pdf",
+        "sha256": "6ebaf77bb4954194922d9d9a827bc2ced7cd76cc72f8809a11fd2b02f42e3ab2",
+        "size_bytes": 27593
+      },
+      "png": {
+        "path": "figures/pooled_f1_bar.png",
+        "sha256": "202edfaa1163730d23396ba6a2c9a5209b5fd79267482deb3a2ef6debf2daf78",
+        "size_bytes": 261264
+      },
+      "svg": {
+        "path": "figures/pooled_f1_bar.svg",
+        "sha256": "a6856963530feee1d6fb866e0e5697498763ac167201be90541be568571b6b74",
+        "size_bytes": 13070
+      }
+    },
+    "pooled_f1_retention_paths": {
+      "pdf": {
+        "path": "figures/pooled_f1_retention_paths.pdf",
+        "sha256": "6413862b64ece22c476fcd0814d3de9a962be2245b0bb6ea4ddf63a1abf98d64",
+        "size_bytes": 36107
+      },
+      "png": {
+        "path": "figures/pooled_f1_retention_paths.png",
+        "sha256": "7ec13045bbc516dc73bac752d96209ea0a19a3fa673abe5e3042071bcfad2789",
+        "size_bytes": 612767
+      },
+      "svg": {
+        "path": "figures/pooled_f1_retention_paths.svg",
+        "sha256": "b40b8909c3b97d85f2376d95d43023de13c0c3f799b6ff9f7a857ff9e5b0fb21",
+        "size_bytes": 137258
+      }
+    },
+    "pooled_f1_retention_table": {
+      "pdf": {
+        "path": "figures/pooled_f1_retention_table.pdf",
+        "sha256": "0f1599b413cd18bddde05d02a67b5b4cf9c9350232b21735a5b96909f4ae9552",
+        "size_bytes": 27598
+      },
+      "png": {
+        "path": "figures/pooled_f1_retention_table.png",
+        "sha256": "52a21dfffb0c663fbed9f7378a9278f92a5342ca11789b23475705484a361e7f",
+        "size_bytes": 318398
+      },
+      "svg": {
+        "path": "figures/pooled_f1_retention_table.svg",
+        "sha256": "5209d87ad8fb40841165f4cd8e81fee6c69cf0cccf3b844c37c34b0267c8c7b4",
+        "size_bytes": 16001
+      }
+    }
+  },
+  "metrics_sha256": "8374fa7eb348e62e3e47701009979266c6066013c9f7dd087327e9579f68064c",
+  "passed": true,
+  "report_path": "report/index.html",
+  "report_record": {
+    "sha256": "a14ba451f19df8cf87555f2360a31d004c061186714250b598aebcbcc613f115",
+    "size_bytes": 1593011
+  },
+  "status": "complete"
+}

@@ -1,0 +1,462 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 3
+result_id: res_so12_hidden_states_leiden_comparison
+title: SO1/SO2 initial and final hidden-state partitions compared with three PCA methods
+status: verified
+outcome: inconclusive
+experiment_type: descriptive_analysis
+method_family: relative_qkv
+lifecycle_stage: exploratory_screen
+study_axis: fully_observed_representation_comparison
+campaign_ids:
+- cmp_20261017_so12_h0_hl_leiden_segmentation
+- cmp_20261016_so12_pearson_relative_qkv_train_validation
+- cmp_20261016_so12_embeddings_leiden
+method:
+  name: Frozen four-layer SO1/SO2 Relative-Geometric QKV h0 and hL Leiden partitions, with existing
+    Pearson PCA, RBF kernel PCA and spatial PCA partitions
+  model_family: Relative-Geometric QKV Graph Transformer, four independent layers, width 256,
+    eight attention heads; training seed 0 and validation-selected best checkpoint at epoch 151
+  graph_context: Model inference uses full coordinate-only within-core radial-stratified k200/r500-micrometre
+    graphs with 70 relative-geometry attention-bias features. Hidden-state clustering uses direct
+    256-dimensional cosine k30 exhaustive FP32 neighbors, unweighted undirected-union graphs and
+    Leiden until convergence. Prior PCA methods retain their 32-dimensional Euclidean HNSW k30
+    graphs, exponential distance weights, arithmetic-mean symmetrization and two Leiden iterations.
+  masking_or_perturbation: All observed genes are supplied during frozen-model inference; the
+    gene mask is all false and permitted morphology remains visible. No training, masking sweep,
+    data augmentation or biological perturbation is performed.
+  evaluation_design: Extract and cluster all 407659 mapped cells from 28 cores across two slides.
+    Primary Leiden resolution 1.0 and seed 0; hidden-state seed 1 is retained as a fixed-graph
+    algorithmic stability check. Display the same 117996 original cell polygons from cores 1,
+    9, 13, 15, 21 and 23. Core 13 is model validation; the other five displayed cores are training.
+    Encoder fitting used the existing donor-separated split, but all-cell clustering is transductive.
+    Compare existing labels on all cells, the six displayed cores pooled and each displayed core
+    separately; never recluster those subsets. Provenance seeds describe Leiden seeds, while model
+    and encoder seeds are 0; fold 0 denotes the existing fixed partition, not a sealed clustering
+    test.
+  implementation_version: so12_direct_hidden_clustering_v1 and so12_hidden_and_pca_segmentation_comparison_v1;
+    final so12_hidden_leiden_report_v1 publication contains both prespecified Leiden seeds and
+    independently verified extraction, clustering, numerical comparisons, rendered outputs and
+    immutable checksums. Earlier so12_primary_seed0_delivery_v1 artifact is retained as a historical
+    snapshot.
+conclusion:
+  question: How do the trained model's initial and final cell representations partition the integrated
+    SO1/SO2 cohort, and how do those partitions compare with the existing three PCA methods on
+    identical cells and tissue polygons?
+  estimand: Exploratory fully observed, all-cell transductive representation partitions; descriptive
+    adjusted Rand agreement of fixed partitions and within-method color maps on actual cell segmentation
+    polygons
+  observed_result: 'Full evaluation ev_so12_h0_hl_e151_20261017T005200Z completed and was published
+    at 2026-10-17T04:54:25Z. All 407659 cells from 28 cores have complete primary h0/hL partitions;
+    h0, hL, Pearson PCA, RBF kernel PCA and spatial PCA contain 16, 22, 19, 21 and 17 clusters.
+    All-cell h0-hL ARI is 0.3701562885697946; hL agreement with PCA, kernel PCA and spatial PCA
+    is 0.2849100927644078, 0.27736674118010246 and 0.39323740331417256. Across the six displayed
+    cores pooled, these four ARIs are 0.3073985844326938, 0.3223382177716715, 0.36097262499127725
+    and 0.6019284411347983. Fixed-graph Leiden seeds 0 and 1 yield h0 cluster counts 16/16 with
+    ARI 0.8069532157597211, and hL counts 22/21 with ARI 0.8837090007869288. No primary h0 cluster
+    has more than 90 percent of cells in one core; five primary hL clusters do: clusters 3, 10,
+    12, 17 and 21 are dominated by cores 23, 15, 15, 3 and 21 at fractions 0.9881606765327695,
+    0.9990174887011201, 0.9984255202628697, 0.9438857309430112 and 0.9896128423040604. Joint clustering
+    therefore does not establish batch removal or integration quality. All 117996 displayed original
+    polygons have complete coverage, zero repairs and zero alignment mismatches. Six five-method
+    maps, overview and full 95-entry legends are available in PNG/PDF, with portable HTML, all-cell/per-core
+    tables and a download ZIP.'
+  strongest_alternative_explanation: Differences can reflect the encoder, dimensions, distance
+    metric, neighbor search, edge weighting, Leiden iteration policy, slide or tissue composition,
+    RNA depth, spatial smoothing or segmentation spillover rather than distinct biological cell
+    states. Representation and clustering-pipeline effects are not isolated by this comparison.
+  controls:
+  - Verified checkpoint ownership and hashes, all-observed inputs, complete 28-core extraction,
+    finite embeddings, largest-core exact repeat/invariance check and exact-neighbor pilots/audits.
+  - Exact slide-qualified joins and coordinate agreement cover all 407659 cells. All 117996 requested
+    polygons are retained with zero repairs and zero centroid-or-containment mismatches; one centroid
+    beyond 5 micrometres is accepted because its coordinate lies inside its polygon, and eight
+    outside coordinates are within the 5-micrometre tolerance.
+  - All four actual h0/hL seed-0/seed-1 partition receipts and label hashes were checked. Fixed-graph
+    seed ARIs were independently recomputed. All-method primary ARI matrices and cluster counts
+    cover all cells, the six displayed cores pooled and each displayed core; statistics replayed
+    exactly without reclustering.
+  - Prior PCA labels and all 57 historical PCA palette entries are reused unchanged. Every core
+    has matched five-method bounds, aspect, orientation and 100-micrometre scale bars with independent
+    cluster namespaces and complete 95-entry color keys.
+  - All six individual final maps, overview and legend passed root visual review; overview, legend
+    and cores 13/23 passed additional independent review. All eight PNGs decoded, all eight PDFs
+    passed header checks, six portable-HTML previews matched independent resampling of source
+    PNGs, and numeric/color/polygon checks passed.
+  - The final 249-file manifest and success marker bind the completed evaluation, independent
+    numerical and visual audits, failed-attempt evidence and source snapshots. The final 18619413-byte
+    download archive passed checksum and CRC checks. The earlier primary-only artifact and its
+    pending-at-creation receipts remain unchanged as history.
+  remaining_uncertainty: Fixed-graph seed agreement is imperfect, and hL seed 1 has 21 clusters
+    versus 22 in seed 0. Two Leiden seeds assess algorithmic sensitivity only; one trained model
+    seed and one fixed cohort are used. Five primary hL clusters are more than 90 percent concentrated
+    in a single core, so joint clustering cannot establish integration or batch-removal quality.
+    No independent cell-type annotations, biological replication, matched graphless encoder, geometry
+    ablation, new spatial null calibration, segmentation perturbation, faithfulness evaluation
+    or biological perturbation is included. PCA and hidden-state clustering pipelines differ,
+    so cross-method agreement cannot isolate encoder quality. Failed evaluations ev_so12_h0_hl_e151_20261017T004300Z
+    (logger argument collision before GPU work) and ev_so12_h0_hl_e151_20261017T004600Z (exact
+    pilot detected an omitted deterministic-mode flag before saved embeddings) contribute no scientific
+    outputs; immutable failure receipts and diagnostics are preserved in both the final evaluation
+    and historical primary delivery.
+  maximum_defensible_claim: The verified completed computational artifact provides all-observed
+    h0/hL and three existing PCA partitions on identical cells, actual segmentation comparisons
+    for six requested cores, measured cross-method partition agreement and two-seed fixed-graph
+    Leiden sensitivity. These descriptive outputs do not establish cell types, batch removal,
+    integration quality, biological superiority, graph-specific predictive gain, interactions
+    or causality.
+evidence:
+  predictive_gain:
+    status: not_tested
+    summary: This is representation visualization and partition comparison, not a new masked-expression
+      benchmark or graph-specific gain test.
+  stability:
+    status: mixed
+    summary: Both prespecified fixed-graph Leiden seeds completed. h0 seed-0/seed-1 cluster counts
+      are 16/16 with adjusted Rand index 0.8069532157597211; hL counts are 22/21 with adjusted
+      Rand index 0.8837090007869288. Exact inference repeatability passed. Partition membership
+      is sensitive to seed, and two algorithmic repeats do not assess model-training, patient
+      or biological replication.
+  faithfulness:
+    status: not_applicable
+    summary: No attribution, sensitivity or inferred interaction is interpreted; representation
+      changes and ARI do not establish mechanism faithfulness.
+  null_calibration:
+    status: not_tested
+    summary: No new biological or spatial null is part of this comparison; prior PCA diagnostic
+      nulls do not calibrate hidden-state partitions.
+  patient_replication:
+    status: not_tested
+    summary: Donor-separated encoder fitting does not make transductive all-cell clustering an
+      independent-patient replication experiment.
+  external_support:
+    status: not_tested
+    summary: No independent molecular measurements, pathology annotation or external cohort is
+      used to validate cluster identities.
+  perturbation_support:
+    status: not_tested
+    summary: No biological intervention is included.
+provenance:
+  created_at_utc: '2026-10-17T00:42:48Z'
+  updated_at_utc: '2026-10-17T04:56:17.644792Z'
+  git_commit: f2776df3769620e7c2b1728116a71ca086c7e3b4
+  run_ids:
+  - r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+  - r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+  expected_seeds:
+  - 0
+  - 1
+  included_seeds:
+  - 0
+  - 1
+  expected_folds:
+  - 0
+  included_folds:
+  - 0
+  failed_or_excluded_runs: []
+  sources:
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/manifest.json
+    sha256: 0a1343215834e85dfee2a364e91b3fe6094623dcd9c7107c1f36f247cacbd81b
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Immutable completed 249-file evaluation manifest binding all output, provenance
+      and audit bytes.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/_SUCCESS
+    sha256: 8706c3252511cc311e8cf3389636feb59dee53c1e612240e9a25daa083f5b45e
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Full evaluation success marker, published at 2026-10-17T04:54:25.539328+00:00
+      and bound to final manifest SHA-256.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/clustering/summary.json
+    sha256: b5e145b2663060bdd1b2e4dce20ff1a4dd6902b448c9426238aa92ff9776f926
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Final primary cluster counts, cross-layer ARIs, both algorithmic seeds, seed
+      agreement and per-cluster core dominance.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/report/figure_manifest.json
+    sha256: 40d934b7b50af397b0bd030ebf65c186b44b6e474e32894f3954ec6ce47e6505
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Final rendering sources, complete figure checksums, labels, actual polygon coverage,
+      shared bounds and method palettes.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/report/comparison_metrics.json
+    sha256: d3c3277c116c7469acac8c964552690ea9a2872c8002ce9ffcdf7713b707d37a
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Actual five-method primary ARI matrices and observed cluster counts for all cells,
+      requested cores pooled and each requested core.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/report/segmentation_qc.json
+    sha256: 2a95fa58ea6ec1cc10afcc17f1b238c9ceb3a807f1198ee58aaf77d4b7c67ffb
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Complete keyed 117996-cell original-polygon coverage, centroid-or-containment
+      alignment and zero repairs.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/report/cluster_color_keys.csv
+    sha256: 8d9eb2e3e4e65994abe73784a46c34fff7de1f9e7a062112fe72aa91f6b42af6
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: All 95 method-specific color keys with all-cell and requested-core counts; original
+      PCA colors preserved.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/report/index.html
+    sha256: 8c429d566dabed9fc039e9e5fb28a4608c0287da3c8f77f84c16a43fca930742
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Final portable report with six embedded source-matched previews, complete legends
+      and comparison tables.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/so12_all28cores_h0_hL_PCA_six_core_images.zip
+    sha256: 638260bbc8e464c84a838b8102c799fedc907423c1e79241479db55b4025b3e8
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Final portable image/report/table download archive; 18619413 bytes, checksum
+      and CRC verified.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/embeddings/extraction_manifest.json
+    sha256: cf2b52de5a93cbdf5c3ef8b0709dcee2517167053d75a111485c81aaf6261b77
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Complete all-observed hidden-state extraction and epoch-151 checkpoint binding
+      for all 28 cores.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/extraction_inputs.json
+    sha256: dd791fca7299900e2e6ce3e7bb33eb793ae91a4d267fa410bd84861f0fca5e77
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Frozen model, data and extraction configuration provenance.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/clustering/h0/leiden_seed0_receipt.json
+    sha256: 648ab5d1cdc40c8da4cb361b041970e94b48023000fdf0ab989c218d9a9cd453
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Completed primary initial-state partition and graph binding.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/clustering/h0/leiden_seed1_receipt.json
+    sha256: 409d7b0a35b4caf03d9399581ed9350a3695abdc3294771452f2d7bd3497b695
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Completed secondary initial-state partition on the same fixed graph.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/clustering/hL/leiden_seed0_receipt.json
+    sha256: 167a9a87874ff88933522640762bca8f12b88fc785619b264b97c95a686549f3
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Completed primary final-state partition and graph binding.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/clustering/hL/leiden_seed1_receipt.json
+    sha256: aaa1f337f7697b50cf2666e2d115fe41bea05f432e5dca8cdaa930e9ae6a8841
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Completed secondary final-state partition on the same fixed graph.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/clustering/h0/core_composition.csv
+    sha256: 9d4013ee621db15a996a6db812da9e96d8c5449a06865bd475c3a921ee947baa
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Initial-state primary cluster composition by core.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/clustering/hL/core_composition.csv
+    sha256: a578645e4e9268c1a6034b0a364e94877194161599e683fbcfc5c039168dea09
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Final-state primary cluster composition by core, including five clusters dominated
+      by one core.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/diagnostics/independent_numeric_audit.json
+    sha256: b9d147a36570507892e4b7f8c41333496333008ff3b8dab07f5da5656c4c6e5a
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Passed independent V2 audit of extraction, exact graphs, both partitions/seeds,
+      comparisons and frozen source provenance.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/diagnostics/independent_graph_audit.json
+    sha256: e6ba18c630b16ca2ca2962ff4b654a8de72a56a060e3ba2193bbd706dd32c688
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Independent exact-neighbor graph audit.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/diagnostics/final_render_review.json
+    sha256: 3bd2f9c8ba0a2fa5cefaae844f6e2a072daa2737ad5eb2398fd9d098ed3620fb
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Independent final figure/input hashes, all PNG/PDF checks, HTML preview consistency,
+      historical palettes, polygon QC and four-image visual review.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/diagnostics/final_review.json
+    sha256: fc3163d467152ffd7fcecebd55f84bc69e6a136bdd772e94ce751e4a810678fe
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Final root review of all six individual maps, overview and legend with complete
+      numerical, stability and publication gates.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/diagnostics/download_archive_check.json
+    sha256: 8c87553408104b8048ecffe31e1fce2f745b926bcb3b73a79c67547f13b32637
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Final download archive contents and CRC/checksum verification.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/provenance/failed_attempts/index.json
+    sha256: edd86837ece26a9db6d27d38043f0838956456232e13c95b229fa21086b4e884
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Final preserved failure-evidence hashes for both excluded evaluation attempts.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/provenance/failed_attempts/ev_so12_h0_hl_e151_20261017T004300Z/FAILURE.json
+    sha256: e120e371e71dc24ffab61a6c0d860fb939b78b66aa8caabf5a27c29988966706
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Historical logger argument collision before GPU work; excluded evaluation contributes
+      no scientific output.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z/provenance/failed_attempts/ev_so12_h0_hl_e151_20261017T004600Z/FAILURE.json
+    sha256: d9e38c8844c53b095ebd94b9dee4b5e18641b92fc6b7202e11eb1376483ffd8c
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Historical deterministic-mode exact-invariance failure before saved embeddings;
+      corrected successful evaluation preserved separately.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/manifest.json
+    sha256: 1ef870678568f68ff6f4bd9da8707fbe1fe0a429a821616f9dd1d2410e167762
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Historical verified primary-only manifest published at 03:38:23 UTC while secondary
+      clustering was still running; the full evaluation subsequently completed at 04:54:25 UTC.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/_PRIMARY_SUCCESS
+    sha256: 0ffb1b14ff6f3290d6cc6de556b1b3e0fe3042611fb33bfc8b001b18f12fc184
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Completion marker explicitly scoped to primary seed-0 delivery only.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/metadata.json
+    sha256: 744f3a044ff76558a7cb08d291ae1f91ef71e3c03eda962e92ded2415ad11f9d
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Historical primary coverage, checkpoint identity and secondary-pending status
+      as of primary artifact creation; preserved unchanged after full completion.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/tables/comparison_metrics.json
+    sha256: d3c3277c116c7469acac8c964552690ea9a2872c8002ce9ffcdf7713b707d37a
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Actual five-method primary ARI matrices and observed cluster counts for all cells,
+      six cores pooled and each displayed core.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/provenance/primary_preview_receipt.json
+    sha256: 51a71be945c260fd78c2ea57f4b68919ab57545d6990a8dc2be02bdc68c93df2
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Actual primary label hashes, original image hashes, PCA sources and polygon QC.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/provenance/parent/clustering/h0/leiden_seed0_receipt.json
+    sha256: 648ab5d1cdc40c8da4cb361b041970e94b48023000fdf0ab989c218d9a9cd453
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Genuine completed initial-state primary partition and graph binding.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/provenance/parent/clustering/hL/leiden_seed0_receipt.json
+    sha256: 167a9a87874ff88933522640762bca8f12b88fc785619b264b97c95a686549f3
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Genuine completed final-state primary partition and graph binding.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/audits/primary_preview_root_review.json
+    sha256: 121a33c20b0315667811ced8a61092994ca1a7f5c4b5d4c06567f13752d34e9a
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Root visual verification of all six individual primary maps.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/audits/primary_preview_visual_review.json
+    sha256: e9af207848c878b1b0c2ecb8c5a52a7e0f9b0105ca8fdf8f17ba27f88e928cc6
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Additional overview and core13/core23 visual checks plus source and polygon QC
+      verification.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/audits/primary_delivery_review.json
+    sha256: d92b65bab9881c070dd3d55f6e46e0d0b36a8fa578f8501a8cc3fbb0cea38437
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Portable HTML, exact image bytes, complete legends and metric-table checks.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/provenance/failed_attempts/index.json
+    sha256: edd86837ece26a9db6d27d38043f0838956456232e13c95b229fa21086b4e884
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Provenance for two excluded failed evaluation attempts; ev IDs are evaluations,
+      not failed training runs.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/provenance/failed_attempts/ev_so12_h0_hl_e151_20261017T004300Z/FAILURE.json
+    sha256: e120e371e71dc24ffab61a6c0d860fb939b78b66aa8caabf5a27c29988966706
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Excluded evaluation ev_so12_h0_hl_e151_20261017T004300Z failed on logger argument
+      collision before GPU work.
+  - kind: evaluation
+    root: report
+    path: analyses/so12_hidden_leiden/ev_so12_h0_hl_e151_20261017T005200Z_primary_delivery/provenance/failed_attempts/ev_so12_h0_hl_e151_20261017T004600Z/FAILURE.json
+    sha256: d9e38c8844c53b095ebd94b9dee4b5e18641b92fc6b7202e11eb1376483ffd8c
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Excluded evaluation ev_so12_h0_hl_e151_20261017T004600Z failed exact-invariance
+      pilot before saving embeddings.
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b/manifest.yaml
+    sha256: 18ebd9e4be18686e4f26ea5aacd2c73b750e7f8cbc14df5341aeb29bcd1b991d
+    verification_status: verified
+    run_id: r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b
+    description: Immutable model training bundle binding the epoch-151 selected checkpoint.
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/10/r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4/analysis_summary.json
+    sha256: 2d029eeba14f4b29897ffb6a8806d2b41db90a88f27e78b18e57234bfdb6b0e1
+    verification_status: verified
+    run_id: r_20261016T181735Z_e4e8f852_s000_f00_a02_d8caf6c4
+    description: Existing immutable PCA analysis and primary partitions reused in this comparison.
+files: []

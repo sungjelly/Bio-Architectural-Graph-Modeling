@@ -1,0 +1,23 @@
+{
+  "local_s0": {
+    "run_id": "r_20261004T072107Z_9d2b00cb_s000_f00_a01_f41786d5",
+    "input_directory": "/workspace/BAGM/reports/analyses/so2_prediction_pearson/v1/local_s0",
+    "manifest_sha256": "9aa0c34a9e68bac5b61b9f23c4d58479b148266972dea43aa3a1aa3acb8d1bc0",
+    "result_sha256": "af52c4e9dda4aa65bc83f16a14fe6f301eb47fcabf0fdf911593c16a99453c11",
+    "checkpoint_sha256": "88abdfc6f259fd7c9da40607a863341fefad6e4863fce26fe1b56ae1967e3edc"
+  },
+  "local_s1": {
+    "run_id": "r_20261004T072107Z_9d2b00cb_s001_f00_a01_1caff983",
+    "input_directory": "/workspace/BAGM/reports/analyses/so2_prediction_pearson/v1/local_s1",
+    "manifest_sha256": "bd22c08dc58592b57427dfc55c2ca8b865005589894a76aff87414b0d228987c",
+    "result_sha256": "6973d9e88d5014fb13917d7ed210c4b49bb74de79e141ce1a6453160ce007d90",
+    "checkpoint_sha256": "f218d4f19086b1962f44e9f3a6829c0b07ce1502faf636048afd272512f92741"
+  },
+  "historical_e300": {
+    "run_id": "r_20260826T122252Z_52d16093_s000_f00_a01_a48fd9e2",
+    "input_directory": "/workspace/BAGM/reports/analyses/so2_prediction_pearson/v1/historical_e300",
+    "manifest_sha256": "41c382e7b99382183bc76320c3e8d4668c8264691448bbc9ee7225c46a5adbe1",
+    "result_sha256": "3ebb0887a4b6345f2d409d42d67d779e12050075c30f4cbe0dccf5d806869c77",
+    "checkpoint_sha256": "1fbc2c92a1c35180f7ef644a269740f98a214be1896013667fe67279582570bd"
+  }
+}

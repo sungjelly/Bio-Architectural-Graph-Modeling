@@ -1,0 +1,71 @@
+{
+  "core": "SO2-C18",
+  "n_cells": 11696,
+  "mask_seed": 4181812364218124178,
+  "mask_checksum": "d7f599b523e805713cb5a0be65cbdab571817b20ef3d8ea9d46af06a91f42e5f",
+  "masked_entries": 5838825,
+  "metrics": {
+    "standardized": {
+      "n_masked": 5838825,
+      "masked_huber": 0.22528664570261128,
+      "masked_mse": 0.9004369897669079,
+      "masked_mae": 0.3516985670637167,
+      "pooled_pearson": 0.24981137240691428,
+      "masked_r2": 0.03285508898090905,
+      "gene_pearson_mean": 0.23978862413612206,
+      "gene_pearson_median": 0.2259089261645361,
+      "cell_pearson_mean": 0.15725568464768003,
+      "n_valid_genes": 1000,
+      "n_valid_cells": 11667,
+      "masked_rmse": 0.9489135839300162,
+      "n_cells": 11696,
+      "n_undefined_cells": 29,
+      "n_undefined_genes": 0
+    },
+    "log1p": {
+      "n_masked": 5838825,
+      "masked_huber": 0.034465973572612066,
+      "masked_mse": 0.07100208011363503,
+      "masked_mae": 0.10332791447045721,
+      "pooled_pearson": 0.41803817970789536,
+      "masked_r2": 0.1512994647715158,
+      "gene_pearson_mean": 0.23978862419331998,
+      "gene_pearson_median": 0.22590892694882736,
+      "cell_pearson_mean": 0.29488939570844547,
+      "n_valid_genes": 1000,
+      "n_valid_cells": 11450,
+      "masked_rmse": 0.26646215512457866,
+      "n_cells": 11696,
+      "n_undefined_cells": 246,
+      "n_undefined_genes": 0
+    }
+  },
+  "native_metric_replay": {
+    "masked_huber": 0.22528663277626038,
+    "masked_mae": 0.35169854760169983,
+    "masked_mse": 0.9004369378089905,
+    "masked_r2": 0.032855093479156494,
+    "mean_y_true": -0.028196848928928375,
+    "mean_y_pred": -0.19319911301136017
+  },
+  "native_absolute_differences": {
+    "masked_huber": 0.0,
+    "masked_mae": 0.0,
+    "masked_mse": 0.0,
+    "masked_r2": 0.0,
+    "mean_y_true": 0.0,
+    "mean_y_pred": 0.0
+  },
+  "prior_float64_absolute_differences": {
+    "standardized": {
+      "masked_mae": 0.0,
+      "masked_mse": 0.0
+    },
+    "log1p": {
+      "masked_mae": 0.0,
+      "masked_mse": 0.0
+    }
+  },
+  "inference_seconds": 2.4530009920708835,
+  "duration_seconds": 16.266027233097702
+}

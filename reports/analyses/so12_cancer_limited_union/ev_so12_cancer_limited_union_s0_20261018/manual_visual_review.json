@@ -1,0 +1,29 @@
+{
+  "figure_manifest_sha256": "d820ad97fecbb73f534ee02bf8da1b3e3d455623229ae9ba90358b502d983e01",
+  "findings": [
+    "Readable titles, labels, scales and legends; no clipping or overlap.",
+    "Selected clusters stay orange both inside and outside reference; other cells stay blue.",
+    "Black/white outlines clear on all group and error colors.",
+    "Error maps show outside false positives and omitted-inside false negatives across full common support.",
+    "Both cores and all seven representations reviewed; curves show all four resolutions and both seeds.",
+    "Generous white margins are cosmetic and do not obscure content."
+  ],
+  "limitations": [
+    "Approximate section alignment and incomplete cell-footprint coverage remain disclosed.",
+    "Oracle selections use the scored annotations; fixed primary resolution remains1 seed0."
+  ],
+  "passed": true,
+  "pngs_reviewed": [
+    "all_representations_2x7",
+    "best_single_errors",
+    "combined_five_panel",
+    "core_15_five_panel",
+    "core_23_five_panel",
+    "limited_union_errors",
+    "resolution_agreement"
+  ],
+  "report_sha256": "201c21b00105340066da5597196178edfb634c6f6e8b460c2c3e5111217a38f9",
+  "reviewed_at": "2026-10-18T07:49:30.463969+00:00",
+  "reviewer": "root",
+  "status": "complete"
+}

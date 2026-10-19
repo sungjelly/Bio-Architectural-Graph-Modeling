@@ -1,0 +1,41 @@
+{
+  "commands": [
+    [
+      "/venv/main/bin/python",
+      "-u",
+      "scripts/analysis/so12_cancer_limited_metrics.py",
+      "--parent",
+      "/workspace/BAGM/reports/analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018",
+      "--output",
+      "/workspace/BAGM/scratch/active_runs/ev_so12_cancer_limited_union_s0_20261018"
+    ],
+    [
+      "/venv/main/bin/python",
+      "-u",
+      "scripts/analysis/audit_so12_cancer_limited_union.py",
+      "--parent",
+      "/workspace/BAGM/reports/analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018",
+      "--output",
+      "/workspace/BAGM/scratch/active_runs/ev_so12_cancer_limited_union_s0_20261018"
+    ],
+    [
+      "/venv/main/bin/python",
+      "-u",
+      "scripts/analysis/so12_cancer_limited_figures.py",
+      "--parent",
+      "/workspace/BAGM/reports/analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018",
+      "--output",
+      "/workspace/BAGM/scratch/active_runs/ev_so12_cancer_limited_union_s0_20261018"
+    ],
+    [
+      "/venv/main/bin/python",
+      "-u",
+      "scripts/analysis/so12_cancer_limited_report.py",
+      "--parent",
+      "/workspace/BAGM/reports/analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018",
+      "--output",
+      "/workspace/BAGM/scratch/active_runs/ev_so12_cancer_limited_union_s0_20261018"
+    ]
+  ],
+  "cwd": "/workspace/BAGM"
+}

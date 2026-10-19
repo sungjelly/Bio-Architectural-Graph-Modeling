@@ -1,0 +1,131 @@
+{
+  "stage_id": "grid_a_v1",
+  "allowed_gpus": [
+    "0",
+    "1",
+    "2",
+    "3"
+  ],
+  "jobs": [
+    {
+      "label": "b512_lr3em05",
+      "gpu": "0",
+      "profile": "screen",
+      "batch_mode": "target_window",
+      "batch_size": 512,
+      "learning_rate": 3e-05,
+      "dropout": 0.1,
+      "weight_decay": 1e-05,
+      "seed": 0,
+      "smoke_run": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd"
+    },
+    {
+      "label": "b1024_lr0p0001",
+      "gpu": "1",
+      "profile": "screen",
+      "batch_mode": "target_window",
+      "batch_size": 1024,
+      "learning_rate": 0.0001,
+      "dropout": 0.1,
+      "weight_decay": 1e-05,
+      "seed": 0,
+      "smoke_run": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd"
+    },
+    {
+      "label": "b2048_lr0p0003",
+      "gpu": "2",
+      "profile": "screen",
+      "batch_mode": "target_window",
+      "batch_size": 2048,
+      "learning_rate": 0.0003,
+      "dropout": 0.1,
+      "weight_decay": 1e-05,
+      "seed": 0,
+      "smoke_run": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd"
+    },
+    {
+      "label": "b512_lr0p0001",
+      "gpu": "3",
+      "profile": "screen",
+      "batch_mode": "target_window",
+      "batch_size": 512,
+      "learning_rate": 0.0001,
+      "dropout": 0.1,
+      "weight_decay": 1e-05,
+      "seed": 0,
+      "smoke_run": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd"
+    },
+    {
+      "label": "b2048_lr0p0001",
+      "gpu": "0",
+      "profile": "screen",
+      "batch_mode": "target_window",
+      "batch_size": 2048,
+      "learning_rate": 0.0001,
+      "dropout": 0.1,
+      "weight_decay": 1e-05,
+      "seed": 0,
+      "smoke_run": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd"
+    },
+    {
+      "label": "b2048_lr3em05",
+      "gpu": "1",
+      "profile": "screen",
+      "batch_mode": "target_window",
+      "batch_size": 2048,
+      "learning_rate": 3e-05,
+      "dropout": 0.1,
+      "weight_decay": 1e-05,
+      "seed": 0,
+      "smoke_run": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd"
+    },
+    {
+      "label": "b1024_lr3em05",
+      "gpu": "2",
+      "profile": "screen",
+      "batch_mode": "target_window",
+      "batch_size": 1024,
+      "learning_rate": 3e-05,
+      "dropout": 0.1,
+      "weight_decay": 1e-05,
+      "seed": 0,
+      "smoke_run": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd"
+    },
+    {
+      "label": "b512_lr0p0003",
+      "gpu": "3",
+      "profile": "screen",
+      "batch_mode": "target_window",
+      "batch_size": 512,
+      "learning_rate": 0.0003,
+      "dropout": 0.1,
+      "weight_decay": 1e-05,
+      "seed": 0,
+      "smoke_run": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd"
+    },
+    {
+      "label": "core_pair_reference",
+      "gpu": "1",
+      "profile": "screen",
+      "batch_mode": "core_pair",
+      "batch_size": null,
+      "learning_rate": 0.0001,
+      "dropout": 0.1,
+      "weight_decay": 1e-05,
+      "seed": 0,
+      "smoke_run": "r_20261001T073732Z_2bde0602_s000_f00_a01_e44fd1ae"
+    },
+    {
+      "label": "b1024_lr0p0003",
+      "gpu": "2",
+      "profile": "screen",
+      "batch_mode": "target_window",
+      "batch_size": 1024,
+      "learning_rate": 0.0003,
+      "dropout": 0.1,
+      "weight_decay": 1e-05,
+      "seed": 0,
+      "smoke_run": "r_20261001T073730Z_b3feecba_s000_f00_a01_42b8b0fd"
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "all_four_gpus_idle_at_observation": true,
+  "campaign_id": "cmp_20261001_so2_bce_optimization_audit",
+  "created_at": "2026-10-01T12:44:28.502432+00:00",
+  "curated_result_published": false,
+  "doctor_exit_code": 1,
+  "doctor_issues": [
+    {
+      "categorized_runs": 54,
+      "checkpoint_artifacts": 69,
+      "indexed_checkpoints": 68,
+      "kind": "checkpoint_catalog_incomplete",
+      "semantic_aliases": 54
+    },
+    {
+      "items": [
+        {
+          "id": "cosmx_cancer_6core_pooled_fit_v1/cancer_6core_pooled_fit_v1",
+          "kind": "dataset",
+          "path": "/workspace/BAGM-relative-qkv-analysis/data/processed/cancer_6core_relative_qkv_v1/manifest.json"
+        },
+        {
+          "id": "fit_all_six_cancer_cores_transductive_v1",
+          "kind": "split",
+          "path": "/workspace/BAGM-relative-qkv-analysis/data/processed/cancer_6core_relative_qkv_graphs_v1/cohort_manifest_with_graphs.json"
+        }
+      ],
+      "kind": "missing_registered_paths"
+    }
+  ],
+  "doctor_issues_match_preexisting_prelaunch": true,
+  "doctor_ok": false,
+  "doctor_prelaunch_source": {
+    "path": "runtime/so2_bce_optimization_audit/prelaunch_v1/doctor.json",
+    "sha256": "3a93e7e41a979596f619251d0f6ed8f19bc73cf9ea6ddb8243b73c1d95d3d8f4"
+  },
+  "execution_record": "execution.json",
+  "free_disk": {
+    "floor_passed": true,
+    "free_bytes": 21404340224,
+    "free_gib": 19.934345245361328,
+    "observed_at": "2026-10-01T12:42:57.831756+00:00",
+    "path": "/workspace/BAGM-relative-qkv-analysis",
+    "required_free_gib": 5.0,
+    "total_bytes": 81604378624,
+    "used_bytes": 60200038400
+  },
+  "full_repository_suite_rerun": false,
+  "git_status_listing_unchanged": true,
+  "gpu_compute_processes": [],
+  "gpu_occupancy": [
+    {
+      "index": "0",
+      "memory.free [MiB]": "24124 MiB",
+      "memory.total [MiB]": "24576 MiB",
+      "memory.used [MiB]": "1 MiB",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw [W]": "21.46 W",
+      "temperature.gpu": "30",
+      "utilization.gpu [%]": "0 %"
+    },
+    {
+      "index": "1",
+      "memory.free [MiB]": "24124 MiB",
+      "memory.total [MiB]": "24576 MiB",
+      "memory.used [MiB]": "1 MiB",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw [W]": "19.61 W",
+      "temperature.gpu": "30",
+      "utilization.gpu [%]": "0 %"
+    },
+    {
+      "index": "2",
+      "memory.free [MiB]": "24124 MiB",
+      "memory.total [MiB]": "24576 MiB",
+      "memory.used [MiB]": "1 MiB",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw [W]": "18.60 W",
+      "temperature.gpu": "29",
+      "utilization.gpu [%]": "0 %"
+    },
+    {
+      "index": "3",
+      "memory.free [MiB]": "24124 MiB",
+      "memory.total [MiB]": "24576 MiB",
+      "memory.used [MiB]": "1 MiB",
+      "name": "NVIDIA GeForce RTX 3090",
+      "power.draw [W]": "22.22 W",
+      "temperature.gpu": "29",
+      "utilization.gpu [%]": "0 %"
+    }
+  ],
+  "overall_interpretation": "All focused reporting checks passed. Doctor remains nonzero for the two unchanged preexisting issue categories; this is not a clean global doctor result.",
+  "pytest_reported_seconds": 4.21,
+  "report_and_test_source_hashes_unchanged": true,
+  "reporting_tests_passed": true,
+  "schema": "so2_bce_final_reporting_verification_receipt_v1",
+  "sqlite_integrity_check": [
+    "ok"
+  ],
+  "test_failures": [],
+  "tests_passed": 69,
+  "training_or_code_changed": false
+}

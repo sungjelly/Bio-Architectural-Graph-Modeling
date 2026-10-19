@@ -1,0 +1,239 @@
+schema_name: bagm_result_record
+schema_version: 1
+revision: 1
+result_id: res_so2_binary_occurrence_hurdle_comparison
+title: SO2 binary-only supervision does not improve five measured occurrence metrics at matched selected
+  endpoints
+status: verified
+outcome: negative
+experiment_type: descriptive_analysis
+method_family: relative_qkv
+lifecycle_stage: exploratory_screen
+study_axis: binary_occurrence_hurdle_comparison
+campaign_ids:
+- cmp_20260930_so2_target_isolated_geometry_modulated_binary_expression_bce_once_per_cell_seed0
+- cmp_20260928_so2_target_isolated_geometry_modulated_hurdle_nb_once_per_cell_seed0
+method:
+  name: Prespecified binary-only versus hurdle-NB selected-endpoint occurrence comparison
+  model_family: Target-isolated four-block geometry-modulated Relative-QKV graph transformer; binary-only
+    Bernoulli decoder versus Bernoulli hurdle plus zero-truncated NB2 count decoder.
+  graph_context: Identical per-core radial-stratified nominal k200 graphs within 500 micrometres, bidirectional
+    union without self or cross-core edges. Static fully observed neighbor context and target-only query
+    updates; geometry modulates attention scores.
+  masking_or_perturbation: One mask per target visit, uniformly 1 through 1000 biological genes without
+    replacement; only target query genes masked, fully observed context, each training target visited
+    exactly once per epoch; fixed identical validation masks. Binary label is observed raw count greater
+    than zero.
+  evaluation_design: Exploratory validation-selected seed 0, known fold 0 and attempt 1 in each prespecified
+    variant. Six donor groups/12 cores for training and one donor group/two cores for validation; pooled
+    masked-entry metrics over identical support; no test split. Binary checkpoint selected by BCE, hurdle
+    checkpoint by joint hurdle-NB NLL. Report designed after learning-curve observation; no new model
+    inference or threshold tuning. Binary best/final epochs 123/129 versus hurdle 164/171 reflect objective-specific
+    scheduling/stopping and unequal training exposure.
+  implementation_version: donor_grouped_so2_target_isolated_binary_expression_bce_once_per_cell_earlystop_v1
+    and matched hurdle-NB protocol; checksum-bound executed-source patches and resolved configs in immutable
+    runs; report_builder.py SHA256 f26c6fc9ea88b9479f3f4fdb0ae5e8dd002048a95fda96dd5ba753f56ff7b2f4.
+conclusion:
+  question: At the prespecified selected endpoints, does binary-only supervision improve detection BCE,
+    Brier score, or precision, recall and F1 at threshold 0.5 compared with the matched hurdle detector?
+  estimand: Pooled masked-target-entry occurrence prediction, raw count greater than zero, on one fixed
+    validation mask per cell with observed target genes, permitted morphology and fully observed neighbor
+    expression available. Mask sizes mix partial and rare whole-target masks; there is no separately estimated
+    whole-node, spatial-block or cross-cell-effect result.
+  observed_result: 'Binary e123 versus hurdle e164 has detection BCE 0.2401795339072312 versus 0.23998415007114257
+    (difference +0.0001953838360886362), Brier 0.06594928695529283 versus 0.06588470738384256, precision
+    0.68682535051741 versus 0.6882310518131212, recall 0.07905830110186199 versus 0.08043052554088952,
+    and F1 0.14179502395904375 versus 0.14402901568577975. Binary specificity is slightly higher, 0.9968150915340495
+    versus 0.9967809427903829. Binary histogram AUROC 0.770606, average precision/AUPRC 0.298425 and ECE
+    0.003369 are descriptive because hurdle counterparts are unavailable. Thus improvement in the five
+    named shared metrics is not supported at these endpoints; the broader binary-specialization hypothesis
+    is not wholly falsified. Separately, the frozen optimization criterion passes: BCE improves by 0.033478191549836916
+    from epoch 1, above 0.0001, with required finite losses/gradients. Binary stopped by patience at epoch
+    129; hurdle at 171.'
+  strongest_alternative_explanation: Count supervision may regularize the hurdle detector, and different
+    checkpoint-selection objectives can influence endpoint differences. Intracellular co-expression, morphology,
+    prevalence and cell identity may account for prediction without useful spatial context; segmentation
+    spillover may mimic neighborhood information.
+  controls:
+  - Prespecified completed hurdle comparator; no favorable upstream run was selected after seeing this
+    result. Both planned seed-0/fold-0/attempt-1 runs are included.
+  - Exact dataset, split, training-only preprocessing and graph-configuration agreement; training mask/coverage
+    receipts and core order identical through all 129 shared epochs; fixed validation mask receipts and
+    support match.
+  - Target-isolated routing and masked-value leakage preflight; no test partition, no threshold tuning,
+    and fixed 0.5 operating point.
+  - Immutable bundle checksum verification, selected-checkpoint replay, exact confusion-count agreement,
+    contiguous histories, finite gradients and target coverage; independent terminal registry/queue/checkpoint-catalog
+    receipt.
+  - All-negative accuracy and observed-validation-prevalence probability references are disclosed as retrospective
+    class-imbalance descriptions, not training-fitted or spatial-null controls.
+  remaining_uncertainty: 'Only one model seed and one fixed split are represented; both validation cores
+    belong to one donor group and validation is used for selection. No patient replication, patient-level
+    interval, significance or generalization claim is supported. Different selection objectives remain
+    part of this endpoint comparison. Hurdle AUPRC/AUROC/ECE are unavailable and specificity favors binary
+    slightly, so no blanket detector-superiority conclusion follows. Graph-specific baselines, realistic
+    nulls, segmentation sensitivity, faithfulness and orthogonal/perturbational support are absent. The
+    epoch-17 interruption was recovered in the same immutable run and attempt, without omitted or duplicated
+    epochs; gradient direction across epoch 18 cannot be reconstructed. No planned run was excluded. Training
+    exposure also differs: binary best/final epochs are 123/129 and hurdle best/final epochs are 164/171
+    because objective-specific scheduling and stopping remain in force; endpoint differences cannot be
+    attributed solely to removing count supervision.'
+  maximum_defensible_claim: A verified exploratory matched endpoint comparison is negative for binary-only
+    improvement in the five named shared occurrence metrics, while a small specificity advantage and unavailable
+    hurdle discrimination metrics remain explicit. The separate within-run optimization criterion passed.
+    This supports retaining the hurdle detector as the reference for those metrics on this split, not
+    model-family superiority, graph-specific gain, patient generalization, biological mechanism or causality.
+evidence:
+  predictive_gain:
+    status: not_tested
+    summary: Graph-specific gain over appropriate self/context or non-graph baselines was not tested.
+      The narrower matched occurrence comparison is negative for BCE, Brier, precision, recall and F1,
+      with specificity slightly higher for binary; optimization success is a separate finding.
+  stability:
+    status: not_tested
+    summary: Only prescribed seed 0 and fold 0 are available; no seed, split, graph, mask-realization
+      or segmentation robustness study.
+  faithfulness:
+    status: not_tested
+    summary: Checkpoint/metric replay establishes numerical integrity, not attribution faithfulness or
+      biologically bounded source-feature sensitivity.
+  null_calibration:
+    status: not_tested
+    summary: Prevalence/all-negative references describe imbalance; no realistic mechanism-breaking spatial
+      null was evaluated.
+  patient_replication:
+    status: not_tested
+    summary: One validation donor group, with two cores and validation-based selection; no independent-patient
+      replication or sealed test cohort.
+  external_support:
+    status: not_tested
+    summary: No independent cohort or orthogonal molecular/imaging evidence was assessed.
+  perturbation_support:
+    status: not_tested
+    summary: No controlled biological perturbation; no causal claim.
+provenance:
+  created_at_utc: '2026-09-30T19:12:16.080447Z'
+  updated_at_utc: '2026-09-30T19:12:16.080447Z'
+  git_commit: f2776df3769620e7c2b1728116a71ca086c7e3b4
+  run_ids:
+  - r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863
+  - r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097
+  expected_seeds:
+  - 0
+  included_seeds:
+  - 0
+  expected_folds:
+  - 0
+  included_folds:
+  - 0
+  failed_or_excluded_runs: []
+  sources:
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/_SUCCESS
+    sha256: e53af18c271cfb65cd2219be5b94671d2194c6bd911d1ffe0b2e5ecb4f52de72
+    verification_status: verified
+    description: Binary-only Immutable success marker binding the bundle checksum manifest.
+    run_id: r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/metrics/final.json
+    sha256: 9d44afc3b96f82afd157d8847f2d6eaf8857af72c233503adde8a60326af1adf
+    verification_status: verified
+    description: Binary-only Selected-checkpoint final metrics.
+    run_id: r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/summary.json
+    sha256: 29cf0c8213e4dd71d6e28c1f936861e55f9c072d458c53463114fda56c86c4ba
+    verification_status: verified
+    description: Binary-only Completed and selected epochs, stopping state and run scope.
+    run_id: r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/config.resolved.yaml
+    sha256: 446762ca954847dba04eecdd889e03692553332568dd08f4950f232c53f4a7b1
+    verification_status: verified
+    description: Binary-only Resolved split, graph, masking, model and selection configuration.
+    run_id: r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/provenance/uncommitted_changes.patch
+    sha256: 12dab2686e833ef440199867a94b9a2d804bce8ee0781f1308d20376c66dacea
+    verification_status: verified
+    description: Binary-only Checksum-bound executed-source changes, including scientific implementation
+      and frozen campaign contract.
+    run_id: r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097/_SUCCESS
+    sha256: 709a571ce6441684578448aabd85edd5bcbe9f00609c87261afc44374f1f90c9
+    verification_status: verified
+    description: Hurdle-NB Immutable success marker binding the bundle checksum manifest.
+    run_id: r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097/metrics/final.json
+    sha256: 89c51c513c10a4af56038976997681f6bee832f22865da290e38c24b458ad199
+    verification_status: verified
+    description: Hurdle-NB Selected-checkpoint final metrics.
+    run_id: r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097/summary.json
+    sha256: 1b5ecdf3a372e0d092dbbaacd6335134b9f9e5930ca842ca0b78b4872e8fac40
+    verification_status: verified
+    description: Hurdle-NB Completed and selected epochs, stopping state and run scope.
+    run_id: r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097/config.resolved.yaml
+    sha256: a7641d002bbe654253fcaa1f8a315989a50b4a445dcb94fc1c471a604ed80bc7
+    verification_status: verified
+    description: Hurdle-NB Resolved split, graph, masking, model and selection configuration.
+    run_id: r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097
+  - kind: run_artifact
+    root: artifact
+    path: runs/2026/09/r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097/provenance/uncommitted_changes.patch
+    sha256: acf67c156670679786d8917af0d0da7ff1495dd710e5a5cd6e49bd252c9858e1
+    verification_status: verified
+    description: Hurdle-NB Checksum-bound executed-source changes, including scientific implementation
+      and frozen campaign contract.
+    run_id: r_20260928T021117Z_9ea46874_s000_f00_a01_41b54097
+  - kind: report
+    root: report
+    path: analyses/so2_binary_expression_bce/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/v1/report_manifest.json
+    sha256: 7862ec2cdafcda36ea90c3e4706f2c68c02ef78797aeecd9ca967c90b5233279
+    verification_status: verified
+    description: Complete versioned report artifact hashes.
+  - kind: report
+    root: report
+    path: analyses/so2_binary_expression_bce/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/v1/summary.json
+    sha256: 8b73375fde0953a942997a8b199e5a2ca8a865367476c4522bf979ac808fcb89
+    verification_status: verified
+    description: Audited shared metrics, complete support and separate evidence limits.
+  - kind: report
+    root: report
+    path: analyses/so2_binary_expression_bce/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/v1/comparison.csv
+    sha256: 124dc7b11b6c9f39f978fe11a1548212550418178291a2744147ab02682060a8
+    verification_status: verified
+    description: Complete paired detection-metric table.
+  - kind: report
+    root: report
+    path: analyses/so2_binary_expression_bce/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/v1/report_builder.py
+    sha256: f26c6fc9ea88b9479f3f4fdb0ae5e8dd002048a95fda96dd5ba753f56ff7b2f4
+    verification_status: verified
+    description: Exact analysis implementation snapshot used to build report v1.
+  - kind: report
+    root: report
+    path: analyses/so2_binary_expression_bce/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/completion_verification_v1.json
+    sha256: 5731996c18742072fa6969dca30c4c0fe3eda589d4783e6a62fe733314e029ee
+    verification_status: verified
+    description: Read-only terminal registry, queue, checkpoint catalog, checksum and semantic-alias verification.
+  - kind: report
+    root: report
+    path: analyses/so2_binary_expression_bce/r_20260930T091905Z_4be167c3_s000_f00_a01_ffc3b863/verify_bce_completion_v1.py
+    sha256: e904d7849f6e10d917f6645c427751dcfa49c4af901e36ea1d4e948375634391
+    verification_status: verified
+    description: Exact lifecycle-verifier implementation snapshot bound by the completion receipt.
+files: []

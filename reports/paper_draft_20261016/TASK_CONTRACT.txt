@@ -1,0 +1,13 @@
+BAGM bilingual initial manuscript draft
+Objective: English and Korean three-page drafts with abstract, preliminaries, method, preliminary observations, discussion and verified references; editable PPTX architecture; editable DOCX sources.
+Scope: authoring and source verification only. No training, new scientific experiment, raw-data modification, or publication.
+Primary question: can masked geometry-aware graph modeling produce spatially informative cell representations and support later model-faithful biological analysis?
+Alternative: apparent spatial clusters reflect smoothing, composition, sample effects or segmentation artifacts. Distinguishing tests are proposed, not executed.
+Estimand: masked transformed-expression prediction; descriptive spatial clustering and planned model sensitivity. No causal claims or quantified segmentation claims without evaluation.
+Units: cells as observations; donors as independent biological units. Historical and currently active model variants remain separate.
+Evidence: repository code/configuration/reports plus primary scientific literature. User visual observations identified as preliminary. No fabricated measurements, histology or figures.
+Validation proposed in manuscript: donor-separated evaluation, graph/geometry ablations, self-only and smoothing controls, PCA/scVI/spatial method comparisons, annotated-region overlap and stability.
+Acceptance: 3 pages per PDF, readable English/Korean rendering, matching editable source, citations resolve, architecture matches stated variant, PPTX contains editable shapes/text rather than raster slides.
+Resources: CPU-only temporary document environment; no training environment changes.
+Deliverables: PDFs, DOCX, PPTX, source scripts, claim/source notes and checksums in this report directory.
+Verification: PyMuPDF page/text inspection and rendered previews; python-docx/PPTX parse and shape audit; repository status before and after. No empirical performance tests required for this writing task.

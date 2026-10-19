@@ -1,0 +1,74 @@
+{
+  "state_at_acceptance": {
+    "children": [],
+    "controller_pid": 223132,
+    "created_at": "2026-10-05T08:03:09Z",
+    "dependency": {
+      "active_dependency_jobs": 6,
+      "completed": 3,
+      "jobs": [
+        {
+          "job_id": "q_03591a07d1886e724cb3",
+          "run_id": null,
+          "status": "queued"
+        },
+        {
+          "job_id": "q_07b24f33a11eaf064956",
+          "run_id": "r_20261005T071413Z_eb2b8bb8_s001_f00_a01_c7db4275",
+          "status": "completed"
+        },
+        {
+          "job_id": "q_1d2bcd9c22acf7dde87d",
+          "run_id": null,
+          "status": "queued"
+        },
+        {
+          "job_id": "q_7b3e79bfec514899bd97",
+          "run_id": "r_20261005T075224Z_eb2b8bb8_s002_f00_a01_836c985d",
+          "status": "running"
+        },
+        {
+          "job_id": "q_8b0228c75d19da14e8d2",
+          "run_id": "r_20261005T071413Z_eb2b8bb8_s000_f00_a01_cd04af8b",
+          "status": "completed"
+        },
+        {
+          "job_id": "q_8f6e440d68770945e909",
+          "run_id": "r_20261005T071413Z_eb047e27_s000_f00_a01_22a79608",
+          "status": "completed"
+        },
+        {
+          "job_id": "q_b0d2781baadd1e76c37d",
+          "run_id": "r_20261005T075208Z_b35cac84_s002_f00_a01_e5347d9b",
+          "status": "running"
+        },
+        {
+          "job_id": "q_c915c007cf1c1ce9d1b6",
+          "run_id": "r_20261005T074042Z_b35cac84_s001_f00_a01_95e91d2d",
+          "status": "running"
+        },
+        {
+          "job_id": "q_c971e541fbd8b00076df",
+          "run_id": "r_20261005T071413Z_b35cac84_s000_f00_a01_76060a5a",
+          "status": "running"
+        }
+      ],
+      "ready": false,
+      "total": 9
+    },
+    "plan_sha256": "2f184f81208689baf4e07bc3895a2631170480584ee890c19a16301d51e37161",
+    "schema": "local_gene_handoff_state_v1",
+    "status": "waiting_dependency",
+    "updated_at": "2026-10-05T08:04:09Z"
+  },
+  "supervisor": "bagm_local_gene_after_current    RUNNING   pid 223132, uptime 0:01:11",
+  "new_campaign_run_count": 0,
+  "source_hashes_verified": true,
+  "plan_sha256": "2f184f81208689baf4e07bc3895a2631170480584ee890c19a16301d51e37161",
+  "gpu_processes_at_acceptance": [
+    "GPU-7e6c842d-886d-b449-7e05-4863a531de22, 218454, /venv/main/bin/python, 11016 MiB",
+    "GPU-4f3f6290-223c-18b6-4634-4cabbe8368d5, 213748, /venv/main/bin/python, 11020 MiB",
+    "GPU-cbc764d7-1b59-d50e-95b0-c7d2c4f054f7, 218252, /venv/main/bin/python, 11016 MiB",
+    "GPU-5fbcfe4b-9b69-c507-1bf4-2585cee197e3, 207162, /venv/main/bin/python, 4722 MiB"
+  ]
+}

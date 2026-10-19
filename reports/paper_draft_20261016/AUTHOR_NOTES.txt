@@ -1,0 +1,29 @@
+BAGM initial paper draft — 16 October 2026
+
+FILES
+BAGM_draft_English.pdf / BAGM_draft_Korean.pdf: three pages each, including abstract, architecture figure, result-figure placeholder, and ten references.
+BAGM_draft_bilingual.pdf: the same two versions combined, English followed by Korean (six pages).
+BAGM_draft_English.docx / BAGM_draft_Korean.docx: editable manuscript text. Word pagination may vary with installed fonts.
+BAGM_architecture_editable.pptx: three slides, with native editable text, shapes and connectors; English overview, detailed block, Korean overview.
+BAGM_architecture_figure.pdf / .png: standalone overview.
+
+SCOPE
+The draft follows the currently training original Relative-Geometric QKV model selected by the author. Geometry contributes an additive attention bias. It does not describe the separate geometry-modulated cosine-attention variant.
+The earlier SO2 visual observations and layer analyses are clearly distinguished from the current donor-separated training/validation study. Qualitative PCA/scVI comparison reflects the author's initial account; a matched archived scVI benchmark was not found. No numerical accuracy or pathology validation was invented.
+
+NEXT REVISION
+1. Add authors, affiliations and the intended venue format.
+2. Replace Figure 2 with matched tissue maps and independent tumor annotations; report Dice/IoU, boundary agreement and donor-level variation.
+3. Finalize current-run validation, with self-only/spatial-smoothing controls and geometry/graph ablations. Earlier log1p SO2 results are not current Pearson-run results.
+4. Reproduce the PCA/scVI comparison under matched settings and retain negative outcomes.
+5. Define attention and Jacobian readouts before interpretation. The draft defines Jacobians with respect to visible transformed input features, with morphology, mask and graph fixed; these are model sensitivities, not causal interactions.
+
+BUILD AND CHECKS
+Authoring source and audit notes remain in the report directory:
+manuscript_content.json, build_manuscripts.py, build_architecture.py,
+model_evidence.txt, TASK_CONTRACT.txt and document_verification.json.
+From the BAGM root:
+  /tmp/bagm-paper-env/bin/python reports/paper_draft_20261016/build_architecture.py
+  /tmp/bagm-paper-env/bin/python reports/paper_draft_20261016/build_manuscripts.py
+The isolated document environment contains python-docx, python-pptx, reportlab and pymupdf. Assets include NanumGothic fonts; system FreeSerif/FreeSans fonts are used for Latin text. The PDFs embed the needed fonts.
+Both PDFs were checked for page count, text extraction, all ten reference links, page bounds and visual rendering. PPTX structure and same-layout vector previews were checked; a native Microsoft PowerPoint renderer is not installed.

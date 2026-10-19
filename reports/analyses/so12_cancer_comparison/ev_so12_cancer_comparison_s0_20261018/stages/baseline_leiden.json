@@ -1,0 +1,10 @@
+{
+  "gpu": null,
+  "partial_summary": "clustering/partial_summary_pca_scvi.json",
+  "partial_summary_sha256": "1995ee12d6905ff78d0a9af91bc58de3b62aa154f4522dc7dc2ca6ca14b37dd7",
+  "partitions": 16,
+  "stage": "baseline_leiden",
+  "status": "complete",
+  "time": "2026-10-18T06:40:10.221848+00:00",
+  "workers": 2
+}

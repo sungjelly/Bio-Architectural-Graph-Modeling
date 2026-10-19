@@ -593,6 +593,61 @@ def _checkpoint_epoch(
     )
 
 
+def _summary_checkpoint_metadata(
+    *,
+    role: str,
+    checkpoint_path: Path,
+    artifact_root: Path,
+    run_summary: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Read optional per-checkpoint results bound to this exact artifact path.
+
+    Older summaries describe only the run's selected best result. A run that
+    retains both best and last can declare their distinct epochs and metrics
+    in ``checkpoints[role]`` without attributing the best score to both files.
+    """
+
+    checkpoints = run_summary.get("checkpoints")
+    if checkpoints is None:
+        return {}
+    if not isinstance(checkpoints, Mapping):
+        raise CheckpointCatalogError("summary.checkpoints must be a mapping")
+    if role not in checkpoints:
+        return {}
+    metadata = checkpoints[role]
+    label = f"summary.checkpoints[{role!r}]"
+    if not isinstance(metadata, Mapping):
+        raise CheckpointCatalogError(f"{label} must be a mapping")
+    path_value = metadata.get("path")
+    if not isinstance(path_value, str) or not path_value.strip():
+        raise CheckpointCatalogError(f"{label}.path must be bundle-relative")
+    relative_path = Path(path_value)
+    if relative_path.is_absolute() or ".." in relative_path.parts:
+        raise CheckpointCatalogError(f"{label}.path must be bundle-relative")
+    if (artifact_root / relative_path).absolute() != checkpoint_path.absolute():
+        raise CheckpointCatalogError(
+            f"{label}.path does not match checkpoint artifact {checkpoint_path}"
+        )
+    epoch = metadata.get("epoch")
+    if isinstance(epoch, bool) or not isinstance(epoch, int) or epoch < 0:
+        raise CheckpointCatalogError(f"{label}.epoch must be a nonnegative integer")
+    metric = metadata.get("monitored_metric")
+    if not isinstance(metric, str) or not metric.strip():
+        raise CheckpointCatalogError(f"{label}.monitored_metric must be nonempty")
+    mode = metadata.get("monitored_mode")
+    if mode not in ("min", "max"):
+        raise CheckpointCatalogError(f"{label}.monitored_mode must be min or max")
+    value = _finite_float(metadata.get("monitored_value"))
+    if value is None:
+        raise CheckpointCatalogError(f"{label}.monitored_value must be finite")
+    return {
+        "epoch": epoch,
+        "monitored_metric": metric,
+        "monitored_mode": mode,
+        "monitored_value": value,
+    }
+
+
 def _normalize_stage(value: Any) -> str:
     token = _safe_component(value).replace("-", "_")
     normalized = _STAGE_SYNONYMS.get(token, token)
@@ -1063,21 +1118,35 @@ def _build_record(
     # Preserve the registered lexical path. Resolving here would erase a
     # direct symlink and defeat verify_checkpoint_record's source-symlink ban.
     checkpoint_path = checkpoint_path.absolute()
+    artifact_root = Path(str(row.get("artifact_path") or ""))
+    if not artifact_root.is_absolute():
+        artifact_root = paths.project_root / artifact_root
+    summary_checkpoint = _summary_checkpoint_metadata(
+        role=checkpoint_role,
+        checkpoint_path=checkpoint_path,
+        artifact_root=artifact_root,
+        run_summary=run_summary,
+    )
     checkpoint_sha = str(row.get("checkpoint_sha256") or "").lower() or None
     size_bytes = _integer(row.get("checkpoint_size_bytes"))
-    best_epoch = _checkpoint_epoch(
-        role=checkpoint_role,
-        registered=registered_checkpoint,
-        run_summary=run_summary,
-        training=training,
+    best_epoch = _first(
+        summary_checkpoint.get("epoch"),
+        _checkpoint_epoch(
+            role=checkpoint_role,
+            registered=registered_checkpoint,
+            run_summary=run_summary,
+            training=training,
+        ),
     )
     monitored_metric = _first(
+        summary_checkpoint.get("monitored_metric"),
         registered_checkpoint.get("monitored_metric"),
         row.get("primary_metric_name"),
         run_summary.get("primary_metric_name"),
     )
     monitored_value = _finite_float(
         _first(
+            summary_checkpoint.get("monitored_value"),
             registered_checkpoint.get("monitored_value"),
             row.get("primary_metric_value"),
             run_summary.get("primary_metric_value"),
@@ -1099,6 +1168,7 @@ def _build_record(
         "maximize": "max",
     }.get(PRIMARY_METRIC_DIRECTIONS.get(str(monitored_metric), ""))
     monitored_mode = _first(
+        summary_checkpoint.get("monitored_mode"),
         registered_checkpoint.get("monitored_mode"),
         configured_mode,
         registry_mode,

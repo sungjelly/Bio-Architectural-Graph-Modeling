@@ -1,0 +1,24 @@
+{
+  "checkpoint": "not_applicable",
+  "free_disk_gib": 10.391334533691406,
+  "host_memory_metric_note": "Self and largest completed child peaks are separate; child value is not concurrent aggregate RSS",
+  "output_bytes_before_inventory": 568492042,
+  "peak_child_process_rss_gib": 2.5637588500976562,
+  "peak_host_rss_gib": 1.6146583557128906,
+  "peak_vram_gib": 0.0,
+  "registered_dataset_identity": true,
+  "registered_split_identity": true,
+  "runtime_seconds": 1374.522595121991,
+  "source_code_sha256": {
+    "ops/supervisor/bagm-so12-embeddings.conf": "061da013bef77ec19b468385a85e4af625e88bc162b2085c970deee050ef73a8",
+    "ops/supervisor/bagm-so12-embeddings.sh": "ec088f1d22340e08d7e66d0cbf250c5d1a617618c87f01160157f9900e897d62",
+    "scripts/analysis/run_so12_embeddings.py": "a43a6cf118055fabcc008f54613d4c00a19b58adf887889a38ea7000b9199e35",
+    "scripts/analysis/so12_embedding_methods.py": "a0db8eb496d0bd9429c59ea7c41593ae9b2bd01272f7641d502dfdcc0b08c7fa",
+    "scripts/analysis/so12_embedding_report.py": "1914024b6fc3aef4b247ba15f4c69bf55a4dc37f44d50710e50853eaa4522e2e",
+    "src/spatial_benchmark/identifiers.py": "224e39656611414135fabd2da60e977c87fa892322bedeec6c79b995fb7367b6",
+    "src/spatial_benchmark/paths.py": "46dd8a02acdc8e5c0169f7ff72180c17b55f7fd64f155d27209717c89e9a09f7",
+    "src/spatial_benchmark/registry.py": "1a88950fe6a0b8612d72d5016332859230e0f27800bd3774828109135cea5a2b"
+  },
+  "status": "passed",
+  "upstream_pca_checksum": true
+}

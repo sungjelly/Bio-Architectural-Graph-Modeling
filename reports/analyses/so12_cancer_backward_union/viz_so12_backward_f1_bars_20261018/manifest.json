@@ -1,0 +1,60 @@
+{
+  "figure_id": "viz_so12_backward_f1_bars_20261018",
+  "files": {
+    "README.md": {
+      "sha256": "db7d758b54f90cb738b302681bcb82b6e0a9b208f0995a775eac7bf1883f3f37",
+      "size_bytes": 1106
+    },
+    "f1_and_retention_full_precision.csv": {
+      "sha256": "de7ea1122c4801b8693c2d992cb6b4765c4b5174a2aa826207cc99b43f62142d",
+      "size_bytes": 3179
+    },
+    "f1_bar_comparison.pdf": {
+      "sha256": "8e5f2f3a1672f3b1fff920679b714a4591f722ae1a80b4d2c506eeb813c11028",
+      "size_bytes": 27950
+    },
+    "f1_bar_comparison.png": {
+      "sha256": "e0566bbfd67ddd799156c90ee1faa5ec1ed41883b3da968d5713cdb86c30058a",
+      "size_bytes": 315049
+    },
+    "f1_bar_comparison.svg": {
+      "sha256": "1b1a19a6bbc887f2d21749d419083a07f98c15ecd9e41a2347d7d812db482e7d",
+      "size_bytes": 22410
+    },
+    "f1_figure_contract.md": {
+      "sha256": "c7cca19aa2202496ed10065e9ef10c7886d573f4eb3756acb564681396043e60",
+      "size_bytes": 2194
+    },
+    "f1_retention_table.pdf": {
+      "sha256": "fe5bcff28d86bc166fdd68a74dbe4c1eaecb072cf07e1f424a4a0a37380b7dcd",
+      "size_bytes": 25627
+    },
+    "f1_retention_table.png": {
+      "sha256": "9944fcd6d5f83c0d9ac3993c00a669ec8d5e20e3e54e8e9bff12b090a9c74fb8",
+      "size_bytes": 412906
+    },
+    "f1_retention_table.svg": {
+      "sha256": "a5471a871d86cafe15d259bab53dcf4770cb32b59ae6c23645fe20361cdf7008",
+      "size_bytes": 27515
+    },
+    "f1_table.csv": {
+      "sha256": "a581927cc0689a5926b556862eacc053a7ddfe458058e24f6fad940686868fb0",
+      "size_bytes": 318
+    },
+    "plot_so12_backward_f1_bars.py": {
+      "sha256": "1a080a7e20f74b17ad1a8900a15a20b045b9a52c09875ff9fcfaa3f96e0fae4a",
+      "size_bytes": 8927
+    },
+    "validation.json": {
+      "sha256": "d648e6b59858520882d1d3bd4db7da9091b7b3bb55abf2511d2e2f197fe4466a",
+      "size_bytes": 1107
+    },
+    "visual_review.json": {
+      "sha256": "4b92a4be314056a0c11a403895452047d72d4a34e7d9bc99064c8547c93f3545",
+      "size_bytes": 562
+    }
+  },
+  "source_evaluation": "ev_so12_cancer_backward_union_s0_20261018",
+  "source_manifest_sha256": "88f966f74307485e1c66c2728f41b4efe9bb51860823c63133976605c0483ffa",
+  "type": "presentation_only"
+}

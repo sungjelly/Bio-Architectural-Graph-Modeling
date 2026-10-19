@@ -1,0 +1,27 @@
+{
+  "cluster_count_by_seed": {
+    "0": 16,
+    "1": 17
+  },
+  "clusters_over_90_percent_one_core": [
+    0,
+    1,
+    2,
+    4,
+    5,
+    6,
+    7,
+    9,
+    10,
+    11,
+    15
+  ],
+  "cross_core_undirected_edge_fraction": 0.04318828051915688,
+  "interpretation": "Exploratory transductive grouping of the two test cores under a frozen model. Clusters are not validated cell types, cancer regions, independent donor replication, or causal interactions. Training permits donor overlap and historical sample exposure. Seed 0 is displayed; seed 1 only measures stability.",
+  "seed0_cluster_vs_core_ari_descriptive": 0.1352042122188784,
+  "seed0_seed1_ari": 0.5373019271767611,
+  "seed0_seed1_ari_per_core": {
+    "15": 0.46518306651356534,
+    "23": 0.5341016444251422
+  }
+}

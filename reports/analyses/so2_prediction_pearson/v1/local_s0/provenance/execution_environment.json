@@ -1,0 +1,11 @@
+{
+  "cuda_visible_devices": "0",
+  "pythonpath": "/workspace/BAGM-relative-qkv-analysis/src:/workspace/BAGM:/workspace/BAGM/scripts/analysis",
+  "omp_num_threads": "4",
+  "started_at": "2026-10-15T07:13:27.564552+00:00",
+  "command": [
+    "scripts/analysis/run_so2_prediction_pearson.py",
+    "--model",
+    "local_s0"
+  ]
+}

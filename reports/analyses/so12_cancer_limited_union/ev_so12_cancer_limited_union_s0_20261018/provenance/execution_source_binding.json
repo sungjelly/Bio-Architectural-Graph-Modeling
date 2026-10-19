@@ -1,0 +1,58 @@
+{
+  "ops/supervisor/bagm-so12-cancer-limited-union.conf": {
+    "sha256": "60c02749b254797eb9ffa039a01c3741d19f520a1d0254c834f94f7031a36d31",
+    "size_bytes": 377
+  },
+  "ops/supervisor/bagm-so12-cancer-limited-union.sh": {
+    "sha256": "e84f5c895f3a4bc8ce157a2cd54aac222edc6f0bb637d9a496889a305051f808",
+    "size_bytes": 503
+  },
+  "scripts/analysis/audit_so12_cancer_limited_union.py": {
+    "sha256": "a06263c51d453b51dd3e7d19d734a6803670d31e027a2b4e55201e317f02847b",
+    "size_bytes": 19220
+  },
+  "scripts/analysis/promote_so12_cancer_limited_union_result.py": {
+    "sha256": "a3ddf8d9ecde4be9cb3ec2e2dd0047b09f73a151af23379f066af59f268f485f",
+    "size_bytes": 8302
+  },
+  "scripts/analysis/run_so12_cancer_limited_union.py": {
+    "sha256": "84bcb0eb074dcb5173aece0052a155c609027c2f9133a282d03c9804faaf7b6e",
+    "size_bytes": 15775
+  },
+  "scripts/analysis/so12_cancer_figures.py": {
+    "sha256": "717224f3c0800861a1db3a96efd8f32533023b651203b4fc8c0f0d5632dfc491",
+    "size_bytes": 9000
+  },
+  "scripts/analysis/so12_cancer_limited_figures.py": {
+    "sha256": "e32f00a677364af22d0eeef0d2e2e98cd2a10923a76ebcb57fb771ab12a8680b",
+    "size_bytes": 10905
+  },
+  "scripts/analysis/so12_cancer_limited_metrics.py": {
+    "sha256": "6d90d50cce29f09d00ce9c81690cf927780ccec3079ae4e20b00831b375e33a8",
+    "size_bytes": 18602
+  },
+  "scripts/analysis/so12_cancer_limited_report.py": {
+    "sha256": "716ec0ab2b9db5873670a5fc5ea5a48bfad4ae9a0fec6125f14702b2ef57fc84",
+    "size_bytes": 12820
+  },
+  "scripts/analysis/so12_cancer_metrics.py": {
+    "sha256": "099d256bd6118c3117aa5f050e5b409c20ca499e3f8e8249283ade19e36f49b1",
+    "size_bytes": 22345
+  },
+  "scripts/analysis/so12_cancer_registration.py": {
+    "sha256": "65774f403e62852f5947abec7bc8ae2c7b0d45bc57f103d77fbb7091487029b3",
+    "size_bytes": 22878
+  },
+  "tests/unit/spatial_benchmark/test_so12_cancer_limited_metrics.py": {
+    "sha256": "30358960bddce83c6db050636acf4f2974d2b53a670ad3a4f46e934699c26e34",
+    "size_bytes": 9487
+  },
+  "tests/unit/test_so12_cancer_limited_figures.py": {
+    "sha256": "db91029994d2d7ed12d89c3ccfb2c33a7a51350cf97afb17d97b40b8302afbfb",
+    "size_bytes": 1364
+  },
+  "tests/unit/test_so12_cancer_limited_publication.py": {
+    "sha256": "4078f8a99f737929240f078e489d06d12ca208a72cb1a9596293931b432f6e6e",
+    "size_bytes": 1684
+  }
+}

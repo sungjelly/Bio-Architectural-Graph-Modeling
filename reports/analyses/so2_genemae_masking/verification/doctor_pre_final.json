@@ -1,0 +1,66 @@
+{
+  "busy_timeout_ms": 30000,
+  "checkpoint_catalog": {
+    "categorized_runs": 73,
+    "checkpoint_artifacts": 85,
+    "indexed_checkpoints": 84,
+    "semantic_aliases": 68
+  },
+  "config_checks": [
+    {
+      "path": "configs/base.yaml",
+      "valid": true
+    },
+    {
+      "path": "configs/experiment/edge_feature_ablation_g1.yaml",
+      "valid": true
+    },
+    {
+      "path": "configs/experiment/edge_feature_ablation_g2.yaml",
+      "valid": true
+    }
+  ],
+  "database": "/workspace/BAGM/state/tracking/bagm.sqlite3",
+  "free_disk_gb": 18.139,
+  "integrity_check": [
+    "ok"
+  ],
+  "issues": [
+    {
+      "categorized_runs": 73,
+      "checkpoint_artifacts": 85,
+      "indexed_checkpoints": 84,
+      "kind": "checkpoint_catalog_incomplete",
+      "semantic_aliases": 68
+    },
+    {
+      "free_gb": 18.139,
+      "kind": "insufficient_disk_space",
+      "minimum_free_gb": 25.0
+    },
+    {
+      "kind": "orphan_process_records_require_worker_reconciliation",
+      "paths": [
+        "/workspace/BAGM/state/pids/q_051e8390d9b27b0d0c1c.json",
+        "/workspace/BAGM/state/pids/q_977690b031e67e1167e1.json"
+      ]
+    }
+  ],
+  "journal_mode": "wal",
+  "minimum_free_disk_gb": 25.0,
+  "ok": false,
+  "project_root": "/workspace/BAGM",
+  "queue_counts": {
+    "cancelled": 0,
+    "claimed": 0,
+    "completed": 51,
+    "failed": 15,
+    "pruned": 0,
+    "queued": 0,
+    "running": 2,
+    "stale": 0
+  },
+  "schema_version": 4,
+  "warnings": [],
+  "worker_lock_available": true
+}

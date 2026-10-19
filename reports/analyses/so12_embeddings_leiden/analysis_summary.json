@@ -1,0 +1,244 @@
+{
+  "claim": "exploratory_transductive_representation_clustering_only",
+  "gpu_used": false,
+  "limitations": [
+    "PCA32 retains only 8.22 percent of normalized-feature variance.",
+    "Slide and tissue composition are confounded; mixing is not an optimization target.",
+    "Spatial smoothing builds local continuity into the representation.",
+    "Radius-only neighborhoods do not model tissue barriers or segmentation spillover.",
+    "No independent biological cell-type or spatial-domain validation.",
+    "Kernel PCA is a training-landmark approximation, not exact full-cohort kernel PCA.",
+    "HNSW insertion is threaded and may vary; saved neighbors fix the analyzed graphs."
+  ],
+  "method_metrics": {
+    "kernel_pca": {
+      "cross_slide_neighbor_fraction": 0.3639346447234903,
+      "encoder": {
+        "gamma": 0.00851511093064707,
+        "landmark_variance_retained": 0.621317331198508,
+        "landmarks": 512,
+        "landmarks_train_only": true,
+        "method": "centered_RBF_kernel_PCA_training_landmark_extension"
+      },
+      "graph": {
+        "edges": 9320229,
+        "ef_construction": 120,
+        "ef_search": 128,
+        "exact_recall_queries": 256,
+        "hnsw_m": 32,
+        "k": 30,
+        "mean_knn_recall": 0.9976562499999999,
+        "metric": "euclidean",
+        "min_query_recall": 0.9333333333333333,
+        "threaded_HNSW_insertion_nondeterministic": true,
+        "weight": "exp(-d_squared/kth_neighbor_d_squared); arithmetic_mean_symmetrization"
+      },
+      "graph_sha256": "414ece46cf66300e845377b0a19b9b3d1b61470dfb7f8d324414ad5ab7e10ab2",
+      "largest_cluster": 69631,
+      "n_cells": 407659,
+      "n_clusters": 21,
+      "n_components": 32,
+      "partitions": {
+        "leiden_r0.5_s0": {
+          "iterations": 2,
+          "n_clusters": 10,
+          "quality": 3862404.593804672,
+          "resolution": 0.5,
+          "seed": 0
+        },
+        "leiden_r1.0_s0": {
+          "iterations": 2,
+          "n_clusters": 21,
+          "quality": 3518228.6622894118,
+          "resolution": 1.0,
+          "seed": 0
+        },
+        "leiden_r1.0_s1": {
+          "iterations": 2,
+          "n_clusters": 23,
+          "quality": 3499328.948044263,
+          "resolution": 1.0,
+          "seed": 1
+        },
+        "leiden_r1.5_s0": {
+          "iterations": 2,
+          "n_clusters": 33,
+          "quality": 3346119.174546662,
+          "resolution": 1.5,
+          "seed": 0
+        }
+      },
+      "resolution_ari_0.5": 0.44835904077178973,
+      "resolution_ari_1.5": 0.5961141140811641,
+      "runtime_seconds": 491.5778445759788,
+      "seed_ari": 0.6977252414684411,
+      "slide_nmi": 0.03501218141042647,
+      "smallest_cluster": 793,
+      "spatial_agreement": {
+        "adjusted_agreement": 0.16012308774863818,
+        "excess_over_null": 0.13428517916315066,
+        "observed": 0.2956479716796674,
+        "permutations": 20,
+        "within_core_label_permutation_mean": 0.16136279251651672
+      }
+    },
+    "pca": {
+      "cross_slide_neighbor_fraction": 0.3745092507872184,
+      "encoder": {
+        "fit_training_cells": 301198,
+        "method": "frozen_training_Pearson_PCA",
+        "upstream_run_id": "r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410",
+        "variance_retained": 0.08219940284491925
+      },
+      "graph": {
+        "edges": 10788281,
+        "ef_construction": 120,
+        "ef_search": 128,
+        "exact_recall_queries": 256,
+        "hnsw_m": 32,
+        "k": 30,
+        "mean_knn_recall": 0.9880208333333333,
+        "metric": "euclidean",
+        "min_query_recall": 0.7333333333333333,
+        "threaded_HNSW_insertion_nondeterministic": true,
+        "weight": "exp(-d_squared/kth_neighbor_d_squared); arithmetic_mean_symmetrization"
+      },
+      "graph_sha256": "2174979c323d238ae1afb69b488687107fad18f404629466006838a8566547fc",
+      "largest_cluster": 76191,
+      "n_cells": 407659,
+      "n_clusters": 19,
+      "n_components": 32,
+      "partitions": {
+        "leiden_r0.5_s0": {
+          "iterations": 2,
+          "n_clusters": 9,
+          "quality": 3653035.8039968,
+          "resolution": 0.5,
+          "seed": 0
+        },
+        "leiden_r1.0_s0": {
+          "iterations": 2,
+          "n_clusters": 19,
+          "quality": 3256018.95113258,
+          "resolution": 1.0,
+          "seed": 0
+        },
+        "leiden_r1.0_s1": {
+          "iterations": 2,
+          "n_clusters": 19,
+          "quality": 3273912.464970185,
+          "resolution": 1.0,
+          "seed": 1
+        },
+        "leiden_r1.5_s0": {
+          "iterations": 2,
+          "n_clusters": 32,
+          "quality": 3090294.9640397727,
+          "resolution": 1.5,
+          "seed": 0
+        }
+      },
+      "resolution_ari_0.5": 0.4357244582783307,
+      "resolution_ari_1.5": 0.6276716421699904,
+      "runtime_seconds": 412.6131046579685,
+      "seed_ari": 0.7061291045738175,
+      "slide_nmi": 0.035177686786810936,
+      "smallest_cluster": 2443,
+      "spatial_agreement": {
+        "adjusted_agreement": 0.14816410733874755,
+        "excess_over_null": 0.12268378784448514,
+        "observed": 0.29465741865107953,
+        "permutations": 20,
+        "within_core_label_permutation_mean": 0.1719736308065944
+      }
+    },
+    "spatial_pca": {
+      "cross_slide_neighbor_fraction": 0.3002557693235441,
+      "encoder": {
+        "block_scaling": "train_scalar_RMS",
+        "fit_training_cells": 301198,
+        "spatial_weight": 0.3,
+        "variance_retained": 0.8932576246072657
+      },
+      "graph": {
+        "edges": 10559178,
+        "ef_construction": 120,
+        "ef_search": 128,
+        "exact_recall_queries": 256,
+        "hnsw_m": 32,
+        "k": 30,
+        "mean_knn_recall": 0.9908854166666667,
+        "metric": "euclidean",
+        "min_query_recall": 0.8333333333333334,
+        "threaded_HNSW_insertion_nondeterministic": true,
+        "weight": "exp(-d_squared/kth_neighbor_d_squared); arithmetic_mean_symmetrization"
+      },
+      "graph_sha256": "6a8a44aca71843a8982cd8e6cb96d52cf650722b33f4a69f10eada20a14064a5",
+      "largest_cluster": 67215,
+      "n_cells": 407659,
+      "n_clusters": 17,
+      "n_components": 32,
+      "partitions": {
+        "leiden_r0.5_s0": {
+          "iterations": 2,
+          "n_clusters": 10,
+          "quality": 3864245.8768634186,
+          "resolution": 0.5,
+          "seed": 0
+        },
+        "leiden_r1.0_s0": {
+          "iterations": 2,
+          "n_clusters": 17,
+          "quality": 3500336.5402180515,
+          "resolution": 1.0,
+          "seed": 0
+        },
+        "leiden_r1.0_s1": {
+          "iterations": 2,
+          "n_clusters": 18,
+          "quality": 3507393.637133507,
+          "resolution": 1.0,
+          "seed": 1
+        },
+        "leiden_r1.5_s0": {
+          "iterations": 2,
+          "n_clusters": 29,
+          "quality": 3281132.6515661594,
+          "resolution": 1.5,
+          "seed": 0
+        }
+      },
+      "resolution_ari_0.5": 0.46896907174362196,
+      "resolution_ari_1.5": 0.5989365795339757,
+      "runtime_seconds": 383.72264344105497,
+      "seed_ari": 0.8252913438989764,
+      "slide_nmi": 0.06978343278309192,
+      "smallest_cluster": 1997,
+      "spatial_agreement": {
+        "adjusted_agreement": 0.3095350001949683,
+        "excess_over_null": 0.23474265955914134,
+        "observed": 0.4763707164467862,
+        "permutations": 20,
+        "within_core_label_permutation_mean": 0.24162805688764485
+      }
+    }
+  },
+  "n_cells": 407659,
+  "n_cores": 28,
+  "n_genes": 1000,
+  "n_slides": 2,
+  "pairwise_cluster_ari": {
+    "kernel_pca__spatial_pca": 0.49926449469408807,
+    "pca__kernel_pca": 0.6500466027665274,
+    "pca__spatial_pca": 0.5141487633669886
+  },
+  "runtime_seconds": 1322.7417736670468,
+  "spatial_graph": {
+    "cross_core_edges": 0,
+    "directed_edges": 6073375,
+    "isolated_cells_self_fallback": 266,
+    "k": 15,
+    "max_distance_um": 49.99668884277344,
+    "radius_um": 50.0
+  }
+}

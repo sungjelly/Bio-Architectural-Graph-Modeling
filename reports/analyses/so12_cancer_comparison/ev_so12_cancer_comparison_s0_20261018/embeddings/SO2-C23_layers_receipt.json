@@ -1,0 +1,23 @@
+{
+  "audit": {
+    "all_observed": true,
+    "complete_core_graph": true,
+    "direct_fourth_block_exact": true,
+    "graph_blocks": 4,
+    "hL_equals_full_node_embedding": true,
+    "intermediate_states_exact": true,
+    "masked_entries": 0,
+    "maximum_absolute_prediction_difference": 0.0,
+    "ordinary_hL_exact": true,
+    "prediction_invariance_checked": true,
+    "predictions_exact": true,
+    "published_h0_exact": true,
+    "published_h4_exact": true
+  },
+  "core": "SO2-C23",
+  "n_cells": 43462,
+  "rows": [
+    38145,
+    81607
+  ]
+}

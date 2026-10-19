@@ -1,0 +1,65 @@
+{
+  "actual_cell_polygons": true,
+  "cells": 81607,
+  "centroid_alignment_rule": "centroid_tolerance_or_polygon_covers_coordinate",
+  "centroid_mismatch_count": 0,
+  "centroid_tolerance_exceeded_count": 0,
+  "centroid_tolerance_um": 5.0,
+  "containment_accepted_count": 0,
+  "coordinate_outside_polygon_count": 6,
+  "covered_cells_per_core": {
+    "15": 38145,
+    "23": 43462
+  },
+  "cross_representation_label_alignment": false,
+  "export_checks": {
+    "core_15": {
+      "pdf_bytes": 156904,
+      "png_bytes": 267873,
+      "png_dimensions": [
+        1406,
+        1436
+      ],
+      "verified": true
+    },
+    "core_23": {
+      "pdf_bytes": 161799,
+      "png_bytes": 295959,
+      "png_dimensions": [
+        1406,
+        1379
+      ],
+      "verified": true
+    },
+    "legend": {
+      "pdf_bytes": 7896,
+      "png_bytes": 39431,
+      "png_dimensions": [
+        1821,
+        296
+      ],
+      "verified": true
+    },
+    "overview": {
+      "pdf_bytes": 352399,
+      "png_bytes": 649388,
+      "png_dimensions": [
+        3058,
+        1544
+      ],
+      "verified": true
+    }
+  },
+  "manual_visual_review": "not_performed",
+  "maximum_centroid_distance_um": 4.032010271222432,
+  "median_centroid_distance_um": 0.4025034538190281,
+  "palette_scope": "h0_only_shared_across_test_cores",
+  "palette_source": "deterministic_turbo_0.04_to_0.96",
+  "pixel_size_um": 0.120281,
+  "polygons_sampled": false,
+  "repaired_cells": 0,
+  "selected_vertex_rows": 1723887,
+  "shared_palette": true,
+  "slide_qualified_key_order_verified": true,
+  "source_rows_scanned": 5731515
+}

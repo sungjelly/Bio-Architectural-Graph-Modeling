@@ -1,0 +1,54 @@
+{
+  "best_path_tie": "fewest clusters then IDs",
+  "campaign_id": "cmp_20261018_so12_cancer_backward_union",
+  "cell_retention_definition": "at least one valid owned pixel inside ROI; denominator fixed",
+  "classification": {
+    "lifecycle_stage": "exploratory_screen",
+    "scientific_variant": "fixed_pixel_f1_unweighted_cell_retention",
+    "study_axis": "backward_cluster_retention"
+  },
+  "contract_at_start": {
+    "sha256": "b14509868edbcf0227be4b635019834c3838f5d2929376444efd764ce7ff3434",
+    "size_bytes": 4702
+  },
+  "cores": [
+    15,
+    23
+  ],
+  "evaluation_id": "ev_so12_cancer_backward_union_s0_20261018",
+  "exploratory": true,
+  "majority_cell_sensitivity": "at least half valid owned area inside ROI",
+  "methods": [
+    "h4",
+    "h3",
+    "h2",
+    "h1",
+    "h0",
+    "pca",
+    "scvi"
+  ],
+  "minimum_free_gib": 5,
+  "n_cells": 81607,
+  "parent_manifest_sha256": "e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0",
+  "parent_path": "/workspace/BAGM/reports/analyses/so12_cancer_comparison/ev_so12_cancer_comparison_s0_20261018",
+  "primary_resolution": 1.0,
+  "primary_seed": 0,
+  "resolutions": [
+    0.25,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "retention_constraints_pct": [
+    90,
+    95
+  ],
+  "schema": "so12_cancer_backward_union_v1",
+  "seeds": [
+    0,
+    1
+  ],
+  "selection": "start every positive-overlap cluster; remove one maximizing remaining pixel F1; exact ties lexicographic retained IDs; continue empty",
+  "source_run_id": "r_20261017T044837Z_caf76350_s000_f00_a01_12df41be",
+  "split_id": "so12_paper_21train_5val_2test_v1"
+}

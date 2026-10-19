@@ -1,0 +1,12 @@
+{
+  "version": "path_qualified_figure_records_v2",
+  "source": "/workspace/BAGM/scripts/analysis/audit_so12_hidden_leiden_v2.py",
+  "source_record": {
+    "sha256": "f5daff8a0fc52836b9371d66dbcdf36d206380435bbc8a870ba3e38aac7cb2ae",
+    "size_bytes": 11420
+  },
+  "snapshot": "provenance/verification_source/audit_so12_hidden_leiden_v2.py",
+  "frozen_base_audit_unchanged": true,
+  "reason": "Renderer file records include absolute provenance paths; V2 verifies those paths, sizes and checksums before adapting to the frozen V1 content comparator. Published output paths are rebased without altering the original manifest.",
+  "smoke_checks": "Passed in-place and relocated bundle fixtures; rejected wrong output provenance path, polygon hash and renderer path."
+}

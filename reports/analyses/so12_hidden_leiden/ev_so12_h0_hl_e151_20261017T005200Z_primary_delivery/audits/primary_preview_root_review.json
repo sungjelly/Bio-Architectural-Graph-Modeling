@@ -1,0 +1,39 @@
+{
+  "status": "passed",
+  "reviewed_at": "2026-10-17T02:16:03.159426+00:00",
+  "scope": "primary_preview_only",
+  "full_analysis_complete": false,
+  "stability_pending_at_review": true,
+  "visually_reviewed_cores": [
+    1,
+    9,
+    13,
+    15,
+    21,
+    23
+  ],
+  "observations": [
+    "All five columns show corresponding tissue geometry and cell polygons.",
+    "All six images have readable method/core titles and 100-micrometre scale bars.",
+    "No blank method panels, clipped tissue, incorrect orientation, or layout overlaps observed.",
+    "Independent method colors and pending-stability status are explicitly labelled."
+  ],
+  "primary_cluster_counts": {
+    "h0": 16,
+    "hL": 22,
+    "kernel_pca": 21,
+    "pca": 19,
+    "spatial_pca": 17
+  },
+  "n_cells_clustering": 407659,
+  "n_cells_displayed": 117996,
+  "polygon_alignment_mismatches": 0,
+  "file_sha256": {
+    "core_01_primary_preview.png": "2ba264f54797c3ed3acaa4307d65e900393fba1e5a225b48f70eabca15ddf67a",
+    "core_09_primary_preview.png": "415d7e501af1fffd26226c09293be0c2661b0b59377e7681a1c65c0d9f44ee8c",
+    "core_13_primary_preview.png": "ec45e55fb6b1ecde44edea3834e1be41e97862fe16014f7cb9a29980ef36c874",
+    "core_15_primary_preview.png": "c00c6f4ad763d73347f534df67d790186e636e9e8edceeabf487dc7a22b4368d",
+    "core_21_primary_preview.png": "cb8fff7aa8d35da55c6fbe7be3f5d01f3fd8e9cc5db270f83e36c5fe0d032b6f",
+    "core_23_primary_preview.png": "06586bfc7a5749ebd67e3f3fa76d6cdf98c31aca5b5e0a031e837a26ca1cc01a"
+  }
+}

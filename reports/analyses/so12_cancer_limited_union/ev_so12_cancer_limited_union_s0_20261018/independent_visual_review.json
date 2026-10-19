@@ -1,0 +1,147 @@
+{
+  "blocking_findings": [],
+  "current_and_archived_execution_source_files_verified": 14,
+  "embedded_png_count": 7,
+  "embedded_pngs_byte_identical": true,
+  "evaluation_id": "ev_so12_cancer_limited_union_s0_20261018",
+  "execution_source_binding_sha256": "741286001ff85ca3a2a49b6a79def11970f8256baa8b05124af873a6a4b2e2e4",
+  "figure_files": {
+    "figures/all_representations_2x7.pdf": {
+      "sha256": "d5c4edaab89ba2aeed83ae19a98e192a3a06658fc952e070536ae0072ed692c3",
+      "size_bytes": 1401527
+    },
+    "figures/all_representations_2x7.png": {
+      "sha256": "60057ad7d5002738e66fbcc7eef7ad1e1a6b799371168a43531e30ffefd43b9d",
+      "size_bytes": 1310806
+    },
+    "figures/best_single_errors.pdf": {
+      "sha256": "8234146c86a7b5815e0fcb9e389a72a0d679a952cd038d343ac626c92f4889e9",
+      "size_bytes": 1511481
+    },
+    "figures/best_single_errors.png": {
+      "sha256": "6b47f01dfc361e67f58c9e7cca8f0bf5fa1f1c9e65bc5968ac335f8ec752cdb1",
+      "size_bytes": 847576
+    },
+    "figures/combined_five_panel.pdf": {
+      "sha256": "53a8a0c3a8c358317d1d01a56eef7f5ff7b787e3653dee4b74044513c7b6814a",
+      "size_bytes": 1843482
+    },
+    "figures/combined_five_panel.png": {
+      "sha256": "6cccc8dbc0d9cfcc06b62fece9d2a04b17d6c3bde6f883436c7d41831f6fbfec",
+      "size_bytes": 1976889
+    },
+    "figures/core_15_five_panel.pdf": {
+      "sha256": "e0d88e727f019799b6d2a159d3f57eccaedc0eb73b934960d9b27638573854c8",
+      "size_bytes": 636798
+    },
+    "figures/core_15_five_panel.png": {
+      "sha256": "c410f5c4891547f05bcf711dd01b6955c196915d1172e14100719508a1e504ac",
+      "size_bytes": 769756
+    },
+    "figures/core_23_five_panel.pdf": {
+      "sha256": "0b10dae1fde1b7c57f3c24ea8a8ce77ea8c02f866c64a19b2b68321e775fd6e6",
+      "size_bytes": 1132727
+    },
+    "figures/core_23_five_panel.png": {
+      "sha256": "cf47e97068ba98a8505a21a69e417e67f470641eda66e70bcaa4dd10770a1da9",
+      "size_bytes": 1095112
+    },
+    "figures/limited_union_errors.pdf": {
+      "sha256": "b610807b4f9c546e2dfa7445d2826b45c36cf68bdbf48b099cc944efa62a02f7",
+      "size_bytes": 1533307
+    },
+    "figures/limited_union_errors.png": {
+      "sha256": "1bd36cc08312817af9d87480511eeae5f2481e7c2f76c0b5f4f2913447fd07b2",
+      "size_bytes": 882771
+    },
+    "figures/resolution_agreement.pdf": {
+      "sha256": "475ff98ef4c754538d9c682fd025706ade647611e87f19e0177eff0107c277ba",
+      "size_bytes": 31727
+    },
+    "figures/resolution_agreement.png": {
+      "sha256": "d1912107b8f73dd316fd52da9cbe9b9197e0293e1d5ff0f9c391671b04e9ce8f",
+      "size_bytes": 518949
+    }
+  },
+  "figure_manifest_sha256": "d820ad97fecbb73f534ee02bf8da1b3e3d455623229ae9ba90358b502d983e01",
+  "independent_metrics_review_sha256": "50809f4cc76cce77cd70e0bbbb01d37a1b042fef2097969a0e2624decf559bc8",
+  "metrics_sha256": "9ea1cf6f54ebf378eca3e985d564976589a74f003b4774756b266cd2deb28ac0",
+  "native_error_map_count_records_matched": 28,
+  "observations": [
+    "All seven PNGs were inspected directly with view_image.",
+    "Group maps preserve orange selected-cluster pixels on both sides of the black/white boundary; other segmented cells remain blue.",
+    "Error grids show TP green, FP vermillion, FN blue, and TN light gray; white gaps are explicitly outside footprint scoring.",
+    "Every map uses fixed resolution 1 and seed 0. The resolution plot displays all four settings and both seeds.",
+    "PDF checks verify checksums, one-page structure, headers/trailers and every classic cross-reference offset; PDFs were not separately visually rasterized.",
+    "The seven portable HTML image payloads are byte-identical to the visually reviewed PNGs.",
+    "These are annotation-selected descriptive unions with approximate registration; no independent diagnostic accuracy inference."
+  ],
+  "parent_manifest_sha256": "e9a345642c160602ddd6b4c5c377c415377a6489453b8d60c82f34108a60c2b0",
+  "passed": true,
+  "pdf_count": 7,
+  "pdf_structure_checks": {
+    "all_representations_2x7": {
+      "classic_cross_reference_offsets_verified": 98,
+      "header_eof_trailer_verified": true,
+      "single_page": true
+    },
+    "best_single_errors": {
+      "classic_cross_reference_offsets_verified": 99,
+      "header_eof_trailer_verified": true,
+      "single_page": true
+    },
+    "combined_five_panel": {
+      "classic_cross_reference_offsets_verified": 90,
+      "header_eof_trailer_verified": true,
+      "single_page": true
+    },
+    "core_15_five_panel": {
+      "classic_cross_reference_offsets_verified": 82,
+      "header_eof_trailer_verified": true,
+      "single_page": true
+    },
+    "core_23_five_panel": {
+      "classic_cross_reference_offsets_verified": 82,
+      "header_eof_trailer_verified": true,
+      "single_page": true
+    },
+    "limited_union_errors": {
+      "classic_cross_reference_offsets_verified": 105,
+      "header_eof_trailer_verified": true,
+      "single_page": true
+    },
+    "resolution_agreement": {
+      "classic_cross_reference_offsets_verified": 91,
+      "header_eof_trailer_verified": true,
+      "single_page": true
+    }
+  },
+  "png_count": 7,
+  "pngs_visually_inspected": [
+    "all_representations_2x7",
+    "best_single_errors",
+    "combined_five_panel",
+    "core_15_five_panel",
+    "core_23_five_panel",
+    "limited_union_errors",
+    "resolution_agreement"
+  ],
+  "report_manifest_sha256": "9e494b6577c0d9fb650a0c8032c55bf564d282e476ce8e64bc81625f00ec3dbc",
+  "report_sha256": "201c21b00105340066da5597196178edfb634c6f6e8b460c2c3e5111217a38f9",
+  "reviewed_at": "2026-10-18T07:50:04.641542+00:00",
+  "reviewer": "independent_heist_methods_agent",
+  "schema": "so12_cancer_limited_union_independent_visual_review_v1",
+  "status": "complete",
+  "visual_checks": {
+    "core_and_method_identifiers_correct": true,
+    "error_color_labels_correct": true,
+    "inside_outline_missed_cells_visible": true,
+    "no_clipped_titles_or_legends_observed": true,
+    "outside_outline_spillover_visible": true,
+    "resolution_and_seed_lines_disambiguated": true,
+    "same_annotation_geometry_across_panels": true,
+    "scale_bars_and_approximate_registration_disclosure_present": true,
+    "selected_and_other_colors_consistent": true,
+    "titles_and_legends_readable": true
+  }
+}

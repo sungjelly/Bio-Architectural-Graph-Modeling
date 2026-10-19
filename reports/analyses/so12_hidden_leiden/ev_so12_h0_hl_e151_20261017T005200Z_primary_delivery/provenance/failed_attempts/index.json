@@ -1,0 +1,85 @@
+{
+  "attempts": [
+    {
+      "evaluation_id": "ev_so12_h0_hl_e151_20261017T004300Z",
+      "original_failed_stage": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T004300Z",
+      "status": "failed",
+      "no_saved_embeddings_or_clusters": true,
+      "copied_files": {
+        "FAILURE.json": {
+          "sha256": "e120e371e71dc24ffab61a6c0d860fb939b78b66aa8caabf5a27c29988966706",
+          "size_bytes": 580
+        },
+        "config.resolved.json": {
+          "sha256": "fe371788aeb1a983aa6d77fb8c5e2f0adbc974bab2f28f229712a2f61e5137cf",
+          "size_bytes": 843
+        },
+        "events.jsonl": {
+          "sha256": "e7d40851ada85f25a5f98baa506a3345d2e8116be3aabc0191115d1b60579b75",
+          "size_bytes": 296
+        },
+        "extraction_inputs.json": {
+          "sha256": "4d792582fda9dca56e719d0ebdafd6f301c511a73b7261ff340ea5cd00302fb3",
+          "size_bytes": 60015
+        },
+        "logs/extraction_pilot.log": {
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size_bytes": 0
+        },
+        "provenance/execution.json": {
+          "sha256": "4a0dcf51e03b2dd0b201f631bf2f7923c8a004a1fb0fcafc6e204f1e37630c84",
+          "size_bytes": 21163
+        },
+        "provenance/source/scripts/analysis/run_so12_hidden_leiden.py": {
+          "sha256": "6530ac2a970502eab93c0a36366d26845aa49f0aaba17301c204ba3ce7ddf399",
+          "size_bytes": 14655
+        },
+        "provenance/source/scripts/analysis/so12_hidden_extraction.py": {
+          "sha256": "9c4c458feaae9f151732eeb65a882a9a3e3db23c10d6390b2bef7bf1023dd6e1",
+          "size_bytes": 22588
+        }
+      }
+    },
+    {
+      "evaluation_id": "ev_so12_h0_hl_e151_20261017T004600Z",
+      "original_failed_stage": "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T004600Z",
+      "status": "failed",
+      "no_saved_embeddings_or_clusters": true,
+      "copied_files": {
+        "FAILURE.json": {
+          "sha256": "d9e38c8844c53b095ebd94b9dee4b5e18641b92fc6b7202e11eb1376483ffd8c",
+          "size_bytes": 764
+        },
+        "config.resolved.json": {
+          "sha256": "9357d7bb806a9bd3e8d6309d0f3b396314b45c98e31e015ed8d85be39de51c55",
+          "size_bytes": 896
+        },
+        "events.jsonl": {
+          "sha256": "200831c6b9fe1b95436e1e27d31fe9bfc80fc3ce374bbf3c162cfe08d062a96a",
+          "size_bytes": 864
+        },
+        "extraction_inputs.json": {
+          "sha256": "5fc75faea37cf4dc135f522bda7dbcc271a1fc243611232ba7523aaafe2fe355",
+          "size_bytes": 60015
+        },
+        "logs/extraction_pilot.log": {
+          "sha256": "f3b84ed2b1eacc995956c4bb07bd6f22aab423fdd2b58e57e71ff7199ecf24dc",
+          "size_bytes": 1016
+        },
+        "provenance/execution.json": {
+          "sha256": "a3e51e4d798771fcc7f1a26e3a6df63c92c15ae89074ff04b4f68702f9247284",
+          "size_bytes": 21505
+        },
+        "provenance/source/scripts/analysis/run_so12_hidden_leiden.py": {
+          "sha256": "f177b953aec98516a4ad1aa2a04dc56321f7b8df7ff2c57c350e6b0a0a732201",
+          "size_bytes": 15270
+        },
+        "provenance/source/scripts/analysis/so12_hidden_extraction.py": {
+          "sha256": "9c4c458feaae9f151732eeb65a882a9a3e3db23c10d6390b2bef7bf1023dd6e1",
+          "size_bytes": 22588
+        }
+      }
+    }
+  ],
+  "successful_retry": "ev_so12_h0_hl_e151_20261017T005200Z"
+}

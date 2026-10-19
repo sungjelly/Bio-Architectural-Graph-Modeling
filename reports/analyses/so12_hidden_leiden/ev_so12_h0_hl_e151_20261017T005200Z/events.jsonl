@@ -1,0 +1,27 @@
+{"time": "2026-10-17T00:52:21.559213+00:00", "event": "preparation_started"}
+{"time": "2026-10-17T00:54:47.825352+00:00", "event": "preparation_complete", "cells": 407659}
+{"time": "2026-10-17T00:54:47.832080+00:00", "event": "job_started", "name": "extraction_pilot", "command": ["/venv/main/bin/python", "-u", "scripts/analysis/so12_hidden_extraction.py", "--source-run-dir", "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b", "--output", "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z", "--device", "cuda:0", "--cores", "23", "--pilot"]}
+{"time": "2026-10-17T00:55:19.837520+00:00", "event": "job_finished", "name": "extraction_pilot", "exit_code": 0}
+{"time": "2026-10-17T00:55:19.850522+00:00", "event": "extraction_pilot_passed", "seconds": 5.094759065890685, "peak_reserved_bytes": 6159335424}
+{"time": "2026-10-17T00:55:19.853135+00:00", "event": "job_started", "name": "extraction_gpu_0", "command": ["/venv/main/bin/python", "-u", "scripts/analysis/so12_hidden_extraction.py", "--source-run-dir", "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b", "--output", "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z", "--device", "cuda:0", "--cores", "15,24,3,22,17,13"]}
+{"time": "2026-10-17T00:55:19.856108+00:00", "event": "job_started", "name": "extraction_gpu_1", "command": ["/venv/main/bin/python", "-u", "scripts/analysis/so12_hidden_extraction.py", "--source-run-dir", "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b", "--output", "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z", "--device", "cuda:1", "--cores", "27,16,4,20,7,12,8"]}
+{"time": "2026-10-17T00:55:19.859004+00:00", "event": "job_started", "name": "extraction_gpu_2", "command": ["/venv/main/bin/python", "-u", "scripts/analysis/so12_hidden_extraction.py", "--source-run-dir", "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b", "--output", "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z", "--device", "cuda:2", "--cores", "19,9,26,28,18,1,2"]}
+{"time": "2026-10-17T00:55:19.861943+00:00", "event": "job_started", "name": "extraction_gpu_3", "command": ["/venv/main/bin/python", "-u", "scripts/analysis/so12_hidden_extraction.py", "--source-run-dir", "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T090820Z_ad267085_s000_f00_a02_451ef28b", "--output", "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z", "--device", "cuda:3", "--cores", "11,6,10,25,5,14,21"]}
+{"time": "2026-10-17T00:55:55.867902+00:00", "event": "job_finished", "name": "extraction_gpu_1", "exit_code": 0}
+{"time": "2026-10-17T00:55:55.918261+00:00", "event": "job_finished", "name": "extraction_gpu_3", "exit_code": 0}
+{"time": "2026-10-17T00:55:57.920790+00:00", "event": "job_finished", "name": "extraction_gpu_0", "exit_code": 0}
+{"time": "2026-10-17T00:55:57.925395+00:00", "event": "job_finished", "name": "extraction_gpu_2", "exit_code": 0}
+{"time": "2026-10-17T00:56:09.058701+00:00", "event": "extraction_complete", "cells": 407659}
+{"time": "2026-10-17T00:56:09.062675+00:00", "event": "job_started", "name": "knn_pilot_h0", "command": ["/venv/main/bin/python", "-u", "scripts/analysis/so12_hidden_clustering.py", "--output", "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z", "--representation", "h0", "--device", "cuda:0", "--pilot"]}
+{"time": "2026-10-17T00:56:09.064789+00:00", "event": "job_started", "name": "knn_pilot_hL", "command": ["/venv/main/bin/python", "-u", "scripts/analysis/so12_hidden_clustering.py", "--output", "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z", "--representation", "hL", "--device", "cuda:1", "--pilot"]}
+{"time": "2026-10-17T00:56:31.068643+00:00", "event": "job_finished", "name": "knn_pilot_h0", "exit_code": 0}
+{"time": "2026-10-17T00:56:31.074912+00:00", "event": "job_finished", "name": "knn_pilot_hL", "exit_code": 0}
+{"time": "2026-10-17T00:56:31.076734+00:00", "event": "knn_pilots_passed"}
+{"time": "2026-10-17T00:56:31.079161+00:00", "event": "job_started", "name": "clustering_h0", "command": ["/venv/main/bin/python", "-u", "scripts/analysis/so12_hidden_clustering.py", "--output", "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z", "--representation", "h0", "--device", "cuda:0"]}
+{"time": "2026-10-17T00:56:31.081631+00:00", "event": "job_started", "name": "clustering_hL", "command": ["/venv/main/bin/python", "-u", "scripts/analysis/so12_hidden_clustering.py", "--output", "/workspace/BAGM/scratch/active_runs/ev_so12_h0_hl_e151_20261017T005200Z", "--representation", "hL", "--device", "cuda:1"]}
+{"time": "2026-10-17T03:59:26.064965+00:00", "event": "job_finished", "name": "clustering_hL", "exit_code": 0}
+{"time": "2026-10-17T04:45:42.243176+00:00", "event": "job_finished", "name": "clustering_h0", "exit_code": 0}
+{"time": "2026-10-17T04:45:50.948232+00:00", "event": "clustering_complete"}
+{"time": "2026-10-17T04:45:50.954932+00:00", "event": "rendering_started"}
+{"time": "2026-10-17T04:48:54.225797+00:00", "event": "ready_for_visual_review"}
+{"time": "2026-10-17T04:54:20.970317+00:00", "event": "publication_verification_started"}

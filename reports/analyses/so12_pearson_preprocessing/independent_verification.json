@@ -1,0 +1,795 @@
+{
+  "all_28_cores_metadata_alignment_verified": true,
+  "attempt_statuses": {
+    "r_20261016T082320Z_660b87cb_s000_f00_a01_cd1c1544": {
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T082320Z_660b87cb_s000_f00_a01_cd1c1544",
+      "attempt": 1,
+      "retry_of": null,
+      "run_id": "r_20261016T082320Z_660b87cb_s000_f00_a01_cd1c1544",
+      "scientific_id": "sci_660b87cbf38fb2fc",
+      "status": "failed"
+    },
+    "r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410": {
+      "artifact_path": "/workspace/BAGM/artifacts/runs/2026/10/r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410",
+      "attempt": 2,
+      "retry_of": "r_20261016T082320Z_660b87cb_s000_f00_a01_cd1c1544",
+      "run_id": "r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410",
+      "scientific_id": "sci_660b87cbf38fb2fc",
+      "status": "completed"
+    }
+  },
+  "bundle_checksum_files_verified": 35,
+  "core_alignment_checks": [
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C01",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 8924
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C02",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 7450
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C03",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 12190
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C04",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 14657
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C05",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 11399
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C06",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 18212
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C07",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 10722
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C08",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 4972
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C09",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 17223
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C10",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 14756
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C11",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 18145
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C12",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 7816
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C13",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 5345
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO1-C14",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 9785
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C15",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 38145
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C16",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 16229
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C17",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 9041
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C18",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 11696
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C19",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 19119
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C20",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 12155
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C21",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 4897
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C22",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 11443
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C23",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 43462
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C24",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 14506
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C25",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 13147
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C26",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 14856
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C27",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 24245
+    },
+    {
+      "coordinates_match_raw_metadata": true,
+      "core": "SO2-C28",
+      "keys_and_depth_match_raw_metadata": true,
+      "rows": 13122
+    }
+  ],
+  "depth_min": 5,
+  "derived_matrices_all_finite": true,
+  "derived_matrix_count_verified": 56,
+  "derived_supporting_file_sha256": {
+    "genes.json": "b4adf4afcb1b14ecff8f2519490b6843e4634cccb21635f95e423d8ee7172735",
+    "manifest.json": "c5c10869268cb5e0ab9787705c41ab4a3be613062b80bc85352d6cc7fcd5a611",
+    "observations.csv.gz": "c388d88d86d5c6edbef182db5b3d7f40a3d60a1807c5e479589f40211fda7dc4",
+    "pearson/fitted_parameters.npz": "8bfb16a75fcf165dd5bc990d68eebc782e7a3d84938e400c54ec9a327dbd3b98",
+    "signed_log_pearson/fitted_parameters.npz": "8c85e76014f32cf1253d8c21e2502aa7fab0f3a11c7bd73d57a04c6a72e0c64a"
+  },
+  "diagnostic_cells": 106461,
+  "diagnostic_donors": 4,
+  "donor_split_disjoint": true,
+  "failed_attempt_archive_update": "Failed partial outputs finalized without deletion after successful-matrix verification; _FAILED marker and registry path rechecked.",
+  "failed_attempt_evidence_preserved": true,
+  "formula_checked_rows_per_method": 84,
+  "independent_formula": "NumPy float64 recomputation of (count-depth*p)/sqrt(1.01*depth*p), frozen training mean/SD, upper clipping at 10; signed log1p absolute residual for signed variant. Three deterministic rows per core; no runner/loader transformation code reused.",
+  "independent_formula_max_abs_errors": {
+    "pearson": 1.410680519953189e-06,
+    "signed_log_pearson": 2.7089349607933855e-07
+  },
+  "independent_formula_tolerance": 2e-05,
+  "matrix_receipts": [
+    {
+      "columns": 1000,
+      "core": "SO1-C01",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 9.004717664851114e-07,
+      "method": "pearson",
+      "rows": 8924,
+      "sha256": "c24a8592f6730db5d798cc3bd5d3bf95ccd62e5d8222e67e38db53138b6b513a"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C01",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.922336627657728e-07,
+      "method": "signed_log_pearson",
+      "rows": 8924,
+      "sha256": "3e56c55d68220b60751a500ec398f965d50dc317c01ef167ccacfe6683b8ef7c"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C02",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.1943703395189686e-06,
+      "method": "pearson",
+      "rows": 7450,
+      "sha256": "398ecdaaf666bcad793b9b35b2cfb93885690eebdf5ad30079ef675b7e4a5092"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C02",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 2.110780057407169e-07,
+      "method": "signed_log_pearson",
+      "rows": 7450,
+      "sha256": "d342a2c738f9dd6f554797afddfafcf6360a6c75cd2cc45a124e84ff5087ddd0"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C03",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 5.704925136740258e-07,
+      "method": "pearson",
+      "rows": 12190,
+      "sha256": "56b58e573ad94174455d503af856195a71de2668d4decb0f37084bdd9ff24992"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C03",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.5235822981018998e-07,
+      "method": "signed_log_pearson",
+      "rows": 12190,
+      "sha256": "49b6c8144b94e2b1a76eff546c57da1291a487af6344552bf0cfde0f09d51dc8"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C04",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.1765014118481076e-06,
+      "method": "pearson",
+      "rows": 14657,
+      "sha256": "cd68a329cd5910a98984e93695e5d4a083e7c62160b3311fc3833f8627e7fb02"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C04",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.9497568759518913e-07,
+      "method": "signed_log_pearson",
+      "rows": 14657,
+      "sha256": "5f0149ccb7dd4422165e0bc49e7fdba59b75e3d7be8aa95a62d8fa333d58356e"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C05",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 7.450619969873173e-07,
+      "method": "pearson",
+      "rows": 11399,
+      "sha256": "8047688bc9104a9a511f39e64fad833321ecfb235be9d407793d041b543ff151"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C05",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.8685737979140526e-07,
+      "method": "signed_log_pearson",
+      "rows": 11399,
+      "sha256": "ea38bea678a98c3289d8eabe56442ce26492a66f4127bf71763e78241a6eee3b"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C06",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 7.828706518608897e-07,
+      "method": "pearson",
+      "rows": 18212,
+      "sha256": "cab227a76aa0fcde0695ee9db05d1727628662f98cf4a74897046bb5b43fee87"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C06",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.44564392456914e-07,
+      "method": "signed_log_pearson",
+      "rows": 18212,
+      "sha256": "09669f90433807e4ed5663a7ead3d42f00089947eaaec23dea2c825c0ccfcd94"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C07",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 8.181415935837322e-07,
+      "method": "pearson",
+      "rows": 10722,
+      "sha256": "d6f2b2cf536d82d13931b8ae79f852c655938a0101dcff4dbb11fc83313f4e51"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C07",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.2303835550397935e-07,
+      "method": "signed_log_pearson",
+      "rows": 10722,
+      "sha256": "ceef0f086f425cac303f13a331273eca3feabf617005a47f1b546a5828391f17"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C08",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 8.878192998551526e-07,
+      "method": "pearson",
+      "rows": 4972,
+      "sha256": "a282222c00adae277b95e3e02ed89d2365b98d6758216fad6a0d685adf981375"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C08",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.983072266398267e-07,
+      "method": "signed_log_pearson",
+      "rows": 4972,
+      "sha256": "8ba0626642bacbf2f36f546652deecb0d4d5d2a41afb415974e8df091b8a2273"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C09",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 6.362081155231181e-07,
+      "method": "pearson",
+      "rows": 17223,
+      "sha256": "463433a9b7c1eaf38b77eced79b67f9c90fafbdc33bfd62d40645b1323464100"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C09",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.5218064430833067e-07,
+      "method": "signed_log_pearson",
+      "rows": 17223,
+      "sha256": "19c8faa047b6e88b100a6e280a027943305a0f5867951977e57f0073b563c48d"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C10",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.3452140894543163e-06,
+      "method": "pearson",
+      "rows": 14756,
+      "sha256": "c3830288c06e53422a4a5dd892593c9717b08cb7667ede7635b10fb6a9507abb"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C10",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 2.3246824376599307e-07,
+      "method": "signed_log_pearson",
+      "rows": 14756,
+      "sha256": "7883171b8daa967e43964b6f31fc83a98ea2322777aec341387512f43448f99e"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C11",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 9.145064048254881e-07,
+      "method": "pearson",
+      "rows": 18145,
+      "sha256": "2aa13d2ecd42d4a00a909f25ba2cfc06de3e29eed5013eaaf5dab03f3c5978c6"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C11",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.9112614912941694e-07,
+      "method": "signed_log_pearson",
+      "rows": 18145,
+      "sha256": "81bddc71975b72158d4a8c5ab3015bbc5203bebbf41f2fb931ccd53c2a3c3edf"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C12",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 7.961459367322732e-07,
+      "method": "pearson",
+      "rows": 7816,
+      "sha256": "a75f39e0102810d719c3f997f12cb8cb7f63c931b5fc3ac1a36af196d06d4ffc"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C12",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.9042308752048598e-07,
+      "method": "signed_log_pearson",
+      "rows": 7816,
+      "sha256": "1bcb61b29ecdc0b9d741ec17f2ac09d63654b687a515c5c6b275b2627818ccc5"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C13",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 9.57571279158742e-07,
+      "method": "pearson",
+      "rows": 5345,
+      "sha256": "72c816ead21f3ad1f2d0c8bbc3f911ba3d8f45fa340be71fb4a0a5b3b4647cf4"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C13",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 2.0484752516480853e-07,
+      "method": "signed_log_pearson",
+      "rows": 5345,
+      "sha256": "5981d285f786fe926d932a6e6ca1f7108515e62146fe20b2fb822b4ee7cf6aa3"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C14",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.1043663104004509e-06,
+      "method": "pearson",
+      "rows": 9785,
+      "sha256": "4e6f8796d3a10f44f2f282aa9dfe7d5fa2b341c16fe8eb367bfa9ccc46a405df"
+    },
+    {
+      "columns": 1000,
+      "core": "SO1-C14",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.72033213896583e-07,
+      "method": "signed_log_pearson",
+      "rows": 9785,
+      "sha256": "9609862af9c68d3f94684ea00735a2356f524be849e225acca7c4ef627a244e8"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C15",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 6.249868222951704e-07,
+      "method": "pearson",
+      "rows": 38145,
+      "sha256": "eaabc84a35dd76af5268b05afee13b4d889a94bab365121d17eb0f1324c6e219"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C15",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.552974917551353e-07,
+      "method": "signed_log_pearson",
+      "rows": 38145,
+      "sha256": "1eecf2dde6f72a2386025f5dc23f28386255687e1ec213b63d3f5d7b115d3088"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C16",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.3654963435527634e-06,
+      "method": "pearson",
+      "rows": 16229,
+      "sha256": "e86a37a2ac88a0de7931cd322c57d7e13da3b6597bed5b8208e77e08c532bce0"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C16",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.6553024595467036e-07,
+      "method": "signed_log_pearson",
+      "rows": 16229,
+      "sha256": "7192f78d284b5e0c7f86a78589e8d75b40d3d09ac74f922b5fbc65861f79d6dc"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C17",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 8.423135131607751e-07,
+      "method": "pearson",
+      "rows": 9041,
+      "sha256": "3d5edf32c27e346f27b482fa0e42502b0ffd0c2dce1bec0ba62970d877309097"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C17",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.972619516621421e-07,
+      "method": "signed_log_pearson",
+      "rows": 9041,
+      "sha256": "cb81437aac2014bb590f9088ea6f38940a67d7b1cce29f6f1febdcb09fa5bc4f"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C18",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 7.002001840561434e-07,
+      "method": "pearson",
+      "rows": 11696,
+      "sha256": "906026079208d0e29714e2b019ab9f3f1b977609b4536db4de48c6a7652e273d"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C18",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.7569288868202193e-07,
+      "method": "signed_log_pearson",
+      "rows": 11696,
+      "sha256": "d39f993584234b6334ee0b498ed67921c2eb18015e1c9bd51bc072fe2d23cebd"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C19",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.410680519953189e-06,
+      "method": "pearson",
+      "rows": 19119,
+      "sha256": "f306a3c79be169a9e24a8001c69f55e90b5eb995ab657107c8e587b90c85c737"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C19",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 2.7089349607933855e-07,
+      "method": "signed_log_pearson",
+      "rows": 19119,
+      "sha256": "e759979533e75db3caa74d2eb328053b2b713c3e7082a2535ec3642e7b9fb287"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C20",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.1959585330956202e-06,
+      "method": "pearson",
+      "rows": 12155,
+      "sha256": "0621c027ebf133e6f07e5ebac3892d1a27db9aa622204db759542b36f6f4ffb6"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C20",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 2.4974847834258185e-07,
+      "method": "signed_log_pearson",
+      "rows": 12155,
+      "sha256": "89cb08406a139c663a58f24116a2d95c32006efa5fac2cbac04fae4fa26f9b08"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C21",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.0007366118003347e-06,
+      "method": "pearson",
+      "rows": 4897,
+      "sha256": "0bcf6426ab2144539fec8f0da0fc544706b212fda1177d766bcaa2dcaa88f203"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C21",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.5837069478052967e-07,
+      "method": "signed_log_pearson",
+      "rows": 4897,
+      "sha256": "0f7b88ba2da5f1eb0205435f6203680d642de847436749e2300b76249554815a"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C22",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.146230802717696e-06,
+      "method": "pearson",
+      "rows": 11443,
+      "sha256": "73fdb3a76d108eb6955bb5f0db1041363e4e30ea230f19372d3979442d5f5d2c"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C22",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.7391554463230818e-07,
+      "method": "signed_log_pearson",
+      "rows": 11443,
+      "sha256": "0dff6be80a412ccdd16c5e84bcf08f3f17c9cd47a9c9f3f29474d92057ab1ec5"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C23",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.3323547189969531e-06,
+      "method": "pearson",
+      "rows": 43462,
+      "sha256": "734e19e3dffed8d9aa81bf32a4e51d5aac18479afc6692aa1b8a498fa387fa80"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C23",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.6349473908050527e-07,
+      "method": "signed_log_pearson",
+      "rows": 43462,
+      "sha256": "352a522abd064d72b8ba957a2a01b81cae578a3e143f769db1fcfd550beca65a"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C24",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.1497868914744913e-06,
+      "method": "pearson",
+      "rows": 14506,
+      "sha256": "b9e7aa0e3ca3dd538800ef6ff018e3aa785b30b5c6808bdb3dea5f3d2bdce83a"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C24",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.9833479925068787e-07,
+      "method": "signed_log_pearson",
+      "rows": 14506,
+      "sha256": "18a28d5ccc09e41e5eb9a8957b1a0bab99be16a491c6f0bef8d9e365176b68ee"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C25",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 4.792891585836401e-07,
+      "method": "pearson",
+      "rows": 13147,
+      "sha256": "d73034033103b3478127e3ae58e5361627776284c6faa0865916af71dc82c7fb"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C25",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.3011961752518175e-07,
+      "method": "signed_log_pearson",
+      "rows": 13147,
+      "sha256": "67e0582decec068c58f4798d23b7123f0902329adc28bf4dfdda5db9b75afe60"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C26",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 8.97310475700408e-07,
+      "method": "pearson",
+      "rows": 14856,
+      "sha256": "57319e70c5734c544d775fd28a958e504bd97e761241a07e6604124aa1ae8e9c"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C26",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 2.0674872391879262e-07,
+      "method": "signed_log_pearson",
+      "rows": 14856,
+      "sha256": "ebd94a088f37e977f4c69ec48d7f9063784612e2c11c182999650ae824677cd3"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C27",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 8.205099311098252e-07,
+      "method": "pearson",
+      "rows": 24245,
+      "sha256": "68d2f62f97168000b62fb5ef8768b58bd9d001f65ac1bec72efed5214708a8dc"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C27",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.6671230951281757e-07,
+      "method": "signed_log_pearson",
+      "rows": 24245,
+      "sha256": "7867383bd3d51afbec4d4c3e732490f31fd14cdba01396c59bab5c3659d33923"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C28",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 6.371587906173204e-07,
+      "method": "pearson",
+      "rows": 13122,
+      "sha256": "12370c8979dc8c31a14a4b5b0ace033253202f02f103999e161be5d4b63a5635"
+    },
+    {
+      "columns": 1000,
+      "core": "SO2-C28",
+      "formula_checked_row_count": 3,
+      "full_matrix_finite": true,
+      "independent_formula_max_abs_error": 1.7332822999094333e-07,
+      "method": "signed_log_pearson",
+      "rows": 13122,
+      "sha256": "0259f9f2b4d94ee4419bd1a32807f04f7c82b20874641640cc7b9209c9f83ff1"
+    }
+  ],
+  "registry_artifact_records_verified": 38,
+  "runtime_seconds": 27.590854160953313,
+  "sample_indices_and_metadata_match": true,
+  "sampled_cells": 28000,
+  "schema": "so12_independent_artifact_verification_v1",
+  "signed_log_from_exported_pearson": {
+    "formula": "sign(z)*log1p(abs(z))",
+    "max_abs_error": 1.4040513951485423e-07,
+    "passed": true,
+    "sampled_rows": 84,
+    "tolerance": 2e-05
+  },
+  "source_input_files_verified": 34,
+  "status": "passed",
+  "successful_bundle_modified": false,
+  "successful_run_id": "r_20261016T082445Z_660b87cb_s000_f00_a02_4a2f3410",
+  "training_cells": 301198,
+  "training_donors": 10,
+  "verified_at_utc": "2026-10-16T08:27:56.703734+00:00"
+}
